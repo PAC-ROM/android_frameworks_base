@@ -58,10 +58,11 @@ public class SignalClusterView
     private String mWifiDescription, mMobileDescription, mMobileTypeDescription;
 
     private boolean showingSignalText = false;
+    private boolean showingWiFiText = false;
 
     ViewGroup mWifiGroup, mMobileGroup;
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane;
-    TextView mMobileText;
+    TextView mMobileText,mWiFiText;
     View mSpacer;
 
     private ColorUtils.ColorSettingInfo mColorInfo;
@@ -98,6 +99,7 @@ public class SignalClusterView
         mMobileActivity = (ImageView) findViewById(R.id.mobile_inout);
         mMobileType     = (ImageView) findViewById(R.id.mobile_type);
         mMobileText     = (TextView)  findViewById(R.id.signal_text);
+        mWiFiText       = (TextView)  findViewById(R.id.wifi_signal_text);
         mSpacer         =             findViewById(R.id.spacer);
         mAirplane       = (ImageView) findViewById(R.id.airplane);
 
@@ -119,6 +121,7 @@ public class SignalClusterView
         mMobileActivity = null;
         mMobileType     = null;
         mMobileText     = null;
+        mWiFiText       = null;
         mSpacer         = null;
         mAirplane       = null;
 
@@ -190,6 +193,15 @@ public class SignalClusterView
             mWifi.setImageDrawable(wifiBitmap);
             mWifiActivity.setImageResource(mWifiActivityId);
             mWifiGroup.setContentDescription(mWifiDescription);
+            if (showingWiFiText){
+                mWifi.setVisibility(View.GONE);
+                mWifiActivity.setVisibility(View.GONE);
+                mWiFiText.setVisibility(View.VISIBLE);
+            } else {
+                mWifi.setVisibility(View.VISIBLE);
+                mWifiActivity.setVisibility(View.VISIBLE);
+                mWiFiText.setVisibility(View.GONE);
+            }
         } else {
             mWifiGroup.setVisibility(View.GONE);
         }
@@ -266,6 +278,9 @@ public class SignalClusterView
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.STATUSBAR_SIGNAL_TEXT), false,
                     this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT), false,
+                    this);
             updateSettings();
         }
 
@@ -280,6 +295,8 @@ public class SignalClusterView
 
         showingSignalText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_SIGNAL_TEXT, 0) != 0;
+        showingWiFiText = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0) != 0;
         apply();
     }
 }
