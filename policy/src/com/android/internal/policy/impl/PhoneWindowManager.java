@@ -1276,7 +1276,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         String deviceKeyHandlerClass = mContext.getResources().getString(
                 com.android.internal.R.string.config_deviceKeyHandlerClass);
 
-        if (!deviceKeyHandlerLib.equals("") && !deviceKeyHandlerClass.equals("")) {
+        if (!deviceKeyHandlerLib.isEmpty() && !deviceKeyHandlerClass.isEmpty()) {
             DexClassLoader loader =  new DexClassLoader(deviceKeyHandlerLib,
                     new ContextWrapper(mContext).getCacheDir().getAbsolutePath(),
                     null,
