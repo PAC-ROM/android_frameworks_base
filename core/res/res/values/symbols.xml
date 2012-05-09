@@ -2074,4 +2074,6 @@
   <java-symbol type="anim" name="recents_fade_in" />
   <java-symbol type="anim" name="recents_fade_out" />
 
+  <!-- IME Picker showing upon pressing Sym Key -->
+  <java-symbol type="bool" name="config_symKeyShowsImePicker" />
 </resources>
