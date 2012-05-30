@@ -2363,6 +2363,7 @@ public final class Settings {
          */
         public static final String NAV_BAR_STATUS = "nav_bar_status";
 
+
         /**
          * Navigation controls to Use
          *
