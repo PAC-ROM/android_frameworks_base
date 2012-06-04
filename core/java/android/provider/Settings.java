@@ -3496,6 +3496,10 @@ public final class Settings {
          */
         public static final String ADB_PORT = "adb_port";
 
+         * The hostname for this device
+         * @hide
+         */
+        public static final String DEVICE_HOSTNAME = "device_hostname";
 
         /**
          * Setting to allow mock locations and location provider status to be injected into the
