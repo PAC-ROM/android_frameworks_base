@@ -99,26 +99,8 @@
     <!-- Name of the button that links to the Wifi settings screen. [CHAR LIMIT=NONE] -->
     <string name="status_bar_settings_wifi_button">Wi-Fi</string>
 
-    <!-- Name of the button that links to the Bluetooth settings screen. [CHAR LIMIT=NONE] -->
-    <string name="status_bar_settings_bluetooth_button">Bluetooth</string>
-
     <!-- Label in the system panel for airplane mode (all radios are turned off)[CHAR LIMIT=30] -->
     <string name="status_bar_settings_airplane">Airplane mode</string>
-
-    <!-- Label in the system panel for gps state [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_location">GPS</string>
-
-    <!-- Label in the system panel for flashlight state [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_flashlight">LED flashlight</string>
-
-    <!-- Label in the system panel for mobile data state [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_mobile_data">Mobile data</string>
-
-    <!-- Label in the system panel for network mode [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_network_mode">2G/3G</string>
-
-    <!-- Label in the system panel for sound [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_sound_mode">Sound</string>
 
     <!-- Label in system panel saying the device will use the orientation sensor to rotate [CHAR LIMIT=30] -->
     <string name="status_bar_settings_auto_rotation">Auto-rotate screen</string>
@@ -428,4 +410,23 @@
     <string name="navbar_menu_conditional_button">Menu (autoHide) button</string>
     <string name="navbar_menu_always_button">Menu (alwaysShow) button</string>
     <string name="navbar_menu_big_button">Menu button</string>
+
+    <string name="toggle_bluetooth">Bluetooth</string>
+    <string name="toggle_data">Data</string>
+    <string name="toggle_lte">LTE</string>
+    <string name="toggle_rotate">Rotate</string>
+    <string name="toggle_wifi">Wi-Fi</string>
+    <string name="toggle_gps">GPS</string>
+    <string name="toggle_2g">2G</string>
+    <string name="toggle_wifiap">Wi-Fi AP</string>
+    <string name="toggle_airplane">Airplane</string>
+    <string name="toggle_vibrate">Vibrate</string>
+    <string name="toggle_silent">Silent</string>
+    <string name="toggle_torch">Torch</string>
+    <string name="toggle_sync">Sync</string>
+    <string name="toggle_tether">Tethering</string>
+    <string name="toggle_nfc">NFC</string>
+
+    <!-- Label in drop down to identify brightness slider -->
+    <string name="brightness_label">Brightness</string>
 </resources>

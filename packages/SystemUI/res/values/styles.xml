@@ -51,6 +51,13 @@
     <style name="TextAppearance.StatusBar.Date" parent="@*android:style/TextAppearance.StatusBar.Icon">
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/holo_blue_light</item>        
+    </style>
+
+    <style name="TextAppearance.StatusBar.Toggle" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@android:color/holo_blue_light</item>
     </style>
 
@@ -130,5 +137,15 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">18sp</item>
     </style>
-    
+
+    <style name="brucekey_icon">
+       <item name="android:disabledAlpha">?android:disabledAlpha</item>
+       <item name="android:layout_width">wrap_content</item>
+       <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+    </style>
+
 </resources>
