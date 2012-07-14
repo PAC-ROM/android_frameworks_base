@@ -4161,5 +4161,7 @@
     <string name="symbol_picker_lt">\u2264\u00ab\u2039</string>
     <string name="symbol_picker_gt">\u2265\u00bb\u203a</string>
 
-    <!-- **** CYANOGENMOD ADDITIONS END **** -->
+    <!-- stylus gestures support -->
+    <string name="stylus_app_not_installed">%s is not installed</string>
+
 </resources>
