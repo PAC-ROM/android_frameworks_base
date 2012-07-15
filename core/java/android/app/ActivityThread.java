@@ -1582,12 +1582,14 @@ public final class ActivityThread {
         //}
 
         AssetManager assets = new AssetManager();
+        assets.paranoidOverrideAndExclude(resDir);
         if (assets.addAssetPath(resDir) == 0) {
             return null;
         }
 
         //Slog.i(TAG, "Resource: key=" + key + ", display metrics=" + metrics);
         DisplayMetrics metrics = getDisplayMetricsLocked(null, false);
+        metrics.paranoidOverride(assets);
         r = new Resources(assets, metrics, getConfiguration(), compInfo);
         if (false) {
             Slog.i(TAG, "Created app resources " + resDir + " " + r + ": "
@@ -4698,6 +4700,7 @@ public final class ActivityThread {
         HardwareRenderer.disable(true);
         ActivityThread thread = new ActivityThread();
         thread.attach(true);
+        ContextImpl.paranoidInit(thread);
         return thread;
     }
 
@@ -4734,6 +4737,7 @@ public final class ActivityThread {
 
         ActivityThread thread = new ActivityThread();
         thread.attach(false);
+        ContextImpl.paranoidInit(thread);
 
         AsyncTask.init();
 

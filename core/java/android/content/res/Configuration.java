@@ -16,6 +16,7 @@
 
 package android.content.res;
 
+import android.util.ExtendedPropertiesUtils;
 import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -34,7 +35,7 @@ import java.util.Locale;
  * with {@link android.app.Activity#getResources}:</p>
  * <pre>Configuration config = getResources().getConfiguration();</pre>
  */
-public final class Configuration implements Parcelable, Comparable<Configuration> {
+public final class Configuration extends ExtendedPropertiesUtils implements Parcelable, Comparable<Configuration> {
     /**
      * Current user preference for the scaling factor for fonts, relative
      * to the base density scaling.
@@ -417,6 +418,19 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * @hide Internal book-keeping.
      */
     public int seq;
+
+    // PARANOID
+    public boolean active = false;
+    public void paranoidHook() {        
+        if (active) {            
+            if (paranoidGetMode() != 0) {                    
+                screenWidthDp = paranoidGetScreenWidthDp();
+                screenHeightDp = paranoidGetScreenHeightDp();                    
+                screenLayout = paranoidGetScreenLayout();
+                smallestScreenWidthDp = Math.min(screenWidthDp, screenHeightDp);
+            }
+        }
+    }
     
     /**
      * Construct an invalid Configuration.  You must call {@link #setToDefaults}
@@ -458,6 +472,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         compatScreenHeightDp = o.compatScreenHeightDp;
         compatSmallestScreenWidthDp = o.compatSmallestScreenWidthDp;
         seq = o.seq;
+        paranoidHook();
     }
     
     public String toString() {
