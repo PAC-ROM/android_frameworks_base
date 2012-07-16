@@ -2682,6 +2682,12 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_EXCLUDED_APPS = "active_display_excluded_apps";
 
         /**
+         * Stores values for custom lockscreen targets
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
