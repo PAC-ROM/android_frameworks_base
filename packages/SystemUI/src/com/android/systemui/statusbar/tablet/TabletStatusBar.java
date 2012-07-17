@@ -49,6 +49,8 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -57,6 +59,7 @@ import android.view.WindowManagerImpl;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -156,6 +159,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     int mNotificationPeekTapDuration;
     int mNotificationFlingVelocity;
+    boolean mButtonBusy= true;
 
     BatteryController mBatteryController;
     BluetoothController mBluetoothController;
@@ -427,15 +431,19 @@ public class TabletStatusBar extends BaseStatusBar implements
                      mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             mBackButton.setLayoutParams(lp);
             mHomeButton.setLayoutParams(lp);
-            mRecentButton.setLayoutParams(lp);
+
+            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                     mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            mRecentButton.setLayoutParams(rlp);
         }
 
         if (mNavigationArea != null && newMenuNavIconWidth != mMenuNavIconWidth) {
             mMenuNavIconWidth = newMenuNavIconWidth;
 
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                      mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            mMenuButton.setLayoutParams(lp);
+            mMenuButton.setLayoutParams(rlp);
         }
 
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
@@ -456,7 +464,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     public View getStatusBarView() {
         return mStatusBarView;
     }
-
+ 
     protected View makeStatusBarView() {
         final Context context = mContext;
 
@@ -523,7 +531,17 @@ public class TabletStatusBar extends BaseStatusBar implements
         mHomeButton = mNavigationArea.findViewById(R.id.home);
         mMenuButton = mNavigationArea.findViewById(R.id.menu);
         mRecentButton = mNavigationArea.findViewById(R.id.recent_apps);
-        mRecentButton.setOnClickListener(mOnClickListener);
+
+        //PARANOID
+        mRecentButton.setOnLongClickListener(new OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                try { 
+                    Runtime.getRuntime().exec("input keyevent 82"); 
+                } catch (Exception ex) { }
+                mButtonBusy = false;                        
+                return true;        
+            }
+        });
 
         LayoutTransition lt = new LayoutTransition();
         lt.setDuration(250);
@@ -1241,9 +1259,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            if (v == mRecentButton) {
-                onClickRecentButton();
-            } else if (v == mInputMethodSwitchButton) {
+            if (v == mInputMethodSwitchButton) {
                 onClickInputMethodSwitchButton();
             } else if (v == mCompatModeButton) {
                 onClickCompatModeButton();
