@@ -543,6 +543,22 @@ public class TabletStatusBar extends BaseStatusBar implements
             }
         });
 
+        mRecentButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (DEBUG) 
+                    Slog.d(TAG, "clicked recent apps; disabled=" + mDisabled);
+                if(mButtonBusy){
+                    if ((mDisabled & StatusBarManager.DISABLE_EXPAND) == 0) {
+                        int msg = (mRecentsPanel.getVisibility() == View.VISIBLE)
+                            ? MSG_CLOSE_RECENTS_PANEL : MSG_OPEN_RECENTS_PANEL;
+                        mHandler.removeMessages(msg);
+                        mHandler.sendEmptyMessage(msg);
+                    }
+                } else
+                    mButtonBusy = true;
+            } 
+        });
+
         LayoutTransition lt = new LayoutTransition();
         lt.setDuration(250);
         // don't wait for these transitions; we just want icons to fade in/out, not move around
