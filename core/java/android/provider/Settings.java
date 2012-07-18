@@ -2461,6 +2461,13 @@ public final class Settings {
         public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
 
         /**
+         * Statusbar State
+         * @hide
+         */
+        public static final String STATUSBAR_STATE = "statusbar_state";
+
+
+        /**
          * Whether to use a separate delay for "slide to unlock" and security
          * lock
          * @hide
