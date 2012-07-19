@@ -66,6 +66,7 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_sysbar_home"
                     systemui:keyCode="3"
+                    systemui:keyRepeat="false"
                     android:contentDescription="@string/accessibility_home"
                     systemui:glowBackground="@drawable/ic_sysbar_highlight"
                     />
