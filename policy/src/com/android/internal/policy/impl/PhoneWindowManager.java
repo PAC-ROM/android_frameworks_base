@@ -321,6 +321,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mNavigationBarOnBottom = true; // is the navigation bar on the bottom *right now*?
     int[] mNavigationBarHeightForRotation = new int[4];
     int[] mNavigationBarWidthForRotation = new int[4];
+    int[] mTempNavigationBarHeightForRotation = new int[4];
+    int[] mTempNavigationBarWidthForRotation = new int[4];
 
     WindowState mKeyguard = null;
     KeyguardViewMediator mKeyguardMediator;
@@ -1116,6 +1118,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 Math.round((float)mContext.getResources().getDimensionPixelSize(
                         com.android.internal.R.dimen.navigation_bar_width) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
 
+        mTempNavigationBarHeightForRotation[mPortraitRotation] = mNavigationBarHeightForRotation[mPortraitRotation];
+        mTempNavigationBarHeightForRotation[mUpsideDownRotation] = mNavigationBarHeightForRotation[mUpsideDownRotation];
+        mTempNavigationBarHeightForRotation[mLandscapeRotation] = mNavigationBarHeightForRotation[mLandscapeRotation];
+        mTempNavigationBarHeightForRotation[mSeascapeRotation] = mNavigationBarHeightForRotation[mSeascapeRotation];
+        mTempNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mPortraitRotation];
+        mTempNavigationBarWidthForRotation[mUpsideDownRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation];
+        mTempNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mLandscapeRotation];
+        mTempNavigationBarWidthForRotation[mSeascapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation];
+
         // SystemUI (status bar) layout policy
         int shortSizeDp = shortSize
                 * DisplayMetrics.DENSITY_DEFAULT
@@ -1196,8 +1207,29 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_STATE, 0) != 1;
+            mHasNavigationBar = mCanHideNavigationBar && Settings.System.getInt(
+                mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1;
+
+            if (mHasNavigationBar) {
+                mNavigationBarHeightForRotation[mPortraitRotation] = mTempNavigationBarHeightForRotation[mPortraitRotation];
+                mNavigationBarHeightForRotation[mUpsideDownRotation] = mTempNavigationBarHeightForRotation[mUpsideDownRotation];
+                mNavigationBarHeightForRotation[mLandscapeRotation] = mTempNavigationBarHeightForRotation[mLandscapeRotation];
+                mNavigationBarHeightForRotation[mSeascapeRotation] = mTempNavigationBarHeightForRotation[mSeascapeRotation];
+                mNavigationBarWidthForRotation[mPortraitRotation] = mTempNavigationBarWidthForRotation[mPortraitRotation];
+                mNavigationBarWidthForRotation[mUpsideDownRotation] = mTempNavigationBarWidthForRotation[mUpsideDownRotation];
+                mNavigationBarWidthForRotation[mLandscapeRotation] = mTempNavigationBarWidthForRotation[mLandscapeRotation];
+                mNavigationBarWidthForRotation[mSeascapeRotation] = mTempNavigationBarWidthForRotation[mSeascapeRotation];
+            }
+            else {
+                mNavigationBarHeightForRotation[mPortraitRotation] = 0;
+                mNavigationBarHeightForRotation[mUpsideDownRotation] = 0;
+                mNavigationBarHeightForRotation[mLandscapeRotation] = 0;
+                mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+                mNavigationBarWidthForRotation[mPortraitRotation] = 0;
+                mNavigationBarWidthForRotation[mUpsideDownRotation] = 0;
+                mNavigationBarWidthForRotation[mLandscapeRotation] = 0;
+                mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
+            }
 
             // Configure rotation lock.
             int userRotation = Settings.System.getInt(resolver,
