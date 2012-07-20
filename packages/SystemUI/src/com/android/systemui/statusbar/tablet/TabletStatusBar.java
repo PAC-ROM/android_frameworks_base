@@ -23,6 +23,7 @@ import android.app.ActivityManagerNative;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
+import android.database.ContentObserver;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -36,6 +37,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.inputmethodservice.InputMethodService;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
@@ -257,9 +259,29 @@ public class TabletStatusBar extends BaseStatusBar implements
         WindowManagerImpl.getDefault().addView(sb, lp);
     }
 
+    private Handler mConfigHandler;
+    private final class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.MAX_NOTIFICATION_ICONS), false, this);
+        }
+
+        @Override public void onChange(boolean selfChange) {
+            onConfigurationChanged(null);
+        }
+    }
+
     protected void addPanelWindows() {
         final Context context = mContext;
         final Resources res = mContext.getResources();
+
+        SettingsObserver settingsObserver = new SettingsObserver(mConfigHandler);
+        settingsObserver.observe();
 
         // Notification Panel
         mNotificationPanel = (NotificationPanel)View.inflate(context,
@@ -458,7 +480,10 @@ public class TabletStatusBar extends BaseStatusBar implements
             reloadAllNotificationIcons(); // reload the tray
         }
 
-        final int numIcons = res.getInteger(R.integer.config_maxNotificationIcons);
+        int numOriginalIcons = res.getInteger(R.integer.config_maxNotificationIcons);
+        final int numIcons = numOriginalIcons == 2 ? Settings.System.getInt(mContext.getContentResolver(), 
+            Settings.System.MAX_NOTIFICATION_ICONS, 2 ) : numOriginalIcons;
+        
         if (numIcons != mMaxNotificationIcons) {
             mMaxNotificationIcons = numIcons;
             if (DEBUG) Slog.d(TAG, "max notification icons: " + mMaxNotificationIcons);

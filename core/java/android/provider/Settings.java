@@ -2394,6 +2394,12 @@ public final class Settings {
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
 
         /**
+        * Number of notification symbols
+        * @hide
+        */
+        public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
+
+        /**
          * Display style of AM/PM next to clock in status bar
          * 0: Normal display (Eclair stock)
          * 1: Small display (Froyo stock)

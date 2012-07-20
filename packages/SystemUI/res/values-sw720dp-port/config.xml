@@ -7,7 +7,7 @@
 ** you may not use this file except in compliance with the License.
 ** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0
+** http://www.apache.org/licenses/LICENSE-2.0
 **
 ** Unless required by applicable law or agreed to in writing, software
 ** distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,16 +18,7 @@
 -->
 
 <!-- These resources are around just to allow their values to be customized
-     for different hardware and product builds. -->
+for different hardware and product builds. -->
 <resources>
-    <integer name="config_maxNotificationIcons">5</integer>
-
-    <!-- Whether we're using the tablet-optimized recents interface (we use this
-     value at runtime for some things) -->
-    <bool name="config_recents_interface_for_tablets">true</bool>
-
-    <!-- Whether recents thumbnails should stretch in both x and y to fill their
-     ImageView -->
-    <bool name="config_recents_thumbnail_image_fits_to_xy">true</bool>
+    <integer name="config_maxNotificationIcons">2</integer>
 </resources>
-
