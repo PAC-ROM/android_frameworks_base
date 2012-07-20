@@ -272,7 +272,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
 
         @Override public void onChange(boolean selfChange) {
-            onConfigurationChanged(null);
+            try { Runtime.getRuntime().exec("killall com.android.systemui"); } catch (Exception ex) { }
         }
     }
 
@@ -474,7 +474,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
 
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
-//            Slog.d(TAG, "size=" + newIconSize + " padding=" + newIconHPadding);
+            Slog.d(TAG, "size=" + newIconSize + " padding=" + newIconHPadding);
             mIconHPadding = newIconHPadding;
             mIconSize = newIconSize;
             reloadAllNotificationIcons(); // reload the tray
