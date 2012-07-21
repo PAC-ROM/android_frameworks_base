@@ -1116,4 +1116,9 @@
     <!-- empty string to disable, or like: /sys/kernel/fast_charge/force_fast_charge
          it is disabled by default so devices need to add an overlay to enable-->
     <string name="config_fastChargePath" translatable="false"></string>
+
+    <!-- Timeout in MS for how long you have to long-press the back key to
+         kill the foreground app. -->
+    <integer name="config_backKillTimeout">750</integer>
+
 </resources>

@@ -2033,4 +2033,7 @@
   <java-symbol type="string" name="vibration_picker_del_title"/>
   <java-symbol type="layout" name="vibration_picker_dialog"/>
 
+  <!-- Kill App -->
+  <java-symbol type="string" name="app_killed_message" />
+  <java-symbol type="integer" name="config_backKillTimeout" />
 </resources>
