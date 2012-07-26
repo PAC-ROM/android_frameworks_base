@@ -299,6 +299,30 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    class mNavBarObserver extends ContentObserver {
+        mNavBarObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+                if(Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1){
+                    removeNavigationBar();
+                    mNavigationBarView = (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
+                    mNavigationBarView.setDisabledFlags(mDisabled);
+                    addNavigationBar();
+                }
+                repositionNavigationBar();
+                
+        }
+    }
+
     private int mNavigationIconHints = 0;
     private final Animator.AnimatorListener mMakeIconsInvisible = new AnimatorListenerAdapter() {
         @Override
@@ -385,6 +409,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
+
+        mNavBarObserver softkeys = new mNavBarObserver(mHandler);
+        softkeys.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
@@ -741,6 +768,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         WindowManagerImpl.getDefault().addView(
                 mNavigationBarView, getNavigationBarLayoutParams());
     }
+
+    private void removeNavigationBar() {
+        if(mNavigationBarView != null){
+            WindowManagerImpl.getDefault().removeView(mNavigationBarView);
+        }
+    }                   
+
 
     private void repositionNavigationBar() {
         if (mNavigationBarView == null) return;
@@ -2463,9 +2497,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         copyNotifications(notifications, mNotificationData);
         mNotificationData.clear();
 
-        if (mNavigationBarView != null) {
-            WindowManagerImpl.getDefault().removeView(mNavigationBarView);
-        }
+        removeNavigationBar();
         makeStatusBarView();
         addNavigationBar();
 

@@ -82,7 +82,7 @@ public class ExtendedPropertiesUtils {
 
     // TODO: Port to native code
     public static void getTabletModeStatus(){
-        mIsTablet = Integer.parseInt(getProperty("com.android.systemui.mode")) > 1;
+        mIsTablet = Integer.parseInt(getProperty("com.android.systemui.mode")) == 3;
     }
 
     // SET UP HOOK BY READING OUT PAD.PROP

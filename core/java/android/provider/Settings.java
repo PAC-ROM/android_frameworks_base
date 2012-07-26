@@ -2406,6 +2406,12 @@ public final class Settings {
         public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
 
         /**
+         * Navigation bar, whether to show or hide
+         * @hide
+         */
+        public static final String NAV_BAR_STATUS = "NAV_BAR_STATUS";
+
+        /**
          * Display style of AM/PM next to clock in status bar
          * 0: Normal display (Eclair stock)
          * 1: Small display (Froyo stock)

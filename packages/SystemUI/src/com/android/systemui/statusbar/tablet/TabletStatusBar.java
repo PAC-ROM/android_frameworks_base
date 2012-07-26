@@ -275,11 +275,14 @@ public class TabletStatusBar extends BaseStatusBar implements
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            loadDimens();
             recreateStatusBar();
         }
     }
