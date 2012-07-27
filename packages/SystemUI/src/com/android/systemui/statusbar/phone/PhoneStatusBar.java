@@ -774,6 +774,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             WindowManagerImpl.getDefault().removeView(mNavigationBarView);
         } catch (IllegalStateException e){
             // We won't remove view, we're just refreshing
+        } catch (IllegalArgumentException e){
+            // First time inflate
         }
     }
 
