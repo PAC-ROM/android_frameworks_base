@@ -313,7 +313,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         @Override
         public void onChange(boolean selfChange) {
-                recreateStatusBar();               
+            if(mNavigationBarView == null)
+                addNavigationBar();
+            recreateStatusBar();               
         }
     }
 
