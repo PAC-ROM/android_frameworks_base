@@ -1892,6 +1892,9 @@ public class Resources extends ExtendedPropertiesUtils {
         }
     }
 
+    /**
+     * @hide
+     */
     public final void updateStringCache() {
         synchronized (mTmpValue) {
             mAssets.recreateStringBlocks();
