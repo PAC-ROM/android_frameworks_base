@@ -69,6 +69,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
+import android.view.WindowManager.BadTokenException;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -312,14 +313,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         @Override
         public void onChange(boolean selfChange) {
-                if(Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1){
-                    removeNavigationBar();
-                    mNavigationBarView = (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
-                    mNavigationBarView.setDisabledFlags(mDisabled);
-                    addNavigationBar();
-                }
-                repositionNavigationBar();
-                
+                recreateStatusBar();               
         }
     }
 
@@ -410,8 +404,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
 
-        mNavBarObserver softkeys = new mNavBarObserver(mHandler);
-        softkeys.observe();
+        mNavBarObserver navbar = new mNavBarObserver(mHandler);
+        navbar.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
@@ -765,15 +759,21 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         prepareNavigationBarView();
 
-        WindowManagerImpl.getDefault().addView(
-                mNavigationBarView, getNavigationBarLayoutParams());
+        try{
+            WindowManagerImpl.getDefault().addView(
+                    mNavigationBarView, getNavigationBarLayoutParams());
+        } catch(BadTokenException bte){
+            // Our view is already added
+        }
     }
 
     private void removeNavigationBar() {
-        if(mNavigationBarView != null){
+        try{
             WindowManagerImpl.getDefault().removeView(mNavigationBarView);
+        } catch (IllegalStateException e){
+            // We won't remove view, we're just refreshing
         }
-    }                   
+    }
 
 
     private void repositionNavigationBar() {

@@ -267,6 +267,9 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     private Handler mConfigHandler;
+
+    private boolean mUseTabletSoftKeys = false;
+
     private final class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -296,6 +299,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         final Context context = mContext;
         final Resources res = mContext.getResources();
 
+        mConfigHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mConfigHandler);
         settingsObserver.observe();
 
@@ -545,7 +549,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         int numOriginalIcons = res.getInteger(R.integer.config_maxNotificationIcons);
         final int numIcons = numOriginalIcons == 2 ? Settings.System.getInt(mContext.getContentResolver(), 
-            Settings.System.MAX_NOTIFICATION_ICONS, 2 ) : numOriginalIcons;
+            Settings.System.MAX_NOTIFICATION_ICONS, 2) : numOriginalIcons;
         
         if (numIcons != mMaxNotificationIcons) {
             mMaxNotificationIcons = numIcons;
@@ -641,7 +645,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mMenuButton = mNavigationArea.findViewById(R.id.menu);
         mRecentButton = mNavigationArea.findViewById(R.id.recent_apps);
 
-        //PARANOID
         mRecentButton.setOnLongClickListener(new OnLongClickListener() {
             public boolean onLongClick(View v) {
                 try { 
@@ -651,6 +654,9 @@ public class TabletStatusBar extends BaseStatusBar implements
                 return true;        
             }
         });
+
+        mUseTabletSoftKeys = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1;
+        mNavigationArea.setVisibility(mUseTabletSoftKeys ? View.VISIBLE : View.GONE);
 
         mRecentButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {

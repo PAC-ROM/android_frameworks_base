@@ -605,6 +605,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.SCREENSAVER_ENABLED), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_STATE), false, this);
             if (SEPARATE_TIMEOUT_FOR_SCREEN_SAVER) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
@@ -1135,9 +1137,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mExternalDisplayWidth = mDisplay.getRawExternalWidth();
         mExternalDisplayHeight = mDisplay.getRawExternalHeight();
 
-        int sysMode = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.mode", "0"));
-
         updateDimensions();
+
+        int sysMode = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.mode", "0"));
 
         // SystemUI (status bar) layout policy
         int shortSizeDp = shortSize
@@ -1157,6 +1159,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // 720dp: "tablet" UI with a single combined status & navigation bar
             mHasSystemNavBar = true;
             mNavigationBarCanMove = false;
+        }
+
+        if (!mHasSystemNavBar) {
+            // Allow a system property to override this. Used by the emulator.
+            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
+            if (! "".equals(navBarOverride)) {
+                if      (navBarOverride.equals("1")) mHasNavigationBar = false;
+                else if (navBarOverride.equals("0")) mHasNavigationBar = true;
+            }
+        } else {
+            mHasNavigationBar = false;
         }
 
         if (mHasSystemNavBar) {
@@ -1240,30 +1253,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && mCanHideNavigationBar && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1;
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && !mHasSystemNavBar && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1;
 
             updateDimensions();
-
-            if (mHasNavigationBar) {
-                mNavigationBarHeightForRotation[mPortraitRotation] = mTempNavigationBarHeightForRotation[mPortraitRotation];
-                mNavigationBarHeightForRotation[mUpsideDownRotation] = mTempNavigationBarHeightForRotation[mUpsideDownRotation];
-                mNavigationBarHeightForRotation[mLandscapeRotation] = mTempNavigationBarHeightForRotation[mLandscapeRotation];
-                mNavigationBarHeightForRotation[mSeascapeRotation] = mTempNavigationBarHeightForRotation[mSeascapeRotation];
-                mNavigationBarWidthForRotation[mPortraitRotation] = mTempNavigationBarWidthForRotation[mPortraitRotation];
-                mNavigationBarWidthForRotation[mUpsideDownRotation] = mTempNavigationBarWidthForRotation[mUpsideDownRotation];
-                mNavigationBarWidthForRotation[mLandscapeRotation] = mTempNavigationBarWidthForRotation[mLandscapeRotation];
-                mNavigationBarWidthForRotation[mSeascapeRotation] = mTempNavigationBarWidthForRotation[mSeascapeRotation];
-            }
-            else {
-                mNavigationBarHeightForRotation[mPortraitRotation] = 0;
-                mNavigationBarHeightForRotation[mUpsideDownRotation] = 0;
-                mNavigationBarHeightForRotation[mLandscapeRotation] = 0;
-                mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
-                mNavigationBarWidthForRotation[mPortraitRotation] = 0;
-                mNavigationBarWidthForRotation[mUpsideDownRotation] = 0;
-                mNavigationBarWidthForRotation[mLandscapeRotation] = 0;
-                mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
-            }
 
             // Configure rotation lock.
             int userRotation = Settings.System.getInt(resolver,
