@@ -615,6 +615,12 @@ public class NotificationManagerService extends INotificationManager.Stub
                     Settings.System.NOTIFICATION_LIGHT_PULSE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SOUND_LIMITER_THRESHOLD), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_OFF), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_ON), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_COLOR), false, this);
             update();
         }
 
@@ -711,12 +717,22 @@ public class NotificationManagerService extends INotificationManager.Stub
         mAttentionLight = lights.getLight(LightsService.LIGHT_ID_ATTENTION);
 
         Resources resources = mContext.getResources();
-        mDefaultNotificationColor = resources.getColor(
-                com.android.internal.R.color.config_defaultNotificationColor);
-        mDefaultNotificationLedOn = resources.getInteger(
-                com.android.internal.R.integer.config_defaultNotificationLedOn);
-        mDefaultNotificationLedOff = resources.getInteger(
-                com.android.internal.R.integer.config_defaultNotificationLedOff);
+        mDefaultNotificationColor = Settings.System
+                .getInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_LIGHT_COLOR,
+                        resources.getColor(
+                                com.android.internal.R.color.config_defaultNotificationColor));
+        
+        mDefaultNotificationLedOff = Settings.System
+                .getInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_LIGHT_OFF,
+                        resources.getInteger(com.android.internal.R.integer.config_defaultNotificationLedOff));
+
+        mDefaultNotificationLedOn = Settings.System
+                .getInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_LIGHT_ON,
+                        resources
+                                .getInteger(com.android.internal.R.integer.config_defaultNotificationLedOn));
 
         mDefaultVibrationPattern = getLongArray(resources,
                 com.android.internal.R.array.config_defaultNotificationVibePattern,
