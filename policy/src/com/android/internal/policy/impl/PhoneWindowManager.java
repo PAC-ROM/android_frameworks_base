@@ -3111,38 +3111,29 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Log.d(TAG, "attr: " + mTopFullscreenOpaqueWindowState.getAttrs()
                             + " lp.flags=0x" + Integer.toHexString(lp.flags));
                 }
-                topIsFullscreen = (lp.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+                topIsFullscreen = (lp.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0
+                        || (mLastSystemUiFlags & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0;
                 // The subtle difference between the window for mTopFullscreenOpaqueWindowState
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
                 if (topIsFullscreen || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1) {
-                    if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1 ||
-                        (((mFocusedWindow != null) && (mFocusedWindow.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 1) &&
-                         (Settings.System.getInt(mContext.getContentResolver(),
-                                                 Settings.System.COMBINED_BAR_AUTO_HIDE, 0) == 1))) {
-                        if (DEBUG_LAYOUT) Log.v(TAG, "Hiding status bar");
-                        if (mStatusBar.hideLw(true)) {
-                            changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                    if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
+                    if (mStatusBar.hideLw(true)) {
+                        changes |= FINISH_LAYOUT_REDO_LAYOUT;
 
-                            mHandler.post(new Runnable() { public void run() {
-                                try {
-                                    IStatusBarService statusbar = getStatusBarService();
-                                    if (statusbar != null) 
-                                        statusbar.collapse();
-                                } catch (RemoteException ex) {
-                                    // re-acquire status bar service next time it is needed.
-                                    mStatusBarService = null;
+                        mHandler.post(new Runnable() { public void run() {
+                            try {
+                                IStatusBarService statusbar = getStatusBarService();
+                                if (statusbar != null) {
+                                    statusbar.collapse();
                                 }
-                            }});
-                        }
-                    }
-                    else if (((mFocusedWindow != null) && (mFocusedWindow.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 0) &&
-                             (Settings.System.getInt(mContext.getContentResolver(),
-                                                     Settings.System.COMBINED_BAR_AUTO_HIDE, 0) == 1)) {
-                        if (mStatusBar.showLw(true)) changes |= FINISH_LAYOUT_REDO_LAYOUT;
-                    }
-                    else if (DEBUG_LAYOUT) {
+                            } catch (RemoteException ex) {
+                                // re-acquire status bar service next time it is needed.
+                                mStatusBarService = null;
+                            }
+                        }});
+                    } else if (DEBUG_LAYOUT) {
                         Log.v(TAG, "Preventing status bar from hiding by policy");
                     }
                 } else {
@@ -3188,7 +3179,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        if ((updateSystemUiVisibilityLw()&View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0) {
+        if ((updateSystemUiVisibilityLw()&SYSTEM_UI_CHANGING_LAYOUT) != 0) {
             // If the navigation bar has been hidden or shown, we need to do another
             // layout pass to update that window.
             changes |= FINISH_LAYOUT_REDO_LAYOUT;
