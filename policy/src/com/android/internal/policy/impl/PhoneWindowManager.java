@@ -167,9 +167,9 @@ import java.util.List;
  */
 public class PhoneWindowManager implements WindowManagerPolicy {
     static final String TAG = "WindowManager";
-    static final boolean DEBUG = !false;
+    static final boolean DEBUG = false;
     static final boolean localLOGV = false;
-    static final boolean DEBUG_LAYOUT = !false;
+    static final boolean DEBUG_LAYOUT = false;
     static final boolean DEBUG_INPUT = false;
     static final boolean DEBUG_STARTING_WINDOW = false;
     static final boolean SHOW_STARTING_ANIMATIONS = true;
