@@ -221,11 +221,12 @@
         >
 
         <com.android.systemui.statusbar.policy.Clock
-            android:id="@+id/clock"
+            android:id="@+id/clock_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Clock"
+            systemui:showAlways="true"
             />
     
         <com.android.systemui.statusbar.policy.DateView

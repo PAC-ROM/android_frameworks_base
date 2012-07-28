@@ -285,8 +285,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         @Override
         public void onChange(boolean selfChange) {
-            loadDimens();
-            recreateStatusBar();
+            //loadDimens();
+            //recreateStatusBar();
+            try { Runtime.getRuntime().exec("killall com.android.systemui"); } catch (Exception ex) { }
         }
     }
 
