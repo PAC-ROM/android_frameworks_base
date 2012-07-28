@@ -309,11 +309,13 @@ public class PhoneStatusBar extends BaseStatusBar {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_STATE), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            if(mNavigationBarView == null)
+            if(mNavigationBarView == null && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1)
                 addNavigationBar();
             recreateStatusBar();               
         }

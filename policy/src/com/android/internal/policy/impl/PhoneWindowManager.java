@@ -167,9 +167,9 @@ import java.util.List;
  */
 public class PhoneWindowManager implements WindowManagerPolicy {
     static final String TAG = "WindowManager";
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = !false;
     static final boolean localLOGV = false;
-    static final boolean DEBUG_LAYOUT = false;
+    static final boolean DEBUG_LAYOUT = !false;
     static final boolean DEBUG_INPUT = false;
     static final boolean DEBUG_STARTING_WINDOW = false;
     static final boolean SHOW_STARTING_ANIMATIONS = true;
@@ -618,6 +618,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         @Override public void onChange(boolean selfChange) {
             updateSettings();
             updateRotation(false);
+            mForceStatusBar = true;
+            finishAnimationLw();
+            mForceStatusBar = false;
         }
     }
     
@@ -1253,9 +1256,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && !mHasSystemNavBar && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1;
+            boolean mHideStatusBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1;
+
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && !mHasSystemNavBar && !mHideStatusBar;
 
             updateDimensions();
+
+            if(mCanHideNavigationBar && mHideStatusBar)
+                mNavigationBarHeightForRotation[mPortraitRotation] = mNavigationBarHeightForRotation[mUpsideDownRotation] =  mNavigationBarHeightForRotation[mLandscapeRotation] = mNavigationBarHeightForRotation[mSeascapeRotation] = mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] = mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
 
             // Configure rotation lock.
             int userRotation = Settings.System.getInt(resolver,
@@ -3103,29 +3111,38 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Log.d(TAG, "attr: " + mTopFullscreenOpaqueWindowState.getAttrs()
                             + " lp.flags=0x" + Integer.toHexString(lp.flags));
                 }
-                topIsFullscreen = (lp.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0
-                        || (mLastSystemUiFlags & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0;
+                topIsFullscreen = (lp.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
                 // The subtle difference between the window for mTopFullscreenOpaqueWindowState
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
                 if (topIsFullscreen || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1) {
-                    if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
-                    if (mStatusBar.hideLw(true)) {
-                        changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                    if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1 ||
+                        (((mFocusedWindow != null) && (mFocusedWindow.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 1) &&
+                         (Settings.System.getInt(mContext.getContentResolver(),
+                                                 Settings.System.COMBINED_BAR_AUTO_HIDE, 0) == 1))) {
+                        if (DEBUG_LAYOUT) Log.v(TAG, "Hiding status bar");
+                        if (mStatusBar.hideLw(true)) {
+                            changes |= FINISH_LAYOUT_REDO_LAYOUT;
 
-                        mHandler.post(new Runnable() { public void run() {
-                            try {
-                                IStatusBarService statusbar = getStatusBarService();
-                                if (statusbar != null) {
-                                    statusbar.collapse();
+                            mHandler.post(new Runnable() { public void run() {
+                                try {
+                                    IStatusBarService statusbar = getStatusBarService();
+                                    if (statusbar != null) 
+                                        statusbar.collapse();
+                                } catch (RemoteException ex) {
+                                    // re-acquire status bar service next time it is needed.
+                                    mStatusBarService = null;
                                 }
-                            } catch (RemoteException ex) {
-                                // re-acquire status bar service next time it is needed.
-                                mStatusBarService = null;
-                            }
-                        }});
-                    } else if (DEBUG_LAYOUT) {
+                            }});
+                        }
+                    }
+                    else if (((mFocusedWindow != null) && (mFocusedWindow.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 0) &&
+                             (Settings.System.getInt(mContext.getContentResolver(),
+                                                     Settings.System.COMBINED_BAR_AUTO_HIDE, 0) == 1)) {
+                        if (mStatusBar.showLw(true)) changes |= FINISH_LAYOUT_REDO_LAYOUT;
+                    }
+                    else if (DEBUG_LAYOUT) {
                         Log.v(TAG, "Preventing status bar from hiding by policy");
                     }
                 } else {
@@ -3171,7 +3188,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        if ((updateSystemUiVisibilityLw()&SYSTEM_UI_CHANGING_LAYOUT) != 0) {
+        if ((updateSystemUiVisibilityLw()&View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0) {
             // If the navigation bar has been hidden or shown, we need to do another
             // layout pass to update that window.
             changes |= FINISH_LAYOUT_REDO_LAYOUT;
