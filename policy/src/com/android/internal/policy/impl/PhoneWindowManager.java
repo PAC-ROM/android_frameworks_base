@@ -1267,13 +1267,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            boolean mHideStatusBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1;
+            boolean hideStatusBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1;
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && !mHasSystemNavBar && !mHideStatusBar;
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && !mHasSystemNavBar && !hideStatusBar;
 
             updateDimensions();
 
-            if(mCanHideNavigationBar && mHideStatusBar)
+            if(mCanHideNavigationBar && hideStatusBar)
                 mNavigationBarHeightForRotation[mPortraitRotation] = mNavigationBarHeightForRotation[mUpsideDownRotation] =  mNavigationBarHeightForRotation[mLandscapeRotation] = mNavigationBarHeightForRotation[mSeascapeRotation] = mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] = mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
 
             // Configure rotation lock.

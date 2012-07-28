@@ -315,9 +315,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         @Override
         public void onChange(boolean selfChange) {
-            if(mNavigationBarView == null && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1)
+            if(mNavigationBarView == null)
                 addNavigationBar();
-            recreateStatusBar();               
+            recreateStatusBar();
         }
     }
 
@@ -764,10 +764,14 @@ public class PhoneStatusBar extends BaseStatusBar {
         prepareNavigationBarView();
 
         try{
-            WindowManagerImpl.getDefault().addView(
-                    mNavigationBarView, getNavigationBarLayoutParams());
+            boolean showNav = mWindowManager.hasNavigationBar();
+            if(showNav)
+                WindowManagerImpl.getDefault().addView(
+                        mNavigationBarView, getNavigationBarLayoutParams());
         } catch(BadTokenException bte){
             // Our view is already added
+        } catch(RemoteException e){
+            // No window manager, system is dead here
         }
     }
 
