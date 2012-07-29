@@ -545,7 +545,10 @@ public class NotificationManagerService extends INotificationManager.Stub
 
             boolean queryRestart = false;
             boolean packageChanged = false;
-            
+
+            boolean ledScreenOn = Settings.Secure.getInt(
+                mContext.getContentResolver(), Settings.Secure.LED_SCREEN_ON, 0) == 1;
+
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)
                     || action.equals(Intent.ACTION_PACKAGE_RESTARTED)
                     || (packageChanged=action.equals(Intent.ACTION_PACKAGE_CHANGED))
@@ -597,7 +600,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 if (userHandle >= 0) {
                     cancelAllNotificationsInt(null, 0, 0, true, userHandle);
                 }
-            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
+            } else if (action.equals(Intent.ACTION_USER_PRESENT) && !ledScreenOn) {
                 // turn off LED when user passes through lock screen
                 mNotificationLight.turnOff();
             }
@@ -1564,6 +1567,10 @@ public class NotificationManagerService extends INotificationManager.Stub
     // lock on mNotificationList
     private void updateLightsLocked()
     {
+        // Get ROMControl "flash when screen ON" flag
+        boolean ledScreenOn = Settings.Secure.getInt(
+            mContext.getContentResolver(), Settings.Secure.LED_SCREEN_ON, 0) == 1;
+
         // handle notification lights
         if (mLedNotification == null) {
             // get next notification, if any
@@ -1574,7 +1581,8 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
 
         // Don't flash while we are in a call or screen is on
-        if (mLedNotification == null || mInCall || mScreenOn || (inQuietHours() && mQuietHoursDim)) {
+        if (mLedNotification == null || mInCall || (mScreenOn && !ledScreenOn)
+                || (inQuietHours() && mQuietHoursDim)) {
             mNotificationLight.turnOff();
         } else {
             int ledARGB = mLedNotification.notification.ledARGB;
