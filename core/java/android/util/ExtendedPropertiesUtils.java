@@ -50,7 +50,10 @@ public class ExtendedPropertiesUtils {
     }
 
     // STATIC PROPERTIES
-    public static final String PARANOID_PROPIERTIES = "/system/pad.prop";
+    public static final String PARANOID_PROPERTIES = "/system/etc/paranoid/properties.conf";
+    public static final String PARANOID_DIR = "/system/etc/paranoid/";
+    public static final String PARANOID_MAINCONF = "properties.conf";
+    public static final String PARANOID_BACKUPCONF = "backup.conf";
     public static final String PARANOID_PREFIX = "%";
 
     public static ActivityThread mParanoidMainThread = null;
@@ -295,7 +298,7 @@ public class ExtendedPropertiesUtils {
 
     public static void refreshProperties() {
         mPropertyMap.clear();
-        String[] props = readFile(PARANOID_PROPIERTIES).split("\n");
+        String[] props = readFile(PARANOID_PROPERTIES).split("\n");
         for(int i=0; i<props.length; i++) {
             if (!props[i].startsWith("#")) {
                 String[] pair = props[i].split("=");
@@ -321,7 +324,7 @@ public class ExtendedPropertiesUtils {
 		    result = getProperty(result, def);
 		return result;	
             } else {
-                String[] props = readFile(PARANOID_PROPIERTIES).split("\n");
+                String[] props = readFile(PARANOID_PROPERTIES).split("\n");
                 for(int i=0; i<props.length; i++) {
                     if(props[i].contains("=")) {
                         if(props[i].substring(0, props[i].lastIndexOf("=")).equals(prop)) {
