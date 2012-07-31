@@ -285,9 +285,8 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         @Override
         public void onChange(boolean selfChange) {
-            //loadDimens();
-            //recreateStatusBar();
-            try { Runtime.getRuntime().exec("killall com.android.systemui"); } catch (Exception ex) { }
+            loadDimens();
+            recreateStatusBar();
         }
     }
 
@@ -463,27 +462,32 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     private void recreateStatusBar() {
-        mRecreating = true;
-        mStatusBarContainer.removeAllViews();
+        try {
+            Runtime.getRuntime().exec("killall com.android.systemui");
+        } catch (Exception ex) {
+            // Will never happen, but just in case, try CM's way
+            mRecreating = true;
+            mStatusBarContainer.removeAllViews();
 
-        // extract notifications.
-        int nNotifs = mNotificationData.size();
-        ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
-                new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
-        copyNotifications(notifications, mNotificationData);
-        mNotificationData.clear();
+            // extract notifications.
+            int nNotifs = mNotificationData.size();
+            ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
+                    new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
+            copyNotifications(notifications, mNotificationData);
+            mNotificationData.clear();
 
-        mStatusBarContainer.addView(makeStatusBarView());
+            mStatusBarContainer.addView(makeStatusBarView());
 
-        // recreate notifications.
-        for (int i = 0; i < nNotifs; i++) {
-            Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
-            addNotificationViews(notifData.first, notifData.second);
+            // recreate notifications.
+            for (int i = 0; i < nNotifs; i++) {
+                Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
+                addNotificationViews(notifData.first, notifData.second);
+            }
+
+            setAreThereNotifications();
+
+            mRecreating = false;
         }
-
-        setAreThereNotifications();
-
-        mRecreating = false;
     }
 
 
