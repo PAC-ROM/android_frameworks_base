@@ -26,7 +26,7 @@
 #include <utils/misc.h>
 #include <wctype.h>
 
-#define BUILD_PROP "/system/etc/paranoid/properties.conf"
+#define BUILD_PROP "/system/build.prop"
 
 namespace android {
 
