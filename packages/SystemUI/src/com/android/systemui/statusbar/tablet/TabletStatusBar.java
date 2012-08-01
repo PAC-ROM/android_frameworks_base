@@ -460,32 +460,10 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     private void recreateStatusBar() {
-        try {
-            Runtime.getRuntime().exec("killall com.android.systemui");
-        } catch (Exception ex) {
-            // Will never happen, but just in case, try CM's way
-            mRecreating = true;
-            mStatusBarContainer.removeAllViews();
-
-            // extract notifications.
-            int nNotifs = mNotificationData.size();
-            ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
-                    new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
-            copyNotifications(notifications, mNotificationData);
-            mNotificationData.clear();
-
-            mStatusBarContainer.addView(makeStatusBarView());
-
-            // recreate notifications.
-            for (int i = 0; i < nNotifs; i++) {
-                Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
-                addNotificationViews(notifData.first, notifData.second);
-            }
-
-            setAreThereNotifications();
-
-            mRecreating = false;
-        }
+        mRecreating = true;
+        // waiting for a cm fix
+        try {Runtime.getRuntime().exec("killall com.android.systemui");} catch (Exception ex) {}
+        mRecreating = false;       
     }
 
 
