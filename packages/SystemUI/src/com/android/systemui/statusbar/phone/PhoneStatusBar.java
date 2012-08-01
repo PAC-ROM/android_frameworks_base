@@ -69,7 +69,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
-import android.view.WindowManager.BadTokenException;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -300,27 +299,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
-    class mNavBarObserver extends ContentObserver {
-        mNavBarObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_BAR_STATUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_STATE), false, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            if(mNavigationBarView == null)
-                addNavigationBar();
-            recreateStatusBar();
-        }
-    }
-
     private int mNavigationIconHints = 0;
     private final Animator.AnimatorListener mMakeIconsInvisible = new AnimatorListenerAdapter() {
         @Override
@@ -407,9 +385,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
-
-        mNavBarObserver navbar = new mNavBarObserver(mHandler);
-        navbar.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
@@ -763,28 +738,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         prepareNavigationBarView();
 
-        try{
-            boolean showNav = mWindowManager.hasNavigationBar();
-            if(showNav)
-                WindowManagerImpl.getDefault().addView(
-                        mNavigationBarView, getNavigationBarLayoutParams());
-        } catch(BadTokenException bte){
-            // Our view is already added
-        } catch(RemoteException e){
-            // No window manager, system is dead here
-        }
+        WindowManagerImpl.getDefault().addView(
+                mNavigationBarView, getNavigationBarLayoutParams());
     }
-
-    private void removeNavigationBar() {
-        try{
-            WindowManagerImpl.getDefault().removeView(mNavigationBarView);
-        } catch (IllegalStateException e){
-            // We won't remove view, we're just refreshing
-        } catch (IllegalArgumentException e){
-            // First time inflate
-        }
-    }
-
 
     private void repositionNavigationBar() {
         if (mNavigationBarView == null) return;
@@ -2487,53 +2443,51 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     private void recreateStatusBar() {
-        try {
-            Runtime.getRuntime().exec("killall com.android.systemui");
-        } catch (Exception ex) {
-            mRecreating = true;
-            mStatusBarContainer.removeAllViews();
+        mRecreating = true;
+        mStatusBarContainer.removeAllViews();
 
-            // extract icons from the soon-to-be recreated viewgroup.
-            int nIcons = mStatusIcons.getChildCount();
-            ArrayList<StatusBarIcon> icons = new ArrayList<StatusBarIcon>(nIcons);
-            ArrayList<String> iconSlots = new ArrayList<String>(nIcons);
-            for (int i = 0; i < nIcons; i++) {
-                StatusBarIconView iconView = (StatusBarIconView)mStatusIcons.getChildAt(i);
-                icons.add(iconView.getStatusBarIcon());
-                iconSlots.add(iconView.getStatusBarSlot());
-            }
-
-            // extract notifications.
-            int nNotifs = mNotificationData.size();
-            ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
-                    new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
-            copyNotifications(notifications, mNotificationData);
-            mNotificationData.clear();
-
-            removeNavigationBar();
-            makeStatusBarView();
-            addNavigationBar();
-
-            // recreate StatusBarIconViews.
-            for (int i = 0; i < nIcons; i++) {
-                StatusBarIcon icon = icons.get(i);
-                String slot = iconSlots.get(i);
-                addIcon(slot, i, i, icon);
-            }
-
-            // recreate notifications.
-            for (int i = 0; i < nNotifs; i++) {
-                Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
-                addNotificationViews(notifData.first, notifData.second);
-            }
-
-            setAreThereNotifications();
-
-            mStatusBarContainer.addView(mStatusBarWindow);
-
-            updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
-            mRecreating = false;
+        // extract icons from the soon-to-be recreated viewgroup.
+        int nIcons = mStatusIcons.getChildCount();
+        ArrayList<StatusBarIcon> icons = new ArrayList<StatusBarIcon>(nIcons);
+        ArrayList<String> iconSlots = new ArrayList<String>(nIcons);
+        for (int i = 0; i < nIcons; i++) {
+            StatusBarIconView iconView = (StatusBarIconView)mStatusIcons.getChildAt(i);
+            icons.add(iconView.getStatusBarIcon());
+            iconSlots.add(iconView.getStatusBarSlot());
         }
+
+        // extract notifications.
+        int nNotifs = mNotificationData.size();
+        ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
+                new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
+        copyNotifications(notifications, mNotificationData);
+        mNotificationData.clear();
+
+        if (mNavigationBarView != null) {
+            WindowManagerImpl.getDefault().removeView(mNavigationBarView);
+        }
+        makeStatusBarView();
+        addNavigationBar();
+
+        // recreate StatusBarIconViews.
+        for (int i = 0; i < nIcons; i++) {
+            StatusBarIcon icon = icons.get(i);
+            String slot = iconSlots.get(i);
+            addIcon(slot, i, i, icon);
+        }
+
+        // recreate notifications.
+        for (int i = 0; i < nNotifs; i++) {
+            Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
+            addNotificationViews(notifData.first, notifData.second);
+        }
+
+        setAreThereNotifications();
+
+        mStatusBarContainer.addView(mStatusBarWindow);
+
+        updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
+        mRecreating = false;
     }
 
     /**

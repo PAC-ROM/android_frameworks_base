@@ -278,8 +278,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_BAR_STATUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
         }
 
@@ -659,9 +657,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                 return true;        
             }
         });
-
-        mUseTabletSoftKeys = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1;
-        mNavigationArea.setVisibility(mUseTabletSoftKeys ? View.VISIBLE : View.GONE);
 
         mRecentButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
