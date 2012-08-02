@@ -751,21 +751,26 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     @Override
     protected WindowManager.LayoutParams getRecentsLayoutParams(LayoutParams layoutParams) {
+        boolean opaque = false;
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                (int) mContext.getResources().getDimension(R.dimen.status_bar_recents_width),
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                layoutParams.width,
+                layoutParams.height,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                (opaque ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT));
+        if (ActivityManager.isHighEndGfx(mDisplay)) {
+            lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        } else {
+            lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            lp.dimAmount = 0.75f;
+        }
         lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
         lp.setTitle("RecentsPanel");
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
-            | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-
+        | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
         return lp;
     }
 
@@ -796,7 +801,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     protected void updateRecentsPanel() {
-        super.updateRecentsPanel(R.layout.system_bar_recent_panel);
+        super.updateRecentsPanel(R.layout.status_bar_recent_panel);
         mRecentsPanel.setStatusBarView(mStatusBarView);
     }
 
