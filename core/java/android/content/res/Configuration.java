@@ -26,6 +26,7 @@ import android.view.View;
 import android.util.Log;
 import android.os.SystemProperties;
 import android.text.TextUtils;
+import android.graphics.Point;
 
 import java.util.Locale;
 
@@ -448,11 +449,13 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     public boolean active = false;
     public void paranoidHook() {        
         if (active) {            
-            if (paranoidGetMode() != 0) {                    
-                screenWidthDp = paranoidGetScreenWidthDp();
-                screenHeightDp = paranoidGetScreenHeightDp();                    
-                screenLayout = paranoidGetScreenLayout();
-                smallestScreenWidthDp = Math.min(screenWidthDp, screenHeightDp);
+            if (paranoidGetLayout() != 0) {               
+                Point size = new Point();
+                ExtendedPropertiesUtils.mParanoidDisplay.getSize(size);
+                float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
+                screenWidthDp = paranoidGetLayout();
+                screenHeightDp = (int)(screenWidthDp * factor);
+                smallestScreenWidthDp = paranoidGetLayout();
             }
         }
     }

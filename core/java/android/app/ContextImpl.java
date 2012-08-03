@@ -96,6 +96,7 @@ import android.telephony.TelephonyManager;
 import android.content.ClipboardManager;
 import android.util.*;
 import android.view.ContextThemeWrapper;
+import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
@@ -1606,7 +1607,12 @@ class ContextImpl extends Context {
 
                 context.init(info, null, thread);
                 ExtendedPropertiesUtils.mParanoidContext = context;
-                ExtendedPropertiesUtils.getTabletModeStatus();
+                
+                // GET DISPLAY
+                WindowManager mWindowMngr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                ExtendedPropertiesUtils.mParanoidDisplay = mWindowMngr.getDefaultDisplay();
+                if (ExtendedPropertiesUtils.mParanoidDisplay == null) throw new Exception();
+                                            
                 // FETCH PACKAGE MANAGER
                 ExtendedPropertiesUtils.mParanoidPackageManager = 
                     ExtendedPropertiesUtils.mParanoidContext.getPackageManager();
@@ -1618,33 +1624,7 @@ class ContextImpl extends Context {
                 ExtendedPropertiesUtils.mParanoidGlobalHook.Pid = android.os.Process.myPid();
 
                 // INIT CONSTANTS
-                ExtendedPropertiesUtils.mParanoidScreen1Width = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_1_width", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen1Height = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_1_height", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen1Layout = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_1_layout", "0"));
-
-                ExtendedPropertiesUtils.mParanoidScreen2Width = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_2_width", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen2Height = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_2_height", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen2Layout = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_2_layout", "0"));
-
-                ExtendedPropertiesUtils.mParanoidScreen3Width = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_3_width", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen3Height = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_3_height", "0"));
-                ExtendedPropertiesUtils.mParanoidScreen3Layout = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "screen_3_layout", "0"));
-
-                ExtendedPropertiesUtils.mParanoidRomTabletBase = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "rom_tablet_base", "0"));
-                ExtendedPropertiesUtils.mParanoidRomPhoneBase = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "rom_phone_base", "0"));
-                ExtendedPropertiesUtils.mParanoidRomCurrentBase = Integer.parseInt(
-                    ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "rom_current_base", "0"));
+                ExtendedPropertiesUtils.mIsTablet = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout")) >= 720;
                 ExtendedPropertiesUtils.mParanoidRomLcdDensity = SystemProperties.getInt("qemu.sf.lcd_density",
                     SystemProperties.getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
 

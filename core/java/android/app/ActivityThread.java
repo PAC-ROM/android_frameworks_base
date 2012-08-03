@@ -1609,7 +1609,7 @@ public final class ActivityThread {
 
         AssetManager assets = new AssetManager();
         assets.setThemeSupport(compInfo.isThemeable);
-        assets.paranoidOverrideAndExclude(resDir);
+        assets.paranoidOverride(resDir, ExtendedPropertiesUtils.OverrideMode.FullnameExclude);
 
         if (assets.addAssetPath(resDir) == 0) {
             return null;
@@ -1629,7 +1629,7 @@ public final class ActivityThread {
 
         //Slog.i(TAG, "Resource: key=" + key + ", display metrics=" + metrics);
         DisplayMetrics metrics = getDisplayMetricsLocked(null, false);
-        metrics.paranoidOverride(assets);
+        metrics.paranoidOverride(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         r = new Resources(assets, metrics, getConfiguration(), compInfo);
         if (false) {
             Slog.i(TAG, "Created app resources " + resDir + " " + r + ": "
@@ -4069,6 +4069,8 @@ public final class ActivityThread {
     private void handleBindApplication(AppBindData data) {
         mBoundApplication = data;
         mConfiguration = new Configuration(data.config);
+        mConfiguration.active = true;
+        mConfiguration.paranoidOverride(data.processName, ExtendedPropertiesUtils.OverrideMode.PackageName);
         mCompatConfiguration = new Configuration(data.config);
 
         mProfiler = new Profiler();

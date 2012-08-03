@@ -157,14 +157,14 @@ public class Resources extends ExtendedPropertiesUtils {
     // PARANOID
     public void paranoidHook() {
         mConfiguration.active = true;        
-        mConfiguration.paranoidOverride(this);
+        mConfiguration.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         mConfiguration.paranoidHook();
 
         mTmpConfig.active = true;        
-        mTmpConfig.paranoidOverride(this);
+        mTmpConfig.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         mTmpConfig.paranoidHook();
 
-        mMetrics.paranoidOverride(this);
+        mMetrics.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         mMetrics.paranoidHook();
     }
 
@@ -198,7 +198,7 @@ public class Resources extends ExtendedPropertiesUtils {
             Configuration config, CompatibilityInfo compInfo) {
         mAssets = assets;
         mMetrics.setToDefaults();
-        paranoidOverride(assets);
+        paranoidOverride(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         paranoidHook();
         mCompatibilityInfo = compInfo;
         updateConfiguration(config, metrics);
@@ -217,6 +217,7 @@ public class Resources extends ExtendedPropertiesUtils {
             if (ret == null) {
                 ret = new Resources();
                 mSystem = ret;
+                mSystem.paranoidHook();
             }
 
             return ret;

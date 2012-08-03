@@ -24,7 +24,7 @@ import android.content.pm.*;
 import android.app.*;
 import android.content.res.Resources;
 import android.content.res.CompatibilityInfo;
-
+import android.view.Display;
 import java.io.*;
 import java.lang.Math;
 import java.nio.ByteBuffer;
@@ -40,13 +40,14 @@ public class ExtendedPropertiesUtils {
         public ApplicationInfo Info = null;
         public String Name = "";
         public String Path = "";
-        public int Mode = 0;
-        public int ScreenWidthDp = 0;
-        public int ScreenHeightDp = 0;
-        public int ScreenLayout = 0;
         public int Dpi = 0;
+        public int Layout = 0;
         public float ScaledDensity = 0;
         public float Density = 0;
+    }
+
+    public static enum OverrideMode {
+        ExtendedProperties, AppInfo, Fullname, FullnameExclude, PackageName
     }
 
     // STATIC PROPERTIES
@@ -58,64 +59,31 @@ public class ExtendedPropertiesUtils {
 
     public static ActivityThread mParanoidMainThread = null;
     public static Context mParanoidContext = null;
-    public static PackageManager mParanoidPackageManager = null;
+    public static PackageManager mParanoidPackageManager = null;    
+    public static Display mParanoidDisplay = null;
     public static List<PackageInfo> mParanoidPackageList;
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
-
-    public static int mParanoidScreen1Width = 0;
-    public static int mParanoidScreen1Height = 0;
-    public static int mParanoidScreen1Layout = 0;
-    public static int mParanoidScreen2Width = 0;
-    public static int mParanoidScreen2Height = 0;
-    public static int mParanoidScreen2Layout = 0;
-    public static int mParanoidScreen3Width = 0;
-    public static int mParanoidScreen3Height = 0;
-    public static int mParanoidScreen3Layout = 0;
-    public static int mParanoidRomTabletBase = 0;
-    public static int mParanoidRomPhoneBase = 0;
-    public static int mParanoidRomCurrentBase = 0;
-    public static int mParanoidRomLcdDensity = DisplayMetrics.DENSITY_DEFAULT;
 
     public static ParanoidAppInfo mParanoidGlobalHook = new ParanoidAppInfo();
     public ParanoidAppInfo mParanoidLocalHook = new ParanoidAppInfo();
 
     public static boolean mIsTablet;
+    public static int mParanoidRomLcdDensity = DisplayMetrics.DENSITY_DEFAULT;
 
     public static native String readFile(String s);
-
-    // TODO: Port to native code
-    public static void getTabletModeStatus(){
-        mIsTablet = Integer.parseInt(getProperty("com.android.systemui.mode")) == 3;
-    }
 
     // SET UP HOOK BY READING OUT PAD.PROP
     public static void paranoidConfigure(ParanoidAppInfo Info) {
 
         // FETCH DEFAUTS
         boolean isSystemApp = Info.Path.contains("system/app");
-        int DefaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? "system_default_dpi" : "user_default_dpi"), "0"));
-        int DefaultMode = isSystemApp == false ? 
-            Integer.parseInt(getProperty(PARANOID_PREFIX + "user_default_mode", "0")) : 0;
+        int DefaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            "system_default_dpi" : "user_default_dpi"), "0"));
+        int DefaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            "system_default_layout" : "user_default_layout"), "0"));
 
         // CONFIGURE LAYOUT
-        Info.Mode = Integer.parseInt(getProperty(Info.Name + ".mode", String.valueOf(DefaultMode)));
-        switch (Info.Mode) {
-            case 1:  
-                Info.ScreenWidthDp = mParanoidScreen1Width;
-                Info.ScreenHeightDp = mParanoidScreen1Height;
-                Info.ScreenLayout = mParanoidScreen1Layout;
-                break;
-            case 2: 
-                Info.ScreenWidthDp = mParanoidScreen2Width;
-                Info.ScreenHeightDp = mParanoidScreen2Height;
-                Info.ScreenLayout = mParanoidScreen2Layout;
-                break;
-            case 3: 
-                Info.ScreenWidthDp = mParanoidScreen3Width;
-                Info.ScreenHeightDp = mParanoidScreen3Height;
-                Info.ScreenLayout = mParanoidScreen3Layout;
-                break;
-        }
+        Info.Layout = Integer.parseInt(getProperty(Info.Name + ".layout", String.valueOf(DefaultLayout)));
 
         // CONFIGURE DPI
         Info.Dpi = Integer.parseInt(getProperty(Info.Name + ".dpi", String.valueOf(DefaultDpi)));
@@ -134,70 +102,51 @@ public class ExtendedPropertiesUtils {
         Info.Active = true;
     }
 
-    public boolean paranoidOverride(ApplicationInfo Info) {
-        if (paranoidIsInitialized() && Info != null) {
-            mParanoidLocalHook.Pid = android.os.Process.myPid();
-            mParanoidLocalHook.Info = Info;
+    public void paranoidOverride(Object input, OverrideMode mode) {
+        if (paranoidIsInitialized() && input != null ) {
+
+            ApplicationInfo tempInfo;
+            ExtendedPropertiesUtils tempProps;
+
+            switch (mode) {
+                case ExtendedProperties:
+                    tempProps = (ExtendedPropertiesUtils)input;
+                    if (tempProps.mParanoidLocalHook.Active) {
+                        mParanoidLocalHook.Active = tempProps.mParanoidLocalHook.Active;
+                        mParanoidLocalHook.Pid = tempProps.mParanoidLocalHook.Pid;
+                        mParanoidLocalHook.Info = tempProps.mParanoidLocalHook.Info;
+                        mParanoidLocalHook.Name = tempProps.mParanoidLocalHook.Name;
+                        mParanoidLocalHook.Path = tempProps.mParanoidLocalHook.Path;
+                        mParanoidLocalHook.Layout = tempProps.mParanoidLocalHook.Layout;
+                        mParanoidLocalHook.Dpi = tempProps.mParanoidLocalHook.Dpi;
+                        mParanoidLocalHook.ScaledDensity = tempProps.mParanoidLocalHook.ScaledDensity;
+                        mParanoidLocalHook.Density = tempProps.mParanoidLocalHook.Density;                        
+                    }
+                    return;
+                case AppInfo:
+                    mParanoidLocalHook.Info = (ApplicationInfo)input;
+                    break;
+                case Fullname:
+                    mParanoidLocalHook.Info = getAppInfoFromPath((String)input);
+                    break;
+                case FullnameExclude:
+                    tempInfo = getAppInfoFromPath((String)input);
+                    if (tempInfo != null && (!paranoidIsHooked() || getProperty(tempInfo.packageName + ".force", "0").equals("1")))
+                        mParanoidLocalHook.Info = tempInfo;
+                    break;
+                case PackageName:
+                    mParanoidLocalHook.Info = getAppInfoFromPackageName((String)input);
+                    break;
+            }
+
             if (mParanoidLocalHook.Info != null) {
+                mParanoidLocalHook.Pid = android.os.Process.myPid();
                 mParanoidLocalHook.Name = mParanoidLocalHook.Info.packageName;
                 mParanoidLocalHook.Path = mParanoidLocalHook.Info.sourceDir.substring(0, 
                     mParanoidLocalHook.Info.sourceDir.lastIndexOf("/"));
                 paranoidConfigure(mParanoidLocalHook);
-            }
-            return true;
+            }            
         }
-        return false;
-    }
-
-    // COMPONENTS CAN OVERRIDE THEIR PROCESS-HOOK
-    public boolean paranoidOverride(String Fullname) {
-        if (paranoidIsInitialized() && Fullname != null) {
-            mParanoidLocalHook.Pid = android.os.Process.myPid();
-            mParanoidLocalHook.Info = getAppInfoFromPath(Fullname);
-            if (mParanoidLocalHook.Info != null) {
-                mParanoidLocalHook.Name = mParanoidLocalHook.Info.packageName;
-                mParanoidLocalHook.Path = mParanoidLocalHook.Info.sourceDir.substring(0,
-                    mParanoidLocalHook.Info.sourceDir.lastIndexOf("/"));
-                paranoidConfigure(mParanoidLocalHook);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    // COMPONENTS CAN OVERRIDE THEIR PROCESS-HOOK
-    public boolean paranoidOverrideAndExclude(String Fullname) {
-        ApplicationInfo tempInfo = getAppInfoFromPath(Fullname);
-        if (tempInfo != null && (!paranoidIsHooked() || getProperty(tempInfo.packageName + ".force", "0").equals("1"))) {
-            mParanoidLocalHook.Pid = android.os.Process.myPid();
-            mParanoidLocalHook.Info = tempInfo;
-            mParanoidLocalHook.Name = mParanoidLocalHook.Info.packageName;
-            mParanoidLocalHook.Path = mParanoidLocalHook.Info.sourceDir.substring(0,
-                mParanoidLocalHook.Info.sourceDir.lastIndexOf("/"));
-            paranoidConfigure(mParanoidLocalHook);
-            return true;
-        }
-        return false;
-    }
-
-    // COMPONENTS CAN COPY ANOTHER COMPONENTS HOOK
-    public boolean paranoidOverride(ExtendedPropertiesUtils New) {
-        if (paranoidIsInitialized() && New != null && New.mParanoidLocalHook.Active) {
-            mParanoidLocalHook.Active = New.mParanoidLocalHook.Active;
-            mParanoidLocalHook.Pid = New.mParanoidLocalHook.Pid;
-            mParanoidLocalHook.Info = New.mParanoidLocalHook.Info;
-            mParanoidLocalHook.Name = New.mParanoidLocalHook.Name;
-            mParanoidLocalHook.Path = New.mParanoidLocalHook.Path;
-            mParanoidLocalHook.Mode = New.mParanoidLocalHook.Mode;
-            mParanoidLocalHook.ScreenWidthDp = New.mParanoidLocalHook.ScreenWidthDp;
-            mParanoidLocalHook.ScreenHeightDp = New.mParanoidLocalHook.ScreenHeightDp;
-            mParanoidLocalHook.ScreenLayout = New.mParanoidLocalHook.ScreenLayout;
-            mParanoidLocalHook.Dpi = New.mParanoidLocalHook.Dpi;
-            mParanoidLocalHook.ScaledDensity = New.mParanoidLocalHook.ScaledDensity;
-            mParanoidLocalHook.Density = New.mParanoidLocalHook.Density;
-            return true;
-        }
-        return false;
     }
 
     static public boolean paranoidIsInitialized() {
@@ -221,17 +170,8 @@ public class ExtendedPropertiesUtils {
     public String paranoidGetPath() {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.Path : mParanoidGlobalHook.Path;
     }
-    public int paranoidGetMode() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Mode : mParanoidGlobalHook.Mode;
-    }
-    public int paranoidGetScreenWidthDp() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.ScreenWidthDp : mParanoidGlobalHook.ScreenWidthDp;
-    }
-    public int paranoidGetScreenHeightDp() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.ScreenHeightDp : mParanoidGlobalHook.ScreenHeightDp;
-    }
-    public int paranoidGetScreenLayout() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.ScreenLayout : mParanoidGlobalHook.ScreenLayout;
+    public int paranoidGetLayout() {
+        return mParanoidLocalHook.Active ? mParanoidLocalHook.Layout : mParanoidGlobalHook.Layout;
     }
     public int paranoidGetDpi() {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.Dpi : mParanoidGlobalHook.Dpi;
@@ -286,10 +226,10 @@ public class ExtendedPropertiesUtils {
     public void paranoidLog(String Message) {
         Log.i("PARANOID:" + Message, "Init=" + (mParanoidMainThread != null && mParanoidContext != null && 
             mParanoidPackageManager != null) + " App=" + paranoidGetName() + " Dpi=" + paranoidGetDpi() + 
-            " Mode=" + paranoidGetMode());
+            " Layout=" + paranoidGetLayout());
     }
 
-    public void paranoidTrace(String Message) {
+    public static void paranoidTrace(String Message) {
         StringWriter sw = new StringWriter();
         new Throwable("").printStackTrace(new PrintWriter(sw));
         String stackTrace = sw.toString();

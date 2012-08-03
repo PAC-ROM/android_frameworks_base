@@ -1200,7 +1200,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mExternalDisplayWidth = mDisplay.getRawExternalWidth();
         mExternalDisplayHeight = mDisplay.getRawExternalHeight();
 
-        int sysMode = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.mode", "0"));
+        int sysLayout = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout", "0"));
         int sysDpi = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.dpi", "0"));
         if (sysDpi == 0) sysDpi = DisplayMetrics.DENSITY_DEVICE;
 
@@ -1239,15 +1239,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 * DisplayMetrics.DENSITY_DEFAULT
                 / DisplayMetrics.DENSITY_DEVICE;
 
-        if (sysMode <= 1 ) {
+        if (sysLayout < 600 ) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
             mNavigationBarCanMove = true;
-        } else if (sysMode == 2) {
+        } else if (sysLayout < 720) {
             // 600-719dp: "phone" UI with modifications for larger screens
             mHasSystemNavBar = false;
             mNavigationBarCanMove = false;
-        } else if (sysMode == 3 ) {
+        } else if (sysLayout >= 720 ) {
             // 720dp: "tablet" UI with a single combined status & navigation bar
             mHasSystemNavBar = true;
             mNavigationBarCanMove = false;
