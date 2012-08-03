@@ -16,6 +16,10 @@
 -->
 <resources>
 
+  <!-- AOKP easter egg -->
+  <java-symbol type="drawable" name="aokplogo" />
+  <java-symbol type="drawable" name="aokplogo_alt" />
+
   <!-- Boot message dialog -->
   <java-symbol type="drawable" name="busy_dlg_animation" />
   <java-symbol type="drawable" name="busy_dlg_animation_0" />
