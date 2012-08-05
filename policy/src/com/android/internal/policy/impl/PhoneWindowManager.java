@@ -611,10 +611,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     "fancy_rotation_anim"), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES), false, this);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.SCREENSAVER_ENABLED), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_STATE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.SCREENSAVER_ENABLED), false, this);
             if (SEPARATE_TIMEOUT_FOR_SCREEN_SAVER) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
                         "screensaver_timeout"), false, this);
@@ -1239,7 +1241,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 * DisplayMetrics.DENSITY_DEFAULT
                 / DisplayMetrics.DENSITY_DEVICE;
 
-        if (sysLayout < 600 ) {
+        if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
             mNavigationBarCanMove = true;
@@ -1247,15 +1249,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // 600-719dp: "phone" UI with modifications for larger screens
             mHasSystemNavBar = false;
             mNavigationBarCanMove = false;
-        } else if (sysLayout >= 720 ) {
+        } else if (sysLayout >= 720) {
             // 720dp: "tablet" UI with a single combined status & navigation bar
             mHasSystemNavBar = true;
             mNavigationBarCanMove = false;
         }
 
         if (!mHasSystemNavBar) {
-            mHasNavigationBar = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
+            // Override our value with Settings.System
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1;
+
             // Allow a system property to override this. Used by the emulator.
             // See also hasNavigationBar().
             String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
@@ -4038,7 +4041,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         + "); user=" + mUserRotation + " "
                         + ((mUserRotationMode == WindowManagerPolicy.USER_ROTATION_LOCKED)
                             ? "USER_ROTATION_LOCKED" : "")
-                        );
+                       );
         }
 
         synchronized (mLock) {

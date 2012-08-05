@@ -2350,6 +2350,12 @@ public final class Settings {
         public static final String WIDGET_BUTTONS_TABLET = "expanded_widget_buttons_tablet";
 
         /**
+         * Navigation bar, whether to show or hide
+         * @hide
+         */
+        public static final String NAV_BAR_STATUS = "NAV_BAR_STATUS";
+
+        /**
          * Navigation controls to Use
          *
          * @hide
