@@ -1427,6 +1427,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mNavigationBarWidthForRotation[mUpsideDownRotation] = 0;
                 mNavigationBarWidthForRotation[mLandscapeRotation] = 0;
                 mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
+            }
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
