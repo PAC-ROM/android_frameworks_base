@@ -2361,7 +2361,7 @@ public final class Settings {
          * Navigation bar, whether to show or hide
          * @hide
          */
-        public static final String NAV_BAR_STATUS = "NAV_BAR_STATUS";
+        public static final String NAV_BAR_STATUS = "nav_bar_status";
 
         /**
          * Navigation controls to Use
