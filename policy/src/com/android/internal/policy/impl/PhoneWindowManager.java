@@ -1266,14 +1266,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 if      (navBarOverride.equals("1")) mHasNavigationBar = false;
                 else if (navBarOverride.equals("0")) mHasNavigationBar = true;
             }
-            // Override this by possible System Setting
-            int showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW, 0);
-            if (showNavBar == 1 ) {
-                mHasNavigationBar = true;
-            }
-            if (showNavBar == 0) {
-                mHasNavigationBar = false;
-            }
+
         } else {
             mHasNavigationBar = false;
         }
