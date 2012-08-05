@@ -1489,7 +1489,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mLongPressOnAppSwitchBehavior = Settings.System.getInt(resolver,
                             Settings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION, KEY_ACTION_NOTHING);
                 }
->>>>>>> remotes/cm/jellybean
             }
 
             // Configure rotation lock.
