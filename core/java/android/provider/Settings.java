@@ -2167,6 +2167,14 @@ public final class Settings {
         public static final String POINTER_LOCATION = "pointer_location";
 
         /**
+         * Show icon when stylus is used?
+         * 0 = no
+         * 1 = yes
+         * @hide
+         */
+        public static final String STYLUS_ICON_ENABLED = "stylus_icon_enabled";
+
+        /**
          * Show touch positions on screen?
          * 0 = no
          * 1 = yes
@@ -2695,10 +2703,16 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
 
         /**
-         * Show the pending notification counts as overlays on the status bar
+         * Whether System profiles are enabled
          * @hide
          */
         public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
+
+        /**
+         * Whether power menu screenshot is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_SCREENSHOT_ENABLED = "power_menu_screenshot_enabled";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -2780,6 +2794,8 @@ public final class Settings {
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
             LOCKSCREEN_ALWAYS_SHOW_BATTERY,
+            SYSTEM_PROFILES_ENABLED,
+            POWER_MENU_SCREENSHOT_ENABLED,
         };
 
         // Settings moved to Settings.Secure
