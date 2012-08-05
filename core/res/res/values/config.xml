@@ -762,6 +762,9 @@
          If false, Content-disposition fragments are ignored -->
     <bool name="config_mms_content_disposition_support">true</bool>
 
+    <!-- If this value is true, we handle Samsung CDMA's message ID method -->
+    <bool name="config_smsSamsungCdmaAlternateMessageIDEncoding">false</bool>
+
     <!-- National Language Identifier codes for the following two config items.
          (from 3GPP TS 23.038 V9.1.1 Table 6.2.1.2.4.1):
           0  - reserved
@@ -920,5 +923,22 @@
 
     <!-- If true, adds support for no delay A2DP in Samsung devices -->
     <bool name="config_noDelayInATwoDP">false</bool>
+
+    <!-- Hardware 'face' keys present on the device, stored as a bit field.
+         This integer should equal the sum of the corresponding value for each
+         of the following keys present:
+             1 - Home
+             2 - Back
+             4 - Menu
+             8 - Assistant (search)
+            16 - App switch
+         For example, a device with Home, Back and Menu keys would set this
+         config to 7. -->
+    <integer name="config_deviceHardwareKeys">15</integer>
+
+    <!-- If a dock provides a lid switch, that lid can be removed. This
+         setting is used to determine, whether lidOpenRotation has to be
+         applied. -->
+    <bool name="config_hasRemovableLid">false</bool>
 
 </resources>

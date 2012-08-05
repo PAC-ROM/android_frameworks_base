@@ -318,6 +318,8 @@ public class TabletStatusBar extends BaseStatusBar implements
             mDockBatteryController.addIconView((ImageView)mNotificationPanel.findViewById(R.id.dock_battery));
             mDockBatteryController.addLabelView(
                     (TextView)mNotificationPanel.findViewById(R.id.dock_battery_text));
+        } else {
+            mNotificationPanel.findViewById(R.id.dock_battery_text).setVisibility(View.GONE);
         }
 
         // Bt
