@@ -188,10 +188,10 @@ public class ExtendedPropertiesUtils {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.ScaledDensity : mParanoidGlobalHook.ScaledDensity;
     }
     public boolean paranoidGetForce() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1 );
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1;
     }
     public boolean paranoidGetLarge() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1 );
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1;
     }
     public float paranoidGetDensity() {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.Density : mParanoidGlobalHook.Density;
