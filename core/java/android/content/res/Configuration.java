@@ -456,7 +456,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
                 screenWidthDp = paranoidGetLayout();
                 screenHeightDp = (int)(screenWidthDp * factor);
                 smallestScreenWidthDp = paranoidGetLayout();           
-                if (smallestScreenWidthDp >= 600)
+                if (paranoidGetLarge())
                     screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
             }
         }

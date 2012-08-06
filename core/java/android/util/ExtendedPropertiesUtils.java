@@ -42,6 +42,8 @@ public class ExtendedPropertiesUtils {
         public String Path = "";
         public int Dpi = 0;
         public int Layout = 0;
+        public int Force = 0;
+        public int Large = 0;
         public float ScaledDensity = 0;
         public float Density = 0;
     }
@@ -98,6 +100,10 @@ public class ExtendedPropertiesUtils {
 			Info.ScaledDensity = Info.ScaledDensity == 0 ? Info.Dpi / (float) DisplayMetrics.DENSITY_DEFAULT : Info.ScaledDensity;
         }
 
+        // FORCE & LARGE
+        Info.Force = Integer.parseInt(getProperty(Info.Name + ".force", "0");
+        Info.Large = Integer.parseInt(getProperty(Info.Name + ".large", "0");
+
         // FLAG AS READY TO GO
         Info.Active = true;
     }
@@ -119,6 +125,8 @@ public class ExtendedPropertiesUtils {
                         mParanoidLocalHook.Path = tempProps.mParanoidLocalHook.Path;
                         mParanoidLocalHook.Layout = tempProps.mParanoidLocalHook.Layout;
                         mParanoidLocalHook.Dpi = tempProps.mParanoidLocalHook.Dpi;
+                        mParanoidLocalHook.Force = tempProps.mParanoidLocalHook.Force;
+                        mParanoidLocalHook.Large = tempProps.mParanoidLocalHook.Large;
                         mParanoidLocalHook.ScaledDensity = tempProps.mParanoidLocalHook.ScaledDensity;
                         mParanoidLocalHook.Density = tempProps.mParanoidLocalHook.Density;                        
                     }
@@ -178,6 +186,12 @@ public class ExtendedPropertiesUtils {
     }
     public float paranoidGetScaledDensity() { 
         return mParanoidLocalHook.Active ? mParanoidLocalHook.ScaledDensity : mParanoidGlobalHook.ScaledDensity;
+    }
+    public boolean paranoidGetForce() {
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1 ? 1 : 0;
+    }
+    public boolean paranoidGetLarge() {
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1 ? 1 : 0;
     }
     public float paranoidGetDensity() {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.Density : mParanoidGlobalHook.Density;
