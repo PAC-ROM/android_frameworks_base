@@ -455,7 +455,9 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
                 float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
                 screenWidthDp = paranoidGetLayout();
                 screenHeightDp = (int)(screenWidthDp * factor);
-                smallestScreenWidthDp = paranoidGetLayout();
+                smallestScreenWidthDp = paranoidGetLayout();           
+                if (smallestScreenWidthDp >= 600)
+                    screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
             }
         }
     }
