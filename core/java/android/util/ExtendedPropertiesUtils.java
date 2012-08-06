@@ -101,8 +101,8 @@ public class ExtendedPropertiesUtils {
         }
 
         // FORCE & LARGE
-        Info.Force = Integer.parseInt(getProperty(Info.Name + ".force", "0");
-        Info.Large = Integer.parseInt(getProperty(Info.Name + ".large", "0");
+        Info.Force = Integer.parseInt(getProperty(Info.Name + ".force", "0"));
+        Info.Large = Integer.parseInt(getProperty(Info.Name + ".large", "0"));
 
         // FLAG AS READY TO GO
         Info.Active = true;
@@ -188,10 +188,10 @@ public class ExtendedPropertiesUtils {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.ScaledDensity : mParanoidGlobalHook.ScaledDensity;
     }
     public boolean paranoidGetForce() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1 ? 1 : 0;
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1 );
     }
     public boolean paranoidGetLarge() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1 ? 1 : 0;
+        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1 );
     }
     public float paranoidGetDensity() {
         return mParanoidLocalHook.Active ? mParanoidLocalHook.Density : mParanoidGlobalHook.Density;
