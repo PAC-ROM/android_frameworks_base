@@ -243,7 +243,14 @@ public class NavigationBarView extends LinearLayout {
             } else {
                 return;
             }
-            WindowManagerImpl.getDefault().updateViewLayout(this, lp);
+
+            // TODO: This is a  workaround. We must find a way to actually remove navigationBarView 
+            // from WindowManager for avoiding this kind of things
+            try{
+                WindowManagerImpl.getDefault().updateViewLayout(this, lp);
+            } catch (IllegalArgumentException e){
+                // We just recreated view
+            }
         }
     }
 

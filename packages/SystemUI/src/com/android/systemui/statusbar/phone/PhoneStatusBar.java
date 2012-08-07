@@ -80,6 +80,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarNotification;
 
@@ -300,6 +301,25 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    class NavigationBarObserver extends ContentObserver {
+        NavigationBarObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_STATE), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            resetNavigationBar();
+        }
+    }
+
     private int mNavigationIconHints = 0;
     private final Animator.AnimatorListener mMakeIconsInvisible = new AnimatorListenerAdapter() {
         @Override
@@ -387,6 +407,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
 
+        NavigationBarObserver navBarObserver = new NavigationBarObserver(new Handler());
+        navBarObserver.observe();
+
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
     }
@@ -460,7 +483,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         try {
             boolean showNav = mWindowManager.hasNavigationBar();
             if (DEBUG) Slog.v(TAG, "hasNavigationBar=" + showNav);
-            if (showNav) {
+            if (showNav && !mRecreating) {
                 mNavigationBarView =
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
 
@@ -723,6 +746,27 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     };
 
+    private void resetNavigationBar(){
+        // WIP PLEASE DO NOT TOUCH
+        /*boolean showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1;
+        if(mNavigationBarView == null){
+            mNavigationBarView = (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
+
+            mNavigationBarView.setDisabledFlags(mDisabled);
+            mNavigationBarView.setBar(this);
+        }
+
+        try {
+            if(showNavBar)
+                addNavigationBar();
+            else
+                WindowManagerImpl.getDefault().removeView(mNavigationBarView);
+        } catch(IllegalArgumentException e){
+            // Or view is already added, this may be simply because we are
+            // using extended desktop feature
+        }*/
+    }
+
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
 
@@ -739,14 +783,8 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         prepareNavigationBarView();
 
-        try {
-            WindowManagerImpl.getDefault().addView(
-                    mNavigationBarView, getNavigationBarLayoutParams());
-        } catch (BadTokenException bte){
-            try {
-                Runtime.getRuntime().exec("killall com.android.systemui");
-            } catch (Exception ex) {}
-        }
+        WindowManagerImpl.getDefault().addView(
+                mNavigationBarView, getNavigationBarLayoutParams());
     }
 
     private void repositionNavigationBar() {
@@ -2470,11 +2508,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         copyNotifications(notifications, mNotificationData);
         mNotificationData.clear();
 
-        if (mNavigationBarView != null) {
-            WindowManagerImpl.getDefault().removeView(mNavigationBarView);
-        }
         makeStatusBarView();
-        addNavigationBar();
+        repositionNavigationBar();
 
         // recreate StatusBarIconViews.
         for (int i = 0; i < nIcons; i++) {
