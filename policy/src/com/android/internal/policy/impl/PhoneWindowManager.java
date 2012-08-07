@@ -1306,11 +1306,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         int sysLayout = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout", "0"));
 
-        // SystemUI (status bar) layout policy
-        int shortSizeDp = shortSize
-                * DisplayMetrics.DENSITY_DEFAULT
-                / DisplayMetrics.DENSITY_DEVICE;
-
         if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
@@ -1325,21 +1320,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mNavigationBarCanMove = false;
         }
 
-        if (!mHasSystemNavBar) {
-            // Override our value with Settings.System
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1;
-
-            // Allow a system property to override this. Used by the emulator.
-            // See also hasNavigationBar().
-            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
-            if (! "".equals(navBarOverride)) {
-                if      (navBarOverride.equals("1")) mHasNavigationBar = false;
-                else if (navBarOverride.equals("0")) mHasNavigationBar = true;
-            }
-
-        } else {
-            mHasNavigationBar = false;
-        }
+        mHasNavigationBar = !mHasSystemNavBar;
 
         if (mHasSystemNavBar) {
             mCanHideNavigationBar = true;
@@ -4949,10 +4930,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return diff;
     }
 
-    // Use this instead of checking config_showNavigationBar so that it can be consistently
-    // overridden by qemu.hw.mainkeys in the emulator.
+    // Leave navigation bar management to PhoneWindowManager
     public boolean hasNavigationBar() {
-        return mHasNavigationBar;
+        return true;
     }
 
     @Override
