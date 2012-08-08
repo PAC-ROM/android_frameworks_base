@@ -473,6 +473,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
+        // update recents
+        try {updateRecentsPanel();} catch(android.view.InflateException avIE) {}
+
         // detect theme change.
         CustomTheme newTheme = mContext.getResources().getConfiguration().customTheme;
         if (newTheme != null &&
