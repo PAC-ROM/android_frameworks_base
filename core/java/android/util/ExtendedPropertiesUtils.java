@@ -273,7 +273,7 @@ public class ExtendedPropertiesUtils {
             if (paranoidIsInitialized()) {
                 String result = mPropertyMap.get(prop);
                 if (result == null)
-                    return def;
+                    return getFinalResult(def);
                 if (result.startsWith(PARANOID_PREFIX))
 		    result = getProperty(result, def);
 		return result;	
@@ -285,7 +285,7 @@ public class ExtendedPropertiesUtils {
                             String result = props[i].replace(prop+"=", "").trim();  
                             if (result.startsWith(PARANOID_PREFIX))
                                 result = getProperty(result, def);
-                            return result;  
+                            return getFinalResult(result);
                         }
                     }
                 }
@@ -295,5 +295,16 @@ public class ExtendedPropertiesUtils {
             e.printStackTrace();
         }
         return def;
+    }
+
+    public static String getFinalResult(String r){
+        /*try{
+            if(Integer.parseInt(r) == 0)
+                return String.valueOf(SystemProperties.getInt("ro.sf.lcd_density", 0));
+        } catch(NumberFormatException e){
+            // We're dealing with a preset, just return the preset
+            // we will come back here
+        }*/
+        return r;
     }
 }
