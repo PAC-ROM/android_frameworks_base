@@ -46,21 +46,21 @@ public class BluetoothController extends BroadcastReceiver implements CompoundBu
     public BluetoothController(Context context, CompoundButton checkbox) {
         this(context);
 
-	    mCheckBox = checkbox;
-	    mCheckBox.setChecked(mEnabled);
-	    mCheckBox.setOnCheckedChangeListener(this);
+        mCheckBox = checkbox;
+        mCheckBox.setChecked(mEnabled);
+        mCheckBox.setOnCheckedChangeListener(this);
     }
 
     public BluetoothController(Context context) {
         mContext = context;
 
-	    mAdapter =  BluetoothAdapter.getDefaultAdapter();
+        mAdapter =  BluetoothAdapter.getDefaultAdapter();
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         context.registerReceiver(this, filter);
 
-	    if (mAdapter != null) {
+        if (mAdapter != null) {
             handleAdapterStateChange(mAdapter.getState());
             handleConnectionStateChange(mAdapter.getConnectionState());
         }
@@ -93,9 +93,9 @@ public class BluetoothController extends BroadcastReceiver implements CompoundBu
     public void onCheckedChanged(CompoundButton view, boolean checked) {
         if (checked != mEnabled) {
             mEnabled = checked;
-	        setBluetoothEnabled(mEnabled);
-	        setBluetoothStateInt(mAdapter.getState());
-	        syncBluetoothState();
+            setBluetoothEnabled(mEnabled);
+            setBluetoothStateInt(mAdapter.getState());
+            syncBluetoothState();
         }
     }
 
@@ -104,13 +104,10 @@ public class BluetoothController extends BroadcastReceiver implements CompoundBu
                 ? mAdapter.enable()
                 : mAdapter.disable();
 
-        if (success) {
-            setBluetoothStateInt(enabled
-				 ? BluetoothAdapter.STATE_TURNING_ON
-                : BluetoothAdapter.STATE_TURNING_OFF);
-        } else {
-	    syncBluetoothState();
-        }
+        if (success)
+            setBluetoothStateInt(enabled ? BluetoothAdapter.STATE_TURNING_ON : BluetoothAdapter.STATE_TURNING_OFF);
+        else
+            syncBluetoothState();
     }
 
     boolean syncBluetoothState() {
@@ -119,17 +116,17 @@ public class BluetoothController extends BroadcastReceiver implements CompoundBu
             setBluetoothStateInt(mState);
             return true;
         }
-	    return false;
+        return false;
     }
 
     synchronized void setBluetoothStateInt(int state) {
         mState = state;
-	    if (state == BluetoothAdapter.STATE_ON){
-		    if (mCheckBox != null)
-		        mCheckBox.setChecked(true);
-	    }
-	    else if (mCheckBox != null)
-    		mCheckBox.setChecked(false);
+        if (state == BluetoothAdapter.STATE_ON){
+            if (mCheckBox != null)
+                mCheckBox.setChecked(true);
+        }
+        else if (mCheckBox != null)
+            mCheckBox.setChecked(false);
     }
 
     public void handleConnectionStateChange(int connectionState) {
