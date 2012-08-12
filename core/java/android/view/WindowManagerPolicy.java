@@ -1082,6 +1082,11 @@ public interface WindowManagerPolicy {
     public boolean hasNavigationBar();
 
     /**
+     * Specifies whether there's hardware keys on the device.
+     */
+    public boolean hasHardwareKeys();
+
+    /**
      * Lock the device now.
      */
     public void lockNow();

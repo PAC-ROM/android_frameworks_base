@@ -9602,6 +9602,11 @@ public class WindowManagerService extends IWindowManager.Stub
         return mPolicy.hasNavigationBar();
     }
 
+    @Override
+    public boolean hasHardwareKeys() {
+        return mPolicy.hasHardwareKeys();
+    }
+
     public void lockNow() {
         mPolicy.lockNow();
     }

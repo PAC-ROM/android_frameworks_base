@@ -309,7 +309,7 @@ public class ViewConfiguration {
         if (!sHasPermanentMenuKeySet) {
             IWindowManager wm = Display.getWindowManager();
             try {
-                sHasPermanentMenuKey = !wm.hasSystemNavBar() && wm.hasHardwareKeys();
+                sHasPermanentMenuKey = wm.hasHardwareKeys();
                 sHasPermanentMenuKeySet = true;
             } catch (RemoteException ex) {
                 sHasPermanentMenuKey = false;
