@@ -1392,7 +1392,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
 
             getDimensions();
 
@@ -4936,9 +4936,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return diff;
     }
 
-    // Leave navigation bar management to PhoneWindowManager
+    /** 
+     * We leave navigation bar management to PhoneWindowManager, in order to
+     * inflate navigation bar from early boot, avoiding inconvenients
+     */
     public boolean hasNavigationBar() {
         return true;
+    }
+    
+    /** 
+     * Used to detect whether if device has hardware keys or not (navigation bar)
+     * @return true if device has hardware keys
+     */
+    public boolean hasHardwareKeys() {
+        return !mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
     }
 
     @Override
