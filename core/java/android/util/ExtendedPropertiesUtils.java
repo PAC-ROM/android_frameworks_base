@@ -58,6 +58,12 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_MAINCONF = "properties.conf";
     public static final String PARANOID_BACKUPCONF = "backup.conf";
     public static final String PARANOID_PREFIX = "%";
+    public static final String PARANOID_DPI_SUFFIX = ".dpi";
+    public static final String PARANOID_LAYOUT_SUFFIX = ".layout";
+    public static final String PARANOID_FORCE_SUFFIX = ".force";
+    public static final String PARANOID_LARGE_SUFFIX = ".large";
+    public static final String PARANOID_DENSITY_SUFFIX = ".den";
+    public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
 
     public static ActivityThread mParanoidMainThread = null;
     public static Context mParanoidContext = null;
@@ -85,14 +91,14 @@ public class ExtendedPropertiesUtils {
             "system_default_layout" : "user_default_layout"), "0"));
 
         // CONFIGURE LAYOUT
-        Info.Layout = Integer.parseInt(getProperty(Info.Name + ".layout", String.valueOf(DefaultLayout)));
+        Info.Layout = Integer.parseInt(getProperty(Info.Name + PARANOID_LAYOUT_SUFFIX, String.valueOf(DefaultLayout)));
 
         // CONFIGURE DPI
-        Info.Dpi = Integer.parseInt(getProperty(Info.Name + ".dpi", String.valueOf(DefaultDpi)));
+        Info.Dpi = Integer.parseInt(getProperty(Info.Name + PARANOID_DPI_SUFFIX, String.valueOf(DefaultDpi)));
 
         // CONFIGURE DENSITIES
-        Info.Density = Float.parseFloat(getProperty(Info.Name + ".den", "0"));
-        Info.ScaledDensity = Float.parseFloat(getProperty(Info.Name + ".sden", "0"));
+        Info.Density = Float.parseFloat(getProperty(Info.Name + PARANOID_DENSITY_SUFFIX, "0"));
+        Info.ScaledDensity = Float.parseFloat(getProperty(Info.Name + PARANOID_SCALEDDENSITY_SUFFIX, "0"));
 
         // CALCULATE RELATIONS, IF NEEDED
         if (Info.Dpi != 0) {			
@@ -101,8 +107,8 @@ public class ExtendedPropertiesUtils {
         }
 
         // FORCE & LARGE
-        Info.Force = Integer.parseInt(getProperty(Info.Name + ".force", "0"));
-        Info.Large = Integer.parseInt(getProperty(Info.Name + ".large", "0"));
+        Info.Force = Integer.parseInt(getProperty(Info.Name + PARANOID_FORCE_SUFFIX, "0"));
+        Info.Large = Integer.parseInt(getProperty(Info.Name + PARANOID_LARGE_SUFFIX, "0"));
 
         // FLAG AS READY TO GO
         Info.Active = true;
@@ -139,7 +145,7 @@ public class ExtendedPropertiesUtils {
                     break;
                 case FullnameExclude:
                     tempInfo = getAppInfoFromPath((String)input);
-                    if (tempInfo != null && (!paranoidIsHooked() || getProperty(tempInfo.packageName + ".force", "0").equals("1")))
+                    if (tempInfo != null && (!paranoidIsHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX, "0").equals("1")))
                         mParanoidLocalHook.Info = tempInfo;
                     break;
                 case PackageName:
@@ -297,12 +303,17 @@ public class ExtendedPropertiesUtils {
         return def;
     }
 
-    public static int getValue(String r){
-        try{
-            int t = Integer.parseInt(getProperty(r));
-            return t == 0 ? SystemProperties.getInt("ro.sf.lcd_density", 0) : t;
-        } catch(NumberFormatException e){
-            // Will never happen, hopefully
+    public static int getActualProperty(String packageName) {
+        if (packageName.endsWith(PARANOID_DPI_SUFFIX)) {
+            ApplicationInfo appInfo = getAppInfoFromPackageName(packageName.substring(0, packageName.length()-PARANOID_DPI_SUFFIX.length()));
+            boolean isSystemApp = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
+            return Integer.parseInt(getProperty(packageName, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                "system_default_dpi" : "user_default_dpi"), getProperty("%rom_default_dpi"))));
+        } else if (packageName.endsWith(PARANOID_LAYOUT_SUFFIX)) {
+            ApplicationInfo appInfo = getAppInfoFromPackageName(packageName.substring(0, packageName.length()-PARANOID_LAYOUT_SUFFIX.length()));
+            boolean isSystemApp = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
+            return Integer.parseInt(getProperty(packageName, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                "system_default_layout" : "user_default_layout"), getProperty("%rom_default_layout"))));
         }
         return 0;
     }
