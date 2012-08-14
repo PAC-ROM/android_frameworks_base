@@ -169,12 +169,14 @@ public class DisplayMetrics extends ExtendedPropertiesUtils {
      */
     public float noncompatYdpi;
 
-    // PARANOID
+    /**
+     * Process DPI for current hook.
+     */
     public void paranoidHook() {
-        if (paranoidGetActive()) {
-            density = paranoidGetDensity() == 0 ? density : paranoidGetDensity();
-            scaledDensity = paranoidGetScaledDensity() == 0 ? scaledDensity : paranoidGetScaledDensity();
-            densityDpi = paranoidGetDpi() == 0 ? densityDpi : paranoidGetDpi();
+        if (getActive()) {
+            density = getDensity() == 0 ? density : getDensity();
+            scaledDensity = getScaledDensity() == 0 ? scaledDensity : getScaledDensity();
+            densityDpi = getDpi() == 0 ? densityDpi : getDpi();
         }
     }
 
@@ -218,6 +220,6 @@ public class DisplayMetrics extends ExtendedPropertiesUtils {
     }
 
     public static int getDeviceDensity() {
-        return mParanoidGlobalHook.Dpi == 0 ? DENSITY_DEVICE : mParanoidGlobalHook.Dpi;        
+        return mGlobalHook.dpi == 0 ? DENSITY_DEVICE : mGlobalHook.dpi;
     }
 }

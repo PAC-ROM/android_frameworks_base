@@ -1612,7 +1612,7 @@ public final class ActivityThread {
 
         AssetManager assets = new AssetManager();
         assets.setThemeSupport(compInfo.isThemeable);
-        assets.paranoidOverride(resDir, ExtendedPropertiesUtils.OverrideMode.FullnameExclude);
+        assets.overrideHook(resDir, ExtendedPropertiesUtils.OverrideMode.FullNameExclude);
 
         if (assets.addAssetPath(resDir) == 0) {
             return null;
@@ -1632,7 +1632,7 @@ public final class ActivityThread {
 
         //Slog.i(TAG, "Resource: key=" + key + ", display metrics=" + metrics);
         DisplayMetrics metrics = getDisplayMetricsLocked(null, false);
-        metrics.paranoidOverride(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
+        metrics.overrideHook(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         r = new Resources(assets, metrics, getConfiguration(), compInfo);
         if (false) {
             Slog.i(TAG, "Created app resources " + resDir + " " + r + ": "
@@ -4073,7 +4073,7 @@ public final class ActivityThread {
         mBoundApplication = data;
         mConfiguration = new Configuration(data.config);
         mConfiguration.active = true;
-        mConfiguration.paranoidOverride(data.processName, ExtendedPropertiesUtils.OverrideMode.PackageName);
+        mConfiguration.overrideHook(data.processName, ExtendedPropertiesUtils.OverrideMode.PackageName);
         mCompatConfiguration = new Configuration(data.config);
 
         mProfiler = new Profiler();
@@ -4886,7 +4886,7 @@ public final class ActivityThread {
         HardwareRenderer.disable(true);
         ActivityThread thread = new ActivityThread();
         thread.attach(true);
-        ContextImpl.paranoidInit(thread);
+        ContextImpl.init(thread);
         return thread;
     }
 
@@ -4923,7 +4923,7 @@ public final class ActivityThread {
 
         ActivityThread thread = new ActivityThread();
         thread.attach(false);
-        ContextImpl.paranoidInit(thread);
+        ContextImpl.init(thread);
 
         AsyncTask.init();
 

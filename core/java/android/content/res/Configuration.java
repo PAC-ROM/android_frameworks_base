@@ -17,16 +17,16 @@
 
 package android.content.res;
 
-import android.util.ExtendedPropertiesUtils;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.LocaleUtil;
-import android.view.View;
-import android.util.Log;
 import android.os.SystemProperties;
 import android.text.TextUtils;
-import android.graphics.Point;
+import android.util.ExtendedPropertiesUtils;
+import android.util.LocaleUtil;
+import android.util.Log;
+import android.view.View;
 
 import java.util.Locale;
 
@@ -444,19 +444,22 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * @hide Internal book-keeping.
      */
     public int seq;
+    
+    public boolean active;
 
-    // PARANOID
-    public boolean active = false;
+    /**
+     * Process layout changes for current hook
+     */
     public void paranoidHook() {        
         if (active) {            
-            if (paranoidGetLayout() != 0) {               
+            if (getLayout() != 0) {               
                 Point size = new Point();
-                ExtendedPropertiesUtils.mParanoidDisplay.getSize(size);
+                mDisplay.getSize(size);
                 float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
-                screenWidthDp = paranoidGetLayout();
+                screenWidthDp = getLayout();
                 screenHeightDp = (int)(screenWidthDp * factor);
-                smallestScreenWidthDp = paranoidGetLayout();           
-                if (paranoidGetLarge())
+                smallestScreenWidthDp = getLayout();           
+                if (getLarge())
                     screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
             }
         }

@@ -33,26 +33,12 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class ExtendedPropertiesUtils {
+ 
+    private static final String TAG = "PARANOID:";
 
-    public static class ParanoidAppInfo {
-        public boolean Active = false;
-        public int Pid = 0;
-        public ApplicationInfo Info = null;
-        public String Name = "";
-        public String Path = "";
-        public int Dpi = 0;
-        public int Layout = 0;
-        public int Force = 0;
-        public int Large = 0;
-        public float ScaledDensity = 0;
-        public float Density = 0;
-    }
-
-    public static enum OverrideMode {
-        ExtendedProperties, AppInfo, Fullname, FullnameExclude, PackageName
-    }
-
-    // STATIC PROPERTIES
+    /**
+     * Public variables
+     */
     public static final String PARANOID_PROPERTIES = "/system/etc/paranoid/properties.conf";
     public static final String PARANOID_DIR = "/system/etc/paranoid/";
     public static final String PARANOID_MAINCONF = "properties.conf";
@@ -65,57 +51,96 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_DENSITY_SUFFIX = ".den";
     public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
 
-    public static ActivityThread mParanoidMainThread = null;
-    public static Context mParanoidContext = null;
-    public static PackageManager mParanoidPackageManager = null;    
-    public static Display mParanoidDisplay = null;
-    public static List<PackageInfo> mParanoidPackageList;
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
+    public static ActivityThread mMainThread;
+    public static Context mContext;
+    public static PackageManager mPackageManager;    
+    public static Display mDisplay;
+    public static List<PackageInfo> mPackageList;
 
-    public static ParanoidAppInfo mParanoidGlobalHook = new ParanoidAppInfo();
-    public ParanoidAppInfo mParanoidLocalHook = new ParanoidAppInfo();
+    public static ParanoidAppInfo mGlobalHook = new ParanoidAppInfo();
+    public ParanoidAppInfo mLocalHook = new ParanoidAppInfo();
 
     public static boolean mIsTablet;
-    public static int mParanoidRomLcdDensity = DisplayMetrics.DENSITY_DEFAULT;
+    public static int mRomLcdDensity = DisplayMetrics.DENSITY_DEFAULT;
 
     public static native String readFile(String s);
-
-    // SET UP HOOK BY READING OUT PAD.PROP
-    public static void paranoidConfigure(ParanoidAppInfo Info) {
-
-        // FETCH DEFAUTS
-        boolean isSystemApp = Info.Path.contains("system/app");
-        int DefaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-            "system_default_dpi" : "user_default_dpi"), "0"));
-        int DefaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-            "system_default_layout" : "user_default_layout"), "0"));
-
-        // CONFIGURE LAYOUT
-        Info.Layout = Integer.parseInt(getProperty(Info.Name + PARANOID_LAYOUT_SUFFIX, String.valueOf(DefaultLayout)));
-
-        // CONFIGURE DPI
-        Info.Dpi = Integer.parseInt(getProperty(Info.Name + PARANOID_DPI_SUFFIX, String.valueOf(DefaultDpi)));
-
-        // CONFIGURE DENSITIES
-        Info.Density = Float.parseFloat(getProperty(Info.Name + PARANOID_DENSITY_SUFFIX, "0"));
-        Info.ScaledDensity = Float.parseFloat(getProperty(Info.Name + PARANOID_SCALEDDENSITY_SUFFIX, "0"));
-
-        // CALCULATE RELATIONS, IF NEEDED
-        if (Info.Dpi != 0) {			
-            Info.Density = Info.Density == 0 ? Info.Dpi / (float) DisplayMetrics.DENSITY_DEFAULT : Info.Density;
-			Info.ScaledDensity = Info.ScaledDensity == 0 ? Info.Dpi / (float) DisplayMetrics.DENSITY_DEFAULT : Info.ScaledDensity;
-        }
-
-        // FORCE & LARGE
-        Info.Force = Integer.parseInt(getProperty(Info.Name + PARANOID_FORCE_SUFFIX, "0"));
-        Info.Large = Integer.parseInt(getProperty(Info.Name + PARANOID_LARGE_SUFFIX, "0"));
-
-        // FLAG AS READY TO GO
-        Info.Active = true;
+    
+    /**
+     * Contains all the details for an application
+     */
+    public static class ParanoidAppInfo {
+        public String name = "";
+        public String path = "";
+        public boolean active;
+        public int pid;
+        public ApplicationInfo info;
+        public int dpi;
+        public int layout;
+        public int force;
+        public int large;
+        public float scaledDensity;
+        public float density;
     }
 
-    public void paranoidOverride(Object input, OverrideMode mode) {
-        if (paranoidIsInitialized() && input != null ) {
+    /**
+     * Enum interface to allow different override modes
+     */
+    public static enum OverrideMode {
+        ExtendedProperties, AppInfo, FullName, FullNameExclude, PackageName
+    }
+
+    /**
+     * Set app configuration loading by properties.conf.
+     *
+     * @param  info  instance containing app details
+     */
+    public static void setAppConfiguration(ParanoidAppInfo info) {
+
+        // Load default values to be used in case that property is 
+        // missing from configuration.
+        boolean isSystemApp = info.path.contains("system/app");
+        int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            "system_default_dpi" : "user_default_dpi")));
+        int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            "system_default_layout" : "user_default_layout")));
+
+        // Layout fetching
+        info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
+
+        // DPI fetching
+        info.dpi = Integer.parseInt(getProperty(info.name + PARANOID_DPI_SUFFIX, String.valueOf(defaultDpi)));
+
+        // Extra density fetching
+        info.density = Float.parseFloat(getProperty(info.name + PARANOID_DENSITY_SUFFIX));
+        info.scaledDensity = Float.parseFloat(getProperty(info.name + PARANOID_SCALEDDENSITY_SUFFIX));
+
+        // In case that densities are determined in previous step
+        // we calculate it by dividing DPI by default density (160)
+        if (info.dpi != 0) {			
+            info.density = info.density == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.density;
+			info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
+        }
+
+        // Extra parameters. Force allows apps to penetrate their hosts, 
+        // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
+        // layout matching to assign bigger containers
+        info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
+        info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
+
+        // If everything went nice, and nothing crashes, stop parsing
+        info.active = true;
+    }
+
+    /**
+     * Overrides current hook with input parameter <code>mode</code>, wich
+     * is an enum interface that stores basic override possibilities.
+     *
+     * @param  input  object to be overriden
+     * @param  mode  enum interface
+     */
+    public void overrideHook(Object input, OverrideMode mode) {
+        if (isInitialized() && input != null) {
 
             ApplicationInfo tempInfo;
             ExtendedPropertiesUtils tempProps;
@@ -123,139 +148,161 @@ public class ExtendedPropertiesUtils {
             switch (mode) {
                 case ExtendedProperties:
                     tempProps = (ExtendedPropertiesUtils)input;
-                    if (tempProps.mParanoidLocalHook.Active) {
-                        mParanoidLocalHook.Active = tempProps.mParanoidLocalHook.Active;
-                        mParanoidLocalHook.Pid = tempProps.mParanoidLocalHook.Pid;
-                        mParanoidLocalHook.Info = tempProps.mParanoidLocalHook.Info;
-                        mParanoidLocalHook.Name = tempProps.mParanoidLocalHook.Name;
-                        mParanoidLocalHook.Path = tempProps.mParanoidLocalHook.Path;
-                        mParanoidLocalHook.Layout = tempProps.mParanoidLocalHook.Layout;
-                        mParanoidLocalHook.Dpi = tempProps.mParanoidLocalHook.Dpi;
-                        mParanoidLocalHook.Force = tempProps.mParanoidLocalHook.Force;
-                        mParanoidLocalHook.Large = tempProps.mParanoidLocalHook.Large;
-                        mParanoidLocalHook.ScaledDensity = tempProps.mParanoidLocalHook.ScaledDensity;
-                        mParanoidLocalHook.Density = tempProps.mParanoidLocalHook.Density;                        
+                    if (tempProps.mLocalHook.active) {
+                        mLocalHook.active = tempProps.mLocalHook.active;
+                        mLocalHook.pid = tempProps.mLocalHook.pid;
+                        mLocalHook.info = tempProps.mLocalHook.info;
+                        mLocalHook.name = tempProps.mLocalHook.name;
+                        mLocalHook.path = tempProps.mLocalHook.path;
+                        mLocalHook.layout = tempProps.mLocalHook.layout;
+                        mLocalHook.dpi = tempProps.mLocalHook.dpi;
+                        mLocalHook.force = tempProps.mLocalHook.force;
+                        mLocalHook.large = tempProps.mLocalHook.large;
+                        mLocalHook.scaledDensity = tempProps.mLocalHook.scaledDensity;
+                        mLocalHook.density = tempProps.mLocalHook.density;                        
                     }
                     return;
                 case AppInfo:
-                    mParanoidLocalHook.Info = (ApplicationInfo)input;
+                    mLocalHook.info = (ApplicationInfo)input;
                     break;
-                case Fullname:
-                    mParanoidLocalHook.Info = getAppInfoFromPath((String)input);
+                case FullName:
+                    mLocalHook.info = getAppInfoFromPath((String)input);
                     break;
-                case FullnameExclude:
+                case FullNameExclude:
                     tempInfo = getAppInfoFromPath((String)input);
-                    if (tempInfo != null && (!paranoidIsHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX, "0").equals("1")))
-                        mParanoidLocalHook.Info = tempInfo;
+                    if (tempInfo != null && (!isHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX).equals("1")))
+                        mLocalHook.info = tempInfo;
                     break;
                 case PackageName:
-                    mParanoidLocalHook.Info = getAppInfoFromPackageName((String)input);
+                    mLocalHook.info = getAppInfoFromPackageName((String)input);
                     break;
             }
 
-            if (mParanoidLocalHook.Info != null) {
-                mParanoidLocalHook.Pid = android.os.Process.myPid();
-                mParanoidLocalHook.Name = mParanoidLocalHook.Info.packageName;
-                mParanoidLocalHook.Path = mParanoidLocalHook.Info.sourceDir.substring(0, 
-                    mParanoidLocalHook.Info.sourceDir.lastIndexOf("/"));
-                paranoidConfigure(mParanoidLocalHook);
+            if (mLocalHook.info != null) {
+                mLocalHook.pid = android.os.Process.myPid();
+                mLocalHook.name = mLocalHook.info.packageName;
+                mLocalHook.path = mLocalHook.info.sourceDir.substring(0, 
+                    mLocalHook.info.sourceDir.lastIndexOf("/"));
+                setAppConfiguration(mLocalHook);
             }            
         }
     }
 
-    static public boolean paranoidIsInitialized() {
-        return (mParanoidContext != null);
+    /**
+     * This methods are used to retrieve specific information for a hook. 
+     */
+    public static boolean isInitialized() {
+        return (mContext != null);
     }
-    static public boolean paranoidIsHooked() {
-        return (paranoidIsInitialized() && !mParanoidGlobalHook.Name.equals("android") && !mParanoidGlobalHook.Name.equals(""));
+    public static boolean isHooked() {
+        return (isInitialized() && !mGlobalHook.name.equals("android") && !mGlobalHook.name.equals(""));
     }
-    public boolean paranoidGetActive() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Active : mParanoidGlobalHook.Active;
+    public boolean getActive() {
+        return mLocalHook.active ? mLocalHook.active : mGlobalHook.active;
     }
-    public int paranoidGetPid() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Pid : mParanoidGlobalHook.Pid;
+    public int getPid() {
+        return mLocalHook.active ? mLocalHook.pid : mGlobalHook.pid;
     }
-    public ApplicationInfo paranoidGetInfo() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Info : mParanoidGlobalHook.Info;
+    public ApplicationInfo getInfo() {
+        return mLocalHook.active ? mLocalHook.info : mGlobalHook.info;
     }
-    public String paranoidGetName() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Name : mParanoidGlobalHook.Name;
+    public String getName() {
+        return mLocalHook.active ? mLocalHook.name : mGlobalHook.name;
     }
-    public String paranoidGetPath() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Path : mParanoidGlobalHook.Path;
+    public String getPath() {
+        return mLocalHook.active ? mLocalHook.path : mGlobalHook.path;
     }
-    public int paranoidGetLayout() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Layout : mParanoidGlobalHook.Layout;
+    public int getLayout() {
+        return mLocalHook.active ? mLocalHook.layout : mGlobalHook.layout;
     }
-    public int paranoidGetDpi() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Dpi : mParanoidGlobalHook.Dpi;
+    public int getDpi() {
+        return mLocalHook.active ? mLocalHook.dpi : mGlobalHook.dpi;
     }
-    public float paranoidGetScaledDensity() { 
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.ScaledDensity : mParanoidGlobalHook.ScaledDensity;
+    public float getScaledDensity() { 
+        return mLocalHook.active ? mLocalHook.scaledDensity : mGlobalHook.scaledDensity;
     }
-    public boolean paranoidGetForce() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Force : mParanoidGlobalHook.Force) == 1;
+    public boolean getForce() {
+        return (mLocalHook.active ? mLocalHook.force : mGlobalHook.force) == 1;
     }
-    public boolean paranoidGetLarge() {
-        return (mParanoidLocalHook.Active ? mParanoidLocalHook.Large : mParanoidGlobalHook.Large) == 1;
+    public boolean getLarge() {
+        return (mLocalHook.active ? mLocalHook.large : mGlobalHook.large) == 1;
     }
-    public float paranoidGetDensity() {
-        return mParanoidLocalHook.Active ? mParanoidLocalHook.Density : mParanoidGlobalHook.Density;
+    public float getDensity() {
+        return mLocalHook.active ? mLocalHook.density : mGlobalHook.density;
     }
 
-    public static ApplicationInfo getAppInfoFromPath(String Path) {
-        if(paranoidIsInitialized()) {
-            for(int i=0; mParanoidPackageList != null && i<mParanoidPackageList.size(); i++) {
-                PackageInfo p = mParanoidPackageList.get(i);
-                if (p.applicationInfo != null && p.applicationInfo.sourceDir.equals(Path))
+    
+    /**
+     * Returns an {@link ApplicationInfo}, with the given path.
+     *
+     * @param  path  the apk path
+     * @return application info
+     */
+    public static ApplicationInfo getAppInfoFromPath(String path) {
+        if(isInitialized()) {
+            for(int i=0; mPackageList != null && i<mPackageList.size(); i++) {
+                PackageInfo p = mPackageList.get(i);
+                if (p.applicationInfo != null && p.applicationInfo.sourceDir.equals(path))
                     return p.applicationInfo;
             }
         }
         return null;
     }
 
-    public static ApplicationInfo getAppInfoFromPackageName(String PackageName) {
-        if(paranoidIsInitialized()) {
-            for(int i=0; mParanoidPackageList != null && i<mParanoidPackageList.size(); i++) {
-                PackageInfo p = mParanoidPackageList.get(i);
-                if (p.applicationInfo != null && p.applicationInfo.packageName.equals(PackageName))
+    
+    /**
+     * Returns an {@link ApplicationInfo}, with the given package name.
+     *
+     * @param  packageName  the application package name
+     * @return application info
+     */
+    public static ApplicationInfo getAppInfoFromPackageName(String packageName) {
+        if(isInitialized()) {
+            for(int i=0; mPackageList != null && i<mPackageList.size(); i++) {
+                PackageInfo p = mPackageList.get(i);
+                if (p.applicationInfo != null && p.applicationInfo.packageName.equals(packageName))
                     return p.applicationInfo;
             }
         }
         return null;
     }
 
-    public static ApplicationInfo getAppInfoFromPID(int PID) {
-        if (paranoidIsInitialized()) {
-            List mProcessList = ((ActivityManager)mParanoidContext.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+    
+    /**
+     * Returns an {@link ApplicationInfo}, with the given PID.
+     *
+     * @param  pid  the application PID
+     * @return application info
+     */
+    public static ApplicationInfo getAppInfoFromPID(int pid) {
+        if (isInitialized()) {
+            List mProcessList = ((ActivityManager)mContext.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
             Iterator mProcessListIt = mProcessList.iterator();
             while(mProcessListIt.hasNext()) {
                 ActivityManager.RunningAppProcessInfo mAppInfo = (ActivityManager.RunningAppProcessInfo)(mProcessListIt.next());
-                if(mAppInfo.pid == PID)
+                if(mAppInfo.pid == pid)
                     return getAppInfoFromPackageName(mAppInfo.processName);
             }
         }
         return null;
     }
 
-    public static String paranoidStatus() {
-        return " T:" + (mParanoidMainThread != null) + " CXT:" + (mParanoidContext != null) + " PM:" + (mParanoidPackageManager != null);
-    }
-
-    // TODO: Port to native code
-    public void paranoidLog(String Message) {
-        Log.i("PARANOID:" + Message, "Init=" + (mParanoidMainThread != null && mParanoidContext != null && 
-            mParanoidPackageManager != null) + " App=" + paranoidGetName() + " Dpi=" + paranoidGetDpi() + 
-            " Layout=" + paranoidGetLayout());
-    }
-
-    public static void paranoidTrace(String Message) {
+    /**
+     * Traces the input argument <code>msg</code> as a log. 
+     * Used for debugging. Should not be used on public classes.
+     *
+     * @param  msg  the message to log
+     */
+    public static void traceMsg(String msg) {
         StringWriter sw = new StringWriter();
         new Throwable("").printStackTrace(new PrintWriter(sw));
         String stackTrace = sw.toString();
-        Log.i("PARANOID:" + Message, "Trace=" + stackTrace); 
+        Log.i(TAG + msg, "Trace=" + stackTrace); 
     }
 
+    /**
+     * Updates the {@link HashMap} that contains all the properties.
+     */
     public static void refreshProperties() {
         mPropertyMap.clear();
         String[] props = readFile(PARANOID_PROPERTIES).split("\n");
@@ -268,15 +315,32 @@ public class ExtendedPropertiesUtils {
         }
     }
 
-    // TODO: Port to native code
+    /**
+     * Returns a {@link String}, containing the result of the configuration
+     * for the input argument <code>prop</code>. If the property is not found
+     * it returns zero.
+     *
+     * @param  prop  a string containing the property to checkout
+     * @return current stored value of property
+     * TODO: Port to native code
+     */
     public static String getProperty(String prop){
         return getProperty(prop, "0");
     }
 
-    // TODO: Port to native code
+    /**
+     * Returns a {@link String}, containing the result of the configuration
+     * for the input argument <code>prop</code>. If the property is not found
+     * it returns the input argument <code>def</code>.
+     *
+     * @param  prop  a string containing the property to checkout
+     * @param  def  default value to be returned in case that property is missing
+     * @return current stored value of property
+     * TODO: Port to native code
+     */
     public static String getProperty(String prop, String def) {
         try {
-            if (paranoidIsInitialized()) {
+            if (isInitialized()) {
                 String result = mPropertyMap.get(prop);
                 if (result == null)
                     return def;
@@ -303,6 +367,16 @@ public class ExtendedPropertiesUtils {
         return def;
     }
 
+    /**
+     * Returns an {@link Integer}, equivalent to what other classes will actually 
+     * load for the input argument <code>property</code>. it differs from 
+     * {@link #getProperty(String, String) getProperty}, because the values
+     * returned will never be zero.
+     *
+     * @param  property  a string containing the property to checkout
+     * @return the actual integer value of the selected property
+     * @see getProperty
+     */
     public static int getActualProperty(String property) {
         int result = -1;
 
@@ -323,5 +397,11 @@ public class ExtendedPropertiesUtils {
             result = Integer.parseInt(property.endsWith("dpi") ? getProperty("%rom_default_dpi") : getProperty("%rom_default_layout"));
 
         return result;
+    }
+    
+    public void toString(String msg) {
+        Log.i(TAG + msg, "Init=" + (mMainThread != null && mContext != null && 
+            mPackageManager != null) + " App=" + getName() + " Dpi=" + getDpi() + 
+            " Layout=" + getLayout());
     }
 }

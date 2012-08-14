@@ -1582,71 +1582,80 @@ class ContextImpl extends Context {
         mOuterContext = this;
     }
 
-    static void paranoidInit(ActivityThread thread) {
-        // GLOBAL PROCESS IS YET UNKNOWN?
-        if (ExtendedPropertiesUtils.mParanoidMainThread == null) {
+    static void init(ActivityThread thread) {
+        if (ExtendedPropertiesUtils.mMainThread == null) {
             try {
-                // SET UP THREAD
-                ExtendedPropertiesUtils.mParanoidMainThread = thread;
+                // Save current thread into global context
+                ExtendedPropertiesUtils.mMainThread = thread;
 
-                // LOAD PROPERTY HASH MAP
+                // Load hashmap, in order to get latest properties
                 ExtendedPropertiesUtils.refreshProperties();
 
-                // CHECK IF HYBRID MODE IS ON
-                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode", 
-                    "0").equals("0")) throw new Exception();
+                // If hybrid is not enabled, just skip the rest of the process
+                // and give a step back.
+                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("0"))
+                    return;
    
-                // TRY TO RETRIEVE A CONTEXT
+                // Try to get the context for the current thread. If something
+                // goes wrong, we throw an exception.
                 ContextImpl context = createSystemContext(thread);
-                if (context == null) throw new NullPointerException();
+                if (context == null)
+                    throw new NullPointerException();
 
-                // BIND IT TO ANDROID-SYSTEM
+                // If we sucessfully created the context, bind it to framework
                 LoadedApk info = new LoadedApk(thread, "android", context, null,
                     CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO);
-                if (info == null) throw new NullPointerException();
+                if (info == null)
+                    throw new NullPointerException();
 
                 context.init(info, null, thread);
-                ExtendedPropertiesUtils.mParanoidContext = context;
+                ExtendedPropertiesUtils.mContext = context;
                 
-                // GET DISPLAY
+                // Get default display
                 WindowManager mWindowMngr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                ExtendedPropertiesUtils.mParanoidDisplay = mWindowMngr.getDefaultDisplay();
-                if (ExtendedPropertiesUtils.mParanoidDisplay == null) throw new Exception();
+                ExtendedPropertiesUtils.mDisplay = mWindowMngr.getDefaultDisplay();
+                if (ExtendedPropertiesUtils.mDisplay == null)
+                    throw new NullPointerException();
                                             
-                // FETCH PACKAGE MANAGER
-                ExtendedPropertiesUtils.mParanoidPackageManager = 
-                    ExtendedPropertiesUtils.mParanoidContext.getPackageManager();
-                if (ExtendedPropertiesUtils.mParanoidPackageManager == null) throw new Exception();
+                // Load package manager, so it's accessible system wide
+                ExtendedPropertiesUtils.mPackageManager = 
+                    ExtendedPropertiesUtils.mContext.getPackageManager();
+                if (ExtendedPropertiesUtils.mPackageManager == null)
+                    throw new NullPointerException();
 
-                // GET PACKAGE LIST
-                ExtendedPropertiesUtils.mParanoidPackageList = 
-                    ExtendedPropertiesUtils.mParanoidPackageManager.getInstalledPackages(0);
-                ExtendedPropertiesUtils.mParanoidGlobalHook.Pid = android.os.Process.myPid();
+                // Get package list and fetch PID
+                ExtendedPropertiesUtils.mPackageList = 
+                    ExtendedPropertiesUtils.mPackageManager.getInstalledPackages(0);
+                ExtendedPropertiesUtils.mGlobalHook.pid = android.os.Process.myPid();
 
-                // INIT CONSTANTS
+                // Initialize constants to be public. mIsTablet constant returns whether if 
+                // workspace we're working on is tablet workspace, or something different
                 ExtendedPropertiesUtils.mIsTablet = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout")) >= 720;
-                ExtendedPropertiesUtils.mParanoidRomLcdDensity = SystemProperties.getInt("qemu.sf.lcd_density",
+                ExtendedPropertiesUtils.mRomLcdDensity = SystemProperties.getInt("qemu.sf.lcd_density",
                     SystemProperties.getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
 
-                // FIND PROCESS BY ITS PID AND GET ITS APP-INFO
-                ExtendedPropertiesUtils.mParanoidGlobalHook.Info = 
-                    ExtendedPropertiesUtils.getAppInfoFromPID(ExtendedPropertiesUtils.mParanoidGlobalHook.Pid);
-                if (ExtendedPropertiesUtils.mParanoidGlobalHook.Info != null) {
-                    // FILL COMMON VALUES AND CONFIGURE IT
-                    ExtendedPropertiesUtils.mParanoidGlobalHook.Name = 
-                        ExtendedPropertiesUtils.mParanoidGlobalHook.Info.packageName;
-                    ExtendedPropertiesUtils.mParanoidGlobalHook.Path = 
-                        ExtendedPropertiesUtils.mParanoidGlobalHook.Info.sourceDir.substring(0,
-                        ExtendedPropertiesUtils.mParanoidGlobalHook.Info.sourceDir.lastIndexOf("/"));
-                    ExtendedPropertiesUtils.paranoidConfigure(ExtendedPropertiesUtils.mParanoidGlobalHook);
+                // After we have PID, we get app info using it
+                ExtendedPropertiesUtils.mGlobalHook.info = 
+                    ExtendedPropertiesUtils.getAppInfoFromPID(ExtendedPropertiesUtils.mGlobalHook.pid);
+                if (ExtendedPropertiesUtils.mGlobalHook.info != null) {
+                    // If the global hook info isn't null, we load the name, package name
+                    // and path for the global hook
+                    ExtendedPropertiesUtils.mGlobalHook.name = 
+                        ExtendedPropertiesUtils.mGlobalHook.info.packageName;
+                    ExtendedPropertiesUtils.mGlobalHook.path = 
+                        ExtendedPropertiesUtils.mGlobalHook.info.sourceDir.substring(0,
+                        ExtendedPropertiesUtils.mGlobalHook.info.sourceDir.lastIndexOf("/"));
+                    ExtendedPropertiesUtils.setAppConfiguration(ExtendedPropertiesUtils.mGlobalHook);
                 } else {
-                    // ANDROID SYSTEM ITSELF
-                    ExtendedPropertiesUtils.mParanoidGlobalHook.Name = "android";
-                    ExtendedPropertiesUtils.mParanoidGlobalHook.Path = "/system/app";
-                    ExtendedPropertiesUtils.paranoidConfigure(ExtendedPropertiesUtils.mParanoidGlobalHook);
+                    // We're dealing with "android" package. This is framework itself
+                    ExtendedPropertiesUtils.mGlobalHook.name = "android";
+                    ExtendedPropertiesUtils.mGlobalHook.path = "/system/app";
+                    ExtendedPropertiesUtils.setAppConfiguration(ExtendedPropertiesUtils.mGlobalHook);
                 }                   
             } catch (Exception e) { 
-                ExtendedPropertiesUtils.mParanoidMainThread = null;
+                // We use global exception to catch a lot of possible crashes.
+                // This is not a dirty workaround, but an expected behaviour
+                ExtendedPropertiesUtils.mMainThread = null;
             }
         }        
     }
@@ -1659,7 +1668,7 @@ class ContextImpl extends Context {
     final void init(LoadedApk packageInfo,
                 IBinder activityToken, ActivityThread mainThread,
                 Resources container, String basePackageName) {
-        paranoidInit(mainThread);
+        init(mainThread);
         mPackageInfo = packageInfo;
         mBasePackageName = basePackageName != null ? basePackageName : packageInfo.mPackageName;
         mResources = mPackageInfo.getResources(mainThread);
@@ -1681,7 +1690,7 @@ class ContextImpl extends Context {
     }
 
     final void init(Resources resources, ActivityThread mainThread) {
-        paranoidInit(mainThread);
+        init(mainThread);
         mPackageInfo = null;
         mBasePackageName = null;
         mResources = resources;

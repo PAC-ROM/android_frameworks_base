@@ -16,7 +16,6 @@
 
 package android.content.res;
 
-import android.util.ExtendedPropertiesUtils;
 import com.android.internal.util.XmlUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -31,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.TypedValue;
@@ -154,17 +154,19 @@ public class Resources extends ExtendedPropertiesUtils {
         }
     }
 
-    // PARANOID
+    /**
+     * Override current object with temp properties stored in enum interface
+     */
     public void paranoidHook() {
         mConfiguration.active = true;        
-        mConfiguration.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
+        mConfiguration.overrideHook(this, OverrideMode.ExtendedProperties);
         mConfiguration.paranoidHook();
 
         mTmpConfig.active = true;        
-        mTmpConfig.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
+        mTmpConfig.overrideHook(this, OverrideMode.ExtendedProperties);
         mTmpConfig.paranoidHook();
 
-        mMetrics.paranoidOverride(this, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
+        mMetrics.overrideHook(this, OverrideMode.ExtendedProperties);
         mMetrics.paranoidHook();
     }
 
@@ -198,7 +200,7 @@ public class Resources extends ExtendedPropertiesUtils {
             Configuration config, CompatibilityInfo compInfo) {
         mAssets = assets;
         mMetrics.setToDefaults();
-        paranoidOverride(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
+        overrideHook(assets, OverrideMode.ExtendedProperties);
         paranoidHook();
         mCompatibilityInfo = compInfo;
         updateConfiguration(config, metrics);

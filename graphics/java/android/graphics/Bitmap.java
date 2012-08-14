@@ -82,7 +82,7 @@ public final class Bitmap implements Parcelable {
     
     /*package*/ static int getDefaultDensity() {
         if (sDefaultDensity >= 0) {
-            return ExtendedPropertiesUtils.mParanoidGlobalHook.Dpi == 0 ? sDefaultDensity : ExtendedPropertiesUtils.mParanoidGlobalHook.Dpi;
+            return ExtendedPropertiesUtils.mGlobalHook.dpi == 0 ? sDefaultDensity : ExtendedPropertiesUtils.mGlobalHook.dpi;
         }
         sDefaultDensity = DisplayMetrics.getDeviceDensity();
         return sDefaultDensity;
