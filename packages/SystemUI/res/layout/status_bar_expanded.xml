@@ -4,21 +4,21 @@
 **
 ** Copyright 2006, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
 
-<com.android.systemui.statusbar.phone.NotificationPanelView 
+<com.android.systemui.statusbar.phone.NotificationPanelView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
     android:id="@+id/notification_panel"
@@ -50,6 +50,17 @@
         android:layout_gravity="bottom"
         />
 
+    <com.android.systemui.statusbar.policy.WeatherText
+        android:id="@+id/weather"
+        android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Network"
+        android:layout_height="@dimen/carrier_label_height"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/weather_text_margin"
+        android:gravity="center"
+        android:visibility="invisible"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,13 +74,18 @@
             android:layout_height="@dimen/notification_panel_header_height"
             />
 
+        <include layout="@layout/weatherpanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
         <com.android.systemui.statusbar.powerwidget.PowerWidget
             android:id="@+id/exp_power_stat"
             android:layout_width="match_parent"
             android:layout_height="@dimen/notification_panel_widget_height"
             android:layout_marginTop="2dip"
             android:visibility="gone"
-        />
+            />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -121,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
-    
+
             <ScrollView
                 android:id="@+id/scroll"
                 android:layout_width="match_parent"
