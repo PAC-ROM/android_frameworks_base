@@ -112,6 +112,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.RotationLockController;
+import com.android.systemui.statusbar.policy.WeatherPanel;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -239,6 +240,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     View mClearButton;
     ImageView mSettingsButton, mNotificationButton;
 
+    // Weatherpanel
+    boolean mWeatherPanelEnabled;
+    WeatherPanel mWeatherPanel;
+
     // carrier/wifi label
     private TextView mCarrierLabel;
     private boolean mCarrierLabelVisible = false;
@@ -281,7 +286,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     // last theme that was applied in order to detect theme change (as opposed
     // to some other configuration change).
     CustomTheme mCurrentTheme;
-   
+
     // status bar brightness control
     private boolean mBrightnessControl;
     private float mScreenWidth;
@@ -537,6 +542,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
         mStatusBarView = (PhoneStatusBarView) mStatusBarWindow.findViewById(R.id.status_bar);
         mStatusBarView.setBar(this);
+
+        // Weather
+        final ContentResolver cr = mContext.getContentResolver();
+        mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanelEnabled = (Settings.System.getInt(cr,
+                Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
+                && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
+        mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
 
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
         mStatusBarView.setPanelHolder(holder);
@@ -2746,6 +2760,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         animateCollapsePanels();
     }
 
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            vibrate();
+            animateCollapsePanels();
+            Intent weatherintent = new Intent("com.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+            weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+            weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+            mContext.sendBroadcast(weatherintent);
+        }
+    };
+
     private View.OnClickListener mSettingsButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
             if (mHasSettingsPanel) {
@@ -3238,6 +3263,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                     mRibbonQS.setupQuickSettings();
                 }
             }
+            final ContentResolver cr = mContext.getContentResolver();
+            mWeatherPanelEnabled = (Settings.System.getInt(cr,
+                    Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
+                    && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
+            mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
         }
 
         public void startObserving() {
@@ -3280,6 +3310,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QUICK_SETTINGS_RIBBON_TILES),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.STATUSBAR_WEATHER_STYLE),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.USE_WEATHER),
                     false, this, UserHandle.USER_ALL);
         }
     }

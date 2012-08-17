@@ -19,4 +19,7 @@
     <!--ScreenShot Trash-->
     <string name="delete">Delete</string>
 
+    <!--  Weather -->
+    <string name="weatherpanel_slash">/</string>
+
 </resources>

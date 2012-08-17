@@ -42,6 +42,9 @@
     <dimen name="ad_date_font_size">18dp</dimen>
 
     <!-- AM/PM size in active display -->
-    <dimen name="ad_ampm_font_size">32dp</dimen>   
+    <dimen name="ad_ampm_font_size">32dp</dimen>
+
+    <!-- Height of carrier label + close handle -->
+    <dimen name="weather_text_margin">56dp</dimen>
 
 </resources>
