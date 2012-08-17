@@ -60,6 +60,7 @@ public class ExtendedPropertiesUtils {
 
     public static ParanoidAppInfo mGlobalHook = new ParanoidAppInfo();
     public ParanoidAppInfo mLocalHook = new ParanoidAppInfo();
+    public static boolean mIsHybridModeEnabled;
 
     public static boolean mIsTablet;
     public static int mRomLcdDensity = DisplayMetrics.DENSITY_DEFAULT;
@@ -96,40 +97,41 @@ public class ExtendedPropertiesUtils {
      * @param  info  instance containing app details
      */
     public static void setAppConfiguration(ParanoidAppInfo info) {
+        if(mIsHybridModeEnabled){
+            // Load default values to be used in case that property is 
+            // missing from configuration.
+            boolean isSystemApp = info.path.contains("system/app");
+            int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                "system_default_dpi" : "user_default_dpi")));
+            int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                "system_default_layout" : "user_default_layout")));
 
-        // Load default values to be used in case that property is 
-        // missing from configuration.
-        boolean isSystemApp = info.path.contains("system/app");
-        int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-            "system_default_dpi" : "user_default_dpi")));
-        int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-            "system_default_layout" : "user_default_layout")));
+            // Layout fetching
+            info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
 
-        // Layout fetching
-        info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
+            // DPI fetching
+            info.dpi = Integer.parseInt(getProperty(info.name + PARANOID_DPI_SUFFIX, String.valueOf(defaultDpi)));
 
-        // DPI fetching
-        info.dpi = Integer.parseInt(getProperty(info.name + PARANOID_DPI_SUFFIX, String.valueOf(defaultDpi)));
+            // Extra density fetching
+            info.density = Float.parseFloat(getProperty(info.name + PARANOID_DENSITY_SUFFIX));
+            info.scaledDensity = Float.parseFloat(getProperty(info.name + PARANOID_SCALEDDENSITY_SUFFIX));
 
-        // Extra density fetching
-        info.density = Float.parseFloat(getProperty(info.name + PARANOID_DENSITY_SUFFIX));
-        info.scaledDensity = Float.parseFloat(getProperty(info.name + PARANOID_SCALEDDENSITY_SUFFIX));
+            // In case that densities are determined in previous step
+            // we calculate it by dividing DPI by default density (160)
+            if (info.dpi != 0) {			
+                info.density = info.density == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.density;
+			    info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
+            }
 
-        // In case that densities are determined in previous step
-        // we calculate it by dividing DPI by default density (160)
-        if (info.dpi != 0) {			
-            info.density = info.density == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.density;
-			info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
+            // Extra parameters. Force allows apps to penetrate their hosts, 
+            // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
+            // layout matching to assign bigger containers
+            info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
+            info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
+
+            // If everything went nice, stop parsing
+            info.active = true;
         }
-
-        // Extra parameters. Force allows apps to penetrate their hosts, 
-        // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
-        // layout matching to assign bigger containers
-        info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
-        info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
-
-        // If everything went nice, and nothing crashes, stop parsing
-        info.active = true;
     }
 
     /**
@@ -325,7 +327,7 @@ public class ExtendedPropertiesUtils {
      * TODO: Port to native code
      */
     public static String getProperty(String prop){
-        return getProperty(prop, "0");
+        return getProperty(prop, String.valueOf(0));
     }
 
     /**

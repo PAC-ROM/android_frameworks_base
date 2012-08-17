@@ -1585,17 +1585,20 @@ class ContextImpl extends Context {
     static void init(ActivityThread thread) {
         if (ExtendedPropertiesUtils.mMainThread == null) {
             try {
+                // If hybrid is not enabled, we cannot block the rest of the proccess,
+                // because it may cause a lot of misbehaviours, and avoiding initialization
+                // of vital variables used on ExtendedPropertiesUtils, may lead to crashes.
+                // Then we just set all applications to stock configuration. They will be
+                // still runned under hybrid engine.
+                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("1"))
+                    ExtendedPropertiesUtils.mIsHybridModeEnabled = true;
+
                 // Save current thread into global context
                 ExtendedPropertiesUtils.mMainThread = thread;
 
                 // Load hashmap, in order to get latest properties
                 ExtendedPropertiesUtils.refreshProperties();
-
-                // If hybrid is not enabled, just skip the rest of the process
-                // and give a step back.
-                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("0"))
-                    return;
-   
+  
                 // Try to get the context for the current thread. If something
                 // goes wrong, we throw an exception.
                 ContextImpl context = createSystemContext(thread);
@@ -1612,8 +1615,8 @@ class ContextImpl extends Context {
                 ExtendedPropertiesUtils.mContext = context;
                 
                 // Get default display
-                WindowManager mWindowMngr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                ExtendedPropertiesUtils.mDisplay = mWindowMngr.getDefaultDisplay();
+                WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                ExtendedPropertiesUtils.mDisplay = wm.getDefaultDisplay();
                 if (ExtendedPropertiesUtils.mDisplay == null)
                     throw new NullPointerException();
                                             
@@ -1651,7 +1654,7 @@ class ContextImpl extends Context {
                     ExtendedPropertiesUtils.mGlobalHook.name = "android";
                     ExtendedPropertiesUtils.mGlobalHook.path = "/system/app";
                     ExtendedPropertiesUtils.setAppConfiguration(ExtendedPropertiesUtils.mGlobalHook);
-                }                   
+                }
             } catch (Exception e) { 
                 // We use global exception to catch a lot of possible crashes.
                 // This is not a dirty workaround, but an expected behaviour
