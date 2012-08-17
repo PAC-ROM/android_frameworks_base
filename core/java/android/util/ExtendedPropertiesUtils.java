@@ -92,7 +92,8 @@ public class ExtendedPropertiesUtils {
     }
 
     /**
-     * Set app configuration loading by properties.conf.
+     * Set app configuration for the input argument <code>info</code>.
+     * This is done by fetching properties.conf or our stored {@link HashMap}.
      *
      * @param  info  instance containing app details
      */
@@ -106,18 +107,18 @@ public class ExtendedPropertiesUtils {
             int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
                 "system_default_layout" : "user_default_layout")));
 
-            // Layout fetching
+            // Layout fetching.
             info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
 
-            // DPI fetching
+            // DPI fetching.
             info.dpi = Integer.parseInt(getProperty(info.name + PARANOID_DPI_SUFFIX, String.valueOf(defaultDpi)));
 
-            // Extra density fetching
+            // Extra density fetching.
             info.density = Float.parseFloat(getProperty(info.name + PARANOID_DENSITY_SUFFIX));
             info.scaledDensity = Float.parseFloat(getProperty(info.name + PARANOID_SCALEDDENSITY_SUFFIX));
 
-            // In case that densities are determined in previous step
-            // we calculate it by dividing DPI by default density (160)
+            // In case that densities aren't determined in previous step
+            // we calculate it by dividing DPI by default density (160).
             if (info.dpi != 0) {			
                 info.density = info.density == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.density;
 			    info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
@@ -125,11 +126,11 @@ public class ExtendedPropertiesUtils {
 
             // Extra parameters. Force allows apps to penetrate their hosts, 
             // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
-            // layout matching to assign bigger containers
+            // layout matching to assign bigger containers.
             info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
             info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
 
-            // If everything went nice, stop parsing
+            // If everything went nice, stop parsing.
             info.active = true;
         }
     }
