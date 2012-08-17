@@ -36,6 +36,7 @@ import android.app.ActivityManagerNative;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -100,6 +101,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.systemui.BatteryMeterView.BatteryMeterMode;
@@ -130,12 +132,13 @@ import com.android.systemui.statusbar.policy.MSimNetworkController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
-
+import com.android.systemui.statusbar.policy.WeatherPanel;
 import com.android.systemui.pac.StatusHeaderMachine;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.net.URISyntaxException;
 
 public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         NetworkController.UpdateUIListener {
@@ -272,6 +275,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mClearButton;
     ImageView mAddTileButton;
     ImageView mSettingsButton, mNotificationButton;
+
+    // Weatherpanel
+    private Intent intent;
+    boolean mWeatherPanelEnabled;
+    WeatherPanel mWeatherPanel;
+    private String mShortClickWeather;
+    private String mLongClickWeather;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
@@ -779,12 +789,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         mStatusBarView.setBar(this);
 
+        // Weather
+        final ContentResolver cr = mContext.getContentResolver();
+        mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);
+        mWeatherPanelEnabled = (Settings.PAC.getInt(cr,
+                Settings.PAC.STATUSBAR_WEATHER_STYLE, 1) == 1)
+                && (Settings.PAC.getBoolean(cr, Settings.PAC.USE_WEATHER, false));
+        mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+
         PanelHolder holder;
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.msim_panel_holder);
         } else {
             holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
         }
+
         mStatusBarView.setPanelHolder(holder);
 
         mNotificationPanel = (NotificationPanelView) mStatusBarWindow.findViewById(R.id.notification_panel);
@@ -3509,6 +3530,75 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         animateCollapsePanels();
     }
 
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (mShortClickWeather == null || mShortClickWeather == "" || mShortClickWeather == "**nothing**") {
+            // do nothing
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mShortClickWeather.equals("**update**")) {
+                    Intent weatherintent = new Intent("com.pac.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.pac.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.pac.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                    animateCollapsePanels();
+                    Toast.makeText(mContext, R.string.update_weather, Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        intent = Intent.parseUri(mShortClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    animateCollapsePanels();
+                }
+            }
+        }
+    };
+
+    private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (mLongClickWeather == null || mLongClickWeather == "" || mLongClickWeather == "**nothing**") {
+                return true;
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mLongClickWeather.equals("**update**")) {
+                    Intent weatherintent = new Intent("com.pac.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.pac.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.pac.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                    animateCollapsePanels();
+                    Toast.makeText(mContext, R.string.update_weather, Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        intent = Intent.parseUri(mLongClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    animateCollapsePanels();
+                 }
+            }
+        return true;
+        }
+    };
+
     private View.OnClickListener mSettingsButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
             if (mHasSettingsPanel) {
@@ -4139,6 +4229,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      *
      */
     private class TilesChangedObserver extends ContentObserver {
+
+        final ContentResolver cr = mContext.getContentResolver();
+
         public TilesChangedObserver(Handler handler) {
             super(handler);
         }
@@ -4195,18 +4288,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
             }
 
-            final ContentResolver cr = mContext.getContentResolver();
-
             int sidebarPosition = Settings.PAC.getInt(
                     cr, Settings.PAC.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
                 mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
             }
+
+            update();
+        }
+
+        public void update() {
+            mWeatherPanelEnabled = (Settings.PAC.getInt(cr,
+                    Settings.PAC.STATUSBAR_WEATHER_STYLE, 1) == 1)
+                    && (Settings.PAC.getBoolean(cr, Settings.PAC.USE_WEATHER, false));
+            mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+
+            mShortClickWeather = Settings.PAC.getString(cr,
+                    Settings.PAC.WEATHER_PANEL_SHORTCLICK);
+
+            mLongClickWeather = Settings.PAC.getString(cr,
+                    Settings.PAC.WEATHER_PANEL_LONGCLICK);
         }
 
         public void startObserving() {
-            final ContentResolver cr = mContext.getContentResolver();
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QUICK_SETTINGS_TILES),
                     false, this, UserHandle.USER_ALL);
@@ -4263,6 +4368,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.PAC.getUriFor(Settings.PAC.APP_SIDEBAR_POSITION),
                     false, this, UserHandle.USER_ALL);
 
+            cr.registerContentObserver(
+                    Settings.PAC.getUriFor(Settings.PAC.STATUSBAR_WEATHER_STYLE),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.PAC.getUriFor(Settings.PAC.USE_WEATHER),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.PAC.getUriFor(Settings.PAC.WEATHER_PANEL_SHORTCLICK),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.PAC.getUriFor(Settings.PAC.WEATHER_PANEL_LONGCLICK),
+                    false, this, UserHandle.USER_ALL);
+
+            update();
         }
     }
 

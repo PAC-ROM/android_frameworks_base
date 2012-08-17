@@ -84,4 +84,8 @@
     <!-- Title shown when app provides no interface -->
     <string name="status_bar_floating_no_interface">App provides no interface</string>
 
+    <!--  Weather -->
+    <string name="weatherpanel_slash">/</string>
+    <string name="update_weather">Updating weather</string>
+
 </resources>
