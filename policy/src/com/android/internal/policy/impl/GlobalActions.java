@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
  * Copyright (C) 2010-2012 CyanogenMod Project
+ * Copyright (C) 2012 ParanoidAndroid Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -324,21 +325,25 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 });
         }
 
-        // next: statusbar toggle
-        mItems.add(
-            new SinglePressAction(R.drawable.ic_lock_statusbar, R.string.global_action_statusbar_status) {
-                public void onPress() {
-                    Settings.System.putInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 1) == 1 ? 0 : 1);
-                }
+        // next: expanded desktop
+        // only shown if enabled, enabled by default
+        if(Settings.System.getInt(mContext.getContentResolver(),
+                POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1) == 1){
+            mItems.add(
+                new SinglePressAction(R.drawable.ic_lock_statusbar, R.string.global_action_statusbar_status) {
+                    public void onPress() {
+                        Settings.System.putInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 1) == 1 ? 0 : 1);
+                    }
 
-                public boolean showDuringKeyguard() {
-                    return true;
-                }
+                    public boolean showDuringKeyguard() {
+                        return true;
+                    }
 
-                public boolean showBeforeProvisioning() {
-                    return true;
-                }
-            });
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
+        }
 
         // next: airplane mode
         mItems.add(mAirplaneModeOn);
