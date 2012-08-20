@@ -9444,6 +9444,13 @@ public final class Settings {
          */
         public static final String ACTIVE_DISPLAY_SHAKE_LONGTHRESHOLD = "active_display_shake_long_threshold";
 
+        /**
+         * NFC polling mode configuration key
+         *
+         * @hide
+         */
+        public static final String NFC_POLLING_MODE = "nfc_polling_mode";
+
     }
 
     /**
