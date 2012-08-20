@@ -348,8 +348,8 @@ public class ExtendedPropertiesUtils {
                 if (result == null)
                     return def;
                 if (result.startsWith(PARANOID_PREFIX))
-		            result = getProperty(result, def);
-		        return result;	
+		    result = getProperty(result, def);
+		return result;	
             } else {
                 String[] props = readFile(PARANOID_PROPERTIES).split("\n");
                 for(int i=0; i<props.length; i++) {
