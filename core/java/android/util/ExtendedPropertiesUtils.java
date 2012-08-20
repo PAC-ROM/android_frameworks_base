@@ -121,7 +121,7 @@ public class ExtendedPropertiesUtils {
             // we calculate it by dividing DPI by default density (160).
             if (info.dpi != 0) {			
                 info.density = info.density == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.density;
-			    info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
+                info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
             }
 
             // Extra parameters. Force allows apps to penetrate their hosts, 
