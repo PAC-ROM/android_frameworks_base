@@ -1,5 +1,7 @@
 /*
- * File modifications copyright (C) 2012 The CyanogenMod Project
+ * Copyright (C) 2008 The Android Open Source Project
+ * This code has been modified.  Portions copyright (C) 2012, The CyanogenMod Project.
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +78,7 @@ import com.android.internal.widget.PointerLocationView;
 import dalvik.system.DexClassLoader;
 
 import android.service.dreams.IDreamManager;
+import android.util.ExtendedPropertiesUtils;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
@@ -605,6 +608,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     dispatchMediaKeyRepeatWithWakeLock((KeyEvent)msg.obj);
                     break;
                 case MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK:
+                    mIsLongPress = true;
                     dispatchMediaKeyWithWakeLockToAudioService((KeyEvent)msg.obj);
                     dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.changeAction((KeyEvent)msg.obj, KeyEvent.ACTION_UP));
                     break;
@@ -648,6 +652,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     "fancy_rotation_anim"), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_STATE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.SCREENSAVER_ENABLED), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1255,76 +1263,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mExternalDisplayWidth = mDisplay.getRawExternalWidth();
         mExternalDisplayHeight = mDisplay.getRawExternalHeight();
 
-        mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.status_bar_height);
+        getDimensions();
 
-        // Height of the navigation bar when presented horizontally at bottom
-        mNavigationBarHeightForRotation[mPortraitRotation] =
-        mNavigationBarHeightForRotation[mUpsideDownRotation] =
-                mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_height);
-        mNavigationBarHeightForRotation[mLandscapeRotation] =
-        mNavigationBarHeightForRotation[mSeascapeRotation] =
-                mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_height_landscape);
+        int sysLayout = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout", "0"));
 
-        // Width of the navigation bar when presented vertically along one side
-        mNavigationBarWidthForRotation[mPortraitRotation] =
-        mNavigationBarWidthForRotation[mUpsideDownRotation] =
-        mNavigationBarWidthForRotation[mLandscapeRotation] =
-        mNavigationBarWidthForRotation[mSeascapeRotation] =
-                mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_width);
-
-        // SystemUI (status bar) layout policy
-        int shortSizeDp = shortSize
-                * DisplayMetrics.DENSITY_DEFAULT
-                / DisplayMetrics.DENSITY_DEVICE;
-
-        if (shortSizeDp < 600) {
+        if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
             mNavigationBarCanMove = true;
-        } else if (shortSizeDp < 720) {
+        } else if (sysLayout < 720) {
             // 600-719dp: "phone" UI with modifications for larger screens
             mHasSystemNavBar = false;
             mNavigationBarCanMove = false;
-        } else {
+        } else if (sysLayout >= 720) {
             // 720dp: "tablet" UI with a single combined status & navigation bar
             mHasSystemNavBar = true;
             mNavigationBarCanMove = false;
         }
 
-        if (!mHasSystemNavBar) {
-            mHasNavigationBar = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
-            // Allow a system property to override this. Used by the emulator.
-            // See also hasNavigationBar().
-            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
-            if (! "".equals(navBarOverride)) {
-                if      (navBarOverride.equals("1")) mHasNavigationBar = false;
-                else if (navBarOverride.equals("0")) mHasNavigationBar = true;
-            }
-        } else {
-            mHasNavigationBar = false;
-        }
+        mHasNavigationBar = !mHasSystemNavBar;
 
         if (mHasSystemNavBar) {
-            // The system bar is always at the bottom.  If you are watching
-            // a video in landscape, we don't need to hide it if we can still
-            // show a 16:9 aspect ratio with it.
-            int longSizeDp = longSize
-                    * DisplayMetrics.DENSITY_DEFAULT
-                    / DisplayMetrics.DENSITY_DEVICE;
-            int barHeightDp = mNavigationBarHeightForRotation[mLandscapeRotation]
-                    * DisplayMetrics.DENSITY_DEFAULT
-                    / DisplayMetrics.DENSITY_DEVICE;
-            int aspect = ((shortSizeDp-barHeightDp) * 16) / longSizeDp;
-            // We have computed the aspect ratio with the bar height taken
-            // out to be 16:aspect.  If this is less than 9, then hiding
-            // the navigation bar will provide more useful space for wide
-            // screen movies.
-            mCanHideNavigationBar = aspect < 9;
+            mCanHideNavigationBar = true;
         } else if (mHasNavigationBar) {
             // The navigation bar is at the right in landscape; it seems always
             // useful to hide it for showing a video.
@@ -1337,6 +1297,42 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mHdmiRotation = mPortraitRotation;
         } else {
             mHdmiRotation = mLandscapeRotation;
+        }
+    }
+
+    public void getDimensions(){
+        int sysDpi = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.dpi", "0"));
+        if (sysDpi == 0) sysDpi = DisplayMetrics.DENSITY_DEVICE;
+
+        mStatusBarHeight = Math.round((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+
+        // Height of the navigation bar when presented horizontally at bottom
+        mNavigationBarHeightForRotation[mPortraitRotation] =
+        mNavigationBarHeightForRotation[mUpsideDownRotation] =
+                Math.round((float)mContext.getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_height) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+        mNavigationBarHeightForRotation[mLandscapeRotation] =
+        mNavigationBarHeightForRotation[mSeascapeRotation] =
+                Math.round((float)mContext.getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_height_landscape) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+
+        // Width of the navigation bar when presented vertically along one side
+        mNavigationBarWidthForRotation[mPortraitRotation] =
+        mNavigationBarWidthForRotation[mUpsideDownRotation] =
+        mNavigationBarWidthForRotation[mLandscapeRotation] =
+        mNavigationBarWidthForRotation[mSeascapeRotation] =
+                Math.round((float)mContext.getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_width) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+
+        // In case that we removed nav bar, set all sizes to 0 again
+        if(!mHasNavigationBar){
+            if(!mHasSystemNavBar || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1){
+                mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] =               
+                mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] = 
+                mNavigationBarHeightForRotation[mPortraitRotation] = mNavigationBarHeightForRotation[mUpsideDownRotation] =  
+                mNavigationBarHeightForRotation[mLandscapeRotation] = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+            }
         }
     }
 
@@ -1354,6 +1350,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
+
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
+
+            getDimensions();
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
@@ -2050,6 +2050,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     public long interceptKeyBeforeDispatching(WindowState win, KeyEvent event, int policyFlags) {
         final boolean keyguardOn = keyguardOn();
         final int keyCode = event.getKeyCode();
+        final int scanCode = event.getScanCode();
         final int repeatCount = event.getRepeatCount();
         final int metaState = event.getMetaState();
         final int flags = event.getFlags();
@@ -2104,6 +2105,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // it handle it, because that gives us the correct 5 second
         // timeout.
         if (keyCode == KeyEvent.KEYCODE_HOME) {
+            //Ignore the Home key if we disabled it
+            if (scanCode != 0 && Settings.System.getInt(mContext.getContentResolver(), Settings.System.KEY_HOME_ENABLED, 1) == 0) {
+                Log.i(TAG, "Ignoring HOME; Disabled via Settings");
+                return -1;
+            }
 
             // If we have released the home key, and didn't do anything else
             // while it was pressed, then it is time to go home!
@@ -3338,7 +3344,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                if (topIsFullscreen) {
+                if (topIsFullscreen || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
@@ -3629,6 +3635,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
         final boolean canceled = event.isCanceled();
         int keyCode = event.getKeyCode();
+        int scanCode = event.getScanCode();
 
         final boolean isInjected = (policyFlags & WindowManagerPolicy.FLAG_INJECTED) != 0;
 
@@ -3644,6 +3651,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (!mSystemBooted) {
             // If we have not yet booted, don't let key events do anything.
             return 0;
+        }
+
+        //Ignore Menu key if it is disabled in Settings
+        if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_MENU) {
+            if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.KEY_MENU_ENABLED, 1) == 0) {
+                Log.i(TAG, "Ignoring Menu Key: Disabled via Settings");
+                return 0;
+            }
+        }
+
+        //Ignore Back key if it is disabled in Settings
+        if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.KEY_BACK_ENABLED, 1) == 0) {
+                Log.i(TAG, "Ignoring Menu Key: Disabled via Settings");
+                return 0;
+            }
         }
 
         if (DEBUG_INPUT) {
@@ -4201,7 +4224,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         + "); user=" + mUserRotation + " "
                         + ((mUserRotationMode == WindowManagerPolicy.USER_ROTATION_LOCKED)
                             ? "USER_ROTATION_LOCKED" : "")
-                        );
+                       );
         }
 
         synchronized (mLock) {
@@ -4875,10 +4898,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return diff;
     }
 
-    // Use this instead of checking config_showNavigationBar so that it can be consistently
-    // overridden by qemu.hw.mainkeys in the emulator.
+    /** 
+     * We leave navigation bar management to PhoneWindowManager, in order to
+     * inflate navigation bar from early boot, avoiding inconvenients
+     */
     public boolean hasNavigationBar() {
-        return mHasNavigationBar;
+        return true;
+    }
+    
+    /** 
+     * Used to detect whether if device has hardware keys or not (navigation bar)
+     * @return true if device has hardware keys
+     */
+    public boolean hasHardwareKeys() {
+        return !mContext.getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
     }
 
     @Override

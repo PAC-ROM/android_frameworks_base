@@ -452,6 +452,11 @@ public class BridgeWindowManager implements IWindowManager {
     }
 
     @Override
+    public boolean hasHardwareKeys() {
+        return false; // stub because we implement IWindowManager interface
+    }
+
+    @Override
     public void lockNow() {
         // TODO Auto-generated method stub
     }

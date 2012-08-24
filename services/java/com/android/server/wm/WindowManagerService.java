@@ -94,6 +94,7 @@ import android.os.SystemProperties;
 import android.os.TokenWatcher;
 import android.os.Trace;
 import android.provider.Settings;
+import android.util.ExtendedPropertiesUtils;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.FloatMath;
@@ -5476,8 +5477,8 @@ public class WindowManagerService extends IWindowManager.Stub
             throw new SecurityException("Requires READ_FRAME_BUFFER permission");
         }
 
-        Bitmap rawss;
-
+        Bitmap rawss;        
+       
         int maxLayer = 0;
         final Rect frame = new Rect();
 
@@ -5603,13 +5604,19 @@ public class WindowManagerService extends IWindowManager.Stub
             rawss = Surface.screenshot(dw, dh, 0, maxLayer);
         }
 
+        int sysDpi = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.dpi", "0"));
+        sysDpi = sysDpi != 0 ? sysDpi : DisplayMetrics.DENSITY_DEVICE;
+
         if (rawss == null) {
             Slog.w(TAG, "Failure taking screenshot for (" + dw + "x" + dh
                     + ") to layer " + maxLayer);
             return null;
         }
+        else
+            rawss.setDefaultDensity(sysDpi);
 
         Bitmap bm = Bitmap.createBitmap(width, height, rawss.getConfig());
+        bm.setDefaultDensity(sysDpi);
         Matrix matrix = new Matrix();
         ScreenRotationAnimation.createRotationMatrix(rot, dw, dh, matrix);
         matrix.postTranslate(-FloatMath.ceil(frame.left*scale), -FloatMath.ceil(frame.top*scale));
@@ -9593,6 +9600,11 @@ public class WindowManagerService extends IWindowManager.Stub
     @Override
     public boolean hasNavigationBar() {
         return mPolicy.hasNavigationBar();
+    }
+
+    @Override
+    public boolean hasHardwareKeys() {
+        return mPolicy.hasHardwareKeys();
     }
 
     public void lockNow() {

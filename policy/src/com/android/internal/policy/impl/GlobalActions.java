@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
  * Copyright (C) 2010-2012 CyanogenMod Project
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,8 +109,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private IWindowManager mIWindowManager;
     private Profile mChosenProfile;
-
-    private static final String POWER_MENU_SCREENSHOT_ENABLED = "power_menu_screenshot_enabled";
 
     /**
      * @param context everything needs a context :(
@@ -307,11 +306,31 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         // next: screenshot
         // only shown if enabled, disabled by default
         if (Settings.System.getInt(mContext.getContentResolver(),
-                POWER_MENU_SCREENSHOT_ENABLED, 0) == 1) {
+                Settings.System.POWER_MENU_SCREENSHOT_ENABLED, 0) == 1) {
             mItems.add(
                 new SinglePressAction(R.drawable.ic_lock_screenshot, R.string.global_action_screenshot) {
                     public void onPress() {
                         takeScreenshot();
+                    }
+
+                    public boolean showDuringKeyguard() {
+                        return true;
+                    }
+
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
+        }
+
+        // next: expanded desktop
+        // only shown if enabled, enabled by default
+        if(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1) == 1){
+            mItems.add(
+                new SinglePressAction(R.drawable.ic_lock_statusbar, R.string.global_action_statusbar_status) {
+                    public void onPress() {
+                        Settings.System.putInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 1) == 1 ? 0 : 1);
                     }
 
                     public boolean showDuringKeyguard() {

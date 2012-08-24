@@ -205,6 +205,11 @@ interface IWindowManager
     boolean hasNavigationBar();
 
     /**
+     * Device has hardware keys.
+     */
+    boolean hasHardwareKeys();
+
+    /**
      * Lock the device immediately.
      */
     void lockNow();

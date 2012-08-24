@@ -802,6 +802,8 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.LOCK_BIOMETRIC_WEAK_FLAGS);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_VISIBLE);
+            MOVED_TO_SECURE.add(Secure.LOCK_SHOW_ERROR_PATH);
+            MOVED_TO_SECURE.add(Secure.LOCK_DOTS_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOGGING_ID);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
@@ -2373,12 +2375,39 @@ public final class Settings {
         public static final String WIDGET_BUTTONS_TABLET = "expanded_widget_buttons_tablet";
 
         /**
+         * Navigation bar, whether to show or hide
+         * @hide
+         */
+        public static final String NAV_BAR_STATUS = "nav_bar_status";
 
+
+        /**
          * Navigation controls to Use
          *
          * @hide
          */
         public static final String NAV_BUTTONS = "nav_buttons";
+
+        /**
+         * Enable Menu key
+         *
+         * @hide
+         */
+        public static final String KEY_MENU_ENABLED = "key_menu_enabled";
+
+        /**
+         * Enable Back key
+         *
+         * @hide
+         */
+        public static final String KEY_BACK_ENABLED = "key_back_enabled";
+
+        /**
+         * Enable Home key
+         *
+         * @hide
+         */
+        public static final String KEY_HOME_ENABLED = "key_home_enabled";
 
         /**
         * Notification Power Widget - Custom Brightness Mode
@@ -2422,6 +2451,12 @@ public final class Settings {
         * @hide
         */
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
+
+        /**
+        * Number of notification symbols
+        * @hide
+        */
+        public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
 
         /**
          * Display style of AM/PM next to clock in status bar
@@ -2475,6 +2510,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
+
+        /**
+         * Statusbar State
+         * @hide
+         */
+        public static final String STATUSBAR_STATE = "statusbar_state";
+
 
         /**
          * Whether to use a separate delay for "slide to unlock" and security
@@ -2685,10 +2727,16 @@ public final class Settings {
         public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
 
         /**
-         * Whether the power menu reboot menu is enabled
+         * Whether power menu reboot options are enabled
          * @hide
          */
         public static final String POWER_MENU_REBOOT_ENABLED = "power_menu_reboot_enabled";
+        
+        /**
+         * Whether power menu expanded desktop is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
 
         /**
          * Whether power menu screenshot is enabled
@@ -3114,6 +3162,8 @@ public final class Settings {
             MOVED_TO_LOCK_SETTINGS = new HashSet<String>(3);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_VISIBLE);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_SHOW_ERROR_PATH);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_DOTS_VISIBLE);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_BEFORE_UNLOCK);
         }
@@ -3586,6 +3636,18 @@ public final class Settings {
          */
         public static final String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED =
             "lock_pattern_tactile_feedback_enabled";
+
+        /**
+         * Whether lock pattern will show dots (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_DOTS_VISIBLE = "lock_pattern_dotsvisible";
+
+        /**
+         * Whether lockscreen error pattern is visible (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_SHOW_ERROR_PATH = "lock_pattern_show_error_path";
 
         /**
          * This preference allows the device to be locked given time after screen goes off,

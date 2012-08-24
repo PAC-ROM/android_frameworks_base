@@ -65,6 +65,7 @@ public class Clock extends TextView {
 
     private int mAmPmStyle;
     private boolean mShowClock;
+    private boolean mShowAlways;
 
     Handler mHandler;
 
@@ -96,6 +97,9 @@ public class Clock extends TextView {
 
     public Clock(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        
+        TypedArray a = context.obtainStyledAttributes(attrs, com.android.systemui.R.styleable.Clock, defStyle, 0);
+        mShowAlways = a.getBoolean(com.android.systemui.R.styleable.Clock_showAlways, false);
 
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
@@ -255,7 +259,7 @@ public class Clock extends TextView {
         mShowClock = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_CLOCK, 1) == 1);
 
-        if(mShowClock)
+        if(mShowClock || mShowAlways)
             setVisibility(View.VISIBLE);
         else
             setVisibility(View.GONE);

@@ -309,7 +309,7 @@ public class ViewConfiguration {
         if (!sHasPermanentMenuKeySet) {
             IWindowManager wm = Display.getWindowManager();
             try {
-                sHasPermanentMenuKey = !wm.hasSystemNavBar() && !wm.hasNavigationBar();
+                sHasPermanentMenuKey = wm.hasHardwareKeys();
                 sHasPermanentMenuKeySet = true;
             } catch (RemoteException ex) {
                 sHasPermanentMenuKey = false;
@@ -700,11 +700,15 @@ public class ViewConfiguration {
         // be controlled with a system setting
         int showOverflowButton = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.UI_FORCE_OVERFLOW_BUTTON, 0);
+                Settings.System.UI_FORCE_OVERFLOW_BUTTON, sHasPermanentMenuKey ? 0 : 1);
         if (showOverflowButton == 1) {
             // Force overflow button on by reporting that
             // the device has no permanent menu key
             return false;
+        } else if(showOverflowButton == 0) {
+            // Force overflow button off by reporting that
+            // the device has permanent menu key
+            return true;
         } else {
             return sHasPermanentMenuKey;
         }

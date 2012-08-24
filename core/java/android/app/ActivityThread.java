@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
  * This code has been modified.  Portions copyright (C) 2010, T-Mobile USA, Inc.
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +81,7 @@ import android.os.UserId;
 import android.util.AndroidRuntimeException;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.LogPrinter;
 import android.util.PrintWriterPrinter;
@@ -1611,6 +1613,8 @@ public final class ActivityThread {
 
         AssetManager assets = new AssetManager();
         assets.setThemeSupport(compInfo.isThemeable);
+        assets.overrideHook(resDir, ExtendedPropertiesUtils.OverrideMode.FullNameExclude);
+
         if (assets.addAssetPath(resDir) == 0) {
             return null;
         }
@@ -1629,6 +1633,7 @@ public final class ActivityThread {
 
         //Slog.i(TAG, "Resource: key=" + key + ", display metrics=" + metrics);
         DisplayMetrics metrics = getDisplayMetricsLocked(null, false);
+        metrics.overrideHook(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         r = new Resources(assets, metrics, getConfiguration(), compInfo);
         if (false) {
             Slog.i(TAG, "Created app resources " + resDir + " " + r + ": "
@@ -2842,11 +2847,10 @@ public final class ActivityThread {
                 int h;
                 if (w < 0) {
                     Resources res = r.activity.getResources();
-                    mThumbnailHeight = h =
-                        res.getDimensionPixelSize(com.android.internal.R.dimen.thumbnail_height);
-
                     mThumbnailWidth = w =
-                        res.getDimensionPixelSize(com.android.internal.R.dimen.thumbnail_width);
+                        res.getDimensionPixelSize(ExtendedPropertiesUtils.mIsTablet ? com.android.internal.R.dimen.thumbnail_width_tablet : com.android.internal.R.dimen.thumbnail_width);
+                    mThumbnailHeight = h =
+                        res.getDimensionPixelSize(ExtendedPropertiesUtils.mIsTablet ? com.android.internal.R.dimen.thumbnail_height_tablet : com.android.internal.R.dimen.thumbnail_height);
                 } else {
                     h = mThumbnailHeight;
                 }
@@ -4069,6 +4073,8 @@ public final class ActivityThread {
     private void handleBindApplication(AppBindData data) {
         mBoundApplication = data;
         mConfiguration = new Configuration(data.config);
+        mConfiguration.active = true;
+        mConfiguration.overrideHook(data.processName, ExtendedPropertiesUtils.OverrideMode.PackageName);
         mCompatConfiguration = new Configuration(data.config);
 
         mProfiler = new Profiler();
@@ -4881,6 +4887,7 @@ public final class ActivityThread {
         HardwareRenderer.disable(true);
         ActivityThread thread = new ActivityThread();
         thread.attach(true);
+        ContextImpl.init(thread);
         return thread;
     }
 
@@ -4917,6 +4924,7 @@ public final class ActivityThread {
 
         ActivityThread thread = new ActivityThread();
         thread.attach(false);
+        ContextImpl.init(thread);
 
         AsyncTask.init();
 

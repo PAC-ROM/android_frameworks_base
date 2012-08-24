@@ -1303,6 +1303,7 @@
     <string name="wildcardProfile">Otro</string>
     <string name="reboot_system" product="tablet">"Reiniciar tablet"</string>
     <string name="global_action_screenshot">"Captura de pantalla"</string>
+    <string name="global_action_statusbar_status">Escritorio expandido</string>
     <string name="reboot_reboot">"Reiniciar"</string>
     <string name="reboot_recovery">"Modo Recovery"</string>
     <string name="reboot_bootloader">"Modo Bootloader"</string>
@@ -1368,4 +1369,5 @@
     <string name="weather_no_data">Sin datos</string>
     <string name="weather_tap_to_refresh">Toca para refrescar</string>
     <string name="weather_refreshing">Actualizando</string>
+    <string name="weather_last_sync_just_now">Ahora mismo</string>
 </resources>

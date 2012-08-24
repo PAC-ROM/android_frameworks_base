@@ -35,7 +35,7 @@
         android:visibility="invisible" />
     <FrameLayout
         android:id="@+id/recents_bg_protect"
-        android:background="@drawable/recents_bg_protect_tile"
+        android:background="@drawable/status_bar_recents_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
