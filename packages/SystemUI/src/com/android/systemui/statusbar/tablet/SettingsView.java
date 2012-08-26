@@ -125,6 +125,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     public SettingsView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = getContext();
+
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
