@@ -44,6 +44,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -210,6 +211,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     public Context getContext() { return mContext; }
 
+    // storage
+    private StorageManager mStorageManager;
+
     private Runnable mShowSearchPanel = new Runnable() {
         public void run() {
             showSearchPanel();
@@ -303,6 +307,11 @@ public class TabletStatusBar extends BaseStatusBar implements
         mConfigHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mConfigHandler);
         settingsObserver.observe();
+
+        // storage
+        mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        mStorageManager.registerListener(
+                new com.android.systemui.usb.StorageNotification(mContext));
 
         // Notification Panel
         mNotificationPanel = (NotificationPanel)View.inflate(context,
@@ -468,7 +477,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         mRecreating = true;
         // waiting for a cm fix
         try {Runtime.getRuntime().exec("killall com.android.systemui");} catch (Exception ex) {}
-        mRecreating = false;       
+        mRecreating = false;
     }
 
 
@@ -542,7 +551,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
 
         int numOriginalIcons = res.getInteger(R.integer.config_maxNotificationIcons);
-        final int numIcons = numOriginalIcons == 2 ? Settings.System.getInt(mContext.getContentResolver(), 
+        final int numIcons = numOriginalIcons == 2 ? Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.MAX_NOTIFICATION_ICONS, 2) : numOriginalIcons;
         
         if (numIcons != mMaxNotificationIcons) {
@@ -555,7 +564,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     public View getStatusBarView() {
         return mStatusBarView;
     }
- 
+
     protected View makeStatusBarView() {
         final Context context = mContext;
 
@@ -632,10 +641,10 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         mRecentButton.setOnLongClickListener(new OnLongClickListener() {
             public boolean onLongClick(View v) {
-                try { 
-                    Runtime.getRuntime().exec("input keyevent 82"); 
+                try {
+                    Runtime.getRuntime().exec("input keyevent 82");
                 } catch (Exception ex) { }
-                mButtonBusy = false;                        
+                mButtonBusy = false;
                 return true;        
             }
         });
@@ -653,7 +662,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                     }
                 } else
                     mButtonBusy = true;
-            } 
+            }
         });
 
         LayoutTransition lt = new LayoutTransition();
