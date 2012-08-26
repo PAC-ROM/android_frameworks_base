@@ -33,42 +33,53 @@
         android:layout_alignParentBottom="true"
         />
 
-    <LinearLayout
-        android:id="@+id/content_frame"
-        android:background="@drawable/notification_panel_bg"
+    <RelativeLayout
+        android:id="@+id/content_parent"
         android:layout_height="wrap_content"
-        android:layout_width="478dp"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="8dp"
         android:layout_above="@id/system_bar_notification_panel_bottom_space"
         android:paddingBottom="8dp"
         >
 
-        <include layout="@layout/system_bar_notification_panel_title"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:layout_above="@id/content_frame"
-            android:layout_alignParentRight="true"
-            android:layout_weight="0"
-            />
-
-        <ScrollView
-
-            android:id="@+id/notification_scroller"
+        <LinearLayout
+            android:id="@+id/content_frame"
+            android:background="@drawable/notification_panel_bg"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_width="478dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="250dp"
             >
-            <com.android.systemui.statusbar.policy.NotificationRowLayout
-                android:id="@+id/content"
+
+            <include layout="@layout/system_bar_notification_panel_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|bottom"
-                android:clickable="true"
-                android:focusable="true"
-                android:descendantFocusability="afterDescendants"
-                systemui:rowHeight="@dimen/notification_row_min_height"
+                android:layout_height="130dp"
+                android:layout_above="@id/content_frame"
+                android:layout_alignParentRight="true"
+                android:layout_weight="0"
                 />
-        </ScrollView>
-    </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/notification_scroller"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                >
+                <com.android.systemui.statusbar.policy.NotificationRowLayout
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:descendantFocusability="afterDescendants"
+                    systemui:rowHeight="@dimen/notification_row_min_height"
+                    />
+            </ScrollView>
+        </LinearLayout>
+    </RelativeLayout>
 </com.android.systemui.statusbar.tablet.NotificationPanel>
+
