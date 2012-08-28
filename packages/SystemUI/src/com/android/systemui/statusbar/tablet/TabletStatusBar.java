@@ -44,7 +44,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -211,8 +210,6 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     public Context getContext() { return mContext; }
 
-    // storage
-    private StorageManager mStorageManager;
 
     private Runnable mShowSearchPanel = new Runnable() {
         public void run() {
@@ -307,11 +304,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mConfigHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mConfigHandler);
         settingsObserver.observe();
-
-        // storage
-        mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
-        mStorageManager.registerListener(
-                new com.android.systemui.usb.StorageNotification(mContext));
 
         // Notification Panel
         mNotificationPanel = (NotificationPanel)View.inflate(context,
@@ -452,11 +444,10 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     private int getNotificationPanelHeight() {
-        final Resources res = mContext.getResources();
+        Resources res = mContext.getResources();
         final Display d = WindowManagerImpl.getDefault().getDefaultDisplay();
-        final Point size = new Point();
-        d.getRealSize(size);
-        return Math.max(res.getDimensionPixelSize(R.dimen.notification_panel_min_height), size.y);
+        int maxHeight = d.getHeight() - 25;
+        return maxHeight;
     }
 
     @Override
