@@ -1660,7 +1660,7 @@ class ContextImpl extends Context {
                 } else {
                     // We're dealing with "android" package. This is framework itself
                     ExtendedPropertiesUtils.mGlobalHook.name = "android";
-                    ExtendedPropertiesUtils.mGlobalHook.path = "/system/app";
+                    ExtendedPropertiesUtils.mGlobalHook.path = "";
                     ExtendedPropertiesUtils.setAppConfiguration(ExtendedPropertiesUtils.mGlobalHook);
                 }
             } catch (Exception e) { 

@@ -414,7 +414,8 @@ public class Display {
         outMetrics.scaledDensity = outMetrics.noncompatScaledDensity = outMetrics.density;
         outMetrics.xdpi = outMetrics.noncompatXdpi = mDpiX;
         outMetrics.ydpi = outMetrics.noncompatYdpi = mDpiY;
-        outMetrics.paranoidHook();
+        if (outMetrics.isHooked())
+            outMetrics.paranoidHook();
     }
 
     static IWindowManager getWindowManager() {

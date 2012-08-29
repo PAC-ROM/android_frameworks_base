@@ -103,9 +103,9 @@ public class ExtendedPropertiesUtils {
             // missing from configuration.
             boolean isSystemApp = info.path.contains("system/app");
             int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-                "system_default_dpi" : "user_default_dpi")));
+                "system_default_dpi" : (info.path.length() == 0 ? "0" : "user_default_dpi"))));
             int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
-                "system_default_layout" : "user_default_layout")));
+                "system_default_layout" : (info.path.length() == 0 ? "0" : "user_default_layout"))));
 
             // Layout fetching.
             info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
@@ -402,7 +402,7 @@ public class ExtendedPropertiesUtils {
         return result;
     }
     
-    public void toString(String msg) {
+    public void debugOut(String msg) {
         Log.i(TAG + msg, "Init=" + (mMainThread != null && mContext != null && 
             mPackageManager != null) + " App=" + getName() + " Dpi=" + getDpi() + 
             " Layout=" + getLayout());

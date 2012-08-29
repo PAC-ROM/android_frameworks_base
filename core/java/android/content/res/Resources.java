@@ -220,7 +220,6 @@ public class Resources extends ExtendedPropertiesUtils {
             if (ret == null) {
                 ret = new Resources();
                 mSystem = ret;
-                mSystem.paranoidHook();
             }
 
             return ret;

@@ -1267,7 +1267,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         getDimensions();
 
-        int sysLayout = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout", "0"));
+        int sysLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
 
         if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
@@ -1303,29 +1303,40 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     public void getDimensions(){
-        int sysDpi = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.dpi", "0"));
-        if (sysDpi == 0) sysDpi = DisplayMetrics.DENSITY_DEVICE;
+        // Get actual system DPI and actual sysUI DPI
+        // Needed to first calculate values independend of android scaling, then calculate scaling according to sysUI
+        int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
+        int sysUIDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
+        
+        float statusBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
+            com.android.internal.R.dimen.status_bar_height) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
-        mStatusBarHeight = Math.round((float)mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.status_bar_height) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+        float navigationBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
+            com.android.internal.R.dimen.navigation_bar_height) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        float navigationBarWidth = ((float)mContext.getResources().getDimensionPixelSize(
+            com.android.internal.R.dimen.navigation_bar_width) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        float navigationBarHeightLandscape = ((float)mContext.getResources().getDimensionPixelSize(
+            com.android.internal.R.dimen.navigation_bar_height_landscape) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        mStatusBarHeight = Math.round(statusBarHeight);
 
         // Height of the navigation bar when presented horizontally at bottom
-        mNavigationBarHeightForRotation[mPortraitRotation] =
-        mNavigationBarHeightForRotation[mUpsideDownRotation] =
-                Math.round((float)mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_height) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+        mNavigationBarHeightForRotation[mPortraitRotation] = 
+            mNavigationBarHeightForRotation[mUpsideDownRotation] = Math.round(navigationBarHeight);
+
         mNavigationBarHeightForRotation[mLandscapeRotation] =
-        mNavigationBarHeightForRotation[mSeascapeRotation] =
-                Math.round((float)mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_height_landscape) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+            mNavigationBarHeightForRotation[mSeascapeRotation] = Math.round(navigationBarHeightLandscape);
 
         // Width of the navigation bar when presented vertically along one side
-        mNavigationBarWidthForRotation[mPortraitRotation] =
-        mNavigationBarWidthForRotation[mUpsideDownRotation] =
-        mNavigationBarWidthForRotation[mLandscapeRotation] =
-        mNavigationBarWidthForRotation[mSeascapeRotation] =
-                Math.round((float)mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_width) / DisplayMetrics.DENSITY_DEVICE * sysDpi);
+        mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] =
+            mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] =
+            Math.round(navigationBarWidth);
 
         // In case that we removed nav bar, set all sizes to 0 again
         if(!mHasNavigationBar){
