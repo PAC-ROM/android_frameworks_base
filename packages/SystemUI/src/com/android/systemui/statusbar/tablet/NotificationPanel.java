@@ -309,17 +309,6 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     void addSettingsView() {
         LayoutInflater infl = LayoutInflater.from(getContext());
         mSettingsView = infl.inflate(R.layout.system_bar_settings_view, mContentFrame, false);
-
-        // set height
-        mSettingsView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int currentHeight = mSettingsView.getMeasuredHeight();
-        WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display d = wm.getDefaultDisplay();
-        int maxHeight = d.getHeight() - mTitleArea.getHeight();
-        currentHeight = Math.min(currentHeight, maxHeight);
-
-        mSettingsView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, currentHeight));
-
         mSettingsView.setVisibility(View.GONE);
         mContentFrame.addView(mSettingsView);
     }
