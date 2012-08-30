@@ -31,26 +31,6 @@
 namespace android {
 
 /*
- * Let's stop kanging
- */
-bool isParanoidRom()
-{
-    FILE* file = fopen(BUILD_PROP, "r");
-    if(file == NULL)
-        return false;
-
-    fseek(file, 0, SEEK_END);
-    long int size = ftell(file);
-    rewind(file);
-
-    char* content = (char*) calloc(size + 1, 1);
-
-    fread(content,1,size,file);
-
-    return (strstr(content, "ro.cm.version=PARANOIDANDROID") != NULL && strstr(content, "aokp") == NULL && strstr(content, "ro.modversion=PARANOIDANDROID") != NULL);
-}
-
-/*
  *  In class android.util.ExtendedPropertiesUtils:
  *  public static native String readFile(String msg)
  */
@@ -69,12 +49,7 @@ static jstring android_util_ExtendedPropertiesUtils_readFile(JNIEnv* env, jobjec
 
     fread(content,1,size,file);
 
-    if(isParanoidRom())
-        return env->NewStringUTF(content);
-    else{
-        jniThrowException(env, "java/lang/SecurityException", "This ROM is not ParanoidAndroid");
-        return NULL;
-    }
+    return env->NewStringUTF(content);
 }
 
 /*
@@ -90,7 +65,6 @@ int register_android_util_ExtendedPropertiesUtils(JNIEnv* env)
     jclass clazz = env->FindClass("android/util/ExtendedPropertiesUtils");
 
     if (clazz == NULL) {
-        //LOGE("Can't find android/util/ExtendedPropertiesUtils");
         return -1;
     }
 
