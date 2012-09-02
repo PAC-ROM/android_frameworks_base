@@ -889,7 +889,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                             Intent intent = new Intent("android.intent.action.MAIN");
                             intent.putExtra("package", ad.packageName);
                             intent.putExtra("appname", ad.getLabel().toString());
-                            intent.putExtra("fullFilename", appInfo.sourceDir);
+                            intent.putExtra("filename", appInfo.sourceDir);
                             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.setComponent(new ComponentName("com.paranoid.preferences", "com.paranoid.preferences.hybrid.ViewPagerActivity"));
