@@ -2380,9 +2380,6 @@
   <public type="dimen" name="app_icon_size" id="0x01050000" />
   <public type="dimen" name="thumbnail_height" id="0x01050001" />
   <public type="dimen" name="thumbnail_width" id="0x01050002" />
-  <public type="dimen" name="thumbnail_height_tablet" id="0x0105000e" />
-  <public type="dimen" name="thumbnail_width_tablet" id="0x0105000f" />
-
 
   <public type="color" name="darker_gray" id="0x01060000" />
   <public type="color" name="primary_text_dark" id="0x01060001" />

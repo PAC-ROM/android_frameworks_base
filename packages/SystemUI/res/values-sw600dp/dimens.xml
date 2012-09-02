@@ -35,8 +35,4 @@
 
     <!-- Height of search panel including navigation bar height -->
     <dimen name="navbar_search_panel_height">280dip</dimen>
-
-    <!-- Size of application thumbnail -->
-    <dimen name="status_bar_recents_thumbnail_width">240dp</dimen>
-    <dimen name="status_bar_recents_thumbnail_height">180dp</dimen>
 </resources>

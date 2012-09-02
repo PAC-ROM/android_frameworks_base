@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+/* //device/apps/common/assets/res/any/dimens.xml
 **
 ** Copyright 2012, The Android Open Source Project
 **
@@ -17,10 +18,13 @@
 */
 -->
 <resources>
+    <!-- The width that is used when creating thumbnails of applications. -->
+    <dimen name="thumbnail_width">230dp</dimen>
+    <!-- The height that is used when creating thumbnails of applications. -->
+    <dimen name="thumbnail_height">210dp</dimen>
     <!-- Height of the bottom navigation bar in portrait; on sw720dp devices
          this is the same as the height in landscape -->
     <dimen name="navigation_bar_height_portrait">@dimen/navigation_bar_height</dimen>
-
     <!-- The platform's desired fixed width for a dialog along the major axis
          (the screen is in landscape). This may be either a fraction or a dimension.-->
     <item type="dimen" name="dialog_fixed_width_major">50%</item>
@@ -33,12 +37,6 @@
     <!-- The platform's desired fixed height for a dialog along the minor axis
          (the screen is in landscape). This may be either a fraction or a dimension.-->
     <item type="dimen" name="dialog_fixed_height_minor">90%</item>
-
-    <!-- The width that is used when creating thumbnails of applications. -->
-    <dimen name="thumbnail_width">230dp</dimen>
-    <!-- The height that is used when creating thumbnails of applications. -->
-    <dimen name="thumbnail_height">135dp</dimen>
-
     <!-- Preference activity, vertical padding for the header list -->
     <dimen name="preference_screen_header_vertical_padding">32dp</dimen>
     <dimen name="preference_screen_side_margin">0dp</dimen>

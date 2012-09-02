@@ -5477,8 +5477,8 @@ public class WindowManagerService extends IWindowManager.Stub
             throw new SecurityException("Requires READ_FRAME_BUFFER permission");
         }
 
-        Bitmap rawss;        
-       
+        Bitmap rawss;
+
         int maxLayer = 0;
         final Rect frame = new Rect();
 
@@ -5604,26 +5604,19 @@ public class WindowManagerService extends IWindowManager.Stub
             rawss = Surface.screenshot(dw, dh, 0, maxLayer);
         }
 
-        int sysDpi = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.dpi", "0"));
-        sysDpi = sysDpi != 0 ? sysDpi : DisplayMetrics.DENSITY_DEVICE;
-
         if (rawss == null) {
             Slog.w(TAG, "Failure taking screenshot for (" + dw + "x" + dh
                     + ") to layer " + maxLayer);
             return null;
         }
-        else
-            rawss.setDefaultDensity(sysDpi);
 
         Bitmap bm = Bitmap.createBitmap(width, height, rawss.getConfig());
-        bm.setDefaultDensity(sysDpi);
         Matrix matrix = new Matrix();
         ScreenRotationAnimation.createRotationMatrix(rot, dw, dh, matrix);
         matrix.postTranslate(-FloatMath.ceil(frame.left*scale), -FloatMath.ceil(frame.top*scale));
         Canvas canvas = new Canvas(bm);
         canvas.drawBitmap(rawss, matrix, null);
         canvas.setBitmap(null);
-
         rawss.recycle();
         return bm;
     }

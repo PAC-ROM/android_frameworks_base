@@ -2847,10 +2847,11 @@ public final class ActivityThread {
                 int h;
                 if (w < 0) {
                     Resources res = r.activity.getResources();
-                    mThumbnailWidth = w =
-                        res.getDimensionPixelSize(ExtendedPropertiesUtils.mIsTablet ? com.android.internal.R.dimen.thumbnail_width_tablet : com.android.internal.R.dimen.thumbnail_width);
                     mThumbnailHeight = h =
-                        res.getDimensionPixelSize(ExtendedPropertiesUtils.mIsTablet ? com.android.internal.R.dimen.thumbnail_height_tablet : com.android.internal.R.dimen.thumbnail_height);
+                        res.getDimensionPixelSize(com.android.internal.R.dimen.thumbnail_height);
+
+                    mThumbnailWidth = w =
+                        res.getDimensionPixelSize(com.android.internal.R.dimen.thumbnail_width);
                 } else {
                     h = mThumbnailHeight;
                 }
