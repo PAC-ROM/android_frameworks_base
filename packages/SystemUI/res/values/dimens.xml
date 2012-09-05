@@ -157,6 +157,4 @@
     <!-- Height of the carrier/wifi name label -->
     <dimen name="carrier_label_height">24dp</dimen>
 
-    <!-- Bottom margin for settings view scrollview -->
-    <dimen name="settings_view_margin_bottom">15dp</dimen>
 </resources>
