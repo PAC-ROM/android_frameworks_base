@@ -690,6 +690,12 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNetworkController.addSignalCluster(mSignalCluster);
         mSignalCluster.setNetworkController(mNetworkController);
 
+        mSignalCluster = 
+                (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+
+        mNetworkController.addSignalCluster(mSignalCluster);
+        mSignalCluster.setNetworkController(mNetworkController);
+
         mHasDockBattery = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasDockBattery);
 

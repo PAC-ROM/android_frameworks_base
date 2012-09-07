@@ -4682,6 +4682,13 @@ public final class Settings {
          */
         public static final String STATUSBAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
 
+        /**
+         * use Alt Statusbar Signal Layout
+         * boolean
+         *
+         * @hide
+         */
+        public static final String STATUSBAR_SIGNAL_CLUSTER_ALT = "statusbar_signal_cluster_alt";
     }
 
     /**
