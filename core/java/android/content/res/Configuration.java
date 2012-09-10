@@ -453,15 +453,16 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      */
     public void paranoidHook() {        
         if (active) {            
-            if (getLayout() != 0) {               
+            if (getLayout() != 0) {
                 Point size = new Point();
                 mDisplay.getSize(size);
                 float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
                 screenWidthDp = getLayout();
                 screenHeightDp = (int)(screenWidthDp * factor);
                 smallestScreenWidthDp = getLayout();           
-                if (getLarge())
+                if (getLarge()) {
                     screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
+                }
             }
         }
     }

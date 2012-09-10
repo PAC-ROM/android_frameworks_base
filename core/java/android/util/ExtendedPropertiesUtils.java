@@ -150,7 +150,7 @@ public class ExtendedPropertiesUtils {
 
             switch (mode) {
                 case ExtendedProperties:
-                    tempProps = (ExtendedPropertiesUtils)input;
+                    tempProps = (ExtendedPropertiesUtils) input;
                     if (tempProps.mLocalHook.active) {
                         mLocalHook.active = tempProps.mLocalHook.active;
                         mLocalHook.pid = tempProps.mLocalHook.pid;
@@ -169,15 +169,16 @@ public class ExtendedPropertiesUtils {
                     mLocalHook.info = (ApplicationInfo)input;
                     break;
                 case FullName:
-                    mLocalHook.info = getAppInfoFromPath((String)input);
+                    mLocalHook.info = getAppInfoFromPath((String) input);
                     break;
                 case FullNameExclude:
-                    tempInfo = getAppInfoFromPath((String)input);
-                    if (tempInfo != null && (!isHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX).equals("1")))
+                    tempInfo = getAppInfoFromPath((String) input);
+                    if (tempInfo != null && (!isHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX).equals("1"))) {
                         mLocalHook.info = tempInfo;
+                    }
                     break;
                 case PackageName:
-                    mLocalHook.info = getAppInfoFromPackageName((String)input);
+                    mLocalHook.info = getAppInfoFromPackageName((String) input);
                     break;
             }
 
@@ -245,8 +246,9 @@ public class ExtendedPropertiesUtils {
         if(isInitialized()) {
             for(int i=0; mPackageList != null && i<mPackageList.size(); i++) {
                 PackageInfo p = mPackageList.get(i);
-                if (p.applicationInfo != null && p.applicationInfo.sourceDir.equals(path))
+                if (p.applicationInfo != null && p.applicationInfo.sourceDir.equals(path)) {
                     return p.applicationInfo;
+                }
             }
         }
         return null;
@@ -263,8 +265,9 @@ public class ExtendedPropertiesUtils {
         if(isInitialized()) {
             for(int i=0; mPackageList != null && i<mPackageList.size(); i++) {
                 PackageInfo p = mPackageList.get(i);
-                if (p.applicationInfo != null && p.applicationInfo.packageName.equals(packageName))
+                if (p.applicationInfo != null && p.applicationInfo.packageName.equals(packageName)) {
                     return p.applicationInfo;
+                }
             }
         }
         return null;
@@ -283,8 +286,9 @@ public class ExtendedPropertiesUtils {
             Iterator mProcessListIt = mProcessList.iterator();
             while(mProcessListIt.hasNext()) {
                 ActivityManager.RunningAppProcessInfo mAppInfo = (ActivityManager.RunningAppProcessInfo)(mProcessListIt.next());
-                if(mAppInfo.pid == pid)
+                if(mAppInfo.pid == pid) {
                     return getAppInfoFromPackageName(mAppInfo.processName);
+                }
             }
         }
         return null;
@@ -312,8 +316,9 @@ public class ExtendedPropertiesUtils {
         for(int i=0; i<props.length; i++) {
             if (!props[i].startsWith("#")) {
                 String[] pair = props[i].split("=");
-                if (pair.length == 2)
+                if (pair.length == 2) {
                     mPropertyMap.put(pair[0].trim(), pair[1].trim());
+                }
             }
         }
     }
@@ -345,19 +350,20 @@ public class ExtendedPropertiesUtils {
         try {
             if (isInitialized()) {
                 String result = mPropertyMap.get(prop);
-                if (result == null)
-                    return def;
-                if (result.startsWith(PARANOID_PREFIX))
-		    result = getProperty(result, def);
-		return result;	
+                if (result == null) return def;
+                if (result.startsWith(PARANOID_PREFIX)) {
+                    result = getProperty(result, def);
+                }
+                return result;
             } else {
                 String[] props = readFile(PARANOID_PROPERTIES).split("\n");
                 for(int i=0; i<props.length; i++) {
                     if(props[i].contains("=")) {
                         if(props[i].substring(0, props[i].lastIndexOf("=")).equals(prop)) {
                             String result = props[i].replace(prop+"=", "").trim();  
-                            if (result.startsWith(PARANOID_PREFIX))
+                            if (result.startsWith(PARANOID_PREFIX)) {
                                 result = getProperty(result, def);
+                            }
                             return result;
                         }
                     }
@@ -393,11 +399,13 @@ public class ExtendedPropertiesUtils {
             boolean isSystemApp = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
             result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
                 "system_default_layout" : "user_default_layout"))));
-        } else if (property.endsWith("_dpi") || property.endsWith("_layout"))
+        } else if (property.endsWith("_dpi") || property.endsWith("_layout")) {
             result = Integer.parseInt(getProperty(property));
+        }
 
-        if (result == 0)
+        if (result == 0) {
             result = Integer.parseInt(property.endsWith("dpi") ? getProperty("%rom_default_dpi") : getProperty("%rom_default_layout"));
+        }
 
         return result;
     }

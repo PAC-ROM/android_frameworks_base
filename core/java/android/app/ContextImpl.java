@@ -1598,8 +1598,9 @@ class ContextImpl extends Context {
                 // of vital variables used on ExtendedPropertiesUtils, may lead to crashes.
                 // Then we just set all applications to stock configuration. They will be
                 // still runned under hybrid engine.
-                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("1"))
+                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("1")) {
                     ExtendedPropertiesUtils.mIsHybridModeEnabled = true;
+                }
 
                 // Save current thread into global context
                 ExtendedPropertiesUtils.mMainThread = thread;
@@ -1610,14 +1611,16 @@ class ContextImpl extends Context {
                 // Try to get the context for the current thread. If something
                 // goes wrong, we throw an exception.
                 ContextImpl context = createSystemContext(thread);
-                if (context == null)
+                if (context == null) {
                     throw new NullPointerException();
+                }
 
                 // If we sucessfully created the context, bind it to framework
                 LoadedApk info = new LoadedApk(thread, "android", context, null,
                     CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO);
-                if (info == null)
+                if (info == null) {
                     throw new NullPointerException();
+                }
 
                 context.init(info, null, thread);
                 ExtendedPropertiesUtils.mContext = context;
@@ -1625,14 +1628,16 @@ class ContextImpl extends Context {
                 // Get default display
                 WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
                 ExtendedPropertiesUtils.mDisplay = wm.getDefaultDisplay();
-                if (ExtendedPropertiesUtils.mDisplay == null)
+                if (ExtendedPropertiesUtils.mDisplay == null) {
                     throw new NullPointerException();
+                }
                                             
                 // Load package manager, so it's accessible system wide
                 ExtendedPropertiesUtils.mPackageManager = 
                     ExtendedPropertiesUtils.mContext.getPackageManager();
-                if (ExtendedPropertiesUtils.mPackageManager == null)
+                if (ExtendedPropertiesUtils.mPackageManager == null) {
                     throw new NullPointerException();
+                }
 
                 // Get package list and fetch PID
                 ExtendedPropertiesUtils.mPackageList = 
@@ -1641,7 +1646,8 @@ class ContextImpl extends Context {
 
                 // Initialize constants to be public. mIsTablet constant returns whether if 
                 // workspace we're working on is tablet workspace, or something different
-                ExtendedPropertiesUtils.mIsTablet = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.layout")) >= 720;
+                ExtendedPropertiesUtils.mIsTablet = Integer.parseInt(ExtendedPropertiesUtils.getProperty
+                    ("com.android.systemui.layout")) >= 720;
                 ExtendedPropertiesUtils.mRomLcdDensity = SystemProperties.getInt("qemu.sf.lcd_density",
                     SystemProperties.getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
 
