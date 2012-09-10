@@ -61,6 +61,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.view.accessibility.AccessibilityEvent;
@@ -283,6 +284,8 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_TABUI_MENU), false, this);
         }
 
         @Override
@@ -631,15 +634,26 @@ public class TabletStatusBar extends BaseStatusBar implements
         mMenuButton = mNavigationArea.findViewById(R.id.menu);
         mRecentButton = mNavigationArea.findViewById(R.id.recent_apps);
 
-        mRecentButton.setOnLongClickListener(new OnLongClickListener() {
-            public boolean onLongClick(View v) {
-                try {
-                    Runtime.getRuntime().exec("input keyevent 82");
-                } catch (Exception ex) { }
-                mButtonBusy = false;
-                return true;        
-            }
-        });
+        // Whether to show the menu button separately or contained inside the recent-button to gain space
+        if (Settings.System.getInt(context.getContentResolver(), Settings.System.NAV_BAR_TABUI_MENU, 0) == 1) {
+            MarginLayoutParams marginParams = new MarginLayoutParams(mMenuButton.getLayoutParams());
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(marginParams);
+            layoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.recent_apps);
+            layoutParams.setMargins(-(context.getResources().getDimensionPixelSize(R.dimen.navigation_menu_key_width)/3), 0, 0, 0);
+            mMenuButton.setLayoutParams(layoutParams);
+            ((ImageView)mMenuButton).setImageDrawable(context.getResources().getDrawable(R.drawable.ic_sysbar_menu));
+        }
+        else {
+            mRecentButton.setOnLongClickListener(new OnLongClickListener() {
+                public boolean onLongClick(View v) {
+                    try {
+                        Runtime.getRuntime().exec("input keyevent 82");
+                    } catch (Exception ex) { }
+                    mButtonBusy = false;
+                    return true;
+                }
+            });
+        }
 
         mRecentButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {

@@ -79,7 +79,8 @@
                     <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/menu"
                         android:layout_width="@dimen/navigation_menu_key_width"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_sysbar_menu"
+                        android:src="@drawable/ic_sysbar_menu_flat"
+                        systemui:keyCode="82"
                         android:visibility="invisible"
                         android:contentDescription="@string/accessibility_menu"
                         systemui:glowBackground="@drawable/ic_sysbar_highlight"/>
