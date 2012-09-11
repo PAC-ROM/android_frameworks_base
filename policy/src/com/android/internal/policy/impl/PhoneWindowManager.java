@@ -1341,10 +1341,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // In case that we removed nav bar, set all sizes to 0 again
         if(!mHasNavigationBar){
             if(!mHasSystemNavBar || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1){
-                mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] =               
-                mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] = 
-                mNavigationBarHeightForRotation[mPortraitRotation] = mNavigationBarHeightForRotation[mUpsideDownRotation] =  
-                mNavigationBarHeightForRotation[mLandscapeRotation] = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+                mNavigationBarWidthForRotation[mPortraitRotation]
+                    = mNavigationBarWidthForRotation[mUpsideDownRotation]
+                    = mNavigationBarWidthForRotation[mLandscapeRotation]
+                    = mNavigationBarWidthForRotation[mSeascapeRotation]
+                    = mNavigationBarHeightForRotation[mPortraitRotation]
+                    = mNavigationBarHeightForRotation[mUpsideDownRotation]
+                    =  mNavigationBarHeightForRotation[mLandscapeRotation]
+                    = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
             }
         }
     }
@@ -1364,7 +1368,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
-            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
+            mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, 
+                    !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), 
+                    Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
 
             getDimensions();
 
