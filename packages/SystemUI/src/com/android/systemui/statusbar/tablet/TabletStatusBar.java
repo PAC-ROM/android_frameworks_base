@@ -534,6 +534,14 @@ public class TabletStatusBar extends BaseStatusBar implements
 
             RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                      mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            // Whether to show the menu button separately or contained inside the recent-button to gain space
+            if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_TABUI_MENU, 0) == 1) {
+                rlp.addRule(RelativeLayout.RIGHT_OF, R.id.recent_apps);
+                rlp.setMargins(-(res.getDimensionPixelSize(R.dimen.navigation_menu_key_width)/3), 0, 0, 0);
+                ((ImageView)mMenuButton).setImageDrawable(res.getDrawable(R.drawable.ic_sysbar_menu));
+            }
+
             mMenuButton.setLayoutParams(rlp);
         }
 
