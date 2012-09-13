@@ -165,6 +165,9 @@ public class TabletTicker
         if (mCurrentView != null) {
             if (mWindow != null) {
                 mWindow.removeView(mCurrentView);
+                WindowManagerImpl.getDefault().removeView(mWindow);
+                mWindow = null;
+                mBar.doneTicking();
             }
             mCurrentView = null;
             mCurrentKey = null;
