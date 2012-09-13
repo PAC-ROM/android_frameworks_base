@@ -190,15 +190,19 @@ int OpenGLRenderer::prepareDirty(float left, float top, float right, float botto
 
     syncState();
 
+#ifndef QCOM_HARDWARE
     if (!opaque) {
+#endif
         mCaches.setScissor(left, mSnapshot->height - bottom, right - left, bottom - top);
         glClear(GL_COLOR_BUFFER_BIT);
         return DrawGlInfo::kStatusDrew;
+#ifndef QCOM_HARDWARE
     } else {
         mCaches.resetScissor();
     }
 
     return DrawGlInfo::kStatusDone;
+#endif
 }
 
 void OpenGLRenderer::syncState() {
@@ -652,11 +656,6 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, sp<Snapshot> sna
     TILERENDERING_END(previousFbo);
 #endif
     glBindFramebuffer(GL_FRAMEBUFFER, layer->getFbo());
-#ifdef QCOM_HARDWARE
-    TILERENDERING_START(layer->getFbo(), clip.left, clip.top,
-                        clip.right, clip.bottom,
-                        bounds.getWidth(), bounds.getHeight());
-#endif
     layer->bindTexture();
 
     // Initialize the texture if needed
@@ -672,12 +671,9 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, sp<Snapshot> sna
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         ALOGE("Framebuffer incomplete (GL error code 0x%x)", status);
-#ifdef QCOM_HARDWARE
-        TILERENDERING_END(layer->getFbo(), true);
-#endif
         glBindFramebuffer(GL_FRAMEBUFFER, previousFbo);
 #ifdef QCOM_HARDWARE
-        TILERENDERING_START(previousFbo);
+        TILERENDERING_START(previousFbo, true);
 #endif
         layer->deleteTexture();
         mCaches.fboCache.put(layer->getFbo());
@@ -685,6 +681,12 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, sp<Snapshot> sna
 
         return false;
     }
+#endif
+
+#ifdef QCOM_HARDWARE
+    TILERENDERING_START(layer->getFbo(), clip.left, clip.top,
+                        clip.right, clip.bottom,
+                        bounds.getWidth(), bounds.getHeight());
 #endif
 
     // Clear the FBO, expand the clear region by 1 to get nice bilinear filtering
