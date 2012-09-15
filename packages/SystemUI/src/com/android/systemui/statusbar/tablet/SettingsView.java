@@ -142,18 +142,22 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         mDoNotDisturb = new DoNotDisturbController(context,
                 (CompoundButton)findViewById(R.id.do_not_disturb_checkbox));
 
-        if(mToggleContainer == null)
+        if(mToggleContainer == null){
            mToggleContainer = BUTTONS_DEFAULT;
-        if(!mToggleContainer.equals(NO_TOGGLES))
+        }
+        if(!mToggleContainer.equals(NO_TOGGLES)){
             updateToggles();
+        }
+
         findViewById(R.id.settings).setOnClickListener(this);
     }
 
     private void clearToggles() {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View v = getChildAt(i);
-            if (v.getTag() instanceof ButtonTag)
+            if (v.getTag() instanceof ButtonTag){
                 removeView(v);
+            }
         }
     }
     private void updateToggles(){
@@ -186,14 +190,18 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mAirplane != null)
+        if(mAirplane != null){
             mAirplane.release();
-        if(mGps != null)
+        }
+        if(mGps != null){
             mGps.release();
-        if(mSound != null)
+        }
+        if(mSound != null){
             mSound.release();
-        if(mRotate != null)
+        }
+        if(mRotate != null){
             mRotate.release();
+        }
         mDoNotDisturb.release();
     }
 
@@ -210,9 +218,9 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     }
 
     private void setToggleController(String id, CompoundButton checkbox, LinearLayout toggle) {
-        if(id.equals(KEY_TOGGLES[0]))
+        if(id.equals(KEY_TOGGLES[0])){
            mAirplane = new AirplaneModeController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[1])){
+        } else if(id.equals(KEY_TOGGLES[1])){
             mRotationLockContainer = toggle;
             mRotate = new AutoRotateController(mContext, checkbox,
                 new AutoRotateController.RotationLockCallbacks() {
@@ -221,44 +229,45 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
                         mRotationLockContainer.setVisibility(show ? View.VISIBLE : View.GONE);
                     }
                 });
-        }
-        else if(id.equals(KEY_TOGGLES[2]))
+        } else if(id.equals(KEY_TOGGLES[2])){
            mBluetooth = new BluetoothController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[3]))
+        } else if(id.equals(KEY_TOGGLES[3])){
            mGps = new LocationController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[4]))
+        } else if(id.equals(KEY_TOGGLES[4])){
            mWifi = new WifiController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[5]))
+        } else if(id.equals(KEY_TOGGLES[5])){
            mFlashLight = new FlashlightController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[6]))
+        } else if(id.equals(KEY_TOGGLES[6])){
            mMobileData = new MobileDataController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[7]))
+        } else if(id.equals(KEY_TOGGLES[7])){
            mNetworkMode = new NetworkModeController(mContext, checkbox);
-        else if(id.equals(KEY_TOGGLES[8]))
+        } else if(id.equals(KEY_TOGGLES[8])){
            mSound = new SoundController(mContext, checkbox);
+        }
     }
 
     private int[] getResourcesById(String id){
-        if(id.equals(KEY_TOGGLES[0]))
+        if(id.equals(KEY_TOGGLES[0])){
            return new int[]{R.drawable.ic_sysbar_airplane_on, R.string.status_bar_settings_airplane, AIRPLANE_ID};
-        else if(id.equals(KEY_TOGGLES[1]))
+        } else if(id.equals(KEY_TOGGLES[1])){
            return new int[]{R.drawable.ic_sysbar_rotate_on, R.string.status_bar_settings_auto_rotation, ROTATE_ID};
-        else if(id.equals(KEY_TOGGLES[2]))
+        } else if(id.equals(KEY_TOGGLES[2])){
            return new int[]{R.drawable.stat_sys_data_bluetooth, R.string.status_bar_settings_bluetooth_button, BLUETOOTH_ID};
-        else if(id.equals(KEY_TOGGLES[3]))
+        } else if(id.equals(KEY_TOGGLES[3])){
            return new int[]{R.drawable.stat_gps_on, R.string.status_bar_settings_location, GPS_ID};
-        else if(id.equals(KEY_TOGGLES[4]))
+        } else if(id.equals(KEY_TOGGLES[4])){
            return new int[]{R.drawable.ic_sysbar_wifi_on, R.string.status_bar_settings_wifi_button, WIFI_ID};
-        else if(id.equals(KEY_TOGGLES[5]))
+        } else if(id.equals(KEY_TOGGLES[5])){
            return new int[]{R.drawable.stat_flashlight_on, R.string.status_bar_settings_flashlight, FLASHLIGHT_ID};
-        else if(id.equals(KEY_TOGGLES[6]))
+        } else if(id.equals(KEY_TOGGLES[6])){
            return new int[]{R.drawable.stat_data_on, R.string.status_bar_settings_mobile_data, MOBILE_DATA_ID};
-        else if(id.equals(KEY_TOGGLES[7]))
+        } else if(id.equals(KEY_TOGGLES[7])){
            return new int[]{R.drawable.stat_2g3g_on, R.string.status_bar_settings_network_mode, NETWORK_MODE_ID};
-        else if(id.equals(KEY_TOGGLES[8]))
+        } else if(id.equals(KEY_TOGGLES[8])){
            return new int[]{R.drawable.stat_ring_on, R.string.status_bar_settings_sound_mode, SOUND_ID};
-        else
+        } else{
            return new int[]{0, 0};
+        }
     }
 
     private StatusBarManager getStatusBarManager() {
@@ -270,8 +279,9 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             onClickSettings();
         } else {
             Object tag = v.getTag();
-            if (tag instanceof ButtonTag)
+            if (tag instanceof ButtonTag){
                 onClickToggle(((ButtonTag) tag).toggleId);
+            }
         }
     }
 
@@ -288,34 +298,34 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     private void onClickToggle(int id) {
         switch(id){
                 case WIFI_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
                 case BLUETOOTH_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
                 case GPS_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
                 case FLASHLIGHT_ID:
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.setClassName("net.cactii.flash2", "net.cactii.flash2.MainActivity");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.setClassName("net.cactii.flash2", "net.cactii.flash2.MainActivity");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
                 break;
                 case MOBILE_DATA_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
                 case NETWORK_MODE_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
                 case SOUND_ID:
-                getContext().startActivity(new Intent(Settings.ACTION_SOUND_SETTINGS)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    getContext().startActivity(new Intent(Settings.ACTION_SOUND_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
         }
 
