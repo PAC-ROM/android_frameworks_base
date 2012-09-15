@@ -1062,6 +1062,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         setAreThereNotifications();
     }
 
+    @Override
     public void showClock(boolean show) {
         ContentResolver resolver = mContext.getContentResolver();
         View clock = mBarContents.findViewById(R.id.clock);

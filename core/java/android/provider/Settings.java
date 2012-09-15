@@ -2488,13 +2488,21 @@ public final class Settings {
 
         /**
          * Whether to show the clock in status bar
-         * of the stock battery icon
          * 0: don't show the clock
          * 1: show the clock
          * default: 1
          * @hide
          */
         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
+
+        /**
+         * Whether to center the clock in status bar
+         * 0: don't center the clock
+         * 1: center the clock
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_CENTER_CLOCK = "status_bar_center_clock";
 
         /**
          * Whether to show the signal text or signal bars.

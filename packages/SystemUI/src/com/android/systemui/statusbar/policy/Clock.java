@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +62,7 @@ public class Clock extends TextView {
     private static final int AM_PM_STYLE_SMALL   = 1;
     private static final int AM_PM_STYLE_GONE    = 2;
 
-    private static int AM_PM_STYLE = AM_PM_STYLE_GONE;
+    private int AM_PM_STYLE = AM_PM_STYLE_GONE;
 
     private int mAmPmStyle;
     private boolean mShowClock;
@@ -78,11 +79,10 @@ public class Clock extends TextView {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_AM_PM), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CLOCK), false, this);
         }
 
-        @Override public void onChange(boolean selfChange) {
+        @Override
+        public void onChange(boolean selfChange) {
             updateSettings();
         }
     }
@@ -255,14 +255,6 @@ public class Clock extends TextView {
                 updateClock();
             }
         }
-
-        mShowClock = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_CLOCK, 1) == 1);
-
-        if(mShowClock || mShowAlways)
-            setVisibility(View.VISIBLE);
-        else
-            setVisibility(View.GONE);
     }
 }
 

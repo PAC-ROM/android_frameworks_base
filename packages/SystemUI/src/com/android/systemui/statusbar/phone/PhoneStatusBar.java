@@ -1139,14 +1139,25 @@ public class PhoneStatusBar extends BaseStatusBar {
         updateCarrierLabelVisibility(false);
     }
 
+    @Override
     public void showClock(boolean show) {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         View clock = mStatusBarView.findViewById(R.id.clock);
+        View ctClock = mStatusBarView.findViewById(R.id.center_clock);
         mShowClock = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_CLOCK, 1) == 1);
-        if (clock != null) {
-            clock.setVisibility(show ? (mShowClock ? View.VISIBLE : View.GONE) : View.GONE);
+        boolean centerClock = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CENTER_CLOCK, 0) == 1;
+
+        if(clock != null && ctClock != null){
+            if(centerClock){
+                clock.setVisibility(View.GONE);
+                ctClock.setVisibility(show ? (mShowClock ? View.VISIBLE : View.GONE) : View.GONE);
+            } else{
+                ctClock.setVisibility(View.GONE);
+                clock.setVisibility(show ? (mShowClock ? View.VISIBLE : View.GONE) : View.GONE);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ import android.app.ActivityManagerNative;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -130,9 +132,30 @@ public abstract class BaseStatusBar extends SystemUI implements
      */
     protected abstract void createAndAddWindows();
 
+    public abstract void showClock(boolean show);
+
     protected Display mDisplay;
     private IWindowManager mWindowManager;
     private boolean mDeviceProvisioned = false;
+
+    class ClockObserver extends ContentObserver {
+        ClockObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            showClock(true);
+        }
+    }
 
     public IWindowManager getWindowManager() {
         return mWindowManager;
@@ -196,6 +219,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     public void start() {
         mDisplay = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
                 .getDefaultDisplay();
+
+        ClockObserver clockObserver = new ClockObserver(new Handler());
+        clockObserver.observe();
 
         mProvisioningObserver.onChange(false); // set up
         mContext.getContentResolver().registerContentObserver(
