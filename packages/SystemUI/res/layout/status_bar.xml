@@ -31,15 +31,22 @@
     android:fitsSystemWindows="true"
     >
 
-    <com.android.systemui.statusbar.policy.Clock
-            android:id="@+id/center_clock"
-            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:singleLine="true"
-            android:gravity="center"
-            android:visibility="gone"
-            />
+    <LinearLayout
+        android:id="@+id/center_clock_ticker"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <com.android.systemui.statusbar.policy.Clock
+                android:id="@+id/center_clock"
+                android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:gravity="center"
+                android:visibility="gone"
+                />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/notification_lights_out"

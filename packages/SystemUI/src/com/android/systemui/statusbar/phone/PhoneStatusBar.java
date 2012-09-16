@@ -208,6 +208,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     private int mCarrierLabelHeight;
 
     // clock
+    private LinearLayout mCenterClockTicker;
     private boolean mShowClock;
 
     // drag bar
@@ -493,6 +494,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNotificationIcons = (IconMerger)mStatusBarView.findViewById(R.id.notificationIcons);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
         mIcons = (LinearLayout)mStatusBarView.findViewById(R.id.icons);
+        mCenterClockTicker = (LinearLayout)mStatusBarView.findViewById(R.id.center_clock_ticker);
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
 
         /* Destroy the old widget before recreating the expanded dialog
@@ -1912,6 +1914,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View battery = mStatusBarView.findViewById(R.id.battery);
             final View batteryText = mStatusBarView.findViewById(R.id.battery_text);
             final View clock = mStatusBarView.findViewById(R.id.clock);
+            final View ctClock = mStatusBarView.findViewById(R.id.center_clock);
 
             mLightsOutAnimation = new AnimatorSet();
             mLightsOutAnimation.playTogether(
@@ -1921,7 +1924,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(signalText, View.ALPHA, 0),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(batteryText, View.ALPHA, 0),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f)
+                    ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
+                    ObjectAnimator.ofFloat(ctClock, View.ALPHA, 0.5f)
                 );
             mLightsOutAnimation.setDuration(750);
 
@@ -1933,7 +1937,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(signalText, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(batteryText, View.ALPHA, 1),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 1)
+                    ObjectAnimator.ofFloat(clock, View.ALPHA, 1),
+                    ObjectAnimator.ofFloat(ctClock, View.ALPHA, 1)
                 );
             mLightsOnAnimation.setDuration(250);
         }
@@ -2079,26 +2084,32 @@ public class PhoneStatusBar extends BaseStatusBar {
         public void tickerStarting() {
             mTicking = true;
             mIcons.setVisibility(View.GONE);
+            mCenterClockTicker.setVisibility(View.GONE);
             mTickerView.setVisibility(View.VISIBLE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            mCenterClockTicker.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
         }
 
         @Override
         public void tickerDone() {
             mIcons.setVisibility(View.VISIBLE);
+            mCenterClockTicker.setVisibility(View.VISIBLE);
             mTickerView.setVisibility(View.GONE);
-            mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out,
                         mTickingDoneListener));
+            mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            mCenterClockTicker.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
         }
 
         public void tickerHalting() {
             mIcons.setVisibility(View.VISIBLE);
+            mCenterClockTicker.setVisibility(View.VISIBLE);
             mTickerView.setVisibility(View.GONE);
-            mIcons.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.fade_out,
                         mTickingDoneListener));
+            mIcons.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+            mCenterClockTicker.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
         }
     }
 
