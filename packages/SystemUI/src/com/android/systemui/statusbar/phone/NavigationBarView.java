@@ -182,7 +182,7 @@ public class NavigationBarView extends LinearLayout {
         mBarSize = res.getDimensionPixelSize(R.dimen.navigation_bar_size);
         mVertical = false;
         mShowMenu = false;
-        mIs600dp = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi") == 600;
+        mIs600dp = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout") == 600;
 
         mDelegateHelper = new DelegateViewHelper(this);
         updateResources();
