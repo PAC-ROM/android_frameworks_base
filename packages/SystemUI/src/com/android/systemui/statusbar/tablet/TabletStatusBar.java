@@ -253,15 +253,12 @@ public class TabletStatusBar extends BaseStatusBar implements
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                // We use a pixel format of RGB565 for the status bar to save memory bandwidth and
-                // to ensure that the layer can be handled by HWComposer.  On some devices the
-                // HWComposer is unable to handle SW-rendered RGBX_8888 layers.
-                PixelFormat.RGB_565);
+                PixelFormat.TRANSLUCENT);
 
-        // We explicitly leave FLAG_HARDWARE_ACCELERATED out of the flags.  The status bar occupies
-        // very little screen real-estate and is updated fairly frequently.  By using CPU rendering
-        // for the status bar, we prevent the GPU from having to wake up just to do these small
-        // updates, which should help keep power consumption down.
+        // this will allow the navbar to run in an overlay on devices that support this
+        if (ActivityManager.isHighEndGfx(mDisplay)) {
+            lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        }
 
         lp.gravity = getStatusBarGravity();
         lp.setTitle("SystemBar");
@@ -286,10 +283,13 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_TABUI_MENU), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            setStatusBarParams(mStatusBarView);
             loadDimens();
             recreateStatusBar();
         }
@@ -583,6 +583,8 @@ public class TabletStatusBar extends BaseStatusBar implements
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
+
+        setStatusBarParams(mStatusBarView);
 
         sb.setHandler(mHandler);
 

@@ -138,8 +138,8 @@ public abstract class BaseStatusBar extends SystemUI implements
     private IWindowManager mWindowManager;
     private boolean mDeviceProvisioned = false;
 
-    class ClockObserver extends ContentObserver {
-        ClockObserver(Handler handler) {
+    class StatusbarObserver extends ContentObserver {
+        StatusbarObserver(Handler handler) {
             super(handler);
         }
 
@@ -220,8 +220,8 @@ public abstract class BaseStatusBar extends SystemUI implements
         mDisplay = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
                 .getDefaultDisplay();
 
-        ClockObserver clockObserver = new ClockObserver(new Handler());
-        clockObserver.observe();
+        StatusbarObserver StatusbarObserver = new StatusbarObserver(new Handler());
+        StatusbarObserver.observe();
 
         mProvisioningObserver.onChange(false); // set up
         mContext.getContentResolver().registerContentObserver(
@@ -435,6 +435,12 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected abstract WindowManager.LayoutParams getSearchLayoutParams(
             LayoutParams layoutParams);
+
+    protected void setStatusBarParams(View statusbarView){
+        int opacity = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_TRANSPARENCY, 100);
+        statusbarView.setBackgroundColor((int) (((float) opacity / 100.0f) * 255) * 0x1000000);
+    }
 
     protected void updateRecentsPanel(int recentsResId) {
         // Recents Panel
