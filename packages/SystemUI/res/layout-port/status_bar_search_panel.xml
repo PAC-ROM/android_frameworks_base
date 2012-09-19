@@ -36,15 +36,15 @@
             android:id="@+id/search_panel_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal|bottom"
             android:layout_alignParentBottom="true">
 
             <com.android.internal.widget.multiwaveview.GlowPadView
                 android:id="@+id/glow_pad_view"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/navbar_search_panel_height"
-                android:layout_alignParentBottom="true"
-                android:gravity="top"
+                android:gravity="top|center_horizontal"
 
                 prvandroid:targetDrawables="@array/navbar_search_targets"
                 prvandroid:targetDescriptions="@array/navbar_search_target_descriptions"
