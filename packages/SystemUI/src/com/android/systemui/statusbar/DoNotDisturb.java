@@ -51,10 +51,8 @@ public class DoNotDisturb implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     private void updateDisableRecord() {
-        final int disabled = StatusBarManager.DISABLE_NOTIFICATION_ICONS
-                | StatusBarManager.DISABLE_NOTIFICATION_ALERTS
-                | StatusBarManager.DISABLE_NOTIFICATION_TICKER;
-        mStatusBar.disable(mDoNotDisturb ? disabled : 0);
+        mStatusBar.disable(mDoNotDisturb ? 
+            StatusBarManager.DISABLE_NOTIFICATION_TICKER : 0);
     }
 }
 
