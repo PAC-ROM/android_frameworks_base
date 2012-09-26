@@ -547,7 +547,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 computeDateViewWidth();
             }
         });
-        mClockView = (Clock)mStatusBarWindow.findViewById(R.id.clock);
+        boolean centerClock = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CENTER_CLOCK, 0) == 1;
+        mClockView = centerClock ? (Clock) mStatusBarView.findViewById(R.id.center_clock) :
+                (Clock) mStatusBarWindow.findViewById(R.id.clock);
         mClockView.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -1966,8 +1969,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View signalText = mStatusBarView.findViewById(R.id.signal_cluster_text);
             final View battery = mStatusBarView.findViewById(R.id.battery);
             final View batteryText = mStatusBarView.findViewById(R.id.battery_text);
-            final View clock = mStatusBarView.findViewById(R.id.clock);
-            final View ctClock = mStatusBarView.findViewById(R.id.center_clock);
 
             mLightsOutAnimation = new AnimatorSet();
             mLightsOutAnimation.playTogether(
@@ -1977,8 +1978,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(signalText, View.ALPHA, 0),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(batteryText, View.ALPHA, 0),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
-                    ObjectAnimator.ofFloat(ctClock, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(mClockView, View.ALPHA, 0.5f)
                 );
             mLightsOutAnimation.setDuration(750);
@@ -1991,8 +1990,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(signalText, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(batteryText, View.ALPHA, 1),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 1),
-                    ObjectAnimator.ofFloat(ctClock, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(mClockView, View.ALPHA, 1)
 
                 );
