@@ -197,7 +197,7 @@ please see themes_device_defaults.xml.
         
         <!-- Panel attributes -->
         <item name="panelBackground">@android:drawable/menu_background</item>
-        <item name="panelFullBackground">@android:drawable/menu_background_fill_parent_width</item>
+        <item name="panelFullBackground">@android:drawable/menu_background_match_parent_width</item>
         <!-- These three attributes do not seems to be used by the framework. Declared public though -->
         <item name="panelColorBackground">#000</item>
         <item name="panelColorForeground">?android:attr/textColorPrimary</item>
@@ -1019,7 +1019,7 @@ please see themes_device_defaults.xml.
         
         <!-- Panel attributes -->
         <item name="panelBackground">@android:drawable/menu_hardkey_panel_holo_dark</item>
-        <item name="panelFullBackground">@android:drawable/menu_background_fill_parent_width</item>
+        <item name="panelFullBackground">@android:drawable/menu_background_match_parent_width</item>
         <!-- These three attributes do not seems to be used by the framework. Declared public though -->
         <item name="panelColorBackground">#000</item>
         <item name="panelColorForeground">?android:attr/textColorPrimary</item>
@@ -1324,7 +1324,7 @@ please see themes_device_defaults.xml.
         
         <!-- Panel attributes -->
         <item name="panelBackground">@android:drawable/menu_hardkey_panel_holo_light</item>
-        <item name="panelFullBackground">@android:drawable/menu_background_fill_parent_width</item>
+        <item name="panelFullBackground">@android:drawable/menu_background_match_parent_width</item>
         <!-- These three attributes do not seems to be used by the framework. Declared public though -->
         <item name="panelColorBackground">#000</item>
         <item name="panelColorForeground">?android:attr/textColorPrimary</item>
