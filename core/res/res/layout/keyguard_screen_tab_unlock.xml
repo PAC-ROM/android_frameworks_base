@@ -108,7 +108,7 @@
     <!-- CyanogenMod Weather Panel -->
     <RelativeLayout
         android:id="@+id/weather_panel"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="4dip" >
@@ -315,7 +315,7 @@
 
         <TextView
             android:id="@+id/carrier"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dip"

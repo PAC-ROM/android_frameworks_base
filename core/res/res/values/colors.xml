@@ -69,7 +69,7 @@
     <drawable name="alert_dark_frame">@drawable/popup_full_dark</drawable>
     <drawable name="alert_light_frame">@drawable/popup_full_bright</drawable>
     <drawable name="menu_frame">@drawable/menu_background</drawable>
-    <drawable name="menu_full_frame">@drawable/menu_background_match_parent_width</drawable>
+    <drawable name="menu_full_frame">@drawable/menu_background_fill_parent_width</drawable>
     <drawable name="editbox_dropdown_dark_frame">@drawable/editbox_dropdown_background_dark</drawable>
     <drawable name="editbox_dropdown_light_frame">@drawable/editbox_dropdown_background</drawable>
 
