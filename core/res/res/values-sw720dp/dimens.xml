@@ -18,10 +18,6 @@
 */
 -->
 <resources>
-    <!-- The width that is used when creating thumbnails of applications. -->
-    <dimen name="thumbnail_width">230dp</dimen>
-    <!-- The height that is used when creating thumbnails of applications. -->
-    <dimen name="thumbnail_height">210dp</dimen>
     <!-- Height of the bottom navigation bar in portrait; on sw720dp devices
          this is the same as the height in landscape -->
     <dimen name="navigation_bar_height_portrait">@dimen/navigation_bar_height</dimen>
