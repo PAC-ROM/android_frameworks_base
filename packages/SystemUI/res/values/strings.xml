@@ -130,7 +130,7 @@
     <string name="status_bar_settings_auto_brightness_label">AUTO</string>
 
     <!-- Label in system panel saying the device will show notifications [CHAR LIMIT=30] -->
-    <string name="status_bar_settings_notifications">Notifications</string>
+    <string name="status_bar_settings_notifications">Notification pop-up</string>
 
     <!-- Text to display next to the graphical battery meter.  [CHAR LIMIT=3] -->
     <string name="status_bar_settings_battery_meter_format" translatable="false">
