@@ -2627,6 +2627,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
             recreateStatusBar();
+            setStatusBarParams(mStatusBarView);
         } else {
 
             if (mClearButton instanceof TextView) {
