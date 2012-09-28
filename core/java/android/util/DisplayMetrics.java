@@ -84,8 +84,12 @@ public class DisplayMetrics extends ExtendedPropertiesUtils {
      * @hide becase eventually this should be able to change while
      * running, so shouldn't be a constant.
      */
-    public static final int DENSITY_DEVICE = SystemProperties.getInt("qemu.sf.lcd_density",
-        SystemProperties.getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
+    public static final int DENSITY_DEVICE;
+
+    static {
+        DENSITY_DEVICE = SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties
+            .getInt("ro.sf.lcd_density", DENSITY_DEFAULT));
+    }
 
     /**
      * The absolute width of the display in pixels.

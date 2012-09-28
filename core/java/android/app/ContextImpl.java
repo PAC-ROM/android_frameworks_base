@@ -1598,7 +1598,8 @@ class ContextImpl extends Context {
                 // of vital variables used on ExtendedPropertiesUtils, may lead to crashes.
                 // Then we just set all applications to stock configuration. They will be
                 // still runned under hybrid engine.
-                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX + "hybrid_mode").equals("1")) {
+                if (ExtendedPropertiesUtils.getProperty(ExtendedPropertiesUtils.PARANOID_PREFIX
+                        + "hybrid_mode").equals("1")) {
                     ExtendedPropertiesUtils.mIsHybridModeEnabled = true;
                 }
 

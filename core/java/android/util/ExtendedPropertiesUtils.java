@@ -17,24 +17,32 @@
 package android.util;
 
 import android.app.ActivityManager;
-import android.os.SystemProperties;
-import android.util.Log;
+import android.app.ActivityThread;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.*;
-import android.app.*;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.CompatibilityInfo;
+import android.os.SystemProperties;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
-import java.io.*;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class ExtendedPropertiesUtils {
  
-    private static final String TAG = "paranoid";
+    private static final String TAG = "ExtendedPropertiesUtils";
 
     /**
      * Public variables
@@ -105,7 +113,7 @@ public class ExtendedPropertiesUtils {
      * @param  info  instance containing app details
      */
     public static void setAppConfiguration(ParanoidAppInfo info) {
-        if(mIsHybridModeEnabled){
+        if(mIsHybridModeEnabled && isEnvironmentSane()){
             // Load default values to be used in case that property is 
             // missing from configuration.
             boolean isSystemApp = info.path.contains("system/app");
@@ -193,9 +201,10 @@ public class ExtendedPropertiesUtils {
                 mLocalHook.pid = android.os.Process.myPid();
                 mLocalHook.name = mLocalHook.info.packageName;
                 mLocalHook.path = mLocalHook.info.sourceDir.substring(0, 
-                    mLocalHook.info.sourceDir.lastIndexOf("/"));
+                        mLocalHook.info.sourceDir.lastIndexOf("/"));
+
                 setAppConfiguration(mLocalHook);
-            }            
+            }
         }
     }
 
@@ -337,7 +346,6 @@ public class ExtendedPropertiesUtils {
      *
      * @param  prop  a string containing the property to checkout
      * @return current stored value of property
-     * TODO: Port to native code
      */
     public static String getProperty(String prop){
         return getProperty(prop, String.valueOf(0));
@@ -351,7 +359,6 @@ public class ExtendedPropertiesUtils {
      * @param  prop  a string containing the property to checkout
      * @param  def  default value to be returned in case that property is missing
      * @return current stored value of property
-     * TODO: Port to native code
      */
     public static String getProperty(String prop, String def) {
         try {
@@ -440,25 +447,81 @@ public class ExtendedPropertiesUtils {
         int result = -1;
 
         if (property.endsWith(PARANOID_DPI_SUFFIX)) {
-            ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()-PARANOID_DPI_SUFFIX.length()));
-            boolean isSystemApp = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
+            ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()
+                    - PARANOID_DPI_SUFFIX.length()));
+            boolean isSystemApp = 
+                    appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
             result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
-                "system_default_dpi" : "user_default_dpi"))));
+                    "system_default_dpi" : "user_default_dpi"))));
         } else if (property.endsWith(PARANOID_LAYOUT_SUFFIX)) {
-            ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()-PARANOID_LAYOUT_SUFFIX.length()));
-            boolean isSystemApp = appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
+            ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()
+                    - PARANOID_LAYOUT_SUFFIX.length()));
+            boolean isSystemApp =
+                    appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
             result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
-                "system_default_layout" : "user_default_layout"))));
+                    "system_default_layout" : "user_default_layout"))));
         } else if (property.endsWith("_dpi") || property.endsWith("_layout")) {
             result = Integer.parseInt(getProperty(property));
         }
 
         if (result == 0) {
-            result = Integer.parseInt(property.endsWith("dpi") ? getProperty("%rom_default_dpi") : getProperty("%rom_default_layout"));
+            result = Integer.parseInt(property.endsWith("dpi") ? getProperty(PARANOID_PREFIX + "rom_default_dpi")
+                : getProperty(PARANOID_PREFIX + "rom_default_layout"));
         }
 
         return result;
     }
+
+    /**
+     * Stores a boolean that will determine if the environment
+     * is sane and will allow hybrid to run without problems.
+     * We say that environment is sane, when native density
+     * (ro.sf.lcd_density) equals to "rom_default_dpi" parameter,
+     * and it's any of the possible values defined on {@link DisplayMetrics}
+     * class.
+     */
+    public static void getEnvironmentState() {
+        int nativeDensity = SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties
+            .getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
+        if(nativeDensity == Integer.parseInt(getProperty(PARANOID_PREFIX
+                + "rom_default_dpi"))) {
+            switch(nativeDensity) {
+                case DisplayMetrics.DENSITY_LOW:
+                case DisplayMetrics.DENSITY_MEDIUM:
+                case DisplayMetrics.DENSITY_TV:
+                case DisplayMetrics.DENSITY_HIGH:
+                case DisplayMetrics.DENSITY_XHIGH:
+                case DisplayMetrics.DENSITY_XXHIGH:
+                    setIsEnvironmentSane(true);
+                    return;
+            }
+        }
+
+        setIsEnvironmentSane(false);
+    }
+
+
+    /**
+     * Method used by {@link #getEnvironmentState() getEnvironmentState}
+     * for storing whether if environment is sane or not.
+     *
+     * @param  state  environment state
+     * @see getEnvironmentState
+     */
+    public static void setIsEnvironmentSane(boolean state) {
+        SystemProperties.set("sys.environment", Integer.toString(state ? 1 : 0));
+    }
+
+    /**
+     * Returns a {@link Boolean}, if environment is sane.
+     *
+     * @return is environment sane
+     * @see getEnvironmentState
+     */
+    public static boolean isEnvironmentSane() {
+        return Integer.parseInt(SystemProperties.get("sys.environment", Integer.toString(0))) == 1;
+    }
+
     
     public void debugOut(String msg) {
         Log.i(TAG + ":" + msg, "Init=" + (mMainThread != null && mContext != null && 

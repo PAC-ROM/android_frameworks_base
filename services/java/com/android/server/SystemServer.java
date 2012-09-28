@@ -46,6 +46,7 @@ import android.server.search.SearchManagerService;
 import android.service.dreams.DreamManagerService;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.view.WindowManager;
@@ -107,6 +108,10 @@ class ServerThread extends Thread {
 
         BinderInternal.disableBackgroundScheduling(true);
         android.os.Process.setCanSelfBackground(false);
+
+        // Get environment state, to check whether if it's sane or not.
+        // This may entirely disable property fetching.
+        ExtendedPropertiesUtils.getEnvironmentState();
 
         // Check whether we failed to shut down last time we tried.
         {
