@@ -2877,6 +2877,13 @@ public final class Settings {
          */
         public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
 
+        /**
+         * Ability to change Navigation bar Color
+         *
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVBAR_COLOR = "paranoid_systemui_navbar_color";
+
          /**
           * Volume keys control cursor in text fields (default is 0)
           * 0 - Disabled
@@ -3206,6 +3213,7 @@ public final class Settings {
         @Deprecated
         public static final String WIFI_WATCHDOG_PING_TIMEOUT_MS =
             Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
+
     }
 
     /**
