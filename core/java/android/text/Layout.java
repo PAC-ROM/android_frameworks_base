@@ -135,7 +135,7 @@ public abstract class Layout {
                      float spacingMult, float spacingAdd) {
 
         if (width < 0)
-            throw new IllegalArgumentException("Layout: " + width + " < 0");
+            width = 0;
 
         // Ensure paint doesn't have baselineShift set.
         // While normally we don't modify the paint the user passed in,
@@ -163,9 +163,8 @@ public abstract class Layout {
     /* package */ void replaceWith(CharSequence text, TextPaint paint,
                               int width, Alignment align,
                               float spacingmult, float spacingadd) {
-        if (width < 0) {
-            throw new IllegalArgumentException("Layout: " + width + " < 0");
-        }
+        if (width < 0)
+            width = 0;
 
         mText = text;
         mPaint = paint;
