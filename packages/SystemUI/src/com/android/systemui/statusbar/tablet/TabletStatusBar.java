@@ -156,8 +156,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     private boolean mAltBackButtonEnabledForIme;
 
     ViewGroup mFeedbackIconArea; // notification icons, IME icon, compat icon
-    InputMethodButton mInputMethodSwitchButton;
-    CompatModeButton mCompatModeButton;
 
     NotificationPanel mNotificationPanel;
     WindowManager.LayoutParams mNotificationPanelParams;
@@ -196,9 +194,6 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     // for disabling the status bar
     int mDisabled = 0;
-
-    private InputMethodsPanel mInputMethodsPanel;
-    private CompatModePanel mCompatModePanel;
 
     // clock
     private boolean mShowClock;
@@ -384,52 +379,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mStatusBarView.setBar(this);
         mHomeButton.setOnTouchListener(mHomeSearchActionListener);
         updateSearchPanel();
-
-        // Input methods Panel
-        mInputMethodsPanel = (InputMethodsPanel) View.inflate(context,
-                R.layout.system_bar_input_methods_panel, null);
-        mInputMethodsPanel.setHardKeyboardEnabledChangeListener(this);
-        mInputMethodsPanel.setOnTouchListener(new TouchOutsideListener(
-                MSG_CLOSE_INPUT_METHODS_PANEL, mInputMethodsPanel));
-        mInputMethodsPanel.setImeSwitchButton(mInputMethodSwitchButton);
-        mStatusBarView.setIgnoreChildren(2, mInputMethodSwitchButton, mInputMethodsPanel);
-        lp = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                    | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                    | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-        lp.setTitle("InputMethodsPanel");
-        lp.windowAnimations = R.style.Animation_RecentPanel;
-
-        WindowManagerImpl.getDefault().addView(mInputMethodsPanel, lp);
-
-        // Compatibility mode selector panel
-        mCompatModePanel = (CompatModePanel) View.inflate(context,
-                R.layout.system_bar_compat_mode_panel, null);
-        mCompatModePanel.setOnTouchListener(new TouchOutsideListener(
-                MSG_CLOSE_COMPAT_MODE_PANEL, mCompatModePanel));
-        mCompatModePanel.setTrigger(mCompatModeButton);
-        mCompatModePanel.setVisibility(View.GONE);
-        mStatusBarView.setIgnoreChildren(3, mCompatModeButton, mCompatModePanel);
-        lp = new WindowManager.LayoutParams(
-                250,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                    | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                    | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-        lp.setTitle("CompatModePanel");
-        lp.windowAnimations = android.R.style.Animation_Dialog;
-
-        WindowManagerImpl.getDefault().addView(mCompatModePanel, lp);
 
         mRecentButton.setOnTouchListener(mRecentsPanel);
 
@@ -707,13 +656,6 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         // The bar contents buttons
         mFeedbackIconArea = (ViewGroup)sb.findViewById(R.id.feedbackIconArea);
-        mInputMethodSwitchButton = (InputMethodButton) sb.findViewById(R.id.imeSwitchButton);
-        // Overwrite the lister
-        mInputMethodSwitchButton.setOnClickListener(mOnClickListener);
-
-        mCompatModeButton = (CompatModeButton) sb.findViewById(R.id.compatModeButton);
-        mCompatModeButton.setOnClickListener(mOnClickListener);
-        mCompatModeButton.setVisibility(View.GONE);
 
         // for redirecting errant bar taps to the IME
         mFakeSpaceBar = sb.findViewById(R.id.fake_space_bar);
@@ -987,22 +929,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                         mNotificationArea.setVisibility(View.VISIBLE);
                     }
                     break;
-                case MSG_OPEN_INPUT_METHODS_PANEL:
-                    if (DEBUG) Slog.d(TAG, "opening input methods panel");
-                    if (mInputMethodsPanel != null) mInputMethodsPanel.openPanel();
-                    break;
-                case MSG_CLOSE_INPUT_METHODS_PANEL:
-                    if (DEBUG) Slog.d(TAG, "closing input methods panel");
-                    if (mInputMethodsPanel != null) mInputMethodsPanel.closePanel(false);
-                    break;
-                case MSG_OPEN_COMPAT_MODE_PANEL:
-                    if (DEBUG) Slog.d(TAG, "opening compat panel");
-                    if (mCompatModePanel != null) mCompatModePanel.openPanel();
-                    break;
-                case MSG_CLOSE_COMPAT_MODE_PANEL:
-                    if (DEBUG) Slog.d(TAG, "closing compat panel");
-                    if (mCompatModePanel != null) mCompatModePanel.closePanel();
-                    break;
                 case MSG_SHOW_CHROME:
                     if (DEBUG) Slog.d(TAG, "hiding shadows (lights on)");
                     mBarContents.setVisibility(View.VISIBLE);
@@ -1145,9 +1071,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mBackButton.setVisibility(disableBack ? View.INVISIBLE : View.VISIBLE);
         mHomeButton.setVisibility(disableHome ? View.INVISIBLE : View.VISIBLE);
         mRecentButton.setVisibility(disableRecent ? View.INVISIBLE : View.VISIBLE);
-
-        mInputMethodSwitchButton.setScreenLocked(
-                (visibility & StatusBarManager.DISABLE_SYSTEM_INFO) != 0);
     }
 
     private boolean hasTicker(Notification n) {
@@ -1205,15 +1128,6 @@ public class TabletStatusBar extends BaseStatusBar implements
             mHandler.removeMessages(MSG_CLOSE_SEARCH_PANEL);
             mHandler.sendEmptyMessage(MSG_CLOSE_SEARCH_PANEL);
         }
-        if ((flags & CommandQueue.FLAG_EXCLUDE_INPUT_METHODS_PANEL) == 0) {
-            mHandler.removeMessages(MSG_CLOSE_INPUT_METHODS_PANEL);
-            mHandler.sendEmptyMessage(MSG_CLOSE_INPUT_METHODS_PANEL);
-        }
-        if ((flags & CommandQueue.FLAG_EXCLUDE_COMPAT_MODE_PANEL) == 0) {
-            mHandler.removeMessages(MSG_CLOSE_COMPAT_MODE_PANEL);
-            mHandler.sendEmptyMessage(MSG_CLOSE_COMPAT_MODE_PANEL);
-        }
-
     }
 
     @Override // CommandQueue
@@ -1291,65 +1205,16 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         // See above re: lights-out policy for legacy apps.
         if (showMenu) setLightsOn(true);
-
-        mCompatModeButton.refresh();
-        if (mCompatModeButton.getVisibility() == View.VISIBLE) {
-            if (DEBUG_COMPAT_HELP
-                    || ! Prefs.read(mContext).getBoolean(Prefs.SHOWN_COMPAT_MODE_HELP, false)) {
-                showCompatibilityHelp();
-            }
-        } else {
-            hideCompatibilityHelp();
-            mCompatModePanel.closePanel();
-        }
     }
 
     private void showCompatibilityHelp() {
-        if (mCompatibilityHelpDialog != null) {
-            return;
-        }
-
-        mCompatibilityHelpDialog = View.inflate(mContext, R.layout.compat_mode_help, null);
-        View button = mCompatibilityHelpDialog.findViewById(R.id.button);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideCompatibilityHelp();
-                SharedPreferences.Editor editor = Prefs.edit(mContext);
-                editor.putBoolean(Prefs.SHOWN_COMPAT_MODE_HELP, true);
-                editor.apply();
-            }
-        });
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                    | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-                PixelFormat.TRANSLUCENT);
-        lp.setTitle("CompatibilityModeDialog");
-        lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
-                | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-        lp.windowAnimations = com.android.internal.R.style.Animation_ZoomButtons; // simple fade
-
-        WindowManagerImpl.getDefault().addView(mCompatibilityHelpDialog, lp);
     }
 
     private void hideCompatibilityHelp() {
-        if (mCompatibilityHelpDialog != null) {
-            WindowManagerImpl.getDefault().removeView(mCompatibilityHelpDialog);
-            mCompatibilityHelpDialog = null;
-        }
     }
 
     public void setImeWindowStatus(IBinder token, int vis, int backDisposition) {
-        mInputMethodSwitchButton.setImeWindowStatus(token,
-                (vis & InputMethodService.IME_ACTIVE) != 0);
         updateNotificationIcons();
-        mInputMethodsPanel.setImeToken(token);
 
         boolean altBack = (backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS)
             || ((vis & InputMethodService.IME_VISIBLE) != 0);
@@ -1379,9 +1244,7 @@ public class TabletStatusBar extends BaseStatusBar implements
             Slog.d(TAG, "Set hard keyboard status: available=" + available
                     + ", enabled=" + enabled);
         }
-        mInputMethodSwitchButton.setHardKeyboardStatus(available);
         updateNotificationIcons();
-        mInputMethodsPanel.setHardKeyboardStatus(available, enabled);
     }
 
     @Override
@@ -1409,16 +1272,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
     }
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            if (v == mInputMethodSwitchButton) {
-                onClickInputMethodSwitchButton();
-            } else if (v == mCompatModeButton) {
-                onClickCompatModeButton();
-            }
-        }
-    };
-
     public void onClickRecentButton() {
         if (DEBUG) Slog.d(TAG, "clicked recent apps; disabled=" + mDisabled);
         if ((mDisabled & StatusBarManager.DISABLE_EXPAND) == 0) {
@@ -1430,18 +1283,9 @@ public class TabletStatusBar extends BaseStatusBar implements
     }
 
     public void onClickInputMethodSwitchButton() {
-        if (DEBUG) Slog.d(TAG, "clicked input methods panel; disabled=" + mDisabled);
-        int msg = (mInputMethodsPanel.getVisibility() == View.GONE) ?
-                MSG_OPEN_INPUT_METHODS_PANEL : MSG_CLOSE_INPUT_METHODS_PANEL;
-        mHandler.removeMessages(msg);
-        mHandler.sendEmptyMessage(msg);
     }
 
     public void onClickCompatModeButton() {
-        int msg = (mCompatModePanel.getVisibility() == View.GONE) ?
-                MSG_OPEN_COMPAT_MODE_PANEL : MSG_CLOSE_COMPAT_MODE_PANEL;
-        mHandler.removeMessages(msg);
-        mHandler.sendEmptyMessage(msg);
     }
 
     private class NotificationTriggerTouchListener implements View.OnTouchListener {
@@ -1694,16 +1538,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         ArrayList<View> toShow = new ArrayList<View>();
 
-        // Extra Special Icons
-        // The IME switcher and compatibility mode icons take the place of notifications. You didn't
-        // need to see all those new emails, did you?
-        int maxNotificationIconsCount = mMaxNotificationIcons;
-        if (mInputMethodSwitchButton.getVisibility() != View.GONE) maxNotificationIconsCount --;
-        if (mCompatModeButton.getVisibility()        != View.GONE) maxNotificationIconsCount --;
-
         final boolean provisioned = isDeviceProvisioned();
         // If the device hasn't been through Setup, we only show system notifications
-        for (int i=0; toShow.size()< maxNotificationIconsCount; i++) {
+        for (int i=0; toShow.size()< mMaxNotificationIcons; i++) {
             if (i >= N) break;
             Entry ent = mNotificationData.get(N-i-1);
             if ((provisioned && ent.notification.score >= HIDE_ICONS_BELOW_SCORE)
