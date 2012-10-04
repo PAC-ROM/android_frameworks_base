@@ -43,10 +43,6 @@
     <string name="status_bar_settings_settings_button" msgid="3023889916699270224">"Ajustes"</string>
     <string name="status_bar_settings_wifi_button" msgid="1733928151698311923">"Wi-Fi"</string>
     <string name="status_bar_settings_airplane" msgid="4879879698500955300">"Modo avión"</string>
-    <string name="status_bar_settings_flashlight">Flash LED</string>
-    <string name="status_bar_settings_mobile_data">Datos móviles</string>
-    <string name="status_bar_settings_sound_mode">Sonido</string>
-
     <string name="status_bar_settings_auto_rotation" msgid="3790482541357798421">"Girar pantalla automáticamente"</string>
     <string name="status_bar_settings_mute_label" msgid="554682549917429396">"SILENC"</string>
     <string name="status_bar_settings_auto_brightness_label" msgid="511453614962324674">"AUTO"</string>
@@ -160,4 +156,15 @@
     <string name="navbar_menu_conditional_button">Botón Menú (auto-ocultar)</string>
     <string name="navbar_menu_always_button">Botón Menú (siempre visible)</string>
     <string name="navbar_menu_big_button">Botón Menú</string>
+    <string name="toggle_data">Datos Móviles</string>
+    <string name="toggle_rotate">Orientación</string>
+    <string name="toggle_airplane">Modo avión</string>
+    <string name="toggle_vibrate">Vibrar</string>
+    <string name="toggle_silent">Silencio</string>
+    <string name="toggle_torch">Flash LED</string>
+    <string name="toggle_sync">Sincronización</string>
+    <string name="toggle_tether">Anclaje de USB</string>
+
+    <!-- Label in drop down to identify brightness slider -->
+    <string name="brightness_label">Brillo</string>
 </resources>

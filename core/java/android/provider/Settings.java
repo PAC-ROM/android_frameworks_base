@@ -2336,47 +2336,46 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
-         * Use the Notification Power Widget? (Who wouldn't!)
-         *
+         * Show toggles on statusbar
          * @hide
          */
-        public static final String EXPANDED_VIEW_WIDGET = "expanded_view_widget";
+        public static final String STATUSBAR_TOGGLES_USE_BUTTONS = "statusbar_toggles_use_buttons";
 
         /**
-         * Whether to hide the notification screen after clicking on a widget
-         * button
-         *
+         * Whether to show or not statusbar brightness slider
          * @hide
          */
-        public static final String EXPANDED_HIDE_ONCHANGE = "expanded_hide_onchange";
+        public static final String STATUS_BAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
 
         /**
-         * Hide scroll bar in power widget
-         *
+         * Toggles to use on statusbar
          * @hide
          */
-        public static final String EXPANDED_HIDE_SCROLLBAR = "expanded_hide_scrollbar";
+        public static final String STATUSBAR_TOGGLES = "statusbar_toggles";
 
         /**
-         * Haptic feedback in power widget
-         *
+         * Style of the toggles
          * @hide
          */
-        public static final String EXPANDED_HAPTIC_FEEDBACK = "expanded_haptic_feedback";
+        public static final String STATUSBAR_TOGGLES_STYLE = "statusbar_toggles_style";
 
         /**
-         * Widget Buttons to Use
-         *
+         * Whether to show brightness on toggles view
          * @hide
          */
-        public static final String WIDGET_BUTTONS = "expanded_widget_buttons";
+        public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggles_show_brightness";
 
         /**
-         * Widget Buttons to Use - Tablet
-         *
+         * Toggles per row
          * @hide
          */
-        public static final String WIDGET_BUTTONS_TABLET = "expanded_widget_buttons_tablet";
+        public static final String STATUSBAR_TOGGLES_NUMBER_PER_ROW = "statusbar_toggles_number_per_row";
+
+        /**
+         * Statusbar layout
+         * @hide
+         */
+        public static final String STATUS_BAR_LAYOUT = "statusbar_layout";
 
         /**
          * Navigation bar, whether to show or hide
