@@ -21,14 +21,11 @@ package com.android.systemui.statusbar.toggles;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.app.PendingIntent;
+
 import com.android.systemui.R;
 
-public class TorchToggle extends Toggle implements
-        OnSharedPreferenceChangeListener {
+public class TorchToggle extends Toggle {
 
     private static final String TAG = "TorchToggle";
 
@@ -36,23 +33,17 @@ public class TorchToggle extends Toggle implements
 
     private boolean mIsTorchOn;
     private Context mContext;
-
-    SharedPreferences prefs;
-
     PendingIntent torchIntent;
 
     public TorchToggle(Context context) {
         super(context);
         setLabel(R.string.toggle_torch);
-        if (mToggle.isChecked())
+        if (mToggle.isChecked()) {
             setIcon(R.drawable.toggle_torch);
-        else
+        } else {
             setIcon(R.drawable.toggle_torch_off);
+        }
         mContext = context;
-        prefs = mContext.getSharedPreferences("torch",
-                Context.MODE_WORLD_READABLE);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        mIsTorchOn = prefs.getBoolean(KEY_TORCH_ON, false);
         updateState();
     }
 
@@ -73,20 +64,12 @@ public class TorchToggle extends Toggle implements
         Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
         i.putExtra("bright", isChecked);
         mContext.sendBroadcast(i);
+        mIsTorchOn = isChecked;
+        updateState();
     }
 
     @Override
     protected boolean onLongPress() {
         return false;
-    }
-
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
-        mIsTorchOn = sharedPreferences.getBoolean(KEY_TORCH_ON, false);
-        updateState();
-        if (mToggle.isChecked() == mIsTorchOn) {
-            mToggle.setEnabled(true); // torch status has caught up with toggle
-                                      // - re-enable toggle.
-        }
     }
 }

@@ -22,7 +22,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.CompoundButton;
@@ -40,6 +42,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
 
     protected static final String TAG = "Toggle";
 
+    private static final int VIBRATE_DURATION = 10; // 10 ms, not intrusive time
+
     View mView;
     protected Context mContext;
 
@@ -47,6 +51,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected ImageView mIcon;
     protected TextView mText;
     protected CompoundButton mToggle;
+
+    protected Vibrator mVibrator;
 
     protected boolean mSystemChange = false;
     final boolean useAltButtonLayout;
@@ -65,6 +71,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
         Color.colorToHSV(color, hsv);
         hsv[2] *= 0.7f; // value component
         defaultColor = Color.HSVToColor(hsv);
+
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         mView = View.inflate(mContext,
                 useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
@@ -141,8 +149,11 @@ public abstract class Toggle implements OnCheckedChangeListener {
     @Override
     public final void onCheckedChanged(CompoundButton buttonView,
             boolean isChecked) {
-        if (mSystemChange)
-            return;
+        if (mSystemChange) return;
+
+        mView.playSoundEffect(SoundEffectConstants.CLICK);
+        mVibrator.vibrate(VIBRATE_DURATION);
+
         onCheckChanged(isChecked);
     }
 

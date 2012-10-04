@@ -22,19 +22,7 @@ public class TogglesView extends LinearLayout {
 
     private static final String TAG = "ToggleView";
 
-    private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
-    private ArrayList<Toggle> toggles = new ArrayList<Toggle>();
-
     private static final String TOGGLE_DELIMITER = "|";
-
-    public static final int STYLE_NONE = 1;
-    public static final int STYLE_ICON = 2;
-    public static final int STYLE_TEXT = 3;
-    public static final int STYLE_TEXT_AND_ICON = 4;
-
-    private boolean mShowBrightness;
-
-    private int mToggleStyle = STYLE_TEXT;
 
     private static final String TOGGLE_AUTOROTATE = "ROTATE";
     private static final String TOGGLE_BLUETOOTH = "BLUETOOTH";
@@ -51,15 +39,15 @@ public class TogglesView extends LinearLayout {
     private static final String TOGGLE_SYNC = "SYNC";
     private static final String TOGGLE_TETHER = "TETHER";
     private static final String TOGGLE_NFC = "NFC";
-    private int mWidgetsPerRow = 2;
 
-    private boolean useAltButtonLayout = false;
+    public static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
+            + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
+            + TOGGLE_DELIMITER + TOGGLE_SYNC;
 
-    private BaseStatusBar sb;
-
-    View mBrightnessSlider;
-
-    LinearLayout mToggleSpacer;
+    public static final int STYLE_NONE = 1;
+    public static final int STYLE_ICON = 2;
+    public static final int STYLE_TEXT = 3;
+    public static final int STYLE_TEXT_AND_ICON = 4;
 
     private static final LinearLayout.LayoutParams PARAMS_BRIGHTNESS = new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, 90);
@@ -69,6 +57,23 @@ public class TogglesView extends LinearLayout {
 
     private static final LinearLayout.LayoutParams PARAMS_TOGGLE_SCROLL = new LinearLayout.LayoutParams(
             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
+
+    private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
+    private ArrayList<Toggle> toggles = new ArrayList<Toggle>();
+
+    private int mWidgetsPerRow = 2;
+
+    private boolean mShowBrightness;
+
+    private int mToggleStyle = STYLE_TEXT;
+
+    private boolean useAltButtonLayout = false;
+
+    private BaseStatusBar sb;
+
+    View mBrightnessSlider;
+
+    LinearLayout mToggleSpacer;
 
     public TogglesView(Context context) {
         this(context, null);
@@ -234,15 +239,14 @@ public class TogglesView extends LinearLayout {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_TOGGLES_ENABLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_STYLE), false,
                     this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_TOGGLES_NUMBER_PER_ROW),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS),false, this);
@@ -265,10 +269,16 @@ public class TogglesView extends LinearLayout {
         String selectedToggles = Settings.System.getString(resolver,
                 Settings.System.STATUSBAR_TOGGLES);
 
-        if(selectedToggles != null) {
-            addToggles(selectedToggles);
-        } else {
+        boolean enableToggles = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_TOGGLES_ENABLE,
+                0) == 1;
+
+        // So you don't like toggles?, bad for you!
+        if(!enableToggles) {
             toggles.clear();
+        } else {
+            addToggles(selectedToggles != null ? selectedToggles :
+                    DEFAULT_TOGGLES);
         }
 
         mToggleStyle = Settings.System.getInt(resolver,
