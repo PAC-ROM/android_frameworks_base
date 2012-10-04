@@ -304,8 +304,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_BAR_TRANSPARENCY), false, this);
             update();
         }
 
@@ -322,7 +320,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             mBrightnessControl = !autoBrightness && Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
             setStatusBarParams(mStatusBarView);
-            setNavigationBarParams();
         }
     }
 
@@ -772,12 +769,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNavigationBarView.reorient();
         mNavigationBarView.setListener(mRecentsClickListener,mRecentsPanel, mHomeSearchActionListener);
         updateSearchPanel();
-    }
-
-    protected void setNavigationBarParams(){
-        int opacity = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_TRANSPARENCY, 100);
-        mNavigationBarView.getBackground().setAlpha(Math.round((opacity * 255) / 100));
     }
 
     // For small-screen devices (read: phones) that lack hardware navigation buttons
@@ -2608,7 +2599,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             mCurrentTheme = (CustomTheme)newTheme.clone();
             recreateStatusBar();
             setStatusBarParams(mStatusBarView);
-            setNavigationBarParams();
         } else {
 
             if (mClearButton instanceof TextView) {
