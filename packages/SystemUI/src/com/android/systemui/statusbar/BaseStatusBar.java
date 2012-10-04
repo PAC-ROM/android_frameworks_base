@@ -439,7 +439,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected void setStatusBarParams(View statusbarView){
         int opacity = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_TRANSPARENCY, 100);
-        statusbarView.getBackground().setAlpha(Math.round((opacity * 255) / 100));
+        statusbarView.setBackgroundColor((int) (((float) opacity / 100.0f) * 255) * 0x1000000);
     }
 
     protected void updateRecentsPanel(int recentsResId) {

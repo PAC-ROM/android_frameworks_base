@@ -440,7 +440,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
             recreateStatusBar();
-            setStatusBarParams(mStatusBarView);
         }
         loadDimens();
         mNotificationPanelParams.height = getNotificationPanelHeight();
