@@ -190,9 +190,5 @@
                 <category android:name="com.android.internal.category.PLATLOGO" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.android.systemui.statusbar.powerwidget.Torch">
-        </activity>
     </application>
 </manifest>
