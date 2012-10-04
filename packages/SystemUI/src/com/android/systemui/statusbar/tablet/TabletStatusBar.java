@@ -248,12 +248,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-
-        // this will allow the navbar to run in an overlay on devices that support this
-        if (ActivityManager.isHighEndGfx(mDisplay)) {
-            lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-        }
+                PixelFormat.RGB_565);
 
         lp.gravity = getStatusBarGravity();
         lp.setTitle("SystemBar");
@@ -278,13 +273,10 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_TABUI_MENU), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            setStatusBarParams(mStatusBarView);
             loadDimens();
             recreateStatusBar();
         }
@@ -535,8 +527,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
-
-        setStatusBarParams(mStatusBarView);
 
         sb.setHandler(mHandler);
 
