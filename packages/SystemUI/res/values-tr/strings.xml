@@ -41,13 +41,7 @@
     <string name="battery_low_why" msgid="7279169609518386372">"Pil kullanımı"</string>
     <string name="status_bar_settings_settings_button" msgid="3023889916699270224">"Ayarlar"</string>
     <string name="status_bar_settings_wifi_button" msgid="1733928151698311923">"Kablosuz"</string>
-    <string name="status_bar_settings_bluetooth_button">Bluetooth</string>
     <string name="status_bar_settings_airplane">Uçak modu</string>
-    <string name="status_bar_settings_location">GPS</string>
-    <string name="status_bar_settings_flashlight">LED ışığı</string>
-    <string name="status_bar_settings_mobile_data">Mobil veri</string>
-    <string name="status_bar_settings_network_mode">2G/3G</string>
-    <string name="status_bar_settings_sound_mode">Ses</string>
     <string name="status_bar_settings_auto_rotation" msgid="3790482541357798421">"Ekranı otomatik döndür"</string>
     <string name="status_bar_settings_mute_label" msgid="554682549917429396">"KAPAT"</string>
     <string name="status_bar_settings_auto_brightness_label" msgid="511453614962324674">"OTOMTK"</string>

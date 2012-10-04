@@ -140,8 +140,5 @@
     <string name="accessibility_rotation_lock_on_portrait" msgid="5809367521644012115">"Het scherm is nu vergrendeld in portretmodus."</string>
 
     <!-- CYANOGENMOD EDITS -->
-    <string name="status_bar_settings_flashlight">Zaklamp</string>
-    <string name="status_bar_settings_mobile_data">Mobiele gegevens</string>
-    <string name="status_bar_settings_sound_mode">Geluid</string>
     <string name="powerwidget_screen_timeout_toast">Time-out scherm ingesteld op: %1$d %2$s</string>
 </resources>

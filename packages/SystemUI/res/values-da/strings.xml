@@ -152,12 +152,6 @@
     <string name="powerwidget_screen_timeout_toast">Timeout for skærmen er sat til: %1$d %2$s</string>
 
     <!-- Statusbar settings -->
-    <string name="status_bar_settings_bluetooth_button">Bluetooth</string>
-    <string name="status_bar_settings_location">GPS</string>
-    <string name="status_bar_settings_flashlight">LED-lommelygte</string>
-    <string name="status_bar_settings_mobile_data">Mobildata</string>
-    <string name="status_bar_settings_network_mode">2G/3G</string>
-    <string name="status_bar_settings_sound_mode">Lyd</string>
 
     <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen) -->
     <string name="accessibility_data_connection_HP">HSPA+</string>
