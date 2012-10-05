@@ -24,19 +24,11 @@ import android.util.AttributeSet;
 import android.util.Slog;
 import android.widget.LinearLayout;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.policy.ToggleSlider;
-import com.android.systemui.statusbar.policy.VolumeController;
 
 public class SettingsView extends LinearLayout implements View.OnClickListener {
     static final String TAG = "SettingsView";
-
-    View mRotationLockContainer;
-    View mRotationLockSeparator;
 
     public SettingsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -49,8 +41,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        final Context context = getContext();
 
         findViewById(R.id.settings).setOnClickListener(this);
     }

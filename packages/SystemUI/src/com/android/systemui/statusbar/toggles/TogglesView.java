@@ -20,7 +20,7 @@ import com.android.systemui.statusbar.BaseStatusBar;
 
 public class TogglesView extends LinearLayout {
 
-    private static final String TAG = "ToggleView";
+    private static final String TAG = "TogglesView";
 
     private static final String TOGGLE_DELIMITER = "|";
 
@@ -41,14 +41,17 @@ public class TogglesView extends LinearLayout {
     private static final String TOGGLE_NFC = "NFC";
     private static final String TOGGLE_DONOTDISTURB = "DONOTDISTURB";
 
-    public static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
+    private static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
             + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
             + TOGGLE_DELIMITER + TOGGLE_SYNC;
 
-    public static final int STYLE_NONE = 1;
-    public static final int STYLE_ICON = 2;
-    public static final int STYLE_TEXT = 3;
-    public static final int STYLE_TEXT_AND_ICON = 4;
+    private static final int STYLE_NONE = 1;
+    private static final int STYLE_ICON = 2;
+    private static final int STYLE_TEXT = 3;
+    private static final int STYLE_TEXT_AND_ICON = 4;
+
+    private static final int WIDGETS_PER_ROW_UNLIMITED = 100; // 100 is big enough
+    private static final int WIDGETS_PER_ROW_DEFAULT = 2;
 
     private static final LinearLayout.LayoutParams PARAMS_BRIGHTNESS = new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, 90);
@@ -62,13 +65,13 @@ public class TogglesView extends LinearLayout {
     private ArrayList<LinearLayout> rows = new ArrayList<LinearLayout>();
     private ArrayList<Toggle> toggles = new ArrayList<Toggle>();
 
-    private int mWidgetsPerRow = 2;
+    private int mWidgetsPerRow;
 
     private boolean mShowBrightness;
 
     private int mToggleStyle = STYLE_TEXT;
 
-    private boolean useAltButtonLayout = false;
+    private boolean useAltButtonLayout;
 
     private BaseStatusBar sb;
 
@@ -156,6 +159,7 @@ public class TogglesView extends LinearLayout {
                 // new row
                 rows.add(new LinearLayout(mContext));
             }
+
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
                     (useAltButtonLayout ? PARAMS_TOGGLE_SCROLL : PARAMS_TOGGLE));
         }
@@ -291,7 +295,8 @@ public class TogglesView extends LinearLayout {
                 mContext.getContentResolver(),
                 Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
 
-        mWidgetsPerRow = useAltButtonLayout ? 100 : 2;
+        mWidgetsPerRow = useAltButtonLayout ? WIDGETS_PER_ROW_UNLIMITED :
+                WIDGETS_PER_ROW_DEFAULT;
 
         boolean addText = false;
         boolean addIcon = false;
