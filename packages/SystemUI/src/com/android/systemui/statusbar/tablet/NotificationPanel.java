@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Slog;
@@ -185,6 +186,12 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
             mNotificationScroller.scrollTo(0, 0);
             updatePanelModeButtons();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updatePanelModeButtons();
     }
 
     @Override
