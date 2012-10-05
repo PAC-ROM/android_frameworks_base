@@ -282,7 +282,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         @Override
         public void onChange(boolean selfChange) {
-            loadDimens();
+            loadResources();
             recreateStatusBar();
         }
     }
@@ -484,7 +484,7 @@ public class TabletStatusBar extends BaseStatusBar implements
             mCurrentTheme = (CustomTheme)newTheme.clone();
             recreateStatusBar();
         }
-        loadDimens();
+        loadResources();
         mNotificationPanelParams.height = getNotificationPanelHeight();
         WindowManagerImpl.getDefault().updateViewLayout(mNotificationPanel,
                 mNotificationPanelParams);
@@ -494,7 +494,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         updateSearchPanel();
     }
 
-    protected void loadDimens() {
+    protected void loadResources() {
         final Resources res = mContext.getResources();
 
         mNaturalBarHeight = res.getDimensionPixelSize(
@@ -573,7 +573,7 @@ public class TabletStatusBar extends BaseStatusBar implements
             mCurrentTheme = (CustomTheme)currentTheme.clone();
         }
 
-        loadDimens();
+        loadResources();
 
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);

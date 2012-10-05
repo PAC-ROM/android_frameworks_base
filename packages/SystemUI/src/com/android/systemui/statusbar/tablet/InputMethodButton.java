@@ -136,7 +136,8 @@ public class InputMethodButton extends ImageView {
         if (mIcon == null) {
             return;
         }
-        if (!needsToShowIMEButton()) {
+        if (!needsToShowIMEButton() || Settings.System.getInt(mContext.getContentResolver(),
+                   Settings.System.STATUS_BAR_IME_SWITCHER, 1) == 0) {
             setVisibility(View.GONE);
             return;
         } else {
