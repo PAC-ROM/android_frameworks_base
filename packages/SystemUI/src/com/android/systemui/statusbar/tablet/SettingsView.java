@@ -29,14 +29,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.policy.DoNotDisturbController;
 import com.android.systemui.statusbar.policy.ToggleSlider;
 import com.android.systemui.statusbar.policy.VolumeController;
 
 public class SettingsView extends LinearLayout implements View.OnClickListener {
     static final String TAG = "SettingsView";
 
-    DoNotDisturbController mDoNotDisturb;
     View mRotationLockContainer;
     View mRotationLockSeparator;
 
@@ -54,15 +52,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
         final Context context = getContext();
 
-        mDoNotDisturb = new DoNotDisturbController(context,
-                (CompoundButton)findViewById(R.id.do_not_disturb_checkbox));
         findViewById(R.id.settings).setOnClickListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mDoNotDisturb.release();
     }
 
     public void onClick(View v) {

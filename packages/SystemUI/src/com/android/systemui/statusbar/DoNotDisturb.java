@@ -19,35 +19,56 @@ package com.android.systemui.statusbar;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Slog;
 
 import com.android.systemui.statusbar.policy.Prefs;
 
-public class DoNotDisturb implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DoNotDisturb {
     private Context mContext;
     private StatusBarManager mStatusBar;
-    SharedPreferences mPrefs;
     private boolean mDoNotDisturb;
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            final boolean value = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
+
+            if (value != mDoNotDisturb) {
+                mDoNotDisturb = value;
+                updateDisableRecord();
+            }
+        }
+    }
+
 
     public DoNotDisturb(Context context) {
         mContext = context;
         mStatusBar = (StatusBarManager)context.getSystemService(Context.STATUS_BAR_SERVICE);
-        mPrefs = Prefs.read(context);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mDoNotDisturb = mPrefs.getBoolean(Prefs.DO_NOT_DISTURB_PREF, Prefs.DO_NOT_DISTURB_DEFAULT);
-        updateDisableRecord();
-    }
+        
+        SettingsObserver obs = new SettingsObserver(new Handler());
+        obs.observe();
 
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        final boolean val = prefs.getBoolean(Prefs.DO_NOT_DISTURB_PREF,
-                Prefs.DO_NOT_DISTURB_DEFAULT);
-        if (val != mDoNotDisturb) {
-            mDoNotDisturb = val;
-            updateDisableRecord();
-        }
+        mDoNotDisturb = Settings.System.getInt(
+            mContext.getContentResolver(), 
+            Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
+        updateDisableRecord();
     }
 
     private void updateDisableRecord() {

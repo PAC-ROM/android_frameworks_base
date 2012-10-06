@@ -39,10 +39,11 @@ public class TogglesView extends LinearLayout {
     private static final String TOGGLE_SYNC = "SYNC";
     private static final String TOGGLE_TETHER = "TETHER";
     private static final String TOGGLE_NFC = "NFC";
+    private static final String TOGGLE_TICKER = "TICKER";
 
     public static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
             + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
-            + TOGGLE_DELIMITER + TOGGLE_SYNC;
+            + TOGGLE_DELIMITER + TOGGLE_SYNC + TOGGLE_TICKER;
 
     public static final int STYLE_NONE = 1;
     public static final int STYLE_ICON = 2;
@@ -121,6 +122,8 @@ public class TogglesView extends LinearLayout {
                 newToggle = new USBTetherToggle(mContext);
             } else if (splitToggle.equals(TOGGLE_NFC)) {
                 newToggle = new NFCToggle(mContext);
+            } else if (splitToggle.equals(TOGGLE_TICKER)) {
+                newToggle = new TickerToggle(mContext);
             }
 
             if (newToggle != null) {
