@@ -43,7 +43,7 @@ public class TogglesView extends LinearLayout {
 
     public static final String DEFAULT_TOGGLES = TOGGLE_WIFI + TOGGLE_DELIMITER
             + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
-            + TOGGLE_DELIMITER + TOGGLE_SYNC + TOGGLE_TICKER;
+            + TOGGLE_DELIMITER + TOGGLE_SYNC;
 
     public static final int STYLE_NONE = 1;
     public static final int STYLE_ICON = 2;

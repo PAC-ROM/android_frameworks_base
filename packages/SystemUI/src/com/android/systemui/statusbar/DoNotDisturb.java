@@ -41,14 +41,14 @@ public class DoNotDisturb {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
+                    Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             final boolean value = Settings.System.getInt(
-                mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
+                    mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
 
             if (value != mDoNotDisturb) {
                 mDoNotDisturb = value;
@@ -66,14 +66,14 @@ public class DoNotDisturb {
         obs.observe();
 
         mDoNotDisturb = Settings.System.getInt(
-            mContext.getContentResolver(), 
-            Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
+                mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
         updateDisableRecord();
     }
 
     private void updateDisableRecord() {
         mStatusBar.disable(mDoNotDisturb ? 
-            StatusBarManager.DISABLE_NOTIFICATION_TICKER : 0);
+                StatusBarManager.DISABLE_NOTIFICATION_TICKER : 0);
     }
 }
 

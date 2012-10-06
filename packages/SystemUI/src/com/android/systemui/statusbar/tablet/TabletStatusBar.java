@@ -918,7 +918,7 @@ public class TabletStatusBar extends BaseStatusBar implements
                                 copy.content.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View v) {
                                         Settings.System.putInt(mContext.getContentResolver(),
-                                            Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1);
+                                                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1);
                                         animateCollapse();
                                         visibilityChanged(false);
                                     }
@@ -1096,8 +1096,8 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
         if ((diff & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) {
             mNotificationDNDMode =  Settings.System.getInt(
-                mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
+                    mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) != 1;
 
             if ((state & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) {
                 Slog.i(TAG, "DISABLE_NOTIFICATION_ICONS: yes" + (mNotificationDNDMode?" (DND)":""));

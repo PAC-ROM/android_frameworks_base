@@ -39,7 +39,7 @@ public class TickerToggle extends Toggle {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
+                    Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
         }
 
         @Override
@@ -63,13 +63,13 @@ public class TickerToggle extends Toggle {
 
     private boolean isTickerPopUpEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) == 1;
+                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) == 1;
     }
 
     @Override
     protected void onCheckChanged(boolean isChecked) {
         Settings.System.putInt(mContext.getContentResolver(),
-            Settings.System.STATUS_BAR_NOTIFICATION_POPUP, isChecked ? 1 : 0);
+                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, isChecked ? 1 : 0);
         updateState();
     }
 
