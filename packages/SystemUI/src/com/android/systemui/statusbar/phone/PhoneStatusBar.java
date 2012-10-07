@@ -95,6 +95,7 @@ import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
 import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.statusbar.BaseStatusBar;
+import com.android.systemui.statusbar.DoNotDisturb;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.NotificationData.Entry;
 import com.android.systemui.statusbar.CommandQueue;
@@ -171,6 +172,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     BatteryController mBatteryController;
     LocationController mLocationController;
     NetworkController mNetworkController;
+    DoNotDisturb mDoNotDisturb;
 
     int mNaturalBarHeight = -1;
     int mIconSize = -1;
@@ -446,6 +448,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             }});
 
         mStatusBarView = (PhoneStatusBarView) mStatusBarWindow.findViewById(R.id.status_bar);
+
+        // watch DO_NOT_DISTURB and convert to appropriate disable() calls
+        mDoNotDisturb = new DoNotDisturb(mContext);
 
         mNotificationPanel = mStatusBarWindow.findViewById(R.id.notification_panel);
         // don't allow clicks on the panel to pass through to the background where they will cause the panel to close

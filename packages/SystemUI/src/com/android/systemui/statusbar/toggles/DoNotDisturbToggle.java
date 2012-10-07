@@ -25,11 +25,11 @@ import android.os.Handler;
 
 import com.android.systemui.R;
 
-public class TickerToggle extends Toggle {
+public class DoNotDisturbToggle extends Toggle {
 
     Context mContext;
 
-    boolean mTickerPopUpEnabled;
+    boolean mDoNotDisturb;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -39,21 +39,21 @@ public class TickerToggle extends Toggle {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NOTIFICATION_POPUP), false, this);
+                    Settings.System.STATUS_BAR_DONOTDISTURB), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            mTickerPopUpEnabled = isTickerPopUpEnabled();
+            mDoNotDisturb = isDoNotDisturb();
             updateState();
         }
     }
 
-    public TickerToggle(Context context) {
+    public DoNotDisturbToggle(Context context) {
         super(context);
         mContext = context;
-        setLabel(R.string.toggle_ticker);
-        mTickerPopUpEnabled = isTickerPopUpEnabled();
+        setLabel(R.string.toggle_donotdisturb);
+        mDoNotDisturb = isDoNotDisturb();
 
         SettingsObserver obs = new SettingsObserver(new Handler());
         obs.observe();
@@ -61,15 +61,15 @@ public class TickerToggle extends Toggle {
         updateState();
     }
 
-    private boolean isTickerPopUpEnabled() {
+    private boolean isDoNotDisturb() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, 1) == 1;
+                Settings.System.STATUS_BAR_DONOTDISTURB, 0) == 1;
     }
 
     @Override
     protected void onCheckChanged(boolean isChecked) {
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIFICATION_POPUP, isChecked ? 1 : 0);
+                Settings.System.STATUS_BAR_DONOTDISTURB, isChecked ? 1 : 0);
         updateState();
     }
 
@@ -80,11 +80,11 @@ public class TickerToggle extends Toggle {
 
     @Override
     protected boolean updateInternalToggleState() {
-        mToggle.setChecked(mTickerPopUpEnabled);
+        mToggle.setChecked(mDoNotDisturb);
         if (mToggle.isChecked()) {
-            setIcon(R.drawable.toggle_ticker);
+            setIcon(R.drawable.toggle_donotdisturb);
         } else {
-            setIcon(R.drawable.toggle_ticker_off);
+            setIcon(R.drawable.toggle_donotdisturb_off);
         }
         return mToggle.isChecked();
     }

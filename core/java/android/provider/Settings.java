@@ -2528,10 +2528,10 @@ public final class Settings {
         public static final String STATUSBAR_STATE = "statusbar_state";
 
         /**
-         * Statusbar notification nag pop-up
+         * Statusbar Do not disturb
          * @hide
          */
-        public static final String STATUS_BAR_NOTIFICATION_POPUP = "statusbar_notification_popup";
+        public static final String STATUS_BAR_DONOTDISTURB = "statusbar_donotdisturb";
 
         /**
          * Whether to use a separate delay for "slide to unlock" and security

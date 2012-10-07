@@ -426,7 +426,7 @@
     <string name="toggle_sync">Sync</string>
     <string name="toggle_tether">Tethering</string>
     <string name="toggle_nfc">NFC</string>
-    <string name="toggle_ticker">Ticker</string>
+    <string name="toggle_donotdisturb">DoNotDisturb</string>
 
     <!-- Label in drop down to identify brightness slider -->
     <string name="brightness_label">Brightness</string>
