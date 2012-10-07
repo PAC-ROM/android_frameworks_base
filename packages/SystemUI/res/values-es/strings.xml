@@ -164,6 +164,7 @@
     <string name="toggle_torch">Flash LED</string>
     <string name="toggle_sync">Sincronización</string>
     <string name="toggle_tether">Anclaje de USB</string>
+    <string name="toggle_donotdisturb">No molestar</string>
 
     <!-- Label in drop down to identify brightness slider -->
     <string name="brightness_label">Brillo</string>

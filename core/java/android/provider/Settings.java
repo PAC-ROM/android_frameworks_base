@@ -2528,7 +2528,7 @@ public final class Settings {
         public static final String STATUSBAR_STATE = "statusbar_state";
 
         /**
-         * Statusbar Do not disturb
+         * Statusbar do not disturb
          * @hide
          */
         public static final String STATUS_BAR_DONOTDISTURB = "statusbar_donotdisturb";
