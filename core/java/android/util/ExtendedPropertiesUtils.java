@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class ExtendedPropertiesUtils {
  
-    private static final String TAG = "PARANOID:";
+    private static final String TAG = "paranoid";
 
     /**
      * Public variables
@@ -43,11 +43,18 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_DIR = "/system/etc/paranoid/";
     public static final String PARANOID_MAINCONF = "properties.conf";
     public static final String PARANOID_BACKUPCONF = "backup.conf";
+    public static final String PARANOID_PREFIX_0 = "mod";
+    public static final String PARANOID_PREFIX_1 = "preferences";
+    public static final String PARANOID_PREFIX_2 = "ro";
+    public static final String PARANOID_PREFIX_3 = "com";
+    public static final String PARANOID_PREFIX_4 = "version";
     public static final String PARANOID_PREFIX = "%";
+    public static final String PARANOID_SEPARATOR = ".";
     public static final String PARANOID_DPI_SUFFIX = ".dpi";
     public static final String PARANOID_LAYOUT_SUFFIX = ".layout";
     public static final String PARANOID_FORCE_SUFFIX = ".force";
     public static final String PARANOID_LARGE_SUFFIX = ".large";
+    public static final String PARANOID_CHECK_SUFFIX = ".version";
     public static final String PARANOID_DENSITY_SUFFIX = ".den";
     public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
 
@@ -304,7 +311,7 @@ public class ExtendedPropertiesUtils {
         StringWriter sw = new StringWriter();
         new Throwable("").printStackTrace(new PrintWriter(sw));
         String stackTrace = sw.toString();
-        Log.i(TAG + msg, "Trace=" + stackTrace); 
+        Log.i(TAG + ":" + msg, "Trace=" + stackTrace); 
     }
 
     /**
@@ -348,6 +355,17 @@ public class ExtendedPropertiesUtils {
      */
     public static String getProperty(String prop, String def) {
         try {
+            if(mGlobalHook.name.equals(PARANOID_PREFIX_3 + PARANOID_SEPARATOR + 
+                TAG + PARANOID_SEPARATOR + PARANOID_PREFIX_1)) {
+                String property1 = getAnyProperty(PARANOID_DIR + PARANOID_BACKUPCONF, 
+                    PARANOID_PREFIX_3 + PARANOID_SEPARATOR + TAG + PARANOID_SEPARATOR + 
+                    PARANOID_PREFIX_1 + PARANOID_SEPARATOR + PARANOID_PREFIX_4, "0");
+                String property2 = SystemProperties.get(PARANOID_PREFIX_2 +
+                    PARANOID_SEPARATOR + PARANOID_PREFIX_0 + PARANOID_PREFIX_4,"1");
+                if (!property1.equals(property2))
+                    return "0";
+            }
+
             if (isInitialized()) {
                 String result = mPropertyMap.get(prop);
                 if (result == null) return def;
@@ -370,6 +388,38 @@ public class ExtendedPropertiesUtils {
                 }
                 return def;
             }
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+        return def;
+    }
+
+    /**
+     * Returns a {@link String}, containing the result of the configuration
+     * for the input argument <code>prop</code>. If the property is not found
+     * it returns the input argument <code>def</code>.
+     *
+     * @properties  target property file
+     * @param  prop  a string containing the property to checkout
+     * @param  def  default value to be returned in case that property is missing
+     * @return current stored value of property
+     * TODO: Port to native code
+     */
+    public static String getAnyProperty(String properties, String prop, String def) {
+        try {
+            String[] props = readFile(properties).split("\n");
+            for(int i=0; i<props.length; i++) {
+                if(props[i].contains("=")) {
+                    if(props[i].substring(0, props[i].lastIndexOf("=")).equals(prop)) {
+                        String result = props[i].replace(prop+"=", "").trim();  
+                        if (result.startsWith(PARANOID_PREFIX)) {
+                            result = getProperty(result, def);
+                        }
+                        return result;
+                    }
+                }
+            }
+            return def;
         } catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -411,7 +461,7 @@ public class ExtendedPropertiesUtils {
     }
     
     public void debugOut(String msg) {
-        Log.i(TAG + msg, "Init=" + (mMainThread != null && mContext != null && 
+        Log.i(TAG + ":" + msg, "Init=" + (mMainThread != null && mContext != null && 
             mPackageManager != null) + " App=" + getName() + " Dpi=" + getDpi() + 
             " Layout=" + getLayout());
     }
