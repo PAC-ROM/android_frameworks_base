@@ -483,8 +483,20 @@ public class ExtendedPropertiesUtils {
     public static void getEnvironmentState() {
         int nativeDensity = SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties
             .getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
-        setIsEnvironmentSane(nativeDensity == Integer.parseInt(getProperty(
-            PARANOID_PREFIX + "rom_default_dpi")));
+        if(nativeDensity == Integer.parseInt(getProperty(PARANOID_PREFIX + "rom_default_dpi"))) {
+            switch(nativeDensity) {
+                case DisplayMetrics.DENSITY_LOW:
+                case DisplayMetrics.DENSITY_MEDIUM:
+                case DisplayMetrics.DENSITY_TV:
+                case DisplayMetrics.DENSITY_HIGH:
+                case DisplayMetrics.DENSITY_XHIGH:
+                case DisplayMetrics.DENSITY_XXHIGH:
+                    setIsEnvironmentSane(true);
+                    return;
+            }
+        }
+
+        setIsEnvironmentSane(false);
     }
 
 
