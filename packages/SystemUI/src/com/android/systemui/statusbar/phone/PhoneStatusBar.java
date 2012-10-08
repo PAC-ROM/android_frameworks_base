@@ -626,6 +626,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(mBroadcastReceiver, filter);
+        
+        mVelocityTracker = VelocityTracker.obtain();
+
         return mStatusBarView;
     }
 
