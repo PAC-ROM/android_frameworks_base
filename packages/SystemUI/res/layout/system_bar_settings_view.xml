@@ -15,40 +15,47 @@
  * limitations under the License.
 -->
 
-<com.android.systemui.statusbar.tablet.SettingsView
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
+    android:layout_marginBottom="@dimen/settings_view_margin_bottom"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <com.android.systemui.statusbar.tablet.SettingsView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
-        layout="@layout/quick_toggles" />
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            layout="@layout/quick_toggles" />
 
-    <View style="@style/StatusBarPanelSettingsPanelSeparator" />
+        <View style="@style/StatusBarPanelSettingsPanelSeparator" />
 
-    <!-- Link to settings -->
-    <LinearLayout
-            android:id="@+id/settings"
-            style="@style/StatusBarPanelSettingsRow"
-            >
-
-        <ImageView
+        <!-- Link to settings -->
+        <LinearLayout
                 android:id="@+id/settings"
-                style="@style/StatusBarPanelSettingsIcon"
-                android:src="@drawable/ic_sysbar_quicksettings"
-                />
-        <TextView
-                style="@style/StatusBarPanelSettingsContents"
-                android:text="@string/status_bar_settings_settings_button"
-                />
-    </LinearLayout>
-    <View style="@style/StatusBarPanelSettingsPanelSeparator" />
+                style="@style/StatusBarPanelSettingsRow"
+                >
 
-</com.android.systemui.statusbar.tablet.SettingsView>
+            <ImageView
+                    android:id="@+id/settings"
+                    style="@style/StatusBarPanelSettingsIcon"
+                    android:src="@drawable/ic_sysbar_quicksettings"
+                    />
+            <TextView
+                    style="@style/StatusBarPanelSettingsContents"
+                    android:text="@string/status_bar_settings_settings_button"
+                    />
+        </LinearLayout>
+        <View style="@style/StatusBarPanelSettingsPanelSeparator" />
 
+    </com.android.systemui.statusbar.tablet.SettingsView>
+
+</ScrollView>
