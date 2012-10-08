@@ -659,7 +659,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_STATE), false, this);
+                    Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
@@ -1313,46 +1313,51 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         int sysUIDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
         
         float statusBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
-            com.android.internal.R.dimen.status_bar_height) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+                com.android.internal.R.dimen.status_bar_height) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
         float navigationBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
-            com.android.internal.R.dimen.navigation_bar_height) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+                com.android.internal.R.dimen.navigation_bar_height) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
         float navigationBarWidth = ((float)mContext.getResources().getDimensionPixelSize(
-            com.android.internal.R.dimen.navigation_bar_width) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+                com.android.internal.R.dimen.navigation_bar_width) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
         float navigationBarHeightLandscape = ((float)mContext.getResources().getDimensionPixelSize(
-            com.android.internal.R.dimen.navigation_bar_height_landscape) * DisplayMetrics.DENSITY_DEVICE / sysDpi) /
-            DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+                com.android.internal.R.dimen.navigation_bar_height_landscape) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
 
         mStatusBarHeight = Math.round(statusBarHeight);
 
         // Height of the navigation bar when presented horizontally at bottom
         mNavigationBarHeightForRotation[mPortraitRotation] = 
-            mNavigationBarHeightForRotation[mUpsideDownRotation] = Math.round(navigationBarHeight);
+                mNavigationBarHeightForRotation[mUpsideDownRotation] = Math.round(navigationBarHeight);
 
         mNavigationBarHeightForRotation[mLandscapeRotation] =
-            mNavigationBarHeightForRotation[mSeascapeRotation] = Math.round(navigationBarHeightLandscape);
+                mNavigationBarHeightForRotation[mSeascapeRotation] = Math.round(navigationBarHeightLandscape);
 
         // Width of the navigation bar when presented vertically along one side
         mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] =
-            mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] =
-            Math.round(navigationBarWidth);
+                mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] =
+                Math.round(navigationBarWidth);
 
         // In case that we removed nav bar, set all sizes to 0 again
         if(!mHasNavigationBar){
-            if(!mHasSystemNavBar || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1){
+            if(!mHasSystemNavBar || Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1){
                 mNavigationBarWidthForRotation[mPortraitRotation]
-                    = mNavigationBarWidthForRotation[mUpsideDownRotation]
-                    = mNavigationBarWidthForRotation[mLandscapeRotation]
-                    = mNavigationBarWidthForRotation[mSeascapeRotation]
-                    = mNavigationBarHeightForRotation[mPortraitRotation]
-                    = mNavigationBarHeightForRotation[mUpsideDownRotation]
-                    =  mNavigationBarHeightForRotation[mLandscapeRotation]
-                    = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+                        = mNavigationBarWidthForRotation[mUpsideDownRotation]
+                        = mNavigationBarWidthForRotation[mLandscapeRotation]
+                        = mNavigationBarWidthForRotation[mSeascapeRotation]
+                        = mNavigationBarHeightForRotation[mPortraitRotation]
+                        = mNavigationBarHeightForRotation[mUpsideDownRotation]
+                        = mNavigationBarHeightForRotation[mLandscapeRotation]
+                        = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
             }
         }
     }
@@ -1377,7 +1382,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, 
                     !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), 
-                    Settings.System.STATUSBAR_STATE, 0) != 1 && !mHasSystemNavBar;
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) != 1 && !mHasSystemNavBar;
 
             getDimensions();
 
@@ -3379,7 +3384,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                if (topIsFullscreen || Settings.System.getInt(mContext.getContentResolver(), Settings.System.STATUSBAR_STATE, 0) == 1) {
+                if (topIsFullscreen || Settings.System.getInt(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
