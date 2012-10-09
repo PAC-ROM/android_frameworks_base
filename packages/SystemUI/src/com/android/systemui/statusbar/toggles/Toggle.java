@@ -57,6 +57,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected boolean mSystemChange = false;
     final boolean useAltButtonLayout;
     final int defaultColor;
+    final int defaultOffColor;
 
     public Toggle(Context context) {
         mContext = context;
@@ -65,12 +66,13 @@ public abstract class Toggle implements OnCheckedChangeListener {
                 context.getContentResolver(),
                 Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
 
+        defaultColor = context.getResources().getColor(
+            com.android.internal.R.color.holo_blue_light);
+
         float[] hsv = new float[3];
-        int color = context.getResources().getColor(
-                com.android.internal.R.color.holo_blue_light);
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= 0.7f; // value component
-        defaultColor = Color.HSVToColor(hsv);
+        Color.colorToHSV(defaultColor, hsv);
+        hsv[2] *= 0.5f;
+        defaultOffColor = Color.HSVToColor(hsv);
 
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -106,7 +108,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
         if (toggle) {
             bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
         } else {
-            bg.setColorFilter(null);
+            bg.setColorFilter(defaultOffColor, PorterDuff.Mode.SRC_ATOP);
         }
         mToggle.setBackgroundDrawable(bg);
     }

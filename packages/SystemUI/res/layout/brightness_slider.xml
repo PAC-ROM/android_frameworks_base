@@ -22,7 +22,7 @@
         android:id="@+id/brightness"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingLeft="10dp"
+        android:paddingLeft="5dp"
         android:paddingRight="2dp"
         systemui:text="@string/status_bar_settings_auto_brightness_label" />
 </LinearLayout>

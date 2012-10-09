@@ -184,12 +184,12 @@ public class TogglesView extends LinearLayout {
                 rows.add(togglesRowLayout);
             }
 
-            togglesRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            togglesRowLayout.setGravity(Gravity.LEFT);
             toggleScrollView.setHorizontalFadingEdgeEnabled(true);
             toggleScrollView.addView(togglesRowLayout, PARAMS_TOGGLE);
             LinearLayout ll = new LinearLayout(mContext);
             ll.setOrientation(LinearLayout.VERTICAL);
-            ll.setGravity(Gravity.CENTER_HORIZONTAL);
+            ll.setGravity(Gravity.LEFT);
             ll.addView(toggleScrollView, PARAMS_TOGGLE_SCROLL);
             rows.remove(rows.size() - 1);
             rows.add(ll);
