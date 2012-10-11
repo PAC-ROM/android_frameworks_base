@@ -51,11 +51,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/notification_panel_header_height"/>
 
-        <com.android.systemui.statusbar.powerwidget.PowerWidget
-            android:id="@+id/exp_power_stat"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/notification_panel_widget_height"/>
-
         <TextView
             android:id="@+id/emergency_calls_only"
             android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Network.EmergencyOnly"

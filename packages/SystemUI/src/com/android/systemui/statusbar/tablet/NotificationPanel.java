@@ -451,19 +451,5 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
             updatePanelModeButtons();
         }
     }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
-        switch (event.getKeyCode()) {
-        case KeyEvent.KEYCODE_BACK:
-            if (!down && isShowing()) {
-                show(false, true);
-                mBar.mNotificationArea.setVisibility(View.VISIBLE);
-            }
-            return true;
-        }
-        return super.dispatchKeyEvent(event);
-    }
 }
 
