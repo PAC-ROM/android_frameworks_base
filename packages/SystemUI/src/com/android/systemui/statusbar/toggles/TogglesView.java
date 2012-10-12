@@ -71,7 +71,7 @@ public class TogglesView extends LinearLayout {
 
     private int mToggleStyle = STYLE_TEXT;
 
-    private boolean useAltButtonLayout;
+    private boolean useAltSwitchLayout;
 
     private BaseStatusBar sb;
 
@@ -145,7 +145,7 @@ public class TogglesView extends LinearLayout {
     private void addViews() {
         removeViews();
 
-        if (!useAltButtonLayout) {
+        if (!useAltSwitchLayout) {
             DisplayMetrics metrics = getContext().getResources()
                     .getDisplayMetrics();
             float dp = 10f;
@@ -161,10 +161,10 @@ public class TogglesView extends LinearLayout {
             }
 
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
-                    (useAltButtonLayout ? PARAMS_TOGGLE_SCROLL : PARAMS_TOGGLE));
+                    (useAltSwitchLayout ? PARAMS_TOGGLE_SCROLL : PARAMS_TOGGLE));
         }
 
-        if (!useAltButtonLayout && (toggles.size() % 2 != 0)) {
+        if (!useAltSwitchLayout && (toggles.size() % 2 != 0)) {
             // We are using switches, and have an uneven number - let's add a
             // spacer
             mToggleSpacer = new LinearLayout(mContext);
@@ -172,7 +172,7 @@ public class TogglesView extends LinearLayout {
 
         }
 
-        if (useAltButtonLayout) {
+        if (useAltSwitchLayout) {
             LinearLayout togglesRowLayout;
             HorizontalScrollView toggleScrollView = new HorizontalScrollView(
                     mContext);
@@ -186,6 +186,7 @@ public class TogglesView extends LinearLayout {
 
             togglesRowLayout.setGravity(Gravity.LEFT);
             toggleScrollView.setHorizontalFadingEdgeEnabled(true);
+            toggleScrollView.setHorizontalScrollBarEnabled(false);
             toggleScrollView.addView(togglesRowLayout, PARAMS_TOGGLE);
             LinearLayout ll = new LinearLayout(mContext);
             ll.setOrientation(LinearLayout.VERTICAL);
@@ -291,11 +292,17 @@ public class TogglesView extends LinearLayout {
         mToggleStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_TOGGLES_STYLE, STYLE_ICON);
 
-        useAltButtonLayout = Settings.System.getInt(
+        int val = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1);
 
-        mWidgetsPerRow = useAltButtonLayout ? WIDGETS_PER_ROW_UNLIMITED :
+        if (val == 2 && mToggleStyle != STYLE_ICON) {
+            mToggleStyle = STYLE_ICON;
+        }
+
+        useAltSwitchLayout = val >= 1;
+
+        mWidgetsPerRow = useAltSwitchLayout ? WIDGETS_PER_ROW_UNLIMITED :
                 WIDGETS_PER_ROW_DEFAULT;
 
         boolean addText = false;

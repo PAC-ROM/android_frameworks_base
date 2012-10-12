@@ -55,6 +55,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected Vibrator mVibrator;
 
     protected boolean mSystemChange = false;
+    final boolean useAltSwitchLayout;
     final boolean useAltButtonLayout;
     final int defaultColor;
     final int defaultOffColor;
@@ -62,9 +63,13 @@ public abstract class Toggle implements OnCheckedChangeListener {
     public Toggle(Context context) {
         mContext = context;
 
-        useAltButtonLayout = Settings.System.getInt(
+        useAltSwitchLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) >= 1;
+
+        useAltButtonLayout = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 2;
 
         defaultColor = context.getResources().getColor(
             com.android.internal.R.color.holo_blue_light);
@@ -77,7 +82,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         mView = View.inflate(mContext,
-                useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
+                useAltSwitchLayout ? R.layout.toggle_button : R.layout.toggle,
                 null);
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
@@ -99,12 +104,20 @@ public abstract class Toggle implements OnCheckedChangeListener {
     }
 
     public void updateDrawable(boolean toggle) {
-        if (!useAltButtonLayout){
+        if (!useAltSwitchLayout){
             return;
         }
 
-        Drawable bg = mContext.getResources().getDrawable(
+        Drawable bg;
+        if (useAltButtonLayout) {
+            bg = mContext.getResources().getDrawable(
+                toggle ? R.drawable.btn_on_full : R.drawable.btn_off_full);
+        }
+        else {
+            bg = mContext.getResources().getDrawable(
                 toggle ? R.drawable.btn_on : R.drawable.btn_off);
+        }
+
         if (toggle) {
             bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
         } else {

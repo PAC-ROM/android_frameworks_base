@@ -22,7 +22,7 @@
     >
     <CheckBox
         android:id="@+id/toggle"
-        android:layout_width="52dp"
+        android:layout_width="53dp"
         android:layout_height="0dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"

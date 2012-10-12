@@ -54,7 +54,6 @@
                     android:text="@string/status_bar_settings_settings_button"
                     />
         </LinearLayout>
-        <View style="@style/StatusBarPanelSettingsPanelSeparator" />
 
     </com.android.systemui.statusbar.tablet.SettingsView>
 
