@@ -45,10 +45,13 @@ public class TogglesView extends LinearLayout {
             + TOGGLE_BLUETOOTH + TOGGLE_DELIMITER + TOGGLE_GPS
             + TOGGLE_DELIMITER + TOGGLE_SYNC;
 
-    private static final int STYLE_NONE = 1;
-    private static final int STYLE_ICON = 2;
-    private static final int STYLE_TEXT = 3;
-    private static final int STYLE_TEXT_AND_ICON = 4;
+    protected static final int STYLE_NONE = 1;
+    protected static final int STYLE_ICON = 2;
+    protected static final int STYLE_TEXT = 3;
+
+    protected static final int LAYOUT_SWITCH = 0;
+    protected static final int LAYOUT_TOGGLE = 1;
+    protected static final int LAYOUT_BUTTON = 2;
 
     private static final int WIDGETS_PER_ROW_UNLIMITED = 100; // 100 is big enough
     private static final int WIDGETS_PER_ROW_DEFAULT = 2;
@@ -71,7 +74,7 @@ public class TogglesView extends LinearLayout {
 
     private int mToggleStyle = STYLE_TEXT;
 
-    private boolean useAltSwitchLayout;
+    private boolean mUseSwitchLayout;
 
     private BaseStatusBar sb;
 
@@ -144,15 +147,9 @@ public class TogglesView extends LinearLayout {
 
     private void addViews() {
         removeViews();
-
-        if (!useAltSwitchLayout) {
-            DisplayMetrics metrics = getContext().getResources()
-                    .getDisplayMetrics();
-            float dp = 10f;
-            int pixels = (int) (metrics.density * dp + 0.5f);
-            this.setPadding(getPaddingLeft(), pixels, getPaddingRight(),
-                    getPaddingBottom());
-        }
+        boolean disableScroll = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_DISABLE_SCROLL,
+                0) == 1;
 
         for (int i = 0; i < toggles.size(); i++) {
             if (i % mWidgetsPerRow == 0) {
@@ -161,18 +158,17 @@ public class TogglesView extends LinearLayout {
             }
 
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
-                    (useAltSwitchLayout ? PARAMS_TOGGLE_SCROLL : PARAMS_TOGGLE));
+                    (mUseSwitchLayout || disableScroll ? PARAMS_TOGGLE : PARAMS_TOGGLE_SCROLL));
         }
 
-        if (!useAltSwitchLayout && (toggles.size() % 2 != 0)) {
+        if (mUseSwitchLayout && (toggles.size() % 2 != 0)) {
             // We are using switches, and have an uneven number - let's add a
             // spacer
             mToggleSpacer = new LinearLayout(mContext);
             rows.get(rows.size() - 1).addView(mToggleSpacer, PARAMS_TOGGLE);
-
         }
 
-        if (useAltSwitchLayout) {
+        if (!mUseSwitchLayout && !disableScroll) {
             LinearLayout togglesRowLayout;
             HorizontalScrollView toggleScrollView = new HorizontalScrollView(
                     mContext);
@@ -200,10 +196,7 @@ public class TogglesView extends LinearLayout {
             addBrightness();
         }
 
-        final int layout_type = Settings.System.getInt(
-                mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_LAYOUT, 0);
-        if (sb != null && !sb.isTablet() && layout_type != 2){
+        if (sb != null && !sb.isTablet()){
             addSeparator();
         }
 
@@ -254,10 +247,13 @@ public class TogglesView extends LinearLayout {
                     Settings.System.STATUSBAR_TOGGLES_STYLE), false,
                     this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
-                    false, this);
+                    Settings.System.STATUSBAR_TOGGLES_DISABLE_SCROLL), false,
+                    this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS),false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_TOGGLES_SHOW_BRIGHTNESS),
+                    false, this);
             updateSettings();
         }
 
@@ -292,18 +288,18 @@ public class TogglesView extends LinearLayout {
         mToggleStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_TOGGLES_STYLE, STYLE_ICON);
 
-        int val = Settings.System.getInt(
+        int layout = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1);
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, LAYOUT_TOGGLE);
 
-        if (val == 2 && mToggleStyle != STYLE_ICON) {
+        if (layout == LAYOUT_BUTTON && mToggleStyle != STYLE_ICON) {
             mToggleStyle = STYLE_ICON;
         }
 
-        useAltSwitchLayout = val >= 1;
+        mUseSwitchLayout = layout == LAYOUT_SWITCH;
 
-        mWidgetsPerRow = useAltSwitchLayout ? WIDGETS_PER_ROW_UNLIMITED :
-                WIDGETS_PER_ROW_DEFAULT;
+        mWidgetsPerRow = mUseSwitchLayout ? WIDGETS_PER_ROW_DEFAULT :
+                WIDGETS_PER_ROW_UNLIMITED;
 
         boolean addText = false;
         boolean addIcon = false;
@@ -316,10 +312,6 @@ public class TogglesView extends LinearLayout {
                 break;
             case STYLE_TEXT:
                 addText = true;
-                break;
-            case STYLE_TEXT_AND_ICON:
-                addText = true;
-                addIcon = true;
                 break;
         }
 

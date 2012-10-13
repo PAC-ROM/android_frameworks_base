@@ -2342,12 +2342,6 @@ public final class Settings {
         public static final String STATUSBAR_TOGGLES_ENABLE = "statusbar_toggles_enable";
 
         /**
-         * Button-like toggles style (instead of switches)
-         * @hide
-         */
-        public static final String STATUSBAR_TOGGLES_USE_BUTTONS = "statusbar_toggles_use_buttons";
-
-        /**
          * Toggles to use on statusbar
          * @hide
          */
@@ -2360,16 +2354,22 @@ public final class Settings {
         public static final String STATUSBAR_TOGGLES_STYLE = "statusbar_toggles_style";
 
         /**
+         * Allows to switch between the different toggle layouts
+         * @hide
+         */
+        public static final String STATUSBAR_TOGGLES_USE_BUTTONS = "statusbar_toggles_use_buttons";
+
+        /**
          * Whether to show brightness on toggles view
          * @hide
          */
         public static final String STATUSBAR_TOGGLES_SHOW_BRIGHTNESS = "statusbar_toggles_show_brightness";
 
         /**
-         * Statusbar layout
+         * Disable scrolling on non-switched toggle layouts
          * @hide
          */
-        public static final String STATUS_BAR_LAYOUT = "statusbar_layout";
+        public static final String STATUSBAR_TOGGLES_DISABLE_SCROLL = "statusbar_toggles_disable_scroll";
 
         /**
          * Navigation bar, whether to show or hide

@@ -55,21 +55,16 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected Vibrator mVibrator;
 
     protected boolean mSystemChange = false;
-    final boolean useAltSwitchLayout;
-    final boolean useAltButtonLayout;
+    final int mLayout;
     final int defaultColor;
     final int defaultOffColor;
 
     public Toggle(Context context) {
         mContext = context;
 
-        useAltSwitchLayout = Settings.System.getInt(
+        mLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) >= 1;
-
-        useAltButtonLayout = Settings.System.getInt(
-                mContext.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 2;
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, TogglesView.LAYOUT_TOGGLE);
 
         defaultColor = context.getResources().getColor(
             com.android.internal.R.color.holo_blue_light);
@@ -82,7 +77,7 @@ public abstract class Toggle implements OnCheckedChangeListener {
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         mView = View.inflate(mContext,
-                useAltSwitchLayout ? R.layout.toggle_button : R.layout.toggle,
+                mLayout == TogglesView.LAYOUT_SWITCH ? R.layout.toggle : R.layout.toggle_button,
                 null);
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
@@ -104,18 +99,18 @@ public abstract class Toggle implements OnCheckedChangeListener {
     }
 
     public void updateDrawable(boolean toggle) {
-        if (!useAltSwitchLayout){
-            return;
-        }
-
-        Drawable bg;
-        if (useAltButtonLayout) {
-            bg = mContext.getResources().getDrawable(
-                toggle ? R.drawable.btn_on_full : R.drawable.btn_off_full);
-        }
-        else {
-            bg = mContext.getResources().getDrawable(
-                toggle ? R.drawable.btn_on : R.drawable.btn_off);
+        Drawable bg = null;
+        switch(mLayout){
+            case TogglesView.LAYOUT_SWITCH:
+                return;
+            case TogglesView.LAYOUT_TOGGLE:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_small);
+                break;
+            case TogglesView.LAYOUT_BUTTON:
+                bg = mContext.getResources().getDrawable(
+                        R.drawable.btn_toggle_fit);
+                break;
         }
 
         if (toggle) {
