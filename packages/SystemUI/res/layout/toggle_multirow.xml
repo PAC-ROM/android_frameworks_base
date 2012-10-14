@@ -31,7 +31,6 @@
         android:paddingTop="5dp"
         android:paddingRight="15dp"
         android:paddingLeft="50dp"
-        android:singleLine="true"
-        android:textSize="17dp"/>
+        android:singleLine="true"/>
 
 </RelativeLayout>
