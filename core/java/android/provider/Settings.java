@@ -2476,6 +2476,16 @@ public final class Settings {
          */
         public static final String STATUS_BAR_AM_PM = "status_bar_am_pm";
 
+	/**
+         * Display style of the day of the week before clock in status bar
+         * 0: Normal display
+         * 1: Small display
+         * 2: No display
+         * default: 2
+         * @hide
+         */
+        public static final String STATUS_BAR_WEEKDAY = "status_bar_weekday";
+
         /**
          * Display style of the status bar battery information
          * 0: Display the stock battery information
