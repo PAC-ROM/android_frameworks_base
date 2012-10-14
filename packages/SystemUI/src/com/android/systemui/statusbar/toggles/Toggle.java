@@ -76,9 +76,18 @@ public abstract class Toggle implements OnCheckedChangeListener {
 
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
-        mView = View.inflate(mContext,
-                mLayout == TogglesView.LAYOUT_SWITCH ? R.layout.toggle : R.layout.toggle_button,
-                null);
+        switch (mLayout) {
+            case TogglesView.LAYOUT_SWITCH:
+                mView = View.inflate(mContext, R.layout.toggle_switch, null);
+                break;
+            case TogglesView.LAYOUT_TOGGLE:
+            case TogglesView.LAYOUT_BUTTON:
+                mView = View.inflate(mContext, R.layout.toggle_toggle, null);
+                break;
+            case TogglesView.LAYOUT_MULTIROW:
+                mView = View.inflate(mContext, R.layout.toggle_multirow, null);
+                break;
+        }
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
         mToggle = (CompoundButton) mView.findViewById(R.id.toggle);
@@ -101,8 +110,6 @@ public abstract class Toggle implements OnCheckedChangeListener {
     public void updateDrawable(boolean toggle) {
         Drawable bg = null;
         switch(mLayout){
-            case TogglesView.LAYOUT_SWITCH:
-                return;
             case TogglesView.LAYOUT_TOGGLE:
                 bg = mContext.getResources().getDrawable(
                         R.drawable.btn_toggle_small);
@@ -111,6 +118,8 @@ public abstract class Toggle implements OnCheckedChangeListener {
                 bg = mContext.getResources().getDrawable(
                         R.drawable.btn_toggle_fit);
                 break;
+            default:
+                return;
         }
 
         if (toggle) {

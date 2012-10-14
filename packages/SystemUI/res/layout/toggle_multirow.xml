@@ -9,21 +9,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Switch
-        android:id="@+id/toggle"
+        android:id="@id/toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"/>
-
-    <TextView
-        android:textAppearance="@style/TextAppearance.StatusBar.Toggle"
-        android:id="@id/label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/toggle"
-        android:layout_alignParentLeft="true"
-        android:paddingTop="2dp"
-        android:paddingRight="5dp"
-        android:singleLine="true"/>
 
     <ImageView
         android:id="@id/icon"
@@ -31,5 +20,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:paddingRight="5dp"/>
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.StatusBar.Toggle"
+        android:id="@id/label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/toggle"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="50dp"
+        android:singleLine="true"
+        android:textSize="17dp"/>
 
 </RelativeLayout>

@@ -48,10 +48,12 @@ public class TogglesView extends LinearLayout {
     protected static final int STYLE_NONE = 1;
     protected static final int STYLE_ICON = 2;
     protected static final int STYLE_TEXT = 3;
+    protected static final int STYLE_ICON_TEXT = 4;
 
-    protected static final int LAYOUT_SWITCH = 0;
-    protected static final int LAYOUT_TOGGLE = 1;
-    protected static final int LAYOUT_BUTTON = 2;
+    public static final int LAYOUT_SWITCH = 0;
+    public static final int LAYOUT_TOGGLE = 1;
+    public static final int LAYOUT_BUTTON = 2;
+    public static final int LAYOUT_MULTIROW = 3;
 
     private static final int WIDGETS_PER_ROW_UNLIMITED = 100; // 100 is big enough
     private static final int WIDGETS_PER_ROW_DEFAULT = 2;
@@ -74,7 +76,7 @@ public class TogglesView extends LinearLayout {
 
     private int mToggleStyle = STYLE_TEXT;
 
-    private boolean mUseSwitchLayout;
+    private boolean mUseChainedLayout;
 
     private BaseStatusBar sb;
 
@@ -158,17 +160,17 @@ public class TogglesView extends LinearLayout {
             }
 
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
-                    (mUseSwitchLayout || disableScroll ? PARAMS_TOGGLE : PARAMS_TOGGLE_SCROLL));
+                    (!mUseChainedLayout || disableScroll ? PARAMS_TOGGLE : PARAMS_TOGGLE_SCROLL));
         }
 
-        if (mUseSwitchLayout && (toggles.size() % 2 != 0)) {
+        if (!mUseChainedLayout && (toggles.size() % 2 != 0)) {
             // We are using switches, and have an uneven number - let's add a
             // spacer
             mToggleSpacer = new LinearLayout(mContext);
             rows.get(rows.size() - 1).addView(mToggleSpacer, PARAMS_TOGGLE);
         }
 
-        if (!mUseSwitchLayout && !disableScroll) {
+        if (mUseChainedLayout && disableScroll == false) {
             LinearLayout togglesRowLayout;
             HorizontalScrollView toggleScrollView = new HorizontalScrollView(
                     mContext);
@@ -295,10 +297,13 @@ public class TogglesView extends LinearLayout {
         if (layout == LAYOUT_BUTTON && mToggleStyle != STYLE_ICON) {
             mToggleStyle = STYLE_ICON;
         }
+        else if (layout == LAYOUT_MULTIROW) {
+            mToggleStyle = STYLE_ICON_TEXT;
+        }
 
-        mUseSwitchLayout = layout == LAYOUT_SWITCH;
+        mUseChainedLayout = (layout == LAYOUT_TOGGLE || layout == LAYOUT_BUTTON);
 
-        mWidgetsPerRow = mUseSwitchLayout ? WIDGETS_PER_ROW_DEFAULT :
+        mWidgetsPerRow = !mUseChainedLayout ? WIDGETS_PER_ROW_DEFAULT :
                 WIDGETS_PER_ROW_UNLIMITED;
 
         boolean addText = false;
@@ -312,6 +317,11 @@ public class TogglesView extends LinearLayout {
                 break;
             case STYLE_TEXT:
                 addText = true;
+                break;
+            case STYLE_ICON_TEXT:
+                addIcon = true;
+                addText = true;
+                mWidgetsPerRow = 1;
                 break;
         }
 
