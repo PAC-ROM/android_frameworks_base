@@ -72,8 +72,7 @@ public class DoNotDisturb {
     }
 
     private void updateDisableRecord() {
-        final int disabled = StatusBarManager.DISABLE_NOTIFICATION_ALERTS
-            | StatusBarManager.DISABLE_NOTIFICATION_TICKER;
+        final int disabled = StatusBarManager.DISABLE_NOTIFICATION_TICKER;
         mStatusBar.disable(mDoNotDisturb ? disabled : 0);
     }
 }
