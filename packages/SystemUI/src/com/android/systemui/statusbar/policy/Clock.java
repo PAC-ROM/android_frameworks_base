@@ -70,10 +70,18 @@ public class Clock extends TextView {
 
     private int WEEKDAY_STYLE = WEEKDAY_STYLE_GONE;
 
+    private static final int DAYMONTH_STYLE_NORMAL = 0;
+    private static final int DAYMONTH_STYLE_SMALL  = 1;
+    private static final int DAYMONTH_STYLE_GONE   = 2;
+
+    private int DAYMONTH_STYLE = DAYMONTH_STYLE_GONE;
+
     private int mAmPmStyle;
     private int mWeekdayStyle;
+    private int mDaymonthStyle;
     private boolean mShowClock;
     private boolean mShowAlways;
+    private boolean mShowMore;
 
     Handler mHandler;
 
@@ -88,6 +96,8 @@ public class Clock extends TextView {
                     Settings.System.STATUS_BAR_AM_PM), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEEKDAY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_DAYMONTH), false, this);
         }
 
         @Override
@@ -109,6 +119,7 @@ public class Clock extends TextView {
         
         TypedArray a = context.obtainStyledAttributes(attrs, com.android.systemui.R.styleable.Clock, defStyle, 0);
         mShowAlways = a.getBoolean(com.android.systemui.R.styleable.Clock_showAlways, false);
+        mShowMore = a.getBoolean(com.android.systemui.R.styleable.Clock_showMore, true);
 
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
@@ -227,13 +238,23 @@ public class Clock extends TextView {
         String result = sdf.format(mCalendar.getTime());
 
         String currentDay = null;
+        String currentMonth = null;
 
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if(mShowMore) {
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+            int month = calendar.get(Calendar.MONTH);
+            String dayofmonth = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
 
-        if (WEEKDAY_STYLE != WEEKDAY_STYLE_GONE) {
-            currentDay = getDay(day);
-            result = currentDay + result;
+            if (DAYMONTH_STYLE != DAYMONTH_STYLE_GONE) {
+                currentMonth = getMonth(month);
+                result = dayofmonth + " " + currentMonth + result;
+            }
+
+            if (WEEKDAY_STYLE != WEEKDAY_STYLE_GONE) {
+                currentDay = getDay(day);
+                result = currentDay + result;
+            }
         }
 
         SpannableStringBuilder formatted = new SpannableStringBuilder(result);
@@ -256,14 +277,25 @@ public class Clock extends TextView {
             }
         }
 
-        if (WEEKDAY_STYLE != WEEKDAY_STYLE_NORMAL) {
-            if (currentDay != null) {
-                if (WEEKDAY_STYLE == WEEKDAY_STYLE_GONE) {
-                    formatted.delete(result.indexOf(currentDay), result.lastIndexOf(currentDay)+currentDay.length());
-                } else {
-                    if (WEEKDAY_STYLE == WEEKDAY_STYLE_SMALL) {
-                        CharacterStyle style = new RelativeSizeSpan(0.7f);
-                        formatted.setSpan(style, result.indexOf(currentDay), result.lastIndexOf(currentDay)+currentDay.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        if(mShowMore) {
+            if (WEEKDAY_STYLE != WEEKDAY_STYLE_NORMAL) {
+                if (currentDay != null) {
+                    if (WEEKDAY_STYLE == WEEKDAY_STYLE_GONE) {
+                        formatted.delete(result.indexOf(currentDay), result.lastIndexOf(currentDay)+currentDay.length());
+                    } else if (WEEKDAY_STYLE == WEEKDAY_STYLE_SMALL) {
+                            CharacterStyle style = new RelativeSizeSpan(0.7f);
+                            formatted.setSpan(style, result.indexOf(currentDay), result.lastIndexOf(currentDay)+currentDay.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                }
+            }
+
+            if (DAYMONTH_STYLE != DAYMONTH_STYLE_NORMAL) {
+                if (currentMonth != null) {
+                    if (DAYMONTH_STYLE == DAYMONTH_STYLE_GONE) {
+                        formatted.delete(result.indexOf(currentMonth), result.lastIndexOf(currentMonth)+currentMonth.length());
+                    } else if (DAYMONTH_STYLE == DAYMONTH_STYLE_SMALL) {
+                            CharacterStyle style = new RelativeSizeSpan(0.7f);
+                            formatted.setSpan(style, result.indexOf(currentMonth), result.lastIndexOf(currentMonth)+currentMonth.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     }
                 }
             }
@@ -300,13 +332,60 @@ public class Clock extends TextView {
         return currentDay.toUpperCase() + " ";
     }
 
+    private String getMonth(int month) {
+        String currentMonth = null;
+        switch (month) {
+            case 0:
+                currentMonth = getResources().getString(R.string.month_medium_january);
+            break;
+            case 1:
+                currentMonth = getResources().getString(R.string.month_medium_february);
+            break;
+            case 2:
+                currentMonth = getResources().getString(R.string.month_medium_march);
+            break;
+            case 3:
+                currentMonth = getResources().getString(R.string.month_medium_april);
+            break;
+            case 4:
+                currentMonth = getResources().getString(R.string.month_medium_may);
+            break;
+            case 5:
+                currentMonth = getResources().getString(R.string.month_medium_june);
+            break;
+            case 6:
+                currentMonth = getResources().getString(R.string.month_medium_july);
+            break;
+            case 7:
+                currentMonth = getResources().getString(R.string.month_medium_august);
+            break;
+            case 8:
+                currentMonth = getResources().getString(R.string.month_medium_september);
+            break;
+            case 9:
+                currentMonth = getResources().getString(R.string.month_medium_october);
+            break;
+            case 10:
+                currentMonth = getResources().getString(R.string.month_medium_november);
+            break;
+            case 11:
+                currentMonth = getResources().getString(R.string.month_medium_december);
+            break;
+        }
+        return currentMonth.toUpperCase() + " ";
+    }
+
     private void updateSettings(){
         ContentResolver resolver = mContext.getContentResolver();
 
         mAmPmStyle = (Settings.System.getInt(resolver,
             Settings.System.STATUS_BAR_AM_PM, 2));
-        mWeekdayStyle = (Settings.System.getInt(resolver,
-            Settings.System.STATUS_BAR_WEEKDAY, 2));
+        if(mShowMore) {
+            mWeekdayStyle = (Settings.System.getInt(resolver,
+                    Settings.System.STATUS_BAR_WEEKDAY, 2));
+            mDaymonthStyle = (Settings.System.getInt(resolver,
+                    Settings.System.STATUS_BAR_DAYMONTH, 2));
+        }
 
         if (mAmPmStyle != AM_PM_STYLE) {
             AM_PM_STYLE = mAmPmStyle;
@@ -317,12 +396,23 @@ public class Clock extends TextView {
             }
         }
 
-        if (mWeekdayStyle != WEEKDAY_STYLE) {
-            WEEKDAY_STYLE = mWeekdayStyle;
-            mClockFormatString = "";
+        if(mShowMore) {
+            if (mWeekdayStyle != WEEKDAY_STYLE) {
+                WEEKDAY_STYLE = mWeekdayStyle;
+                mClockFormatString = "";
 
-            if (mAttached) {
-                updateClock();
+                if (mAttached) {
+                    updateClock();
+                }
+            }
+
+            if (mDaymonthStyle != DAYMONTH_STYLE) {
+                DAYMONTH_STYLE = mDaymonthStyle;
+                mClockFormatString = "";
+
+                if (mAttached) {
+                    updateClock();
+                }
             }
         }
     }
