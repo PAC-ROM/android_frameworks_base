@@ -161,9 +161,13 @@ public class TogglesView extends LinearLayout {
 
             rows.get(rows.size() - 1).addView(toggles.get(i).getView(),
                     (!mUseChainedLayout || disableScroll ? PARAMS_TOGGLE : PARAMS_TOGGLE_SCROLL));
+
+            if (mWidgetsPerRow == 1) {
+                addSeparator();
+            }
         }
 
-        if (!mUseChainedLayout && (toggles.size() % 2 != 0)) {
+        if (mWidgetsPerRow != 1 && !mUseChainedLayout && (toggles.size() % 2 != 0)) {
             // We are using switches, and have an uneven number - let's add a
             // spacer
             mToggleSpacer = new LinearLayout(mContext);
@@ -218,7 +222,7 @@ public class TogglesView extends LinearLayout {
 
     private void addSeparator() {
         View sep = new View(mContext);
-        sep.setBackgroundResource(R.drawable.status_bar_hr);
+        sep.setBackgroundResource(android.R.drawable.divider_horizontal_dark);
 
         DisplayMetrics metrics = getContext().getResources()
                 .getDisplayMetrics();
