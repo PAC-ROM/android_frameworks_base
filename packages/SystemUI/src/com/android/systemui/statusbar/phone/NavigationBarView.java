@@ -30,6 +30,10 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ServiceManager;
@@ -46,6 +50,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 
 import com.android.internal.statusbar.IStatusBarService;
@@ -565,11 +570,16 @@ public class NavigationBarView extends LinearLayout {
 
 
     private void updateColor() {
-        int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000);
-        float alpha = Color.alpha(color);
-        this.setBackground(new ColorDrawable(color));
-        this.setAlpha(alpha);
-    }
+        Drawable oldColor = getBackground();
 
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
+        Drawable newColor = new BitmapDrawable(bm);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        setBackground(transition);
+        transition.startTransition(500);
+    }
 }
