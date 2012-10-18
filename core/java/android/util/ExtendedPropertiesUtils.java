@@ -33,6 +33,7 @@ import android.view.Display;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.Math;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -65,6 +66,9 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_CHECK_SUFFIX = ".version";
     public static final String PARANOID_DENSITY_SUFFIX = ".den";
     public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
+    public static final String PARANOID_NAVBARCOLOR_SUFFIX = ".nbcolor";
+    public static final String PARANOID_NAVBARBUTTONCOLOR_SUFFIX = ".nbctrlcolor";
+    public static final String PARANOID_NAVBARHIGHLIGHTCOLOR_SUFFIX = ".nbhighlcolor";
 
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
     public static ActivityThread mMainThread;
@@ -97,6 +101,9 @@ public class ExtendedPropertiesUtils {
         public int large;
         public float scaledDensity;
         public float density;
+        public int navbarColor;
+        public int navbarButtonColor;
+        public int navbarHighlightColor;
     }
 
     /**
@@ -144,6 +151,14 @@ public class ExtendedPropertiesUtils {
             // layout matching to assign bigger containers.
             info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
             info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
+
+            // Color parameters
+            info.navbarColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARCOLOR_SUFFIX,
+                "FF000000"), 16).intValue();
+            info.navbarButtonColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARBUTTONCOLOR_SUFFIX,
+                "FF000000"), 16).intValue();
+            info.navbarHighlightColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARHIGHLIGHTCOLOR_SUFFIX,
+                "FF000000"), 16).intValue();
 
             // If everything went nice, stop parsing.
             info.active = true;

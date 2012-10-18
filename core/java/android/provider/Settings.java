@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
+ * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2390,7 +2391,7 @@ public final class Settings {
         public static final String NAV_BAR_TABUI_MENU = "nav_bar_tabui_menu";
 
         /**
-         * Ability to change Navigation bar Color
+         * Ability to change navigation bar color
          * @hide
          */
         public static final String NAV_BAR_COLOR = "nav_bar_color";
@@ -2981,6 +2982,16 @@ public final class Settings {
             POWER_MENU_REBOOT_ENABLED,
             POWER_MENU_PROFILES_ENABLED,
             LOCKSCREEN_VIBRATE_ENABLED,
+        };
+
+        /**
+         * Insecure settings can be set on any context, without any
+         * importance of permission level
+         *
+         * @hide
+         */
+        public static final String[] INSECURE_SETTINGS = {
+            NAV_BAR_COLOR
         };
 
         // Settings moved to Settings.Secure

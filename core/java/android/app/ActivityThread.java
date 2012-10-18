@@ -75,9 +75,10 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.os.Trace;
 import android.os.UserId;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.AndroidRuntimeException;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -2693,6 +2694,17 @@ public final class ActivityThread {
                     deliverResults(r, r.pendingResults);
                     r.pendingResults = null;
                 }
+
+                if (ExtendedPropertiesUtils.isInitialized()) {
+                    try {
+                        Settings.System.putInt(r.activity.getContentResolver(),
+                                Settings.System.NAV_BAR_COLOR,
+                                ExtendedPropertiesUtils.mGlobalHook.navbarColor);
+                    } catch (Exception e) {
+                        // Current application is null, or hook is not set
+                    }
+                }
+
                 r.activity.performResume();
 
                 EventLog.writeEvent(LOG_ON_RESUME_CALLED,
