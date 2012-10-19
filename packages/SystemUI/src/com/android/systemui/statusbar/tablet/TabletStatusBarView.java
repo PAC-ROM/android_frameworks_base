@@ -49,7 +49,7 @@ public class TabletStatusBarView extends FrameLayout {
         super(context, attrs);
         mDelegateHelper = new DelegateViewHelper(this);
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVBAR_COLOR), false,
+                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false,
                 new ContentObserver(new Handler()) {
                     @Override
                     public void onChange(boolean selfChange) {
@@ -159,7 +159,7 @@ public class TabletStatusBarView extends FrameLayout {
 
     private void updateColor() {
         int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000);
+                Settings.System.NAV_BAR_COLOR, 0xFF000000);
         float alpha = Color.alpha(color);
         this.setBackground(new ColorDrawable(color));
         this.setAlpha(alpha);

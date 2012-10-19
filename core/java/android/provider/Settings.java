@@ -2390,6 +2390,12 @@ public final class Settings {
         public static final String NAV_BAR_TABUI_MENU = "nav_bar_tabui_menu";
 
         /**
+         * Ability to change Navigation bar Color
+         * @hide
+         */
+        public static final String NAV_BAR_COLOR = "nav_bar_color";
+
+        /**
          * Navigation controls to Use
          *
          * @hide
@@ -2876,13 +2882,6 @@ public final class Settings {
          * @hide
          */
         public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
-
-        /**
-         * Ability to change Navigation bar Color
-         *
-         * @hide
-         */
-        public static final String SYSTEMUI_NAVBAR_COLOR = "paranoid_systemui_navbar_color";
 
          /**
           * Volume keys control cursor in text fields (default is 0)

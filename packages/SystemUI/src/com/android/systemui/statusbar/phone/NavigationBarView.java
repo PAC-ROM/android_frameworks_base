@@ -209,7 +209,7 @@ public class NavigationBarView extends LinearLayout {
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime_land);
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVBAR_COLOR), false,
+                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false,
                 new ContentObserver(new Handler()) {
                     @Override
                     public void onChange(boolean selfChange) {
@@ -575,7 +575,7 @@ public class NavigationBarView extends LinearLayout {
         Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
         Canvas cnv = new Canvas(bm);
         cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.SYSTEMUI_NAVBAR_COLOR, 0xFF000000));
+            Settings.System.NAV_BAR_COLOR, 0xFF000000));
         Drawable newColor = new BitmapDrawable(bm);
 
         TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
