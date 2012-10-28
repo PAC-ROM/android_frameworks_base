@@ -40,7 +40,7 @@ public class NFCToggle extends Toggle {
             }
         }
     };
-
+    
     private boolean getNfcState() {
         if (mNfcAdapter == null) {
             Log.d(TAG, "NFC service not running.");
@@ -50,7 +50,7 @@ public class NFCToggle extends Toggle {
             return mNfcAdapter.isEnabled();
         }
     }
-
+    
     private void setNfcState(final boolean desiredState) {
         if (mNfcAdapter == null) {
             Log.d(TAG, "NFC service not running.");

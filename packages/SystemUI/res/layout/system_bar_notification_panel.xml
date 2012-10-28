@@ -28,21 +28,25 @@
     <Space
         android:id="@+id/system_bar_notification_panel_bottom_space"
         android:layout_height="36dp"
-        android:layout_width="478dp"
+        android:layout_width="318dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         />
+<!--        android:layout_height="36dp"
+        android:layout_width="478dp" -->
 
     <LinearLayout
         android:id="@+id/content_frame"
         android:background="@drawable/notification_panel_bg"
         android:layout_height="wrap_content"
-        android:layout_width="478dp"
+        android:layout_width="318dp"
         android:orientation="vertical"
         android:layout_alignParentRight="true"
         android:layout_above="@id/system_bar_notification_panel_bottom_space"
         android:paddingBottom="8dp"
         >
+<!--        android:layout_width="478dp"
+        android:paddingBottom="8dp" -->
 
         <include layout="@layout/system_bar_notification_panel_title"
             android:layout_width="match_parent"
@@ -51,6 +55,7 @@
             android:layout_alignParentRight="true"
             android:layout_weight="0"
             />
+<!--            android:layout_height="130dp" -->
 
         <ScrollView
 

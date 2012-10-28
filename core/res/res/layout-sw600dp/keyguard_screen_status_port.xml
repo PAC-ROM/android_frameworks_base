@@ -22,7 +22,7 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dip"
         android:gravity="right"
@@ -42,7 +42,7 @@
         />
 
     <!-- CyanogenMod Weather Panel -->
-    <RelativeLayout
+<!--    <RelativeLayout
         android:id="@+id/weather_panel"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -138,9 +138,9 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
+-->
     <com.android.internal.widget.DigitalClock android:id="@+id/time"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dip" >
 
@@ -173,9 +173,8 @@
     </com.android.internal.widget.DigitalClock>
 
     <LinearLayout
-        android:id="@+id/date_line"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/time"
         android:layout_marginTop="10dip">
@@ -198,9 +197,32 @@
 
     </LinearLayout>
 
+    <!-- AOKP -->
+    <com.android.internal.policy.impl.WeatherText
+        android:id="@+id/weather"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:gravity="right"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="16sp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ViewFlipper
+        android:id="@+id/calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inAnimation="@anim/calendar_fadein"
+        android:outAnimation="@anim/calendar_fadeout"
+        android:layout_marginTop="10dip"
+        android:layout_gravity="right"
+        android:drawablePadding="4dip" />
+
     <TextView
         android:id="@+id/status1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:textSize="16sp"
@@ -220,8 +242,13 @@
         android:textColor="@color/lockscreen_owner_info"
         />
 
+    <!-- AOKP -->
+    <include
+        layout="@layout/weatherpanel"
+        android:layout_gravity="right" />
+
     <!-- CyanogenMod Calendar Panel -->
-    <LinearLayout
+<!--    <LinearLayout
         android:id="@+id/calendar_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -282,5 +309,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-
+-->
 </LinearLayout>

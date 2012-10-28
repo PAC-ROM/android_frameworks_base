@@ -16,10 +16,12 @@
 
 package android.util;
 
+import android.app.*;
 import android.app.ActivityManager;
 import android.app.ActivityThread;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.*;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -30,12 +32,14 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 
+import java.io.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.Math;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -120,7 +124,8 @@ public class ExtendedPropertiesUtils {
      * @param  info  instance containing app details
      */
     public static void setAppConfiguration(ParanoidAppInfo info) {
-        if(mIsHybridModeEnabled && isEnvironmentSane()){
+        if(mIsHybridModeEnabled){
+//        if(mIsHybridModeEnabled && isEnvironmentSane()){
             // Load default values to be used in case that property is 
             // missing from configuration.
             boolean isSystemApp = info.path.contains("system/app");
@@ -480,8 +485,9 @@ public class ExtendedPropertiesUtils {
         }
 
         if (result == 0) {
-            result = Integer.parseInt(property.endsWith("dpi") ? getProperty(PARANOID_PREFIX + "rom_default_dpi")
-                : getProperty(PARANOID_PREFIX + "rom_default_layout"));
+            result = Integer.parseInt(property.endsWith("dpi") ? getProperty("%rom_default_dpi") : getProperty("%rom_default_layout"));
+//            result = Integer.parseInt(property.endsWith("dpi") ? getProperty(PARANOID_PREFIX + "rom_default_dpi")
+//                : getProperty(PARANOID_PREFIX + "rom_default_layout"));
         }
 
         return result;
@@ -495,7 +501,7 @@ public class ExtendedPropertiesUtils {
      * and it's any of the possible values defined on {@link DisplayMetrics}
      * class.
      */
-    public static void getEnvironmentState() {
+/*    public static void getEnvironmentState() {
         int nativeDensity = SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties
             .getInt("ro.sf.lcd_density", DisplayMetrics.DENSITY_DEFAULT));
         if(nativeDensity == Integer.parseInt(getProperty(PARANOID_PREFIX + "rom_default_dpi"))) {
@@ -514,7 +520,7 @@ public class ExtendedPropertiesUtils {
         setIsEnvironmentSane(false);
     }
 
-
+*/
     /**
      * Method used by {@link #getEnvironmentState() getEnvironmentState}
      * for storing whether if environment is sane or not.
@@ -522,20 +528,20 @@ public class ExtendedPropertiesUtils {
      * @param  state  environment state
      * @see getEnvironmentState
      */
-    public static void setIsEnvironmentSane(boolean state) {
+/*    public static void setIsEnvironmentSane(boolean state) {
         SystemProperties.set("sys.environment", Integer.toString(state ? 1 : 0));
     }
-
+*/
     /**
      * Returns a {@link Boolean}, if environment is sane.
      *
      * @return is environment sane
      * @see getEnvironmentState
      */
-    public static boolean isEnvironmentSane() {
+/*    public static boolean isEnvironmentSane() {
         return Integer.parseInt(SystemProperties.get("sys.environment", Integer.toString(0))) == 1;
     }
-
+*/
     
     public void debugOut(String msg) {
         Log.i(TAG + ":" + msg, "Init=" + (mMainThread != null && mContext != null && 

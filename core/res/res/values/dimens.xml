@@ -32,6 +32,7 @@
     <dimen name="toast_y_offset">64dip</dimen>
     <!-- Height of the status bar -->
     <dimen name="status_bar_height">25dip</dimen>
+    <dimen name="status_bar_height_phablet">38dip</dimen>
     <!-- Height of the bottom navigation / system bar. -->
     <dimen name="navigation_bar_height">48dp</dimen>
     <!-- Height of the bottom navigation bar in portrait; often the same as @dimen/navigation_bar_height -->
@@ -179,13 +180,15 @@
     <dimen name="keyguard_lockscreen_clock_font_size">80dip</dimen>
 
     <!-- Size of status line font on Unsecure unlock LockScreen. -->
-    <dimen name="keyguard_lockscreen_status_line_font_size">14dip</dimen>
+<!--    <dimen name="keyguard_lockscreen_status_line_font_size">14dip</dimen> -->
+    <dimen name="keyguard_lockscreen_status_line_font_size">12dip</dimen>
 
     <!-- Size of right margin on Unsecure unlock LockScreen -->
     <dimen name="keyguard_lockscreen_status_line_font_right_margin">42dip</dimen>
 
     <!-- Size of top margin on Clock font to edge on unlock LockScreen -->
-    <dimen name="keyguard_lockscreen_status_line_clockfont_top_margin">22dip</dimen>
+<!--    <dimen name="keyguard_lockscreen_status_line_clockfont_top_margin">22dip</dimen> -->
+    <dimen name="keyguard_lockscreen_status_line_clockfont_top_margin">20dip</dimen>
 
     <!-- Size of top margin on Clock font to edge on unlock LockScreen -->
     <dimen name="keyguard_lockscreen_status_line_clockfont_bottom_margin">12dip</dimen>
@@ -239,5 +242,6 @@
     <dimen name="notification_subtext_size">12dp</dimen>
 
     <!-- Lockscreen target insets -->
-    <item type="dimen" name="lockscreen_target_inset">25dp</item>
+<!--    <item type="dimen" name="lockscreen_target_inset">25dp</item> -->
+    <item type="dimen" name="lockscreen_target_inset">35dp</item>
 </resources>

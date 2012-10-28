@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
- * Copyright (C) 2011 Colin McDonough
- * This code has been modified.  Portions copyright (C) AOKP by Mike Wilson (Zaphod-Beeblebrox)
- * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
- *
+ * Copyright 2011 Colin McDonough
+ * 
+ * Modified for AOKP by Mike Wilson (Zaphod-Beeblebrox)
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,29 +21,43 @@ package com.android.systemui.statusbar.toggles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.app.PendingIntent;
-
 import com.android.systemui.R;
 
-public class TorchToggle extends Toggle {
+/**
+ * TODO: Fix the WakeLock
+ */
+public class TorchToggle extends Toggle implements
+        OnSharedPreferenceChangeListener {
 
     private static final String TAG = "TorchToggle";
 
     public static final String KEY_TORCH_ON = "torch_on";
+    public static final String INTENT_TORCH_ON = "com.android.systemui.INTENT_TORCH_ON";
+    public static final String INTENT_TORCH_OFF = "com.android.systemui.INTENT_TORCH_OFF";
 
     private boolean mIsTorchOn;
     private Context mContext;
+
+    SharedPreferences prefs;
+
     PendingIntent torchIntent;
 
     public TorchToggle(Context context) {
         super(context);
         setLabel(R.string.toggle_torch);
-        if (mToggle.isChecked()) {
+        if (mToggle.isChecked())
             setIcon(R.drawable.toggle_torch);
-        } else {
+        else
             setIcon(R.drawable.toggle_torch_off);
-        }
         mContext = context;
+        prefs = mContext.getSharedPreferences("torch",
+                Context.MODE_WORLD_READABLE);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        mIsTorchOn = prefs.getBoolean(KEY_TORCH_ON, false);
         updateState();
     }
 
@@ -61,15 +75,33 @@ public class TorchToggle extends Toggle {
 
     @Override
     protected void onCheckChanged(boolean isChecked) {
-        Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
-        i.putExtra("bright", isChecked);
-        mContext.sendBroadcast(i);
-        mIsTorchOn = isChecked;
-        updateState();
+        mToggle.setEnabled(false); // we've changed torch - let's disable until
+                                   // torch catches up;
+        if (isChecked) {
+            Intent i = new Intent(INTENT_TORCH_ON);
+            i.setAction(INTENT_TORCH_ON);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(i);
+        } else {
+            Intent i = new Intent(INTENT_TORCH_OFF);
+            i.setAction(INTENT_TORCH_OFF);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(i);
+        }
     }
 
     @Override
     protected boolean onLongPress() {
         return false;
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        mIsTorchOn = sharedPreferences.getBoolean(KEY_TORCH_ON, false);
+        updateState();
+        if (mToggle.isChecked() == mIsTorchOn) {
+            mToggle.setEnabled(true); // torch status has caught up with toggle
+                                      // - re-enable toggle.
+        }
     }
 }

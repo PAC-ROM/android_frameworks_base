@@ -27,16 +27,20 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="80dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginRight="80dp"
-        android:textSize="60sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp"
+        android:textSize="32sp"
         android:maxLines="1"
         android:shadowRadius="8"
         android:shadowColor="#FF000000"
         android:text="@string/compat_mode_help_header"
         android:background="@drawable/compat_mode_help_divider_top"
         />
+<!--        android:layout_marginLeft="80dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="80dp"
+        android:textSize="60sp"-->
     <ImageView
         android:id="@+id/diagram"
         android:layout_width="wrap_content"
@@ -44,17 +48,22 @@
         android:layout_centerInParent="true"
         android:src="@drawable/compat_mode_help_diagram"
         android:contentDescription="@string/accessibility_compatibility_zoom_example"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         />
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="100dp"
         android:background="@drawable/compat_mode_help_divider_bottom"
-        android:layout_marginBottom="55dp"
-        android:layout_marginRight="80dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="20dp"
         android:layout_alignLeft="@id/header"
         android:layout_alignParentBottom="true"
         >
+<!--        android:layout_height="190dp"
+        android:layout_marginBottom="55dp"
+        android:layout_marginRight="80dp"-->
         <ImageView
             android:id="@+id/icon"
             android:layout_width="wrap_content"
@@ -71,22 +80,29 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@id/icon"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="20dp"
             android:shadowRadius="4"
             android:shadowColor="#FF000000"
-            android:textSize="28sp"
+            android:textSize="14sp"
             android:text="@string/compat_mode_help_body"
             />
+<!--            android:layout_marginRight="20dp"
+            android:textSize="28sp"-->
     </RelativeLayout>
     <Button
         android:id="@+id/button"
-        android:layout_width="208dp"
-        android:layout_height="48dp"
+        android:layout_width="120dp"
+        android:layout_height="32dp"
         android:layout_alignLeft="@id/header"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:textSize="28sp"
+        android:layout_marginBottom="5dp"
+        android:textSize="12dp"
         android:text="@android:string/ok"
+        android:gravity="center"
         />
+<!--        android:layout_width="208dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="28sp"-->
 </RelativeLayout>
 

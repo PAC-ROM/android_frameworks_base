@@ -23,9 +23,11 @@ import android.app.ActivityManagerNative;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.res.Configuration;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.ContentObserver;
@@ -88,6 +90,8 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected static final int MSG_CLOSE_SEARCH_PANEL = 1025;
     protected static final int MSG_SHOW_INTRUDER = 1026;
     protected static final int MSG_HIDE_INTRUDER = 1027;
+    private int mNavRingAmount;
+    private boolean mTabletui;
 
     protected static final boolean ENABLE_INTRUDERS = false;
 
@@ -143,18 +147,19 @@ public abstract class BaseStatusBar extends SystemUI implements
             super(handler);
         }
 
-        void observe() {
+/*        void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CLOCK), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CENTER_CLOCK), false, this);
+                    Settings.System.STATUSBAR_CLOCK_STYLE), false, this);
+//            resolver.registerContentObserver(Settings.System.getUriFor(
+//                    Settings.System.STATUSBAR_CLOCK_STYLE), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             showClock(true);
         }
+*/
     }
 
     public IWindowManager getWindowManager() {
@@ -214,14 +219,20 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     };
 
-    private boolean mShowNotificationCounts;
+//    private boolean mShowNotificationCounts;
 
     public void start() {
         mDisplay = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
                 .getDefaultDisplay();
 
-        StatusbarObserver StatusbarObserver = new StatusbarObserver(new Handler());
-        StatusbarObserver.observe();
+        mTabletui = Settings.System.getBoolean(mContext.getContentResolver(),
+                        Settings.System.MODE_TABLET_UI, false);
+
+        mNavRingAmount = Settings.System.getInt(mContext.getContentResolver(),
+                         Settings.System.SYSTEMUI_NAVRING_AMOUNT, 1);
+
+//        StatusbarObserver StatusbarObserver = new StatusbarObserver(new Handler());
+//        StatusbarObserver.observe();
 
         mProvisioningObserver.onChange(false); // set up
         mContext.getContentResolver().registerContentObserver(
@@ -241,9 +252,9 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         mStatusBarContainer = new FrameLayout(mContext);
 
-        mShowNotificationCounts = Settings.System.getInt(mContext.getContentResolver(),
+/*        mShowNotificationCounts = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIF_COUNT, 0) == 1;
-
+*/
         // Connect in to the status bar manager service
         StatusBarIconList iconList = new StatusBarIconList();
         ArrayList<IBinder> notificationKeys = new ArrayList<IBinder>();
@@ -436,6 +447,12 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected abstract WindowManager.LayoutParams getSearchLayoutParams(
             LayoutParams layoutParams);
 
+    protected void setStatusBarParams(View statusbarView){
+        int opacity = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_TRANSPARENCY, 100);
+        statusbarView.getBackground().setAlpha(Math.round((opacity * 255) / 100));
+    }
+
     protected void updateRecentsPanel(int recentsResId) {
         // Recents Panel
         boolean visible = false;
@@ -481,8 +498,25 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // Provide SearchPanel with a temporary parent to allow layout params to work.
         LinearLayout tmpRoot = new LinearLayout(mContext);
-        mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
-                 R.layout.status_bar_search_panel, tmpRoot, false);
+
+        if ((screenLayout() == Configuration.SCREENLAYOUT_SIZE_XLARGE) || ((screenLayout() == Configuration.SCREENLAYOUT_SIZE_LARGE) && mTabletui)) {
+             if (mNavRingAmount == 5 || mNavRingAmount == 4) {
+                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                                     R.layout.status_bar_search_panel_left_five, tmpRoot, false);
+             } else {
+                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                                     R.layout.status_bar_search_panel_left, tmpRoot, false);
+             }
+        } else {
+             if (mNavRingAmount == 5 || mNavRingAmount == 4) {
+                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                                     R.layout.status_bar_search_panel_five, tmpRoot, false);
+             } else {
+                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                                     R.layout.status_bar_search_panel, tmpRoot, false);
+             }
+        }
+
         mSearchPanelView.setOnTouchListener(
                  new TouchOutsideListener(MSG_CLOSE_SEARCH_PANEL, mSearchPanelView));
         mSearchPanelView.setVisibility(View.GONE);
@@ -1010,6 +1044,12 @@ public abstract class BaseStatusBar extends SystemUI implements
     public boolean inKeyguardRestrictedInputMode() {
         KeyguardManager km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
         return km.inKeyguardRestrictedInputMode();
+    }
+
+    public int screenLayout() {
+        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        return screenSize;
     }
 
     public boolean isTablet() {

@@ -13,7 +13,6 @@ import static com.android.server.wm.WindowManagerService.H.SET_DIM_PARAMETERS;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Slog;
 import android.view.Surface;
@@ -287,9 +286,7 @@ public class WindowAnimator {
                         mService.mFocusMayChange = true;
                     }
                     if (win.isReadyForDisplay()) {
-                        if (Settings.System.getInt(mContext.getContentResolver(),
-                                    Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0 ||
-                                    nowAnimating) {
+                        if (nowAnimating) {
                             if (winAnimator.mAnimationIsEntrance) {
                                 mForceHiding = KEYGUARD_ANIMATING_IN;
                             } else {
