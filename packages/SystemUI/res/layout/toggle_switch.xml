@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:paddingBottom="5.0dp"
+    android:paddingRight="5.0dp"
+    android:paddingLeft="5.0dp"
+    android:layout_height="wrap_content"
+    android:layout_width="60dp"
+    android:clickable="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Switch
+        android:id="@id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.StatusBar.Toggle"
+        android:id="@id/label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/toggle"
+        android:layout_alignParentLeft="true"
+        android:paddingTop="2dp"
+        android:paddingRight="5dp"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:id="@id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:paddingRight="5dp"/>
+
+</RelativeLayout>
