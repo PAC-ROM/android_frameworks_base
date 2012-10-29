@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
     android:id="@+id/weatherpanel"
+    android:background="@drawable/notification_header_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="visible" >
