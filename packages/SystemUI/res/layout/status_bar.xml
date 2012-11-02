@@ -135,8 +135,7 @@
             android:paddingLeft="6dip"
             android:gravity="center_vertical|left"
             android:visibility="gone"
-            />
-<!--            android:visibility="gone"  -->
+            android:clickable="false"/>
     </LinearLayout>
 
     <LinearLayout
@@ -154,8 +153,7 @@
             android:layout_height="fill_parent"
             android:singleLine="true"
             android:visibility="gone"
-            />
-<!--            android:visibility="gone"  -->
+            android:clickable="false"/>
     </LinearLayout>
 
     <LinearLayout android:id="@+id/ticker"

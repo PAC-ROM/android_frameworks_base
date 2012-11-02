@@ -52,6 +52,7 @@
                 android:layout_height="fill_parent"
                 android:singleLine="true"
 					android:visibility="gone"
+                android:clickable="false"
                 />
     </LinearLayout>
 
@@ -185,6 +186,7 @@
             android:layout_marginRight="4dip"
 					android:gravity="center"
 					android:visibility="gone"
+            android:clickable="false"
             />
 <!--            android:paddingLeft="6dip"
             android:layout_marginRight="8dip"
