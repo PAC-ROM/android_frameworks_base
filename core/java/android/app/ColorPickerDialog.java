@@ -106,6 +106,12 @@ public class ColorPickerDialog extends Dialog implements
         });
     }
 
+    public void setColors(int oldColor, int newColor) {
+        mOldColor.setColor(oldColor);
+        mColorPicker.setColor(newColor, true);
+        mHex.setText(ColorPickerPreference.convertToARGB(newColor));
+    }
+
     @Override
     public void onColorChanged(int color) {
         mNewColor.setColor(color);
@@ -119,11 +125,15 @@ public class ColorPickerDialog extends Dialog implements
         mColorPicker.setAlphaSliderVisible(visible);
     }
 
+    public boolean getAlphaSliderVisible() {
+        return mColorPicker.getAlphaSliderVisible();
+    }
+
     /**
-* Set a OnColorChangedListener to get notified when the color selected by the user has changed.
-*
-* @param listener
-*/
+     * Set a OnColorChangedListener to get notified when the color selected by the user has changed.
+     *
+     * @param listener
+     */
     public void setOnColorChangedListener(OnColorChangedListener listener) {
         mListener = listener;
     }
@@ -137,6 +147,10 @@ public class ColorPickerDialog extends Dialog implements
         if (v.getId() == R.id.new_color_panel) {
             if (mListener != null) {
                 mListener.onColorChanged(mNewColor.getColor());
+            }
+        } else if (v.getId() == R.id.old_color_panel) {
+            if (mListener != null) {
+                mListener.onColorChanged(mOldColor.getColor());
             }
         }
         dismiss();

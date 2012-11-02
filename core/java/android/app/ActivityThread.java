@@ -2110,7 +2110,6 @@ public final class ActivityThread {
 
         try {
             Application app = r.packageInfo.makeApplication(false, mInstrumentation);
-
             if (localLOGV) Slog.v(TAG, "Performing launch of " + r);
             if (localLOGV) Slog.v(
                     TAG, r + ": app=" + app
@@ -2698,34 +2697,34 @@ public final class ActivityThread {
                 // Per-App-Extras
                 if (ExtendedPropertiesUtils.isInitialized()) {
                     try {
-                        int oldNavbarColor = Settings.System.getInt(r.activity.getContentResolver(),
-                            Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000);
-                        int oldButtonColor = Settings.System.getInt(r.activity.getContentResolver(),
-                            Settings.System.NAV_BUTTON_COLOR_SECONDARY, 0x00000000);
-                        int oldGlowColor = Settings.System.getInt(r.activity.getContentResolver(),
-                            Settings.System.NAV_GLOW_COLOR_SECONDARY, 0x00000000);
+                        for (int i = 0; i < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; i++) {
+                            // Fetch defaults
+                            String setting = Settings.System.getString(r.activity.getContentResolver(),
+                                    ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i]);
 
-                        int newNavbarColor = ExtendedPropertiesUtils.mGlobalHook.navbarColor == 0 ?
-                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_BAR_COLOR,
-                            0xFF000000) : ExtendedPropertiesUtils.mGlobalHook.navbarColor;
-                        int newButtonColor = ExtendedPropertiesUtils.mGlobalHook.navbarButtonColor == 0 ?
-                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_BUTTON_COLOR,
-                            0x00000000) : ExtendedPropertiesUtils.mGlobalHook.navbarButtonColor;
-                        int newGlowColor = ExtendedPropertiesUtils.mGlobalHook.navbarGlowColor == 0 ?
-                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_GLOW_COLOR,
-                            0x00000000) : ExtendedPropertiesUtils.mGlobalHook.navbarGlowColor;
+                            String[] colors = (setting == null || setting.equals("") ?
+                                   ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i] : setting).split(
+                                   ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
 
-                        if (newNavbarColor != oldNavbarColor) {
-                            Settings.System.putInt(r.activity.getContentResolver(),
-                                Settings.System.NAV_BAR_COLOR_SECONDARY, newNavbarColor);
-                        }
-                        if (newButtonColor != oldButtonColor) {
-                            Settings.System.putInt(r.activity.getContentResolver(),
-                                Settings.System.NAV_BUTTON_COLOR_SECONDARY, newButtonColor);
-                        }
-                        if (newGlowColor != oldGlowColor) {
-                            Settings.System.putInt(r.activity.getContentResolver(),
-                                Settings.System.NAV_GLOW_COLOR_SECONDARY, newGlowColor);
+                            // Sanity check
+                            if (colors.length != 3) {
+                                colors = ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i].split(
+                                       ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i]);
+                            }
+
+                            // Change color
+                            String mCurColor = colors[Integer.parseInt(colors[2])];
+                            String mAppColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
+                            String mNexColor = mAppColor.equals("") ? colors[0] : mAppColor;
+
+                            if (mNexColor != mCurColor) {
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
+                                       colors[0] + "|" + mNexColor + "|1");
+                            }
                         }
                     } catch (Exception e) {
                         // Current application is null, or hook is not set

@@ -47,7 +47,7 @@ import java.util.List;
 
 public class ExtendedPropertiesUtils {
  
-    private static final String TAG = "paranoid";
+    private static final String TAG = "ExtendedPropertiesUtils";
 
     /**
      * Public variables
@@ -63,6 +63,7 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_PREFIX_4 = "version";
     public static final String PARANOID_PREFIX = "%";
     public static final String PARANOID_SEPARATOR = ".";
+    public static final String PARANOID_STRING_DELIMITER = "\\|";
     public static final String PARANOID_DPI_SUFFIX = ".dpi";
     public static final String PARANOID_LAYOUT_SUFFIX = ".layout";
     public static final String PARANOID_FORCE_SUFFIX = ".force";
@@ -70,9 +71,20 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_CHECK_SUFFIX = ".version";
     public static final String PARANOID_DENSITY_SUFFIX = ".den";
     public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
-    public static final String PARANOID_NAVBARCOLOR_SUFFIX = ".nbcol";
-    public static final String PARANOID_NAVBARBUTTONCOLOR_SUFFIX = ".nbctrlcol";
-    public static final String PARANOID_NAVBARGLOWCOLOR_SUFFIX = ".nbglowcol";
+
+    // Color definitions
+    public static final String PARANOID_COLORS_SUFFIX = ".colors";
+    public static final int PARANOID_COLORS_COUNT = 4;
+    public static final String[] PARANOID_COLORS_SETTINGS = {Settings.System.NAV_BAR_COLOR,
+            Settings.System.NAV_BUTTON_COLOR, Settings.System.NAV_GLOW_COLOR,
+            Settings.System.STATUS_BAR_COLOR};
+    public static final String[] PARANOID_COLORS_DEFAULTS = {"FF000000|FF000000|0", "B2FFFFFF|B2FFFFFF|0",
+            "FFFFFFFF|FFFFFFFF|0", "FF000000|FF000000|0"};
+    public static final int[] PARANOID_COLORCODES_DEFAULTS = {0xFF000000, 0xB2FFFFFF, 0xFFFFFFFF, 0xFF000000};
+    public static final int PARANOID_COLORS_NAVBAR = 0;
+    public static final int PARANOID_COLORS_NAVBUTTON = 1;
+    public static final int PARANOID_COLORS_NAVGLOW = 2;
+    public static final int PARANOID_COLORS_STATBAR = 3;
 
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
     public static ActivityThread mMainThread;
@@ -105,9 +117,7 @@ public class ExtendedPropertiesUtils {
         public int large;
         public float scaledDensity;
         public float density;
-        public int navbarColor;
-        public int navbarButtonColor;
-        public int navbarGlowColor;
+        public String[] colors = new String[4];
     }
 
     /**
@@ -158,9 +168,13 @@ public class ExtendedPropertiesUtils {
             info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
 
             // Color parameters
-            info.navbarColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARCOLOR_SUFFIX), 16).intValue();
-            info.navbarButtonColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARBUTTONCOLOR_SUFFIX), 16).intValue();
-            info.navbarGlowColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARGLOWCOLOR_SUFFIX), 16).intValue();
+            String[] colors = getProperty(info.name +
+                    PARANOID_COLORS_SUFFIX).split(PARANOID_STRING_DELIMITER);
+            if (colors.length == PARANOID_COLORS_COUNT) {
+                for(int i=0; i < colors.length; i++) {
+                    info.colors[i] = colors[i].toUpperCase();
+                }
+            }
 
             // If everything went nice, stop parsing.
             info.active = true;

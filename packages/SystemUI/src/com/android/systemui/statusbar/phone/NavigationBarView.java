@@ -53,6 +53,7 @@ import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.TypedValue;
@@ -79,6 +80,7 @@ import android.widget.TextView;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.StringBuilder;
+import java.math.BigInteger;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
@@ -285,26 +287,12 @@ public class NavigationBarView extends LinearLayout {
         filter.addAction(WidgetReceiver.ACTION_DELETE_WIDGETS);
         context.registerReceiver(new WidgetReceiver(), filter);
 
-        ContentResolver cr = mContext.getContentResolver();
-        Handler handler = new Handler();
-
-        cr.registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(handler) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    updateColor(true);
-                }
-            }
-        );
-
-        cr.registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(handler) {
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
                 @Override
                 public void onChange(boolean selfChange) {
                     updateColor(false);
-                }
-            }
-        );
+                }});
     }
 
     private void makeBar() {
@@ -1229,22 +1217,29 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
-    private void updateColor(boolean primary) {
-        Drawable oldColor = getBackground();
-        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        Canvas cnv = new Canvas(bm);
-
-        if (primary) {
-            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR, 0xFF000000));
-        } else {
-            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000));
+    private void updateColor(boolean defaults) {
+        if (defaults) {
+            Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            Canvas cnv = new Canvas(bm);
+            cnv.drawColor(0xFF000000);
+            setBackground(new BitmapDrawable(bm));
+            return;
         }
 
-        Drawable newColor = new BitmapDrawable(bm);
+        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR);
+        String[] mColors = (mSetting == null || mSetting.equals("") ?
+                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : mSetting).split(
+                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String mCurColor = mColors[Integer.parseInt(mColors[2])];
+        
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+        cnv.drawColor(new BigInteger(mCurColor, 16).intValue());
 
-        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+                getBackground(), new BitmapDrawable(bm)});
         transition.setCrossFadeEnabled(true);
         setBackground(transition);
         transition.startTransition(1000);
