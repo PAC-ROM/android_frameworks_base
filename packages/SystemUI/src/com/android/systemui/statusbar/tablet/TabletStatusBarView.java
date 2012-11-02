@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2010 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.statusbar.tablet;
 
@@ -22,8 +22,13 @@ import com.android.systemui.statusbar.DelegateViewHelper;
 
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -48,14 +53,20 @@ public class TabletStatusBarView extends FrameLayout {
     public TabletStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDelegateHelper = new DelegateViewHelper(this);
+
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false,
-                new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateColor();
-                    }
-                });
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(true);
+                }});
+
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(false);
+                }});
     }
 
     public void setDelegateView(View view) {
@@ -75,6 +86,11 @@ public class TabletStatusBarView extends FrameLayout {
     }
 
     @Override
+    public void onFinishInflate() {
+        updateColor(true);
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         // Find the view we wish to grab events from in order to detect search gesture.
@@ -86,7 +102,6 @@ public class TabletStatusBarView extends FrameLayout {
         }
         mDelegateHelper.setSourceView(view);
         mDelegateHelper.setInitialTouchRegion(view);
-        updateColor();
     }
 
     @Override
@@ -148,20 +163,32 @@ public class TabletStatusBarView extends FrameLayout {
     }
 
     /**
-     * Let the status bar know that if you tap on ignore while panel is showing, don't do anything.
-     *
-     * Debounces taps on, say, a popup's trigger when the popup is already showing.
-     */
+* Let the status bar know that if you tap on ignore while panel is showing, don't do anything.
+*
+* Debounces taps on, say, a popup's trigger when the popup is already showing.
+*/
     public void setIgnoreChildren(int index, View ignore, View panel) {
         mIgnoreChildren[index] = ignore;
         mPanels[index] = panel;
     }
 
-    private void updateColor() {
-        int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR, 0xFF000000);
-        float alpha = Color.alpha(color);
-        this.setBackground(new ColorDrawable(color));
-        this.setAlpha(alpha);
+    private void updateColor(boolean primary) {
+        Drawable oldColor = getBackground();
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+
+        if (primary) {
+            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR, 0xFF000000));
+        } else {
+            cnv.drawColor(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000));
+        }
+
+        Drawable newColor = new BitmapDrawable(bm);
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        setBackground(transition);
+        transition.startTransition(1000);
     }
 }

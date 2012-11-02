@@ -22,8 +22,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.hardware.input.InputManager;
@@ -67,6 +67,9 @@ public class KeyButtonView extends ImageView {
     protected boolean mHandlingLongpress = false;
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
+    int mButtonColor = 0x00000000;
+    int mGlowColor = 0x00000000;
+    Context mContext;
 
     int durationSpeedOn = 500;
     int durationSpeedOff = 50;
@@ -90,12 +93,52 @@ public class KeyButtonView extends ImageView {
         }
     };
 
+    private final class PrimaryObserver extends ContentObserver {
+        PrimaryObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BUTTON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_GLOW_COLOR), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColor(true);
+        }
+    }
+
+    private final class SecondaryObserver extends ContentObserver {
+        SecondaryObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BUTTON_COLOR_SECONDARY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_GLOW_COLOR_SECONDARY), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColor(false);
+        }
+    }
+
     public KeyButtonView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     public KeyButtonView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
+
+        mContext = context;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
                 defStyle, 0);
@@ -117,6 +160,34 @@ public class KeyButtonView extends ImageView {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
+
+        PrimaryObserver primaryObserver = new PrimaryObserver(new Handler());
+        primaryObserver.observe();
+
+        SecondaryObserver secondaryObserver = new SecondaryObserver(new Handler());
+        secondaryObserver.observe();
+
+        updateColor(true);
+    }
+
+    private void updateColor(boolean primary) {
+        int oldButtonColor = mButtonColor;
+        int oldGlowColor = mGlowColor;
+
+        if (primary) {
+            mButtonColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BUTTON_COLOR, 0x00000000);
+            mGlowColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_GLOW_COLOR, 0x00000000);
+        } else {
+            mButtonColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_BUTTON_COLOR_SECONDARY, 0x00000000);
+            mGlowColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAV_GLOW_COLOR_SECONDARY, 0x00000000);
+        }
+
+        this.setColorFilter(mButtonColor, PorterDuff.Mode.SRC_ATOP);
+//        mGlowBG.setColorFilter(mGlowColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     public void setSupportsLongPress(boolean supports) {
@@ -352,8 +423,9 @@ public class KeyButtonView extends ImageView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA), false,
-                    this);
+                    Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_BUTTON_ALPHA),
+                    false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_TINT),
@@ -382,7 +454,8 @@ public class KeyButtonView extends ImageView {
                 Settings.System.NAVIGATION_BAR_GLOW_DURATION[0], 10);
         durationSpeedOn = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_GLOW_DURATION[1], 100);
-        BUTTON_QUIESCENT_ALPHA = Settings.System.getFloat(resolver, Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.7f);
+        BUTTON_QUIESCENT_ALPHA = Settings.System.getFloat(resolver,
+                Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.7f);
 
         setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
 

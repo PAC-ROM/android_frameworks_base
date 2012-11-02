@@ -70,9 +70,9 @@ public class ExtendedPropertiesUtils {
     public static final String PARANOID_CHECK_SUFFIX = ".version";
     public static final String PARANOID_DENSITY_SUFFIX = ".den";
     public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
-    public static final String PARANOID_NAVBARCOLOR_SUFFIX = ".nbcolor";
-    public static final String PARANOID_NAVBARBUTTONCOLOR_SUFFIX = ".nbctrlcolor";
-    public static final String PARANOID_NAVBARHIGHLIGHTCOLOR_SUFFIX = ".nbhighlcolor";
+    public static final String PARANOID_NAVBARCOLOR_SUFFIX = ".nbcol";
+    public static final String PARANOID_NAVBARBUTTONCOLOR_SUFFIX = ".nbctrlcol";
+    public static final String PARANOID_NAVBARGLOWCOLOR_SUFFIX = ".nbglowcol";
 
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
     public static ActivityThread mMainThread;
@@ -107,7 +107,7 @@ public class ExtendedPropertiesUtils {
         public float density;
         public int navbarColor;
         public int navbarButtonColor;
-        public int navbarHighlightColor;
+        public int navbarGlowColor;
     }
 
     /**
@@ -158,12 +158,9 @@ public class ExtendedPropertiesUtils {
             info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
 
             // Color parameters
-            info.navbarColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARCOLOR_SUFFIX,
-                "FF000000"), 16).intValue();
-            info.navbarButtonColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARBUTTONCOLOR_SUFFIX,
-                "FF000000"), 16).intValue();
-            info.navbarHighlightColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARHIGHLIGHTCOLOR_SUFFIX,
-                "FF000000"), 16).intValue();
+            info.navbarColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARCOLOR_SUFFIX), 16).intValue();
+            info.navbarButtonColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARBUTTONCOLOR_SUFFIX), 16).intValue();
+            info.navbarGlowColor = new BigInteger(getProperty(info.name + PARANOID_NAVBARGLOWCOLOR_SUFFIX), 16).intValue();
 
             // If everything went nice, stop parsing.
             info.active = true;
