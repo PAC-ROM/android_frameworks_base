@@ -21,10 +21,10 @@ import java.net.URISyntaxException;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;	
 import android.animation.ObjectAnimator;
 import android.app.StatusBarManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;	
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -42,8 +42,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.graphics.PixelFormat;
-/*import android.graphics.Rect;
-import android.graphics.RectF;*/
+import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
+/*import android.graphics.RectF;*/
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -284,19 +285,26 @@ public class NavigationBarView extends LinearLayout {
         filter.addAction(WidgetReceiver.ACTION_DELETE_WIDGETS);
         context.registerReceiver(new WidgetReceiver(), filter);
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+        ContentResolver cr = mContext.getContentResolver();
+        Handler handler = new Handler();
+
+        cr.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(handler) {
                 @Override
                 public void onChange(boolean selfChange) {
                     updateColor(true);
-                }});
+                }
+            }
+        );
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(new Handler()) {
+        cr.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(handler) {
                 @Override
                 public void onChange(boolean selfChange) {
                     updateColor(false);
-                }});
+                }
+            }
+        );
     }
 
     private void makeBar() {
@@ -1237,6 +1245,7 @@ public class NavigationBarView extends LinearLayout {
         Drawable newColor = new BitmapDrawable(bm);
 
         TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        transition.setCrossFadeEnabled(true);
         setBackground(transition);
         transition.startTransition(1000);
     }

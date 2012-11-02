@@ -524,7 +524,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
             recreateStatusBar();
-            setStatusBarParams(mStatusBarView);
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mLandscape = true;
@@ -626,8 +625,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
                 context, R.layout.system_bar, null);
         mStatusBarView = sb;
-
-        setStatusBarParams(mStatusBarView);
 
         sb.setHandler(mHandler);
 
@@ -1917,8 +1914,6 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_TRANSPARENCY), false, this);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false,
                     this);

@@ -19,7 +19,7 @@ package com.android.systemui.statusbar.tablet;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
-
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
@@ -29,6 +29,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -54,19 +55,26 @@ public class TabletStatusBarView extends FrameLayout {
         super(context, attrs);
         mDelegateHelper = new DelegateViewHelper(this);
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+        ContentResolver cr = mContext.getContentResolver();
+        Handler handler = new Handler();
+
+        cr.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(handler) {
                 @Override
                 public void onChange(boolean selfChange) {
                     updateColor(true);
-                }});
+                }
+            }
+        );
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(new Handler()) {
+        cr.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR_SECONDARY), false, new ContentObserver(handler) {
                 @Override
                 public void onChange(boolean selfChange) {
                     updateColor(false);
-                }});
+                }
+            }
+        );
     }
 
     public void setDelegateView(View view) {
@@ -188,6 +196,7 @@ public class TabletStatusBarView extends FrameLayout {
         Drawable newColor = new BitmapDrawable(bm);
 
         TransitionDrawable transition = new TransitionDrawable(new Drawable[]{oldColor, newColor});
+        transition.setCrossFadeEnabled(true);
         setBackground(transition);
         transition.startTransition(1000);
     }
