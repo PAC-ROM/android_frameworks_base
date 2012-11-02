@@ -201,8 +201,8 @@ public abstract class ContentProvider implements ComponentCallbacks2 {
         @Override
         public Uri insert(Uri uri, ContentValues initialValues) {
             String settings = initialValues != null ? initialValues.getAsString("name") : null;
-            if(settings == null || !Arrays.asList(Settings.System.INSECURE_SETTINGS).
-                    contains(settings)) {
+            if(settings == null || !Arrays.asList(
+                    Settings.System.INSECURE_SETTINGS).contains(settings)) {
                 enforceWritePermission(uri);
             }
             return ContentProvider.this.insert(uri, initialValues);

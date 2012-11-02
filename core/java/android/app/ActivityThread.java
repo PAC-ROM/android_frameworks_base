@@ -2695,11 +2695,38 @@ public final class ActivityThread {
                     r.pendingResults = null;
                 }
 
+                // Per-App-Extras
                 if (ExtendedPropertiesUtils.isInitialized()) {
                     try {
-                        Settings.System.putInt(r.activity.getContentResolver(),
-                                Settings.System.NAV_BAR_COLOR,
-                                ExtendedPropertiesUtils.mGlobalHook.navbarColor);
+                        int oldNavbarColor = Settings.System.getInt(r.activity.getContentResolver(),
+                            Settings.System.NAV_BAR_COLOR_SECONDARY, 0xFF000000);
+                        int oldButtonColor = Settings.System.getInt(r.activity.getContentResolver(),
+                            Settings.System.NAV_BUTTON_COLOR_SECONDARY, 0x00000000);
+                        int oldGlowColor = Settings.System.getInt(r.activity.getContentResolver(),
+                            Settings.System.NAV_GLOW_COLOR_SECONDARY, 0x00000000);
+
+                        int newNavbarColor = ExtendedPropertiesUtils.mGlobalHook.navbarColor == 0 ?
+                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_BAR_COLOR,
+                            0xFF000000) : ExtendedPropertiesUtils.mGlobalHook.navbarColor;
+                        int newButtonColor = ExtendedPropertiesUtils.mGlobalHook.navbarButtonColor == 0 ?
+                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_BUTTON_COLOR,
+                            0x00000000) : ExtendedPropertiesUtils.mGlobalHook.navbarButtonColor;
+                        int newGlowColor = ExtendedPropertiesUtils.mGlobalHook.navbarGlowColor == 0 ?
+                            Settings.System.getInt(r.activity.getContentResolver(), Settings.System.NAV_GLOW_COLOR,
+                            0x00000000) : ExtendedPropertiesUtils.mGlobalHook.navbarGlowColor;
+
+                        if (newNavbarColor != oldNavbarColor) {
+                            Settings.System.putInt(r.activity.getContentResolver(),
+                                Settings.System.NAV_BAR_COLOR_SECONDARY, newNavbarColor);
+                        }
+                        if (newButtonColor != oldButtonColor) {
+                            Settings.System.putInt(r.activity.getContentResolver(),
+                                Settings.System.NAV_BUTTON_COLOR_SECONDARY, newButtonColor);
+                        }
+                        if (newGlowColor != oldGlowColor) {
+                            Settings.System.putInt(r.activity.getContentResolver(),
+                                Settings.System.NAV_GLOW_COLOR_SECONDARY, newGlowColor);
+                        }
                     } catch (Exception e) {
                         // Current application is null, or hook is not set
                     }
