@@ -18,15 +18,11 @@ package com.android.internal.policy.impl;
 
 import com.android.internal.R;
 
-import com.android.internal.app.ThemeUtils;
-
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.BroadcastReceiver;
 //import android.database.ContentObserver;
 //import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
@@ -55,7 +51,6 @@ public class KeyguardViewManager implements KeyguardWindowController {
     private static String TAG = "KeyguardViewManager";
 
     private final Context mContext;
-    private Context mUiContext;
     private final ViewManager mViewManager;
     private final KeyguardViewCallback mCallback;
     private final KeyguardViewProperties mKeyguardViewProperties;
@@ -101,12 +96,6 @@ public class KeyguardViewManager implements KeyguardWindowController {
             KeyguardViewCallback callback, KeyguardViewProperties keyguardViewProperties,
             KeyguardUpdateMonitor updateMonitor) {
         mContext = context;
-        ThemeUtils.registerThemeChangeReceiver(mContext, new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mUiContext = null;
-            }
-        });
         mViewManager = viewManager;
         mCallback = callback;
         mKeyguardViewProperties = keyguardViewProperties;
@@ -115,13 +104,6 @@ public class KeyguardViewManager implements KeyguardWindowController {
         observer.observe();
 */
         mUpdateMonitor = updateMonitor;
-    }
-
-    private Context getUiContext() {
-        if (mUiContext == null) {
-            mUiContext = ThemeUtils.createUiContext(mContext);
-        }
-        return mUiContext != null ? mUiContext : mContext;
     }
 
     /**
@@ -149,8 +131,7 @@ public class KeyguardViewManager implements KeyguardWindowController {
     public synchronized void show() {
         if (DEBUG) Log.d(TAG, "show(); mKeyguardView==" + mKeyguardView);
 
-//        Resources res = mContext.getResources();
-        Resources res = getUiContext().getResources();
+        Resources res = mContext.getResources();
         boolean enableLockScreenRotation = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_ROTATION, 0) != 0;
         boolean enableAccelerometerRotation = Settings.System.getInt(mContext.getContentResolver(),
@@ -163,8 +144,7 @@ public class KeyguardViewManager implements KeyguardWindowController {
         if (mKeyguardHost == null) {
             if (DEBUG) Log.d(TAG, "keyguard host is null, creating it...");
 
-//            mKeyguardHost = new KeyguardViewHost(mContext, mCallback);
-            mKeyguardHost = new KeyguardViewHost(getUiContext(), mCallback);
+            mKeyguardHost = new KeyguardViewHost(mContext, mCallback);
 
             final int stretch = ViewGroup.LayoutParams.MATCH_PARENT;
             int flags = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
@@ -211,8 +191,7 @@ public class KeyguardViewManager implements KeyguardWindowController {
 
         if (mKeyguardView == null) {
             if (DEBUG) Log.d(TAG, "keyguard view is null, creating it...");
-//            mKeyguardView = mKeyguardViewProperties.createKeyguardView(mContext, mCallback,
-            mKeyguardView = mKeyguardViewProperties.createKeyguardView(getUiContext(), mCallback,
+            mKeyguardView = mKeyguardViewProperties.createKeyguardView(mContext, mCallback,
                     mUpdateMonitor, this);
             mKeyguardView.setId(R.id.lock_screen);
 

@@ -64,6 +64,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
 import com.android.internal.R;
+import com.android.internal.app.ThemeUtils;
 import com.android.internal.policy.impl.KeyguardUpdateMonitor.InfoCallbackImpl;
 import com.android.internal.policy.impl.KeyguardUpdateMonitor.SimStateCallback;
 import com.android.internal.telephony.IccCard.State;
@@ -740,7 +741,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen {
                     + " res orient=" + context.getResources().getConfiguration().orientation);
         }
 
-        final LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(ThemeUtils.createUiContext(context));
         if (DBG) Log.v(TAG, "Creation orientation = " + mCreationOrientation);
 
         boolean landscape = mCreationOrientation == Configuration.ORIENTATION_LANDSCAPE;

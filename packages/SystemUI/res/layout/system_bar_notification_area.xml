@@ -23,7 +23,6 @@
   android:fadingEdge="none"
   android:overScrollMode="ifContentScrolls"
   >
-<!--  android:layout_width="fill_parent" -->
 
 <com.android.systemui.statusbar.tablet.NotificationArea
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -35,7 +34,6 @@
     android:background="?android:attr/listChoiceBackgroundIndicator"
     android:clickable="true"
     >
-<!--    android:layout_alignParentRight="true" -->
 
     <LinearLayout
         android:id="@+id/center_clock_layout"
@@ -51,8 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:singleLine="true"
-					android:visibility="gone"
-                android:clickable="false"
+                android:visibility="gone"
                 />
     </LinearLayout>
 
@@ -73,7 +70,7 @@
             android:visibility="gone"
             android:contentDescription="@string/accessibility_ime_switch_button"
             />
-<!--            android:layout_marginLeft="8dip" -->
+
         <com.android.systemui.statusbar.policy.CompatModeButton
             android:id="@+id/compatModeButton"
             android:layout_width="wrap_content"
@@ -88,18 +85,18 @@
             android:id="@+id/notificationIcons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-					android:gravity="center_vertical"
+            android:gravity="center_vertical"
             >
             <view
                 class="com.android.systemui.statusbar.tablet.NotificationIconArea$IconLayout"
                 android:id="@+id/icons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-					android:gravity="center"
+                android:gravity="center"
                 android:layout_marginLeft="4dp"
                 android:alpha="0.8"
                 />
-<!--                android:gravity="center_vertical" -->
+
         </com.android.systemui.statusbar.tablet.NotificationIconArea>
     </LinearLayout>
 
@@ -121,8 +118,7 @@
             android:textSize="16sp"
             android:textColor="#606060"
             />
-<!--            android:layout_marginRight="6dip"
-            android:layout_marginLeft="6dip" -->
+
         <LinearLayout
             android:id="@+id/signal_battery_cluster"
             android:layout_width="wrap_content"
@@ -131,7 +127,6 @@
             android:orientation="horizontal"
             android:gravity="center"
             >
-<!--            android:layout_marginRight="16dp" -->
             <include layout="@layout/signal_cluster_view" 
                 android:id="@+id/signal_cluster"
                 android:layout_width="wrap_content"
@@ -161,8 +156,6 @@
                 android:paddingLeft="4dip"
                 android:layout_marginRight="-3dip"
                 />
-<!--                android:gravity="center_vertical|left"
-                android:layout_height="match_parent"  -->
             <ImageView
                 android:id="@+id/dock_battery"
                 android:layout_height="wrap_content"
@@ -184,13 +177,10 @@
             android:singleLine="true"
             android:paddingLeft="4dip"
             android:layout_marginRight="4dip"
-					android:gravity="center"
-					android:visibility="gone"
-            android:clickable="false"
+            android:gravity="center"
+            android:visibility="gone"
             />
-<!--            android:paddingLeft="6dip"
-            android:layout_marginRight="8dip"
-            android:gravity="center_vertical|left" -->
+
     </LinearLayout>
 </com.android.systemui.statusbar.tablet.NotificationArea>
 </HorizontalScrollView>
