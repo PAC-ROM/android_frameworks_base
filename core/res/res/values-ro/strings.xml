@@ -1352,6 +1352,7 @@
     <string name="reboot_system" product="default">"Reporniţi telefonul"</string>
     <string name="reboot_reboot">"Repornire"</string>
     <string name="reboot_progress">"Repornire..."</string>
+    <string name="reboot_recovery">"Recuperare"</string>
     <string name="reboot_confirm">"Telefonul dvs. va reporni."</string>
     <string name="profileNameDefault">"General"</string>
     <string name="profileNameWork">"Serviciu"</string>
@@ -1363,4 +1364,7 @@
     <string name="profileGroupGmail">"Gmail"</string>
     <string name="profileGroupEmail">"Email"</string>
     <string name="profileGroupSMS">"SMS"</string>
+    <string name="global_actions_toggle_expanded_desktop_mode">"Desktop extins"</string>
+    <string name="global_actions_expanded_desktop_mode_on_status">"Activat"</string>
+    <string name="global_actions_expanded_desktop_mode_off_status">"Dezactivat"</string>
 </resources>

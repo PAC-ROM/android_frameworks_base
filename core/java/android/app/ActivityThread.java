@@ -2716,14 +2716,14 @@ public final class ActivityThread {
                             }
 
                             // Change color
-                            String mCurColor = colors[Integer.parseInt(colors[2])];
-                            String mAppColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
-                            String mNexColor = mAppColor.equals("") ? colors[0] : mAppColor;
+                            String currentColor = colors[Integer.parseInt(colors[2])];
+                            String appColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
+                            String nextColor = appColor == null ? colors[0] : appColor;
 
-                            if (mNexColor != mCurColor) {
+                            if (nextColor != currentColor) {
                                 Settings.System.putString(r.activity.getContentResolver(),
                                        ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
-                                       colors[0] + "|" + mNexColor + "|1");
+                                       colors[0] + "|" + nextColor + "|1");
                             }
                         }
                     } catch (Exception e) {

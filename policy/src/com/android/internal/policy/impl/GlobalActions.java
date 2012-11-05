@@ -212,9 +212,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mExpandDesktopModeOn = new ToggleAction(
                 R.drawable.ic_lock_expanded_desktop,
                 R.drawable.ic_lock_expanded_desktop,
-                R.string.global_actions_expanded_desktop,
-                R.string.global_actions_expanded_desktop_on_status,
-                R.string.global_actions_expanded_desktop_off_status) {
+                R.string.global_actions_toggle_expanded_desktop_mode,
+                R.string.global_actions_expanded_desktop_mode_on_status,
+                R.string.global_actions_expanded_desktop_mode_off_status) {
 
             void onToggle(boolean on) {
                 changeExpandDesktopModeSystemSetting(on);
@@ -384,6 +384,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: airplane mode
+/*        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_AIRPLANE_ENABLED, 1) == 1) {
+            mItems.add(mAirplaneModeOn);
+        }*/
         if (mEnableAirplaneToggle) {
             Slog.e(TAG, "Adding AirplaneToggle");
             mItems.add(mAirplaneModeOn);
@@ -454,7 +458,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // last: silent mode
-        if (SHOW_SILENT_TOGGLE) {
+        if ((Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_SILENT_ENABLED, 1) == 1) &&
+                (SHOW_SILENT_TOGGLE)) {
             mItems.add(mSilentModeAction);
         }
 

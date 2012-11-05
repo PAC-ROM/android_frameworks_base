@@ -411,18 +411,18 @@ public class PhoneStatusBar extends BaseStatusBar {
             return;
         }
 
-        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+        String setting = Settings.System.getString(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_COLOR);
 
-        String[] mColors = (mSetting == null || mSetting.equals("") ?
+        String[] colors = (setting == null || setting.equals("")  ?
                 ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_STATBAR] : mSetting).split(
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : setting).split(
                 ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String mCurColor = mColors[Integer.parseInt(mColors[2])];
+        String currentColor = colors[Integer.parseInt(colors[2])];
 
         Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
         Canvas cnv = new Canvas(bm);
-        cnv.drawColor(new BigInteger(mCurColor, 16).intValue());
+        cnv.drawColor(new BigInteger(currentColor, 16).intValue());
 
         TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
                 mStatusBarView.getBackground(), new BitmapDrawable(bm)});

@@ -149,33 +149,33 @@ public class KeyButtonView extends ImageView {
             return;
         }
 
-        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+        String setting = Settings.System.getString(mContext.getContentResolver(),
                 Settings.System.NAV_BUTTON_COLOR);
 
-        String[] mButtonColors = (mSetting == null || mSetting.equals("") ?
+        String[] buttonColors = (setting == null || setting.equals("") ?
                 ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBUTTON] : mSetting).split(
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBUTTON] : setting).split(
                 ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String mCurButtonColor = mButtonColors[Integer.parseInt(mButtonColors[2])];
+        String currentColor = buttonColors[Integer.parseInt(buttonColors[2])];
 
-        setColorFilter(new BigInteger("FF" + mCurButtonColor.substring(2), 16).intValue(),
+        setColorFilter(new BigInteger("FF" + currentColor.substring(2), 16).intValue(),
                 PorterDuff.Mode.SRC_ATOP);
 
-        BUTTON_QUIESCENT_ALPHA = (float)new BigInteger(mCurButtonColor.substring(0, 2), 16).intValue() / 255f;
+        BUTTON_QUIESCENT_ALPHA = (float)new BigInteger(currentColor.substring(0, 2), 16).intValue() / 255f;
         setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
     }
 
     private void updateGlowColor() {
-        String mSetting = Settings.System.getString(mContext.getContentResolver(),
+        String setting = Settings.System.getString(mContext.getContentResolver(),
                 Settings.System.NAV_GLOW_COLOR);
 
-        String[] mGlowColors = (mSetting == null || mSetting.equals("") ?
+        String[] glowColors = (setting == null || setting.equals("") ?
                 ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_NAVGLOW] : mSetting).split(
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVGLOW] : setting).split(
                 ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String mCurGlowColor = mGlowColors[Integer.parseInt(mGlowColors[2])];
+        String currentColor = glowColors[Integer.parseInt(glowColors[2])];
 
-        mGlowBG.setColorFilter(new BigInteger(mCurGlowColor, 16).intValue(),
+        mGlowBG.setColorFilter(new BigInteger(currentColor, 16).intValue(),
                 PorterDuff.Mode.SRC_ATOP);
     }
 
