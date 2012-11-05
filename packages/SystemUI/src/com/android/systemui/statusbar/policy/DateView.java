@@ -66,6 +66,7 @@ public final class DateView extends LinearLayout implements OnClickListener, OnL
     final static String ACTION_ALARM = "**alarm**";
     final static String ACTION_TODAY = "**today**";
     final static String ACTION_VOICEASSIST = "**assist**";
+    final static String ACTION_NOTHING = "**nothing**";
 
     private String mShortClick;
     private String mLongClick;
@@ -131,10 +132,10 @@ public final class DateView extends LinearLayout implements OnClickListener, OnL
             settingsObserver.observe();
             updateSettings();
             if (mShortClick == null || mShortClick == "") {
-                mShortClick = "**alarm**";
+            mShortClick = "**nothing**";
             }
             if (mLongClick == null || mLongClick == "") {
-                mLongClick = "**assist**";
+            mLongClick = "**nothing**";
             }
 //        }
 
@@ -224,13 +225,17 @@ public final class DateView extends LinearLayout implements OnClickListener, OnL
         }
     }
 
-   @Override
-   public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
 
         StatusBarManager statusBarManager = (StatusBarManager) getContext().getSystemService(Context.STATUS_BAR_SERVICE);
+        if (mShortClick.equals(ACTION_NOTHING)) {
+            return;
+        } else {
             try {
                 ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
             } catch (RemoteException e) {
+                e.printStackTrace();
             }
             if (mShortClick.equals(ACTION_TODAY)) {
                  // A date-time specified in milliseconds since the epoch.
@@ -251,24 +256,30 @@ public final class DateView extends LinearLayout implements OnClickListener, OnL
                 try {
                     intent = Intent.parseUri(mShortClick, 0);
                 } catch (URISyntaxException e) {
+                    e.printStackTrace();
                 }
             }
             try {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             } catch (ActivityNotFoundException e){
+                e.printStackTrace();
             }
             statusBarManager.collapse();
         }
+    }
 
-   @Override
-   public boolean onLongClick(View v) {
+    @Override
+    public boolean onLongClick(View v) {
 
         StatusBarManager statusBarManager = (StatusBarManager) getContext().getSystemService(Context.STATUS_BAR_SERVICE);
-
+        if (mLongClick.equals(ACTION_NOTHING)) {
+            return true;
+        } else {
             try {
                 ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
             } catch (RemoteException e) {
+                e.printStackTrace();
             }
             if (mLongClick.equals(ACTION_TODAY)) {
                  // A date-time specified in milliseconds since the epoch.
@@ -289,23 +300,26 @@ public final class DateView extends LinearLayout implements OnClickListener, OnL
                 try {
                     intent = Intent.parseUri(mLongClick, 0);
                 } catch (URISyntaxException e) {
+                    e.printStackTrace();
                 }
             }
             try {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             } catch (ActivityNotFoundException e){
+                e.printStackTrace();
             }
             statusBarManager.collapse();
-            return true;
         }
+        return true;
+    }
 
-   class SettingsObserver extends ContentObserver {
+    class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
-		void observe() {
+	void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_DATE_SHORTCLICK), false, this);

@@ -258,6 +258,7 @@ class KeyguardStatusViewManager implements OnClickListener {
         mEmergencyCallButtonEnabledInScreen = emergencyButtonEnabledInScreen;
         mDigitalClock = (DigitalClock) findViewById(R.id.time);
         mWeatherPanelView = (WeatherPanel) findViewById(R.id.weatherpanel);
+        mWeatherPanelView.setOnClickListener(mWeatherListener);
         mWeatherTextView = (WeatherText) findViewById(R.id.weather);
         mCalendarView = (ViewFlipper) findViewById(R.id.calendar);
 
@@ -1345,6 +1346,15 @@ class KeyguardStatusViewManager implements OnClickListener {
             }
         }
     }
+
+    private View.OnClickListener mWeatherListener = new View.OnClickListener() {
+        public void onClick(View v) {
+             Intent weatherintent = new Intent("com.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+             weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+             weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+             v.getContext().sendBroadcast(weatherintent);
+        }
+    };
 
     /**
      * Performs concentenation of PLMN/SPN

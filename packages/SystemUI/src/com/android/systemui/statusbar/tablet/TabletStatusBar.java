@@ -129,6 +129,7 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     private static final int NOTIFICATION_PRIORITY_MULTIPLIER = 10; // see NotificationManagerService
     private static final int HIDE_ICONS_BELOW_SCORE = Notification.PRIORITY_LOW * NOTIFICATION_PRIORITY_MULTIPLIER;
+
     // used for calculating weights of Nav controls & Notification Area:
     private static final float NAVBAR_MIN_LAND = 40f;
     private static final float NAVBAR_MIN_PORTRAIT = 35f;
@@ -1946,9 +1947,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         @Override
         public void onChange(boolean selfChange) {
-            updateSettings();
             loadResources();
             recreateStatusBar();
+            updateSettings();
         }
     }
     protected void updateSettings() {

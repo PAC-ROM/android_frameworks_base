@@ -39,8 +39,8 @@ import android.content.IntentFilter;
 /*import android.net.Uri;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Events;
-import android.content.ActivityNotFoundException;*/
+import android.provider.CalendarContract.Events;*/
+import android.content.ActivityNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.CustomTheme;
 import android.content.res.Resources;
@@ -134,7 +134,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
-//import java.net.URISyntaxException;
+import java.net.URISyntaxException;
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
@@ -219,12 +219,16 @@ public class PhoneStatusBar extends BaseStatusBar {
 /*    final static String ACTION_EVENT = "**event**";
     final static String ACTION_ALARM = "**alarm**";
     final static String ACTION_TODAY = "**today**";
-    final static String ACTION_VOICEASSIST = "**assist**";
+    final static String ACTION_VOICEASSIST = "**assist**";*/
+    final static String ACTION_NOTHING = "**nothing**";
+    final static String ACTION_UPDATE = "**update**";
 
     private Intent intent;
-    private String mShortClick;
-    private String mLongClick;
-*/
+/*    private String mShortClick;
+    private String mLongClick;*/
+    private String mShortClickWeather;
+    private String mLongClickWeather;
+
     // expanded notifications
     View mNotificationPanel; // the sliding/resizing panel within the notification window
     ScrollView mScrollView;
@@ -246,6 +250,8 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     // AOKP - weatherpanel
     boolean mWeatherPanelEnabled;
+    boolean mWeatherGoneOnBoot;	
+    int mWeatherHideStatus;
     WeatherPanel mWeatherPanel;
 
     TogglesView mQuickToggles;
@@ -367,11 +373,17 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_HIDE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USE_WEATHER), false, this);
 /*            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_DATE_SHORTCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_DATE_LONGCLICK), false, this);*/
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
         }
 
         @Override
@@ -668,6 +680,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         mSettingsButton.setOnLongClickListener(mSettingsLongClickListener);
         mRotationButton = (RotationToggle) mStatusBarWindow.findViewById(R.id.rotation_lock_button);
         mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);
         mButtonsBar = mStatusBarWindow.findViewById(R.id.buttons_bar);
         mQuickToggles = (TogglesView) mStatusBarWindow.findViewById(R.id.quick_toggles);
 
@@ -785,11 +799,26 @@ public class PhoneStatusBar extends BaseStatusBar {
         updateSettings();
 
 /*        if (mShortClick == null || mShortClick == "") {
-            mShortClick = "**alarm**";
+            mShortClick = "**nothing**";
         }
         if (mLongClick == null || mLongClick == "") {
-            mLongClick = "**assist**";
+            mLongClick = "**nothing**";
         }*/
+
+        if (mShortClickWeather == null || mShortClickWeather == "") {
+            mShortClickWeather = "**nothing**";
+        }
+        if (mLongClickWeather == null || mLongClickWeather == "") {
+            mLongClickWeather = "**nothing**";
+        }
+
+        boolean WeatherGoneOnBoot = (mWeatherHideStatus == 2);
+
+        if (WeatherGoneOnBoot) {
+               mWeatherPanel.setVisibility(View.GONE);
+        } else {
+               mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+        }
 
         mIsAutoBrightNess = checkAutoBrightNess();
         mContext.getContentResolver().registerContentObserver(
@@ -1706,6 +1735,11 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         if (mQuickTogglesHideAfterCollapse) {
             mQuickToggles.setVisibility(View.GONE);
+            if ((mWeatherHideStatus == 2) && mWeatherPanelEnabled) {
+                  mWeatherPanel.setVisibility(View.VISIBLE);
+            } else if ((mWeatherHideStatus == 1) && mWeatherPanelEnabled) {
+                  mWeatherPanel.setVisibility(View.GONE);
+            }
         }
 
         if (!mExpanded) {
@@ -2799,8 +2833,76 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     };
 
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (mShortClickWeather.equals(ACTION_NOTHING)) {
+            // do nothing
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mShortClickWeather.equals(ACTION_UPDATE)) {
+                    Intent weatherintent = new Intent("com.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                } else {
+                    try {
+                        intent = Intent.parseUri(mShortClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                   animateCollapse();
+                }
+            }
+        }
+    };
+
+    private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (mLongClickWeather.equals(ACTION_NOTHING)) {
+                return true;
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mLongClickWeather.equals(ACTION_UPDATE)) {
+                    Intent weatherintent = new Intent("com.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                } else {
+                    try {
+                        intent = Intent.parseUri(mLongClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                   animateCollapse();
+                 }
+            }
+        return true;
+        }
+    };
+
 /*    private View.OnClickListener mDateViewListener = new View.OnClickListener() {
         public void onClick(View v) {
+        if (mShortClick.equals(ACTION_NOTHING)) {
+            // Do nothing....
+        } else {
             try {
                 ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
             } catch (RemoteException e) {
@@ -2826,12 +2928,13 @@ public class PhoneStatusBar extends BaseStatusBar {
                 } catch (URISyntaxException e) {
                 }
             }
-            try {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-            } catch (ActivityNotFoundException e){
-            }
+                try {
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                } catch (ActivityNotFoundException e){
+                }
             animateCollapse();
+            }
         }
     };
 
@@ -2839,6 +2942,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         @Override
         public boolean onLongClick(View v) {
+        if (mLongClick.equals(ACTION_NOTHING)) {
+            // Do nothing....
+        } else {
             try {
                 ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
             } catch (RemoteException e) {
@@ -2864,12 +2970,13 @@ public class PhoneStatusBar extends BaseStatusBar {
                 } catch (URISyntaxException e) {
                 }
             }
-            try {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-            } catch (ActivityNotFoundException e){
-            }
+                try {
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                } catch (ActivityNotFoundException e){
+                }
             animateCollapse();
+            }
             return true;
         }
     };*/
@@ -2913,45 +3020,133 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (mQuickToggles.getVisibility() == View.VISIBLE) {
             int height = mQuickToggles.getHeight();
 
-            Animation a =
+            final Animation a =
                     AnimationUtils.makeOutAnimation(mContext, true);
             a.setDuration(400);
-            a.setAnimationListener(new AnimationListener() {
+            final Animation b =
+                    AnimationUtils.makeInAnimation(mContext, true);
+            b.setDuration(400);
+            if ((mWeatherHideStatus == 2) && mWeatherPanelEnabled) {
+                a.setAnimationListener(new AnimationListener() {
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mQuickToggles.setVisibility(View.GONE);
-                }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mQuickToggles.setVisibility(View.GONE);
+                        b.setAnimationListener(new AnimationListener() {
 
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                            }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-            mQuickToggles.startAnimation(a);
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            mWeatherPanel.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                            });
+                        mWeatherPanel.startAnimation(b);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                mQuickToggles.startAnimation(a);
+            } else {
+                a.setAnimationListener(new AnimationListener() {
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mQuickToggles.setVisibility(View.GONE);
+                        if ((mWeatherHideStatus == 1) && mWeatherPanelEnabled) {
+                            mWeatherPanel.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+           mQuickToggles.startAnimation(a);
+           if ((mWeatherHideStatus == 1) && mWeatherPanelEnabled) {
+               mWeatherPanel.startAnimation(a);
+           }
+           }
         } else {
-            Animation a =
+            final Animation a =
                     AnimationUtils.makeInAnimation(mContext, true);
             a.setDuration(400);
-            a.setAnimationListener(new AnimationListener() {
+            final Animation b =
+                    AnimationUtils.makeOutAnimation(mContext, true);
+            b.setDuration(400);
+            if ((mWeatherHideStatus == 2) && mWeatherPanelEnabled) {
+                b.setAnimationListener(new AnimationListener() {
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mWeatherPanel.setVisibility(View.GONE);
+                        a.setAnimationListener(new AnimationListener() {
 
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mQuickToggles.setVisibility(View.VISIBLE);
-                }
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                            }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-            mQuickToggles.startAnimation(a);
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            mQuickToggles.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                            });
+                        mQuickToggles.startAnimation(a);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                mWeatherPanel.startAnimation(b);
+            } else {
+                a.setAnimationListener(new AnimationListener() {
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mQuickToggles.setVisibility(View.VISIBLE);
+                        if ((mWeatherHideStatus == 1) && mWeatherPanelEnabled) {
+                        mWeatherPanel.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+           mQuickToggles.startAnimation(a);
+           if ((mWeatherHideStatus == 1) && mWeatherPanelEnabled) {
+           mWeatherPanel.startAnimation(a);
+           }
+           }
         }
 
     }
@@ -3398,6 +3593,12 @@ public class PhoneStatusBar extends BaseStatusBar {
         mLongClick = Settings.System.getString(cr,
                 Settings.System.NOTIFICATION_DATE_LONGCLICK);*/
 
+        mShortClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_SHORTCLICK);
+
+        mLongClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_LONGCLICK);
+
         mDropdownSettingsDefualtBehavior = Settings.System.getBoolean(cr,
                 Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, true);
 
@@ -3407,10 +3608,18 @@ public class PhoneStatusBar extends BaseStatusBar {
         mIsStatusBarBrightNess = Settings.System.getBoolean(cr,
                 Settings.System.STATUS_BAR_BRIGHTNESS_SLIDER, true);
 
+        mWeatherHideStatus = (Settings.System.getInt(cr,
+                Settings.System.STATUSBAR_WEATHER_HIDE, 0));
+
+        if (mWeatherHideStatus == 0) {
+            mWeatherPanel.setVisibility(View.VISIBLE);
+        }
+
         mWeatherPanelEnabled = (Settings.System.getInt(cr,
                 Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
                 && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
 
         mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+
     }
 }
