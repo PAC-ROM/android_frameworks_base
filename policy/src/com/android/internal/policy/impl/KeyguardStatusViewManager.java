@@ -287,8 +287,8 @@ class KeyguardStatusViewManager implements OnClickListener {
             mCalendarPanel.setVisibility(View.GONE);
         }
 
- if (mWeatherPanelView != null) {	227
-            mWeatherPanelView.setOnClickListener(mWeatherListener);	228
+ if (mWeatherPanelView != null) {	
+            mWeatherPanelView.setOnClickListener(mWeatherListener);	
         }
 
         // Hide transport control view until we know we need to show it.
