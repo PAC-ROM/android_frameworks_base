@@ -258,7 +258,6 @@ class KeyguardStatusViewManager implements OnClickListener {
         mEmergencyCallButtonEnabledInScreen = emergencyButtonEnabledInScreen;
         mDigitalClock = (DigitalClock) findViewById(R.id.time);
         mWeatherPanelView = (WeatherPanel) findViewById(R.id.weatherpanel);
-        mWeatherPanelView.setOnClickListener(mWeatherListener);
         mWeatherTextView = (WeatherText) findViewById(R.id.weather);
         mCalendarView = (ViewFlipper) findViewById(R.id.calendar);
 
@@ -286,6 +285,10 @@ class KeyguardStatusViewManager implements OnClickListener {
         // Hide calendar panel view until we know we need to show it.
         if (mCalendarPanel != null) {
             mCalendarPanel.setVisibility(View.GONE);
+        }
+
+ if (mWeatherPanelView != null) {	227
+            mWeatherPanelView.setOnClickListener(mWeatherListener);	228
         }
 
         // Hide transport control view until we know we need to show it.
