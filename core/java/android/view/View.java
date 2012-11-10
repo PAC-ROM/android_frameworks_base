@@ -17963,12 +17963,12 @@ public class View implements Drawable.Callback, Drawable.Callback2, KeyEvent.Cal
     public int sendTreatAsTouchEvent(MotionEvent event){
 		int ret = 0;
 		boolean doIt = false;
-		if (android.os.Build.MODEL.startsWith("R800")){
+		if (android.os.Build.BRAND.startsWith("SEMC") && android.os.Build.MODEL.startsWith("R800")){
 			doIt = event.getSource() == InputDevice.SOURCE_TOUCHPAD;
 			if (doIt){
 				doIt = mProcessGenericMotionAsPointer;
 				if (!doIt) {
-					doIt = android.os.SystemProperties.getInt("mod.touchpad.activated",0);
+					doIt = (android.os.SystemProperties.getInt("mod.touchpad.activated",0) == 1);
 				}
 				if (doIt) {
 					ret = (dispatchTouchEvent(event) ? 1 : 2);
