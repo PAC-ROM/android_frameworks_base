@@ -74,6 +74,7 @@ import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.NotificationData.Entry;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
+import com.android.systemui.statusbar.WidgetView;
 
 import com.android.systemui.R;
 
@@ -90,8 +91,10 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected static final int MSG_CLOSE_SEARCH_PANEL = 1025;
     protected static final int MSG_SHOW_INTRUDER = 1026;
     protected static final int MSG_HIDE_INTRUDER = 1027;
-    private int mNavRingAmount;
     private boolean mTabletui;
+    private boolean mLefty;
+
+    private WidgetView mWidgetView;
 
     protected static final boolean ENABLE_INTRUDERS = false;
 
@@ -228,8 +231,8 @@ public abstract class BaseStatusBar extends SystemUI implements
         mTabletui = Settings.System.getBoolean(mContext.getContentResolver(),
                         Settings.System.MODE_TABLET_UI, false);
 
-        mNavRingAmount = Settings.System.getInt(mContext.getContentResolver(),
-                         Settings.System.SYSTEMUI_NAVRING_AMOUNT, 1);
+        mLefty = (Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false));
 
 //        StatusbarObserver StatusbarObserver = new StatusbarObserver(new Handler());
 //        StatusbarObserver.observe();
@@ -272,6 +275,8 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         createAndAddWindows();
 
+        // create WidgetView
+        WidgetView mWidgetView = new WidgetView(mContext,null);
         disable(switches[0]);
         setSystemUiVisibility(switches[1], 0xffffffff);
         topAppWindowChanged(switches[2] != 0);
@@ -492,23 +497,15 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // Provide SearchPanel with a temporary parent to allow layout params to work.
         LinearLayout tmpRoot = new LinearLayout(mContext);
-
-        if ((screenLayout() == Configuration.SCREENLAYOUT_SIZE_XLARGE) || ((screenLayout() == Configuration.SCREENLAYOUT_SIZE_LARGE) && mTabletui)) {
-             if (mNavRingAmount == 5 || mNavRingAmount == 4) {
-                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
-                                     R.layout.status_bar_search_panel_left_five, tmpRoot, false);
-             } else {
-                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
-                                     R.layout.status_bar_search_panel_left, tmpRoot, false);
-             }
+        if (mTabletui) {
+           mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                        mLefty ? R.layout.status_bar_search_panel_lefty_tablet :
+                            R.layout.status_bar_search_panel_tablet, tmpRoot, false);
         } else {
-             if (mNavRingAmount == 5 || mNavRingAmount == 4) {
-                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
-                                     R.layout.status_bar_search_panel_five, tmpRoot, false);
-             } else {
-                 mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
-                                     R.layout.status_bar_search_panel, tmpRoot, false);
-             }
+            // This is Phone or Phablet
+           mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
+                        mLefty ? R.layout.status_bar_search_panel_lefty :
+                            R.layout.status_bar_search_panel, tmpRoot, false);
         }
 
         mSearchPanelView.setOnTouchListener(

@@ -174,6 +174,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
     NavigationBarView mNavBarView;
 
+    // Will determine if NavBar goes to the left side in Landscape Mode
+    private boolean mLeftyMode;
+
     ViewGroup mFeedbackIconArea; // notification icons, IME icon, compat icon
     InputMethodButton mInputMethodSwitchButton;
     CompatModeButton mCompatModeButton;
@@ -391,7 +394,11 @@ public class TabletStatusBar extends BaseStatusBar implements
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        if (mLeftyMode) {
+            lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        } else {
+            lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        }
         lp.setTitle("NotificationPanel");
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
@@ -642,8 +649,16 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         loadResources();
 
-        final TabletStatusBarView sb = (TabletStatusBarView)View.inflate(
-                context, R.layout.system_bar, null);
+        // updateSettings() isn't run until after the view is inflated.  Need to
+        // set LeftyMode here.
+        mLeftyMode = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false);
+        TabletStatusBarView sb;
+        if (mLeftyMode) {
+            sb = (TabletStatusBarView)View.inflate(context, R.layout.system_bar_lefty, null);
+        } else {
+            sb = (TabletStatusBarView)View.inflate(context, R.layout.system_bar, null);
+        }
         mStatusBarView = sb;
 
         sb.setHandler(mHandler);
@@ -864,7 +879,11 @@ public class TabletStatusBar extends BaseStatusBar implements
             lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             lp.dimAmount = 0.75f;
         }
-        lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        if (mLeftyMode) {
+            lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        }else {
+            lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        }
         lp.setTitle("RecentsPanel");
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
@@ -889,7 +908,11 @@ public class TabletStatusBar extends BaseStatusBar implements
             lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             lp.dimAmount = 0.7f;
         }
-        lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        if (mLeftyMode) {
+            lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        }else {
+            lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        }
         lp.setTitle("SearchPanel");
         // TODO: Define custom animation for Search panel
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
@@ -916,7 +939,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     protected void updateSearchPanel() {
         super.updateSearchPanel();
         mSearchPanelView.setStatusBarView(mStatusBarView);
-        mStatusBarView.setDelegateView(mSearchPanelView);
+        mNavBarView.setDelegateView(mSearchPanelView);
     }
 
     @Override
@@ -1943,6 +1966,8 @@ public class TabletStatusBar extends BaseStatusBar implements
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_WIDTH_PORT), false,
                     this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_LEFTY_MODE), false, this);
         }
 
         @Override
@@ -1965,6 +1990,9 @@ public class TabletStatusBar extends BaseStatusBar implements
                 Settings.System.NAVIGATION_BAR_WIDTH_PORT, 0f);
 
         mLandscape = (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+
+        mLeftyMode = Settings.System.getBoolean(resolver,
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false);
 
         UpdateWeights(mLandscape);
     }

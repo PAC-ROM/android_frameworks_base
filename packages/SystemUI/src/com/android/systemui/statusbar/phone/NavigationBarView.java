@@ -23,14 +23,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.StatusBarManager;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;	
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
@@ -115,7 +114,7 @@ public class NavigationBarView extends LinearLayout {
 
     private Drawable mBackIcon, mBackLandIcon, mBackAltIcon, mBackAltLandIcon;
     
-    private DelegateViewHelper mDelegateHelper;
+    public DelegateViewHelper mDelegateHelper;
     private Context mContext;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
@@ -137,6 +136,9 @@ public class NavigationBarView extends LinearLayout {
     final static String ACTION_NULL = "**null**";
 
     int mNumberOfButtons = 3;
+
+    // Will determine if NavBar goes to the left side in Landscape Mode
+    private boolean mLeftyMode;
 
     /* 0 = Phone UI
      * 1 = Tablet UI
@@ -216,6 +218,7 @@ public class NavigationBarView extends LinearLayout {
 
     public void setDelegateView(View view) {
         mDelegateHelper.setDelegateView(view);
+        mDelegateHelper.setLefty(mLeftyMode);
     }
 
     public void setBar(BaseStatusBar phoneStatusBar) {
@@ -278,14 +281,6 @@ public class NavigationBarView extends LinearLayout {
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        originalHeight = getHeight();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WidgetReceiver.ACTION_ALLOCATE_ID);
-        filter.addAction(WidgetReceiver.ACTION_DEALLOCATE_ID);
-        filter.addAction(WidgetReceiver.ACTION_TOGGLE_WIDGETS);
-        filter.addAction(WidgetReceiver.ACTION_DELETE_WIDGETS);
-        context.registerReceiver(new WidgetReceiver(), filter);
 
         mContext.getContentResolver().registerContentObserver(
             Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
@@ -328,8 +323,9 @@ public class NavigationBarView extends LinearLayout {
                         mBackIcon = v.getDrawable();
                 }
 */
-                addButton(navButtonLayout, v, landscape);
-                addLightsOutButton(lightsOut, v, landscape, false);
+                addButton(navButtonLayout, v, landscape && !mLeftyMode);
+                // if we are in LeftyMode, then we want to add to end, like Portrait
+                addLightsOutButton(lightsOut, v, landscape && !mLeftyMode, false);
 
                 if (v.getId() == R.id.back){
                         mBackIcon = mBackLandIcon = v.getDrawable();
@@ -354,17 +350,16 @@ public class NavigationBarView extends LinearLayout {
                     // since we didn't add these at the beginning, we need to insert it now
                     // the behavior is backwards from landscape (ie, insert at beginning
                     // if portrait, add to end if landscape
-                    addButton(navButtonLayout, leftMenuKey, !landscape);
-                    addLightsOutButton(lightsOut, leftMenuKey, !landscape, true);
+                    addButton(navButtonLayout, leftMenuKey, !landscape || (landscape && mLeftyMode));
+                    addLightsOutButton(lightsOut, leftMenuKey, !landscape || (landscape && mLeftyMode), true);
                 }
                 if (currentSetting != SHOW_DONT) {
                     View rightMenuKey = generateKey(landscape, KEY_MENU_RIGHT);
-                    addButton(navButtonLayout, rightMenuKey, landscape);
-                    addLightsOutButton(lightsOut, rightMenuKey, landscape, true);
+                    addButton(navButtonLayout, rightMenuKey, landscape && !mLeftyMode);
+                    addLightsOutButton(lightsOut, rightMenuKey, landscape && !mLeftyMode, true);
                 }
             }
         }
-        createWidgetView();
     }
     
     private void addLightsOutButton(LinearLayout root, View v, boolean landscape, boolean empty) {
@@ -899,12 +894,10 @@ public class NavigationBarView extends LinearLayout {
                     Settings.System.getUriFor(Settings.System.MENU_VISIBILITY), false,
                     this);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_WIDGETS),
-                    false,
-                    this);
-            resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false,
                     this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_LEFTY_MODE), false, this);
 
             for (int j = 0; j < 7; j++) { // watch all 5 settings for changes.
                 resolver.registerContentObserver(
@@ -940,6 +933,8 @@ public class NavigationBarView extends LinearLayout {
                 Settings.System.MENU_VISIBILITY, VISIBILITY_SYSTEM);
 	        mTablet_UI = Settings.System.getInt(resolver,
                 Settings.System.TABLET_UI,0);
+        mLeftyMode = Settings.System.getBoolean(resolver,
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false);
         mNumberOfButtons = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 0);
         if (mNumberOfButtons == 0) {
@@ -971,16 +966,6 @@ public class NavigationBarView extends LinearLayout {
                 Settings.System.putString(resolver,
                         Settings.System.NAVIGATION_CUSTOM_APP_ICONS[j], "");
             }
-        }
-        String settingWidgets = Settings.System.getString(resolver,
-                Settings.System.NAVIGATION_BAR_WIDGETS);
-        if (settingWidgets != null && settingWidgets.length() > 0) {
-            String[] split = settingWidgets.split("\\|");
-            widgetIds = new int[split.length];
-            for (int i = 0; i < widgetIds.length; i++) {
-                widgetIds[i] = Integer.parseInt(split[i]);
-            }
-            Log.d(TAG,"Made Widgets:"+ widgetIds.length);
         }
         makeBar();
 
@@ -1020,201 +1005,8 @@ public class NavigationBarView extends LinearLayout {
         return getResources().getDrawable(R.drawable.ic_sysbar_null);
     }
 
-    private String getResourceName(int resId) {
-        if (resId != 0) {
-            final android.content.res.Resources res = mContext.getResources();
-            try {
-                return res.getResourceName(resId);
-            } catch (android.content.res.Resources.NotFoundException ex) {
-                return "(unknown)";
-            }
-        } else {
-            return "(null)";
-        }
-    }
-
     private void postCheckForInvalidLayout(final String how) {
         mHandler.obtainMessage(MSG_CHECK_INVALID_LAYOUT, 0, 0, how).sendToTarget();
-    }
-
-    private static String visibilityToString(int vis) {
-        switch (vis) {
-            case View.INVISIBLE:
-                return "INVISIBLE";
-            case View.GONE:
-                return "GONE";
-            default:
-                return "VISIBLE";
-        }
-    }
-
-    public void toggleWidgetView() {
-        if (showing) {
-            if (mPopupView != null) {
-                mAdapter.onHide();
-                mWindowManager.removeView(mPopupView);
-                showing = false;
-            }
-        } else {
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                            | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                            | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                    PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.BOTTOM;
-            params.setTitle("Widgets");
-            if (mWindowManager != null && mAdapter !=null){
-                mWindowManager.addView(mPopupView, params);
-                mAdapter.onShow();
-                showing = true;
-            } else {
-                Log.e(TAG,"WTF - ToggleWidget when no pager or window manager exist?");
-            }
-        }
-    }
-
-    public void createWidgetView() {
-        mPopupView = new FrameLayout(mContext);
-        View widgetView = View.inflate(mContext, R.layout.navigation_bar_expanded, null);
-        mPopupView.addView(widgetView);
-        mWidgetLabel = (TextView) mPopupView.findViewById(R.id.widgetlabel);
-        mWidgetPager = (ViewPager) widgetView.findViewById(R.id.pager);
-        mWidgetPager.setAdapter(mAdapter = new WidgetPagerAdapter(mContext, widgetIds));
-        mWidgetPager.setOnPageChangeListener(mNewPageListener);
-
-        int dp = mAdapter.getHeight(mWidgetPager.getCurrentItem());
-        float px = dp * getResources().getDisplayMetrics().density;
-        mWidgetPager.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,(int) px));
-
-        mPopupView.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    toggleWidgetView();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        final Runnable SetMoving = new Runnable () {
-            public void run() {
-                mMoving = true;
-                mDowntime = System.currentTimeMillis();
-                Log.d(TAG,"LongPress!");
-                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-            }
-        };
-
-        mWidgetLabel.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d(TAG,"mDown:" +event.getDownTime());
-                    mHandler.postDelayed(SetMoving, ViewConfiguration.getLongPressTimeout());
-                    mFirstMoveY = event.getY();
-                    return true;
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (mMoving) {
-                        float diff = event.getY() - mFirstMoveY;
-                        int oldheight = mWidgetPager.getHeight();
-                        int newheight = oldheight + (int) - diff; // this is pixels
-                        Log.d(TAG,"Diff:" +diff + " Old:" + oldheight + " New:"+ newheight);
-                        if (System.currentTimeMillis() - mDowntime > 150) { // slow down the move/updates
-                            mWidgetPager.setLayoutParams(
-                                    new LayoutParams(LayoutParams.MATCH_PARENT, newheight));
-                            newheight = (int) (newheight / getResources().getDisplayMetrics().density);
-                            mAdapter.setSavedHeight(mCurrentWidgetPage, newheight);
-                            //mFirstMoveY = event.getY(); // reset the diff
-                            mDowntime = System.currentTimeMillis();
-                        }
-                        return true;
-                    } else { // we are moving without waiting for longpress
-                        if (Math.abs(mFirstMoveY - event.getY()) > 20) {
-                            // allow a little slop in the movement before cancelling longpress
-                            mHandler.removeCallbacks(SetMoving);
-                        }
-                    }
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    mMoving = false;
-                    return true;
-                }
-                return false;
-            }
-        });
-
-    }
-
-    public OnPageChangeListener mNewPageListener = new OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int page) {
-            int dp = mAdapter.getHeight(page);
-            mCurrentWidgetPage = page;
-            float px = dp * getResources().getDisplayMetrics().density;
-            mWidgetPager.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) px));
-            if (mWidgetLabel != null) {
-                mWidgetLabel.setText(mAdapter.getLabel(page));
-            }
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-
-        }
-    };
-
-    public class WidgetReceiver extends BroadcastReceiver {
-
-        public static final String ACTION_ALLOCATE_ID = "com.android.systemui.ACTION_ALLOCATE_ID";
-        public static final String ACTION_DEALLOCATE_ID = "com.android.systemui.ACTION_DEALLOCATE_ID";
-        public static final String ACTION_TOGGLE_WIDGETS = "com.android.systemui.ACTION_TOGGLE_WIDGETS";
-        public static final String ACTION_DELETE_WIDGETS = "com.android.systemui.ACTION_DELETE_WIDGETS";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if (ACTION_ALLOCATE_ID.equals(action)) {
-                int appWidgetId = mAdapter.mAppWidgetHost.allocateAppWidgetId();
-
-                Intent select = new Intent(context, WidgetSelectActivity.class);
-                select.putExtra("selected_widget_id", appWidgetId);
-                select.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(select);
-
-            } else if (ACTION_DEALLOCATE_ID.equals(action)) {
-                int appWidgetId =
-                        intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                if (appWidgetId != -1) {
-                    mAdapter.mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-                    SharedPreferences prefs = mContext.getSharedPreferences("widget_adapter",
-                            Context.MODE_WORLD_WRITEABLE);
-                    prefs.edit().remove("widget_id_" + appWidgetId);
-                }
-            } else if (ACTION_TOGGLE_WIDGETS.equals(action)) {
-                toggleWidgetView();
-            } else if (ACTION_DELETE_WIDGETS.equals(action)) {
-                SharedPreferences prefs = mContext.getSharedPreferences("widget_adapter",
-                        Context.MODE_WORLD_WRITEABLE);
-                for (int i = 0; i < widgetIds.length; i++) {
-                    prefs.edit().remove("widget_id_" + widgetIds[i]);
-                    mAdapter.mAppWidgetHost.deleteAppWidgetId(widgetIds[i]);
-                }
-            }
-        }
     }
 
     private void updateColor(boolean defaults) {

@@ -28,7 +28,7 @@ import android.view.ViewConfiguration;
 import android.widget.Toast;
 
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.systemui.statusbar.phone.NavigationBarView;
+import com.android.systemui.statusbar.WidgetView;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 import com.android.systemui.R;
 
@@ -194,11 +194,11 @@ public class ExtensibleKeyButtonView extends KeyButtonView {
 
         	} else if (mClickAction.equals(ACTION_WIDGETS)) {
                         Intent toggleWidgets = new Intent(
-                        NavigationBarView.WidgetReceiver.ACTION_TOGGLE_WIDGETS);
+                        WidgetView.WidgetReceiver.ACTION_TOGGLE_WIDGETS);
                 mContext.sendBroadcast(toggleWidgets);
                 return;
         	} else {  // we must have a custom uri
-        		 try {
+                         try {
                      Intent intent = Intent.parseUri(mClickAction, 0);
                      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                      getContext().startActivity(intent);
@@ -249,7 +249,7 @@ public class ExtensibleKeyButtonView extends KeyButtonView {
         		return true;
             } else if (mLongpress.equals(ACTION_WIDGETS)) {
                 Intent toggleWidgets = new Intent(
-                        NavigationBarView.WidgetReceiver.ACTION_TOGGLE_WIDGETS);
+                        WidgetView.WidgetReceiver.ACTION_TOGGLE_WIDGETS);
                 mContext.sendBroadcast(toggleWidgets);
                 return true;
         	} else if (mLongpress.equals(ACTION_RECENTS)) {

@@ -3437,6 +3437,12 @@ public final class Settings {
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
         /**
+         * Display NavBar on left side of screen (Boolean)
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_LEFTY_MODE = "navigation_bar_lefty_mode";
+
+        /**
          *
          * @hide
          */
@@ -3472,6 +3478,36 @@ public final class Settings {
          * @hide
          */
         public static final String SYSTEMUI_NAVRING_5 = "systemui_navring_5";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_1 = "systemui_navring_long_1";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_2 = "systemui_navring_long_2";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_3 = "systemui_navring_long_3";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_4 = "systemui_navring_long_4";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_5 = "systemui_navring_long_5";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_NAVRING_LONG_ENABLE = "systemui_navring_long_enable";
 
         /**
          * @hide
@@ -3659,6 +3695,14 @@ public final class Settings {
 
         /**
          * @hide
+         * Show Wifi network name in notification shade
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
+        /**
+         * @hide
          * Style of Battery
          * 0 - Icon Only
          * 1 - Text Only
@@ -3760,6 +3804,36 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_STOCK_MUSIC_LAYOUT = "lockscreen_stock_music_layout";
+
+        /**
+         * Whether to show the alt lockscreen layout
+         * @hide
+         */
+        public static final String USE_CIRCLES_LOCKSCREEN = "use_circles_lockscreen";
+
+        /**
+         * Sets bg color of alt lockscreen bg
+         * @hide
+         */
+        public static final String CIRCLES_LOCK_BG_COLOR = "circles_lock_bg_color";
+
+        /**
+         * Sets ring color of alt lockscreen
+         * @hide
+         */
+        public static final String CIRCLES_LOCK_RING_COLOR = "circles_lock_ring_color";
+
+        /**
+         * Sets halo color of alt lockscreen
+         * @hide
+         */
+        public static final String CIRCLES_LOCK_HALO_COLOR = "circles_lock_halo_color";
+
+        /**
+         * Sets wave color of alt lockscreen
+         * @hide
+         */
+        public static final String CIRCLES_LOCK_WAVE_COLOR = "circles_lock_wave_color";
 
         /**
          * How to show weather on the statusbar

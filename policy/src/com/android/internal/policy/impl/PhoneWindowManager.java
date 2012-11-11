@@ -385,6 +385,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // in order to properly setup the NavBar and still be able to hide it when the user
     // selects to, I need to know if its first boot.
     private boolean mNavBarFirstBootFlag = true;
+    // Will determine if NavBar goes to the left side in Landscape Mode
+    private boolean mLeftyMode;
     boolean mCanHideNavigationBar = false;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     boolean mNavigationBarOnBottom = true; // is the navigation bar on the bottom *right now*?
@@ -746,6 +748,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_WIDTH), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_LEFTY_MODE), false, this);
             if (SEPARATE_TIMEOUT_FOR_SCREEN_SAVER) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
                         "screensaver_timeout"), false, this);
@@ -861,7 +865,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /**
      * When a volumeup-key longpress expires, skip songs based on key press
      */
-    Runnable mVolumeUpLongPress = new Runnable() {
+/*    Runnable mVolumeUpLongPress = new Runnable() {
         public void run() {
             // set the long press flag to true
             mIsLongPress = true;
@@ -870,11 +874,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             sendMediaButtonEvent(KeyEvent.KEYCODE_MEDIA_NEXT);
         };
     };
-
+*/
     /**
      * When a volumedown-key longpress expires, skip songs based on key press
      */
-    Runnable mVolumeDownLongPress = new Runnable() {
+/*    Runnable mVolumeDownLongPress = new Runnable() {
         public void run() {
             // set the long press flag to true
             mIsLongPress = true;
@@ -897,7 +901,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
         mContext.sendOrderedBroadcast(upIntent, null);
     }
-
+*/
     private void interceptPowerKeyDown(boolean handled) {
         mPowerKeyHandled = handled;
         if (!handled) {
@@ -1895,6 +1899,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if(mDisplay != null)
                 setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
         }
+        mLeftyMode = Settings.System.getBoolean(resolver,
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false);
     }
 
     private void enablePointerLocation() {
@@ -3247,29 +3253,56 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // we can tell the app that it is covered by it.
                     mSystemBottom = mTmpNavigationFrame.top;
                 }
-            } else {
-                // Landscape screen; nav bar goes to the right.
-                int left = displayWidth - mNavigationBarWidthForRotation[displayRotation];
-                if (mHdmiPlugged) {
-                    if (left > mExternalDisplayWidth) {
-                        left = mExternalDisplayWidth;
+            } else { // Navbar is on side - but could be Left or Right
+                if (mLeftyMode) {
+                    // Landscape screen; nav bar goes to the Left.
+                    int right = mNavigationBarWidthForRotation[displayRotation];
+                    if (mHdmiPlugged) {
+                        if (right > mExternalDisplayWidth) {
+                            right = mExternalDisplayWidth;
+                        }
                     }
-                }
-                mTmpNavigationFrame.set(left, 0, displayWidth, displayHeight);
-                mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
-                if (navVisible) {
-                    mNavigationBar.showLw(true);
-                    mDockRight = mTmpNavigationFrame.left;
-                    mRestrictedScreenWidth = mDockRight - mDockLeft;
+                    mTmpNavigationFrame.set(0, 0, right, displayHeight);
+                    mStableLeft = mStableFullscreenLeft = mTmpNavigationFrame.right;
+                    if (navVisible) {
+                        mNavigationBar.showLw(true);
+                        mDockLeft = mTmpNavigationFrame.right;
+                        mRestrictedScreenWidth = mDockRight - mDockLeft;
+                        mRestrictedScreenLeft =  mTmpNavigationFrame.right;
+                    } else {
+                        // We currently want to hide the navigation UI.
+                        mNavigationBar.hideLw(true);
+                    }
+                    if (navVisible && !mNavigationBar.isAnimatingLw()) {
+                        // If the nav bar is currently requested to be visible,
+                        // and not in the process of animating on or off, then
+                        // we can tell the app that it is covered by it.
+                        mSystemLeft = mTmpNavigationFrame.right;
+                    }
                 } else {
-                    // We currently want to hide the navigation UI.
-                    mNavigationBar.hideLw(true);
-                }
-                if (navVisible && !mNavigationBar.isAnimatingLw()) {
-                    // If the nav bar is currently requested to be visible,
-                    // and not in the process of animating on or off, then
-                    // we can tell the app that it is covered by it.
-                    mSystemRight = mTmpNavigationFrame.left;
+                     // Landscape screen; nav bar goes to the right.
+                    int left = displayWidth - mNavigationBarWidthForRotation[displayRotation];
+                    if (mHdmiPlugged) {
+                        if (left > mExternalDisplayWidth) {
+                            left = mExternalDisplayWidth;
+                        }
+                    }
+                    mTmpNavigationFrame.set(left, 0, displayWidth, displayHeight);
+                    mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
+                    if (navVisible) {
+                        mNavigationBar.showLw(true);
+                        mDockRight = mTmpNavigationFrame.left;
+                        mRestrictedScreenWidth = mDockRight - mDockLeft;
+                    } else {
+                        // We currently want to hide the navigation UI.
+                        mNavigationBar.hideLw(true);
+                    }
+                    if (navVisible && !mNavigationBar.isAnimatingLw()) {
+                        // If the nav bar is currently requested to be visible,
+                        // and not in the process of animating on or off, then
+                        // we can tell the app that it is covered by it.
+                        mSystemRight = mTmpNavigationFrame.left;
+                    }
                 }
             }
             // Make sure the content and current rectangles are updated to
@@ -4426,7 +4459,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE: {
                 if (mVolBtnMusicControls && !down) {
-                    handleVolumeLongPressAbort();
+//                    handleVolumeLongPressAbort();
+                    mHandler.removeMessages(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK);
 
                     // delay handling volume events if mVolBtnMusicControls is desired
                     if (!mIsLongPress && (result & ACTION_PASS_TO_USER) == 0)
@@ -4506,15 +4540,24 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         // initialize long press flag to false for volume events
                         mIsLongPress = false;
 
-                        // if the button is held long enough, the following
+/*                        // if the button is held long enough, the following
                         // procedure will set mIsLongPress=true
-                        handleVolumeLongPress(keyCode);
+                        handleVolumeLongPress(keyCode);*/
+
+                            // Use a message dispatcher to the Audio Service for track control
+                            // The dispatcher will set the long press flag once called
+                            int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
+                                KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PREVIOUS;
+                            Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,
+                                new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), newKeyCode, 0));
+                            msg.setAsynchronous(true);
+                            mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
                     } else {
                         // If music is playing but we decided not to pass the key to the
                         // application, handle the volume change here.
                         handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
                     }
-                    if (mVolBtnMusicControls && down && (keyCode != KeyEvent.KEYCODE_VOLUME_MUTE)) {
+/*                    if (mVolBtnMusicControls && down && (keyCode != KeyEvent.KEYCODE_VOLUME_MUTE)) {
                         mIsLongPress = false;
                         int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
                                 KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PREVIOUS;
@@ -4533,7 +4576,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         if (!isScreenOn && !mVolumeWakeScreen) {
                             handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
                         }
-                    }
+                    }*/
                 }
                 if (isScreenOn || !mVolumeWakeScreen) {
                     break;
@@ -4677,7 +4720,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return result;
     }
 
-    void handleVolumeLongPress(int keycode) {
+/*    void handleVolumeLongPress(int keycode) {
         Runnable btnHandler;
 
         if (keycode == KeyEvent.KEYCODE_VOLUME_UP)
@@ -4692,7 +4735,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mHandler.removeCallbacks(mVolumeUpLongPress);
         mHandler.removeCallbacks(mVolumeDownLongPress);
     }
-
+*/
     void dispatchMediaKeyWithWakeLock(KeyEvent event) {
         if (DEBUG_INPUT) {
             Slog.d(TAG, "dispatchMediaKeyWithWakeLock: " + event);
