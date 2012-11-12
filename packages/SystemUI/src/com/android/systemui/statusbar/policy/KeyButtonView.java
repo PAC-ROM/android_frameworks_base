@@ -143,7 +143,7 @@ public class KeyButtonView extends ImageView {
 
     private void updateButtonColor(boolean defaults) {
         if (defaults) {
-            setColorFilter(0, PorterDuff.Mode.SRC_ATOP);
+            setColorFilter(0);
             BUTTON_QUIESCENT_ALPHA = 0.70f;
             setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
             return;
