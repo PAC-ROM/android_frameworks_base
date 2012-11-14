@@ -108,9 +108,7 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final int LONG_DELAY = 3500; // 3.5 seconds
     private static final int SHORT_DELAY = 2000; // 2 seconds
 
-    private static final long[] DEFAULT_VIBRATE_PATTERN = {
-            0, 250, 250, 250
-    };
+    private static final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
     private static final int VIBRATE_PATTERN_MAXLEN = 8 * 2 + 1; // up to eight bumps
 
     private static final int DEFAULT_STREAM_TYPE = AudioManager.STREAM_NOTIFICATION;
@@ -764,7 +762,15 @@ public class NotificationManagerService extends INotificationManager.Stub
         mNotificationLight = lights.getLight(LightsService.LIGHT_ID_NOTIFICATIONS);
         mAttentionLight = lights.getLight(LightsService.LIGHT_ID_ATTENTION);
 
+        mCustomLedColors = new HashMap<String, String>();
+
         Resources resources = mContext.getResources();
+        mDefaultNotificationColor = resources.getColor(
+                com.android.internal.R.color.config_defaultNotificationColor);
+        mDefaultNotificationLedOn = resources.getInteger(
+                com.android.internal.R.integer.config_defaultNotificationLedOn);
+        mDefaultNotificationLedOff = resources.getInteger(
+                com.android.internal.R.integer.config_defaultNotificationLedOff);
 
         mDefaultVibrationPattern = getLongArray(resources,
                 com.android.internal.R.array.config_defaultNotificationVibePattern,
@@ -775,8 +781,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                 com.android.internal.R.array.config_notificationFallbackVibePattern,
                 VIBRATE_PATTERN_MAXLEN,
                 DEFAULT_VIBRATE_PATTERN);
-
-        mCustomLedColors = new HashMap<String, String>();
 
         // Don't start allowing notifications until the setup wizard has run once.
         // After that, including subsequent boots, init with notifications turned on.
