@@ -92,6 +92,7 @@ import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.policy.BatteryController;
+import com.android.systemui.statusbar.policy.SbBatteryController;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.policy.ClockCenter;
 import com.android.systemui.statusbar.policy.NetworkController;
@@ -157,6 +158,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     // Policy
     public NetworkController mNetworkController;
     public BatteryController mBatteryController;
+    public SbBatteryController mSbBatteryController;
     public SignalClusterView mSignalCluster;
     public Clock mClock;
     public ClockCenter mCClock;
@@ -590,6 +592,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             if(mCClock != null) mCClock.setTextColor(colorInfo.lastColor);
             if(mSignalCluster != null) mSignalCluster.setColor(colorInfo);
             if(mBatteryController != null) mBatteryController.setColor(colorInfo);
+            if(mSbBatteryController != null) mSbBatteryController.setColor(colorInfo);
             if (mStatusIcons != null) {
                 for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
                     Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
