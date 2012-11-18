@@ -62,8 +62,8 @@ public final class PolicyManager {
         return sPolicy.makeNewLayoutInflater(context);
     }
 
-    public static WindowManagerPolicy makeNewWindowManager(IDeviceHandler device) {
-        return sPolicy.makeNewWindowManager(device);
+    public static WindowManagerPolicy makeNewWindowManager() {
+        return sPolicy.makeNewWindowManager();
     }
 
     public static FallbackEventHandler makeNewFallbackEventHandler(Context context) {
