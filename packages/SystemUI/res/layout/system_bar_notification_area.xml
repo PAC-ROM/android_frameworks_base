@@ -16,124 +16,153 @@
 -->
 
 <!-- notification icons & panel access -->
-<com.android.systemui.statusbar.tablet.NotificationArea
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
-    android:id="@+id/notificationArea"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_alignParentRight="true"
-    android:orientation="horizontal"
-    android:background="?android:attr/listChoiceBackgroundIndicator"
-    android:clickable="true"
+    android:layout_height="wrap_content"
+    android:scrollbarFadeDuration="3000"
+    android:fadingEdge="none"
+    android:overScrollMode="ifContentScrolls"
     >
 
-    <LinearLayout
-        android:id="@+id/feedbackIconArea"
+    <com.android.systemui.statusbar.tablet.NotificationArea
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
+        android:id="@+id/notificationArea"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:background="?android:attr/listChoiceBackgroundIndicator"
+        android:clickable="true"
         >
-
-        <com.android.systemui.statusbar.tablet.InputMethodButton
-            android:id="@+id/imeSwitchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dip"
-            android:src="@drawable/ic_sysbar_ime_default"
-            android:visibility="gone"
-            android:contentDescription="@string/accessibility_ime_switch_button"
-            />
-
-        <com.android.systemui.statusbar.policy.CompatModeButton
-            android:id="@+id/compatModeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dip"
-            android:src="@drawable/ic_sysbar_zoom"
-            android:visibility="gone"
-            android:contentDescription="@string/accessibility_compatibility_zoom_button"
-            />
-
-        <com.android.systemui.statusbar.tablet.NotificationIconArea
-            android:id="@+id/notificationIcons"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            >
-            <view
-                class="com.android.systemui.statusbar.tablet.NotificationIconArea$IconLayout"
-                android:id="@+id/icons"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:alpha="0.4"
-                />
-        </com.android.systemui.statusbar.tablet.NotificationIconArea>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/notificationTrigger"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        >
-        <com.android.systemui.statusbar.policy.Clock
-            android:id="@+id/clock"
-            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:singleLine="true"
-            android:paddingLeft="6dip"
-            android:layout_marginRight="8dip"
-            android:gravity="center_vertical|left"
-            />
-
-        <TextView
-            android:id="@+id/network_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="6dip"
-            android:layout_marginLeft="6dip"
-            android:gravity="center"
-            android:singleLine="true"
-            android:visibility="gone"
-            android:textSize="16sp"
-            android:textColor="#606060"
-            />
 
         <LinearLayout
-            android:id="@+id/signal_battery_cluster"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal"
+            android:id="@+id/center_clock_layout"
             android:gravity="center"
-            >
-            <include layout="@layout/signal_cluster_view" 
-                android:id="@+id/signal_cluster"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <com.android.systemui.statusbar.policy.ClockCenter
+                android:textAppearance="@style/TextAppearance.SystemBar.Clock"
+                android:gravity="center"
+                android:id="@+id/center_clock"
+                android:paddingLeft="6dip"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-            <ImageView
-                android:id="@+id/bluetooth"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:paddingLeft="4dip"
+                android:layout_height="fill_parent"
+                android:singleLine="true"
                 android:visibility="gone"
                 />
-            <ImageView
-                android:id="@+id/battery"
-                android:layout_height="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/feedbackIconArea"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical|right"
+            >
+
+            <com.android.systemui.statusbar.tablet.InputMethodButton
+                android:id="@+id/imeSwitchButton"
                 android:layout_width="wrap_content"
-                android:paddingLeft="4dip"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dip"
+                android:src="@drawable/ic_sysbar_ime_default"
+                android:visibility="gone"
+                android:contentDescription="@string/accessibility_ime_switch_button"
                 />
-            <ImageView
-                android:id="@+id/dock_battery"
-                android:layout_height="wrap_content"
+
+            <com.android.systemui.statusbar.policy.CompatModeButton
+                android:id="@+id/compatModeButton"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dip"
+                android:src="@drawable/ic_sysbar_zoom"
+                android:visibility="gone"
+                android:contentDescription="@string/accessibility_compatibility_zoom_button"
+                />
+
+            <com.android.systemui.statusbar.tablet.NotificationIconArea
+                android:id="@+id/notificationIcons"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                >
+                <view
+                    class="com.android.systemui.statusbar.tablet.NotificationIconArea$IconLayout"
+                    android:id="@+id/icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:alpha="0.8"
+                    />
+            </com.android.systemui.statusbar.tablet.NotificationIconArea>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/notificationTrigger"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/network_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="4dip"
+                android:layout_marginLeft="4dip"
+                android:gravity="center"
+                android:singleLine="true"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:textColor="#606060"
+                />
+
+            <LinearLayout
+                android:id="@+id/signal_battery_cluster"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="4dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <include layout="@layout/signal_cluster_view" 
+                    android:id="@+id/signal_cluster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <ImageView
+                    android:id="@+id/bluetooth"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="4dip"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:id="@+id/battery"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="4dip"
+                    />
+                <ImageView
+                    android:id="@+id/dock_battery"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="4dip"
+                    />
+            </LinearLayout>
+
+            <com.android.systemui.statusbar.policy.Clock
+                android:id="@+id/clock"
+                android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:paddingLeft="4dip"
+                android:layout_marginRight="4dip"
+                android:gravity="center"
+                android:visibility="gone"
                 />
         </LinearLayout>
-    </LinearLayout>
-</com.android.systemui.statusbar.tablet.NotificationArea>
+    </com.android.systemui.statusbar.tablet.NotificationArea>
+</HorizontalScrollView>
