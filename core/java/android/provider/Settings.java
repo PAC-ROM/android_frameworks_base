@@ -3111,6 +3111,12 @@ public final class Settings {
         public static final String POWER_MENU_AIRPLANE_ENABLED = "power_menu_airplane_enabled";
 
         /**
+         * Whether power menu user switcher is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_USER_ENABLED = "power_menu_user_enabled";
+
+        /**
          * Whether power menu silent mode is enabled
          * @hide
          */
@@ -3199,6 +3205,7 @@ public final class Settings {
             POWER_MENU_PROFILES_ENABLED,
             POWER_MENU_AIRPLANE_ENABLED,
             POWER_MENU_SILENT_ENABLED,
+            POWER_MENU_USER_ENABLED,
         };
 
         /**
