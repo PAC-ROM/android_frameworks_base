@@ -130,7 +130,6 @@ public final class ShutdownThread extends Thread {
             final AlertDialog dialog;
             if (mReboot && !mRebootSafeMode){
                 dialog = new AlertDialog.Builder(context)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle(com.android.internal.R.string.reboot_system)
                         .setPositiveButton(com.android.internal.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
