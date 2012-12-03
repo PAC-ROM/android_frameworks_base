@@ -265,7 +265,7 @@ public class ResolverActivity extends AlertActivity implements AdapterView.OnIte
             }
             mLastSelected = checkedPos;
         } else {
-            startSelected(position, mAlwaysButton.isChecked());
+            startSelected(position, false);
         }
     }
 
