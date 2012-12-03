@@ -93,6 +93,8 @@ public class AokpTarget {
     public final static String ACTION_TODAY = "**today**";
     public final static String ACTION_CLOCKOPTIONS = "**clockoptions**";
 	public final static String ACTION_VOICEASSIST = "**voiceassist**";
+	public final static String ACTION_TORCH = "**torch**";
+	public final static String ACTION_SEARCH = "**search**";
     public final static String ACTION_NULL = "**null**";
 
     private int mInjectKeyCode;
@@ -139,6 +141,14 @@ public class AokpTarget {
         }
         if (action.equals(ACTION_SCREENSHOT)) {
             takeScreenshot();
+            return true;
+        }
+        if (action.equals(ACTION_TORCH)) {
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
+            intent.addCategory("android.intent.category.LAUNCHER");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
             return true;
         }
         if (action.equals(ACTION_TODAY)) {
@@ -300,6 +310,8 @@ public class AokpTarget {
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_killtask);
         if (uri.equals(ACTION_POWER))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_power);
+        if (uri.equals(ACTION_SEARCH))
+            return mContext.getResources().getDrawable(R.drawable.ic_sysbar_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getDrawable(R.drawable.ic_sysbar_notifications);
         try {
@@ -329,6 +341,8 @@ public class AokpTarget {
             return mContext.getResources().getString(R.string.action_kill);
         if (uri.equals(ACTION_POWER))
             return mContext.getResources().getString(R.string.action_power);
+        if (uri.equals(ACTION_SEARCH))
+            return mContext.getResources().getString(R.string.action_search);
         if (uri.equals(ACTION_NOTIFICATIONS))
             return mContext.getResources().getString(R.string.action_notifications);
         if (uri.equals(ACTION_NULL))
