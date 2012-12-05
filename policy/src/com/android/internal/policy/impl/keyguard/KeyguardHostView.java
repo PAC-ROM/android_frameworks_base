@@ -31,6 +31,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -76,7 +77,8 @@ public class KeyguardHostView extends KeyguardViewBase {
     // Found in KeyguardAppWidgetPickActivity.java
     static final int APPWIDGET_HOST_ID = 0x4B455947;
 
-    private final int MAX_WIDGETS = 9;
+    private int MAX_WIDGETS;
+    private boolean mUnlimitedWidgets;
 
     private AppWidgetHost mAppWidgetHost;
     private AppWidgetManager mAppWidgetManager;
@@ -241,6 +243,13 @@ public class KeyguardHostView extends KeyguardViewBase {
         addDefaultWidgets();
 
         addWidgetsFromSettings();
+        mUnlimitedWidgets = Settings.System.getBoolean(getContext().getContentResolver(),
+                                  Settings.System.LOCKSCREEN_UNLIMITED_WIDGETS, false);
+        if (mUnlimitedWidgets) {
+            MAX_WIDGETS = numWidgets() + 1;
+        } else {
+            MAX_WIDGETS = 9;
+        }
         if (numWidgets() >= MAX_WIDGETS) {
             setAddWidgetEnabled(false);
         }
@@ -380,6 +389,13 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         @Override
         public void onAddView(View v) {
+            mUnlimitedWidgets = Settings.System.getBoolean(getContext().getContentResolver(),
+                                  Settings.System.LOCKSCREEN_UNLIMITED_WIDGETS, false);
+            if (mUnlimitedWidgets) {
+                MAX_WIDGETS = numWidgets() + 1;
+            } else {
+                MAX_WIDGETS = 5;
+            }
             if (numWidgets() >= MAX_WIDGETS) {
                 setAddWidgetEnabled(false);
             }
@@ -387,6 +403,13 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         @Override
         public void onRemoveView(View v) {
+            mUnlimitedWidgets = Settings.System.getBoolean(getContext().getContentResolver(),
+                                  Settings.System.LOCKSCREEN_UNLIMITED_WIDGETS, false);
+            if (mUnlimitedWidgets) {
+                MAX_WIDGETS = numWidgets() + 1;
+            } else {
+                MAX_WIDGETS = 5;
+            }
             if (numWidgets() < MAX_WIDGETS) {
                 setAddWidgetEnabled(true);
             }
