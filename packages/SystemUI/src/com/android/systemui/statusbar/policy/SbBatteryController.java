@@ -68,6 +68,8 @@ public class SbBatteryController extends LinearLayout {
     private TextView mBatteryCenterText;
     private ViewGroup mBatteryGroup;
     private TextView mBatteryTextOnly;
+    private TextView mBatteryTextOnly_Low;
+    private TextView mBatteryTextOnly_Plugged;
 
     private static int mBatteryStyle;
 
@@ -94,6 +96,8 @@ public class SbBatteryController extends LinearLayout {
         mBatteryText = (TextView) findViewById(R.id.battery_text);
         mBatteryCenterText = (TextView) findViewById(R.id.battery_text_center);
         mBatteryTextOnly = (TextView) findViewById(R.id.battery_text_only);
+        mBatteryTextOnly_Low = (TextView) findViewById(R.id.battery_text_only_low);
+        mBatteryTextOnly_Plugged = (TextView) findViewById(R.id.battery_text_only_plugged);
         addIconView(mBatteryIcon);
 
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
@@ -192,7 +196,6 @@ public class SbBatteryController extends LinearLayout {
         if (mBatteryGroup != null) {
             mBatteryText.setText(Integer.toString(mLevel));
             mBatteryCenterText.setText(Integer.toString(mLevel));
-            mBatteryTextOnly.setText(Integer.toString(mLevel));
             SpannableStringBuilder formatted = new SpannableStringBuilder(
                     Integer.toString(mLevel) + "%");
             CharacterStyle style = new RelativeSizeSpan(0.7f); // beautiful
@@ -208,13 +211,26 @@ public class SbBatteryController extends LinearLayout {
                         Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             }
             mBatteryTextOnly.setText(formatted);
-            if (mPlugged) { // colors hardcoded by now, maybe colorpicker can be
-                           // added if needed
-                mBatteryTextOnly.setTextColor(Color.GREEN);
-            } else if (mLevel < 16) {
-                mBatteryTextOnly.setTextColor(Color.RED);
+            mBatteryTextOnly_Low.setText(formatted);
+            mBatteryTextOnly_Plugged.setText(formatted);
+            if (mBatteryStyle == STYLE_TEXT_ONLY) {
+                if (mPlugged) {
+                    mBatteryTextOnly.setVisibility(View.GONE);
+                    mBatteryTextOnly_Plugged.setVisibility(View.VISIBLE);
+                    mBatteryTextOnly_Low.setVisibility(View.GONE);
+                } else if (mLevel < 16) {
+                    mBatteryTextOnly.setVisibility(View.GONE);
+                    mBatteryTextOnly_Plugged.setVisibility(View.GONE);
+                    mBatteryTextOnly_Low.setVisibility(View.VISIBLE);
+                } else {
+                    mBatteryTextOnly.setVisibility(View.VISIBLE);
+                    mBatteryTextOnly_Plugged.setVisibility(View.GONE);
+                    mBatteryTextOnly_Low.setVisibility(View.GONE);
+                }
             } else {
-                mBatteryTextOnly.setTextColor(mColorInfo.lastColor);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                mBatteryTextOnly_Plugged.setVisibility(View.GONE);
+                mBatteryTextOnly_Low.setVisibility(View.GONE);
             }
         }
     }
@@ -248,49 +264,42 @@ public class SbBatteryController extends LinearLayout {
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_TEXT_ONLY:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.GONE);
-                mBatteryTextOnly.setVisibility(View.VISIBLE);
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_ICON_TEXT:
                 mBatteryText.setVisibility(View.VISIBLE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_ICON_CENTERED_TEXT:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.VISIBLE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_HIDE:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.GONE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.GONE);
                 break;
             case STYLE_ICON_CIRCLE:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
             default:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
-                mBatteryTextOnly.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
         }
