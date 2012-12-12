@@ -32,7 +32,6 @@
         android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:background="@drawable/ic_notify_button_bg"
         android:enabled="false"
         >
         <com.android.systemui.statusbar.policy.ClockStock
