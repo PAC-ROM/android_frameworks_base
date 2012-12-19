@@ -222,7 +222,6 @@ public class ViewConfiguration {
 
     private boolean sHasPermanentMenuKey;
     private boolean sHasPermanentMenuKeySet;
-
     private Context mContext;
 
     static final SparseArray<ViewConfiguration> sConfigurations =
@@ -273,7 +272,6 @@ public class ViewConfiguration {
         }
 
         mContext = context;
-
         mEdgeSlop = (int) (sizeAndDensity * EDGE_SLOP + 0.5f);
         mFadingEdgeLength = (int) (sizeAndDensity * FADING_EDGE_LENGTH + 0.5f);
         mMinimumFlingVelocity = (int) (density * MINIMUM_FLING_VELOCITY + 0.5f);
@@ -684,10 +682,10 @@ public class ViewConfiguration {
     public boolean hasPermanentMenuKey() {
         // The action overflow button within app UI can
         // be controlled with a system setting
-        int showOverflowButton = Settings.System.getInt(
+        boolean showOverflowButton = Settings.System.getBoolean(
                 mContext.getContentResolver(),
-                Settings.System.UI_FORCE_OVERFLOW_BUTTON, 0);
-        if (showOverflowButton == 1) {
+                Settings.System.UI_FORCE_OVERFLOW_BUTTON, false);
+        if (showOverflowButton) {
             // Force overflow button on by reporting that
             // the device has no permanent menu key
             return false;
