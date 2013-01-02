@@ -266,7 +266,7 @@ public class KeyguardHostView extends KeyguardViewBase {
             mExpandChallengeView.setOnLongClickListener(mFastUnlockClickListener);
         }
 
-        minimizeChallengeIfDesired();
+        minimizeChallengeIfNeeded();
     }
 
     private final OnLongClickListener mFastUnlockClickListener = new OnLongClickListener() {
@@ -899,7 +899,15 @@ public class KeyguardHostView extends KeyguardViewBase {
         if (mViewStateManager != null) {
             mViewStateManager.showUsabilityHints();
         }
-        minimizeChallengeIfDesired();
+        minimizeChallengeIfNeeded();
+    }
+
+    private void minimizeChallengeIfNeeded() {
+        if (Settings.System.getBoolean(getContext().getContentResolver(), Settings.System.LOCKSCREEN_MINIMIZE_LOCKSCREEN_CHALLENGE, false)) {
+            if (mSlidingChallengeLayout != null) {
+                mSlidingChallengeLayout.fadeOutChallenge();
+            }
+        }
     }
 
     @Override
@@ -964,19 +972,6 @@ public class KeyguardHostView extends KeyguardViewBase {
             // otherwise, go to the unlock screen, see if they can verify it
             mIsVerifyUnlockOnly = true;
             showSecurityScreen(securityMode);
-        }
-    }
-
-    private void minimizeChallengeIfDesired() {
-        if (mSlidingChallengeLayout == null) {
-            return;
-        }
-
-        int setting = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.LOCKSCREEN_MAXIMIZE_WIDGETS, 0, UserHandle.USER_CURRENT);
-
-        if (setting == 1) {
-            mSlidingChallengeLayout.showChallenge(false);
         }
     }
 
