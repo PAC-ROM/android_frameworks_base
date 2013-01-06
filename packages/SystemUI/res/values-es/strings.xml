@@ -194,16 +194,7 @@
     <string name="quick_settings_nfc_off_label">NFC desactivado</string>
     <string name="quick_settings_sync_label">Sincronización activada</string>
     <string name="quick_settings_sync_off_label">Sincronización desactivada</string>
-    <string name="quick_settings_screen_sleep">Apagar pantalla</string>
-    <string name="quick_settings_ringer_on">Sonido activado</string>
-    <string name="quick_settings_ringer_off">Sonido desactivado</string>
-    <string name="quick_settings_vibration_on">Vibración activada</string>
-    <string name="quick_settings_vibration_off">Vibración desactivada</string>
-    <string name="quick_settings_label_enabled">Activado</string>
-    <string name="quick_settings_label_disabled">Desactivado</string>
-    <string name="quick_settings_ringer_normal">Sonido</string>
     <string name="quick_settings_network_mode">Modo de red</string>
-    <string name="quick_settings_report_bug">Reportar error</string>
     <string name="quick_settings_media_device_label" msgid="1302906836372603762">"Dispositivo multimedia"</string>
     <string name="quick_settings_rssi_label" msgid="7725671335550695589">"RSSI"</string>
     <string name="quick_settings_rssi_emergency_only" msgid="2713774041672886750">"Solo llamadas de emergencia"</string>
@@ -220,24 +211,37 @@
     <string name="quick_settings_brightness_dialog_auto_brightness_label" msgid="5064982743784071218">"AUTO"</string>
     <string name="status_bar_help_title" msgid="1199237744086469217">"Las notificaciones aparecen aquí"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"Desliza el dedo hacia abajo para acceder al contenido."\n"Vuelve a deslizar el dedo hacia abajo para acceder a los controles del sistema."</string>
-    <string name="navbar_dialog_title">Seleccionar botón a mostrar</string>
-    <string name="navbar_home_button">Botón Inicio</string>
-    <string name="navbar_recent_button">Botón Recientes</string>
-    <string name="navbar_search_button">Botón Búsqueda</string>
-    <string name="navbar_back_button">Botón Atrás</string>
-    <string name="navbar_empty_button">Sin botón</string>
-    <string name="navbar_menu_conditional_button">Botón Menú (auto ocultar)</string>
-    <string name="navbar_menu_always_button">Botón Menú (siempre visible)</string>
-    <string name="navbar_menu_big_button">Botón Menú</string>
 
     <!-- CYANOGENMOD EDITS START -->
 
+    <string name="quick_settings_screen_sleep">Bloquear</string>
+    <string name="quick_settings_ringer_on">Sonido activado</string>
+    <string name="quick_settings_ringer_off">Sonido desactivado</string>
+    <string name="quick_settings_vibration_on">Vibración activada</string>
+    <string name="quick_settings_vibration_off">Vibración desactivada</string>
+    <string name="quick_settings_label_enabled">Activado</string>
+    <string name="quick_settings_label_disabled">Desactivado</string>
+    <string name="quick_settings_ringer_normal">Sonido</string>
+    <string name="quick_settings_lockscreen">Pantalla Bloqueo</string>
+    <string name="quick_settings_network_type">Red móvil</string>
+    <string name="quick_settings_report_bug">Informar de error</string>
+    <string name="quick_settings_sync">Sincronizar</string>
+    <string name="quick_settings_torch">Linterna</string>
     <string name="accessibility_quick_settings_ringer">Sonido <xliff:g id="state" example="Apagado">%s</xliff:g>.</string>
     <string name="accessibility_quick_settings_vibration">Vibración <xliff:g id="state" example="Apagada">%s</xliff:g>.</string>
     <string name="bean_dream_settings_cid_title">Usar a CID</string>
     <string name="bean_dream_settings_cid_summary">Usar el icono CID para el salvapantallas en vez del icono Jellybean</string>
     <string name="powerwidget_screen_timeout_toast">Tiempo de pantalla establecido a: %1$d %2$s</string>
     <string name="quick_settings_gps">GPS</string>
+    <string name="navbar_dialog_title">Seleccionar botón a mostrar</string>
+    <string name="navbar_home_button">Botón Inicio</string>
+    <string name="navbar_recent_button">Botón Recientes</string>
+    <string name="navbar_search_button">Botón Búsqueda</string>
+    <string name="navbar_back_button">Botón Atrás</string>
+    <string name="navbar_empty_button">Sin botón</string>
+    <string name="navbar_menu_conditional_button">Botón Menú (auto-ocultar)</string>
+    <string name="navbar_menu_always_button">Botón Menú (siempre visible)</string>
+    <string name="navbar_menu_big_button">Botón Menú</string>
 
     <!-- CYANOGENMOD ADDITIONS END -->
 </resources>
