@@ -162,6 +162,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     public static final int KEY_MENU_LEFT = 5;
     public static final int KEY_ARROW_LEFT = 21; // pretty cute right
     public static final int KEY_ARROW_RIGHT = 22;
+    public static final int KEY_BACK_ALT = 1000;
 
 
 
@@ -267,8 +268,8 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
         mBackIcon = res.getDrawable(R.drawable.ic_sysbar_back);
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
-        mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
+        mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
+        mBackAltLandIcon = ((KeyButtonView)generateKey(true, KEY_BACK_ALT)).getDrawable(); // res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mAokpTarget = new AokpTarget(context);
         mRecentsIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
         mRecentsLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
@@ -454,6 +455,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 v.setContentDescription(r.getString(R.string.accessibility_menu));
                 v.setGlowBackground(landscape ? R.drawable.ic_sysbar_highlight_land
                         : R.drawable.ic_sysbar_highlight);
+                v.setTint(true);
                 break;
             case KEY_MENU_LEFT:
                 v = new KeyButtonView(mContext, null);
@@ -472,6 +474,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 v.setContentDescription(r.getString(R.string.accessibility_menu));
                 v.setGlowBackground(landscape ? R.drawable.ic_sysbar_highlight_land
                         : R.drawable.ic_sysbar_highlight);
+                v.setTint(true);
                 break;
             case KEY_ARROW_LEFT:
                 v = new KeyButtonView(mContext, null);
@@ -483,6 +486,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                         : R.drawable.ic_sysbar_highlight);
                 v.setVisibility(View.GONE);
                 v.setSupportsLongPress(true);
+                v.setTint(true);
                 break;
             case KEY_ARROW_RIGHT:
                 v = new KeyButtonView(mContext, null);
@@ -494,7 +498,15 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                         : R.drawable.ic_sysbar_highlight);
                 v.setVisibility(View.GONE);
                 v.setSupportsLongPress(true);
+                v.setTint(true);
                 break;
+            case KEY_BACK_ALT:
+                v = new KeyButtonView(mContext, null);
+                v.setLayoutParams(getLayoutParams(landscape, 80));
+                v.setImageResource(R.drawable.ic_sysbar_back_ime);
+                v.setGlowBackground(landscape ? R.drawable.ic_sysbar_highlight_land
+                        : R.drawable.ic_sysbar_highlight);
+                v.setTint(true);
         }
 
         return v;
