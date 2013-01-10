@@ -48,7 +48,7 @@ public class StatusBarManager {
     public static final int DISABLE_SEARCH = View.STATUS_BAR_DISABLE_SEARCH;
 
     @Deprecated
-    public static final int DISABLE_NAVIGATION = 
+    public static final int DISABLE_NAVIGATION =
             View.STATUS_BAR_DISABLE_HOME | View.STATUS_BAR_DISABLE_RECENT;
 
     public static final int DISABLE_NONE = 0x00000000;
@@ -98,7 +98,7 @@ public class StatusBarManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     /**
      * Expand the notifications panel.
      */
@@ -113,7 +113,7 @@ public class StatusBarManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     /**
      * Collapse the notifications and settings panels.
      */
@@ -174,6 +174,21 @@ public class StatusBarManager {
             final IStatusBarService svc = getService();
             if (svc != null) {
                 svc.setIconVisibility(slot, visible);
+            }
+        } catch (RemoteException ex) {
+            // system process is dead anyway.
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Expand the recents panel.
+     */
+    public void toggleRecentApps() {
+        try {
+            final IStatusBarService svc = getService();
+            if (svc != null) {
+                svc.toggleRecentApps();
             }
         } catch (RemoteException ex) {
             // system process is dead anyway.

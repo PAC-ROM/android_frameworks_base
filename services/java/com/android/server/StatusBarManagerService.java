@@ -123,7 +123,7 @@ public class StatusBarManagerService extends IStatusBarService.Stub
     // From IStatusBarService
     // ================================================================================
     public void expandNotificationsPanel() {
-        enforceExpandStatusBar();
+        //enforceExpandStatusBar();
 
         if (mBar != null) {
             try {
@@ -145,7 +145,7 @@ public class StatusBarManagerService extends IStatusBarService.Stub
     }
 
     public void expandSettingsPanel() {
-        enforceExpandStatusBar();
+        //enforceExpandStatusBar();
 
         if (mBar != null) {
             try {

@@ -36,7 +36,11 @@ import com.android.internal.widget.ActionBarContextView;
 import com.android.internal.widget.ActionBarOverlayLayout;
 import com.android.internal.widget.ActionBarView;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.KeyguardManager;
+import android.app.StatusBarManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -49,10 +53,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.ActivityNotFoundException;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -75,6 +80,7 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
@@ -108,6 +114,7 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.R;
@@ -145,15 +152,15 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     private ViewGroup mContentParent;
 
     SurfaceHolder.Callback2 mTakeSurfaceCallback;
-    
+
     InputQueue.Callback mTakeInputQueueCallback;
-    
+
     private boolean mIsFloating;
 
     private LayoutInflater mLayoutInflater;
 
     private TextView mTitleView;
-    
+
     private ActionBarView mActionBar;
     private ActionMenuPresenterCallback mActionMenuPresenterCallback;
     private PanelMenuPresenterCallback mPanelMenuPresenterCallback;
@@ -208,36 +215,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
     private AudioManager mAudioManager;
     private KeyguardManager mKeyguardManager;
-
-    private final class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.ENABLE_STYLUS_GESTURES), false,
-                    this);
-            checkGestures();
-        }
-
-        void unobserve() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.unregisterContentObserver(this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            checkGestures();
-        }
-
-        void checkGestures() {
-            mEnableGestures = Settings.System.getInt(
-                    mContext.getContentResolver(),
-                    Settings.System.ENABLE_STYLUS_GESTURES, 0) == 1;
-        }
-    }
 
     private int mUiOptions = 0;
 
@@ -364,11 +341,11 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     public void takeSurface(SurfaceHolder.Callback2 callback) {
         mTakeSurfaceCallback = callback;
     }
-    
+
     public void takeInputQueue(InputQueue.Callback callback) {
         mTakeInputQueueCallback = callback;
     }
-    
+
     @Override
     public boolean isFloating() {
         return mIsFloating;
@@ -421,7 +398,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         if (st.isPrepared) {
             return true;
         }
-        
+
         if ((mPreparedPanel != null) && (mPreparedPanel != st)) {
             // Another Panel is prepared and possibly open, so close it
             closePanel(mPreparedPanel, false);
@@ -474,7 +451,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
                     return false;
                 }
-                
+
                 st.refreshMenuContent = false;
             }
 
@@ -566,7 +543,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
         // Causes the decor view to be recreated
         st.refreshDecorView = true;
-        
+
         st.clearMenuPresenters();
     }
 
@@ -698,7 +675,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
 
         lp.windowAnimations = st.windowAnimations;
-        
+
         wm.addView(st.decorView, lp);
         // Log.v(TAG, "Adding main menu to window manager.");
     }
@@ -818,7 +795,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
         st.refreshMenuContent = true;
         st.refreshDecorView = true;
-        
+
         // Prepare the options panel if we have an action bar
         if ((featureId == FEATURE_ACTION_BAR || featureId == FEATURE_OPTIONS_PANEL)
                 && mActionBar != null) {
@@ -829,7 +806,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             }
         }
     }
-    
+
     /**
      * Called when the panel key is pushed down.
      * @param featureId The feature ID of the relevant panel (defaults to FEATURE_OPTIONS_PANEL}.
@@ -838,7 +815,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
      */
     public final boolean onKeyDownPanel(int featureId, KeyEvent event) {
         final int keyCode = event.getKeyCode();
-        
+
         if (event.getRepeatCount() == 0) {
             // The panel key was pushed, so set the chording key
             mPanelChordingKey = keyCode;
@@ -865,7 +842,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             if (event.isCanceled() || (mDecor != null && mDecor.mActionMode != null)) {
                 return;
             }
-            
+
             boolean playSoundEffect = false;
             final PanelFeatureState st = getPanelState(featureId, true);
             if (featureId == FEATURE_OPTIONS_PANEL && mActionBar != null &&
@@ -1507,7 +1484,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 mDecor != null ? mDecor.getKeyDispatcherState() : null;
         //Log.i(TAG, "Key down: repeat=" + event.getRepeatCount()
         //        + " flags=0x" + Integer.toHexString(event.getFlags()));
-        
+
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
@@ -1569,7 +1546,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
         //Log.i(TAG, "Key up: repeat=" + event.getRepeatCount()
         //        + " flags=0x" + Integer.toHexString(event.getFlags()));
-        
+
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
@@ -1880,10 +1857,190 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
         private SettingsObserver mSettingsObserver;
 
+        private int mGestureOne;
+        private int mGestureTwo;
+        private int mGestureThree;
+        private int mGestureFour;
+
+        private int mGestureTypeOne;
+        private int mGestureTypeTwo;
+        private int mGestureTypeThree;
+        private int mGestureTypeFour;
+
+        private boolean mGestureCapture;
+        private int mGestureDistance;
+
+        private String mBlacklist;
+        private boolean mBlacklisted;
+
+        private float mZoneOne[];
+        private float mZoneTwo[];
+        private float mZoneThree[];
+        private float mZoneFour[];
+
+        private boolean mGestureOneStarted = false;
+        private boolean mGestureTwoStarted = false;
+        private boolean mGestureThreeStarted = false;
+        private boolean mGestureFourStarted = false;
+
+        private long mGestureOneTime;
+        private long mGestureTwoTime;
+        private long mGestureThreeTime;
+        private long mGestureFourTime;
+
+        private boolean mShowGestures = false;
+
+        private StatusBarManager mSbm;
+
+        private ActivityManager mActivityManager;
+
+        private boolean mEnableGestures;
+
+        private int mScreenWidth = 1;
+        private int mScreenHeight = -1;
+
         public DecorView(Context context, int featureId) {
             super(context);
             mFeatureId = featureId;
-            mSettingsObserver = new SettingsObserver(new Handler());
+            mSettingsObserver = new SettingsObserver();
+
+            mActivityManager =
+                    (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+            mZoneOne = new float[4];
+            mZoneTwo = new float[4];
+            mZoneThree = new float[4];
+            mZoneFour = new float[4];
+
+            updateGestureSettings();
+        }
+
+        private class SettingsObserver extends ContentObserver {
+
+            SettingsObserver() {
+                super(new Handler());
+            }
+
+            public void observe() {
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_STYLUS_GESTURES), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_ONE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_TWO), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_THREE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_FOUR), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_TYPE_ONE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_TYPE_TWO), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_TYPE_THREE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_TYPE_FOUR), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.TOUCH_ZONE_ONE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.TOUCH_ZONE_TWO), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.TOUCH_ZONE_THREE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.TOUCH_ZONE_FOUR), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_SWIPE_CAPTURE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_SWIPE_DISTANCE), false, this);
+                getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_GESTURES), false, this);
+                checkGestures();
+            }
+
+            public void unobserve() {
+                getContext().getContentResolver().unregisterContentObserver(this);
+            }
+
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                updateGestureSettings();
+                checkGestures();
+            }
+
+            void checkGestures() {
+                mEnableGestures = Settings.System.getInt(
+                        mContext.getContentResolver(),
+                        Settings.System.ENABLE_STYLUS_GESTURES, 0) == 1;
+            }
+        }
+
+        void updateGestureSettings() {
+            ContentResolver resolver = getContext().getContentResolver();
+
+            mGestureOne = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_ONE, 0);
+            mGestureTwo = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_TWO, 0);
+            mGestureThree = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_THREE, 0);
+            mGestureFour = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_FOUR, 0);
+            mGestureTypeOne = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_TYPE_ONE, 0);
+            mGestureTypeTwo = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_TYPE_TWO, 0);
+            mGestureTypeThree = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_TYPE_THREE, 0);
+            mGestureTypeFour = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_TYPE_FOUR, 0);
+            mGestureCapture = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_SWIPE_CAPTURE, 0) == 1;
+            mGestureDistance = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_SWIPE_DISTANCE, 0);
+
+            mBlacklist = Settings.System.getString(resolver,
+                    Settings.System.GESTURE_BLACKLIST);
+
+            String one = Settings.System.getString(resolver,
+                    Settings.System.TOUCH_ZONE_ONE);
+            if (one == null) one = "0|6|0|100";
+            String two = Settings.System.getString(resolver,
+                    Settings.System.TOUCH_ZONE_TWO);
+            if (two == null) two = "0|100|0|6";
+            String three = Settings.System.getString(resolver,
+                    Settings.System.TOUCH_ZONE_THREE);
+            if (three == null) three = "94|100|0|100";
+            String four = Settings.System.getString(resolver,
+                    Settings.System.TOUCH_ZONE_FOUR);
+            if (four == null) four = "0|100|94|100";
+
+            String zoneOne[] = one.split("\\|");
+            String zoneTwo[] = two.split("\\|");
+            String zoneThree[] = three.split("\\|");
+            String zoneFour[] = four.split("\\|");
+            for (int i = 0; i < 4; i++) {
+                mZoneOne[i] = Float.parseFloat(zoneOne[i]) / 100f;
+                mZoneTwo[i] = Float.parseFloat(zoneTwo[i]) / 100f;
+                mZoneThree[i] = Float.parseFloat(zoneThree[i]) / 100f;
+                mZoneFour[i] = Float.parseFloat(zoneFour[i]) / 100f;
+            }
+
+            mShowGestures = Settings.System.getInt(resolver,
+                    Settings.System.SHOW_GESTURES, 0) == 1;
+
+            invalidate();
+        }
+
+        private void updateScreenSize() {
+            WindowManager wm = getWindowManager();
+            if (wm != null) {
+                Display display = wm.getDefaultDisplay();
+                Point size = new Point();
+                display.getRealSize(size);
+                mScreenWidth = size.x;
+                mScreenHeight = size.y;
+            }
         }
 
         @Override
@@ -2255,9 +2412,195 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                     || y > (getHeight() + 5);
         }
 
+        private void performGesture(int index, int gestureNumber) {
+            if (mSbm == null) {
+                mSbm = (StatusBarManager)
+                        mContext.getSystemService(Context.STATUS_BAR_SERVICE);
+            }
+            switch (index) {
+                case 1:
+                    mSbm.expandNotificationsPanel();
+                    break;
+                case 2:
+                    boolean hidden = Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+                    Settings.System.putInt(mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE, hidden ? 0 : 1);
+                    break;
+                case 3:
+                    mSbm.expandSettingsPanel();
+                    break;
+                case 4:
+                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                    break;
+                case 5:
+                    Intent intent = new Intent("android.intent.action.MAIN");
+                    intent.addCategory("android.intent.category.HOME");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                    break;
+                case 6:
+                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU));
+                    dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU));
+                    break;
+                case 7:
+                    String shortcut = new String();
+                    switch (gestureNumber) {
+                        case 1:
+                            shortcut = Settings.System.GESTURE_APP_ONE;
+                            break;
+                        case 2:
+                            shortcut = Settings.System.GESTURE_APP_TWO;
+                            break;
+                        case 3:
+                            shortcut = Settings.System.GESTURE_APP_THREE;
+                            break;
+                        case 4:
+                            shortcut = Settings.System.GESTURE_APP_FOUR;
+                            break;
+                    }
+
+                    String shortcutUri = Settings.System.getString(mContext.getContentResolver(), shortcut);
+
+                    try {
+                        Intent launchIntent = Intent.parseUri(shortcutUri, 0);
+                        launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(launchIntent);
+                    } catch (Exception e) {
+                    }
+                    break;
+                case 8:
+                    mSbm.toggleRecentApps();
+                    break;
+            }
+        }
+
+        public boolean gestureStartedInZone(float x, float y, float[] zone) {
+            float width = (float) getWidth();
+            float height = (float) getHeight();
+
+            return x >= (zone[0] * width)
+                    && x <= (zone[1] * width)
+                    && y >= (zone[2] * height)
+                    && y <= (zone[3] * height);
+        }
+
+        public boolean gestureEndedInZone(float x, float y, float[] zone) {
+            float width = (float) getWidth();
+            float height = (float) getHeight();
+
+             return (x <= ((zone[0] * width) - mGestureDistance)
+                    || x >= ((zone[1] * width) + mGestureDistance)
+                    || y <= ((zone[2] * height) - mGestureDistance)
+                    || y >= ((zone[3] * height) + mGestureDistance));
+        }
+
+        public void checkGestureStarted(float x, float y, long time) {
+            if (mGestureOne > 0 && gestureStartedInZone(x, y, mZoneOne)) {
+                mGestureOneTime = time;
+                mGestureOneStarted = true;
+                mGestureTwoStarted = false;
+                mGestureThreeStarted = false;
+                mGestureFourStarted = false;
+            } else if (mGestureTwo > 0 && gestureStartedInZone(x, y, mZoneTwo)) {
+                mGestureTwoTime = time;
+                mGestureTwoStarted = true;
+                mGestureOneStarted = false;
+                mGestureThreeStarted = false;
+                mGestureFourStarted = false;
+            } else if (mGestureThree > 0 && gestureStartedInZone(x, y, mZoneThree)) {
+                mGestureThreeTime = time;
+                mGestureThreeStarted = true;
+                mGestureOneStarted = false;
+                mGestureTwoStarted = false;
+                mGestureFourStarted = false;
+            } else if (mGestureFour > 0 && gestureStartedInZone(x, y, mZoneFour)) {
+                mGestureFourTime = time;
+                mGestureFourStarted = true;
+                mGestureOneStarted = false;
+                mGestureTwoStarted = false;
+                mGestureThreeStarted = false;
+            } else {
+                mGestureOneStarted = false;
+                mGestureTwoStarted = false;
+                mGestureThreeStarted = false;
+                mGestureFourStarted = false;
+            }
+        }
+
         @Override
         public boolean onInterceptTouchEvent(MotionEvent event) {
             int action = event.getAction();
+
+            if (mScreenWidth == -1 || mScreenHeight == -1) updateScreenSize();
+
+            boolean mainPanel = getWidth() == mScreenWidth || getWidth() == mScreenHeight;
+
+            if (mainPanel && mFeatureId == -1 && !mBlacklisted &&
+                    mGestureOne + mGestureTwo + mGestureThree + mGestureFour > 0) {
+                float x = event.getX();
+                float y = event.getY();
+                long time = event.getEventTime();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    checkGestureStarted(x, y, time);
+                } else if (action == MotionEvent.ACTION_UP) {
+                    boolean handled = false;
+                    if (mGestureOneStarted &&
+                            ((mGestureTypeOne == 2 && gestureEndedInZone(x, y, mZoneOne)) ||
+                            mGestureTypeOne == 0 ||
+                            (mGestureTypeOne == 1 && (time - mGestureOneTime)
+                            > 500 && (time - mGestureOneTime) < 1500))) {
+                        performGesture(mGestureOne, 1);
+                        handled = true;
+                    } else if (mGestureTwoStarted &&
+                            ((mGestureTypeTwo == 2 && gestureEndedInZone(x, y, mZoneTwo)) ||
+                            mGestureTypeTwo == 0 ||
+                            (mGestureTypeTwo == 1 && (time - mGestureTwoTime)
+                            > 500 && (time - mGestureTwoTime) < 1500))) {
+                        performGesture(mGestureTwo, 2);
+                        handled = true;
+                    } else if (mGestureThreeStarted &&
+                            ((mGestureTypeThree == 2 && gestureEndedInZone(x, y, mZoneThree)) ||
+                            mGestureTypeThree == 0 ||
+                            (mGestureTypeThree == 1 && (time - mGestureThreeTime)
+                            > 500 && (time - mGestureThreeTime) < 1500))) {
+                        performGesture(mGestureThree, 3);
+                        handled = true;
+                    } else if (mGestureFourStarted &&
+                            ((mGestureTypeFour == 2 && gestureEndedInZone(x, y, mZoneFour)) ||
+                            mGestureTypeFour == 0 ||
+                            (mGestureTypeFour == 1 && (time - mGestureFourTime)
+                            > 500 && (time - mGestureFourTime) < 1500))) {
+                        performGesture(mGestureFour, 4);
+                        handled = true;
+                    }
+                    mGestureOneStarted = false;
+                    mGestureTwoStarted = false;
+                    mGestureThreeStarted = false;
+                    mGestureFourStarted = false;
+
+                    if (handled) return true;
+                } else if (action == MotionEvent.ACTION_MOVE) {
+                    if (mGestureOneStarted || mGestureTwoStarted ||
+                            mGestureThreeStarted || mGestureFourStarted) {
+                        if (mGestureCapture) return true;
+                    } else {
+                        checkGestureStarted(x, y, time);
+                        if (mGestureOneStarted || mGestureTwoStarted ||
+                                mGestureThreeStarted || mGestureFourStarted) {
+                            if (mGestureCapture) return true;
+                        } else {
+                            mGestureOneStarted = false;
+                            mGestureTwoStarted = false;
+                            mGestureThreeStarted = false;
+                            mGestureFourStarted = false;
+                        }
+                    }
+                }
+            }
+
             if (mFeatureId >= 0) {
                 if (action == MotionEvent.ACTION_DOWN) {
                     int x = (int)event.getX();
@@ -2337,7 +2680,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             if (!AccessibilityManager.getInstance(mContext).isEnabled()) {
                 return;
             }
- 
+
             // if we are showing a feature that should be announced and one child
             // make this child the event source since this is the feature itself
             // otherwise the callback will take over and announce its client
@@ -2497,6 +2840,56 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             if (mMenuBackground != null) {
                 mMenuBackground.draw(canvas);
             }
+
+            boolean mainPanel = getWidth() == mScreenWidth || getWidth() == mScreenHeight;
+
+            if (mainPanel && mFeatureId == -1 && mShowGestures) {
+                Paint paint = new Paint();
+                paint.setColor(0x80F3F3F3);
+                paint.setStrokeWidth(0);
+
+                float width = (float) getWidth();
+                float height = (float) getHeight();
+
+                if (mGestureOne > 0) {
+                    canvas.drawRect(mZoneOne[0] * width,
+                            mZoneOne[2] * height,
+                            mZoneOne[1] * width,
+                            mZoneOne[3] * height,
+                            paint);
+                }
+
+                paint.setColor(0x80FF0033);
+
+                if (mGestureTwo > 0) {
+                    canvas.drawRect(mZoneTwo[0] * width,
+                            mZoneTwo[2] * height,
+                            mZoneTwo[1] * width,
+                            mZoneTwo[3] * height,
+                            paint);
+                }
+
+                paint.setColor(0x80006600);
+
+                if (mGestureThree > 0) {
+                    canvas.drawRect(mZoneThree[0] * width,
+                            mZoneThree[2] * height,
+                            mZoneThree[1] * width,
+                            mZoneThree[3] * height,
+                            paint);
+                }
+
+                paint.setColor(0x803366FF);
+
+                if (mGestureFour > 0) {
+                    canvas.drawRect(mZoneFour[0] * width,
+                            mZoneFour[2] * height,
+                            mZoneFour[1] * width,
+                            mZoneFour[3] * height,
+                            paint);
+                }
+            }
+
         }
 
 
@@ -2739,15 +3132,15 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             hackTurnOffWindowResizeAnim(bg == null || bg.getOpacity()
                     != PixelFormat.OPAQUE);
         }
-        
+
         @Override
         protected void onAttachedToWindow() {
             super.onAttachedToWindow();
-            
+
             mSettingsObserver.observe();
 
             updateWindowResizeState();
-            
+
             final Callback cb = getCallback();
             if (cb != null && !isDestroyed() && mFeatureId < 0) {
                 cb.onAttachedToWindow();
@@ -2763,12 +3156,21 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                  */
                 openPanelsAfterRestore();
             }
+
+            if (mBlacklist != null) {
+                List<RunningAppProcessInfo> appProcesses = mActivityManager.getRunningAppProcesses();
+                for (RunningAppProcessInfo appProcess : appProcesses) {
+                    if (appProcess.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        if (mBlacklist.contains(appProcess.processName)) mBlacklisted = true;
+                    }
+                }
+            }
         }
 
         @Override
         protected void onDetachedFromWindow() {
             super.onDetachedFromWindow();
-            
+
             mSettingsObserver.unobserve();
 
             final Callback cb = getCallback();
@@ -2804,19 +3206,19 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         public android.view.SurfaceHolder.Callback2 willYouTakeTheSurface() {
             return mFeatureId < 0 ? mTakeSurfaceCallback : null;
         }
-        
+
         public InputQueue.Callback willYouTakeTheInputQueue() {
             return mFeatureId < 0 ? mTakeInputQueueCallback : null;
         }
-        
+
         public void setSurfaceType(int type) {
             PhoneWindow.this.setType(type);
         }
-        
+
         public void setSurfaceFormat(int format) {
             PhoneWindow.this.setFormat(format);
         }
-        
+
         public void setSurfaceKeepScreenOn(boolean keepOn) {
             if (keepOn) PhoneWindow.this.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             else PhoneWindow.this.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -2980,7 +3382,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         } else {
             clearFlags(WindowManager.LayoutParams.FLAG_NEEDS_MENU_KEY);
         }
-        
+
         if (mAlwaysReadCloseOnTouchAttr || getContext().getApplicationInfo().targetSdkVersion
                 >= android.os.Build.VERSION_CODES.HONEYCOMB) {
             if (a.getBoolean(
@@ -2989,7 +3391,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 setCloseOnTouchOutsideIfNotSet(true);
             }
         }
-        
+
         WindowManager.LayoutParams params = getAttributes();
 
         if (!hasSoftInputMode()) {
@@ -3602,11 +4004,11 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         boolean refreshDecorView;
 
         boolean refreshMenuContent;
-        
+
         boolean wasLastOpen;
-        
+
         boolean wasLastExpanded;
-        
+
         /**
          * Contains the state of the menu when told to freeze.
          */
