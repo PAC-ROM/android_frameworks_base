@@ -62,13 +62,14 @@ import android.widget.LinearLayout;
 import java.math.BigInteger;
 
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.systemui.aokp.AokpTarget;
 import com.android.systemui.R;
+import com.android.systemui.aokp.AwesomeAction;
 import com.android.systemui.recent.RecentsActivity.NavigationCallback;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
 import com.android.systemui.statusbar.policy.KeyButtonView;
-import com.android.systemui.statusbar.policy.ExtensibleKeyButtonView;
+import com.android.systemui.statusbar.policy.key.ExtensibleKeyButtonView;
+import com.android.systemui.statusbar.policy.key.RecentsKeyButtonView;
 
 public class NavigationBarView extends LinearLayout implements NavigationCallback {
     final static boolean DEBUG = false;
@@ -100,8 +101,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     
     public DelegateViewHelper mDelegateHelper;
 
-    private AokpTarget mAokpTarget;
-
     private Canvas mCurrentCanvas;
     private Canvas mNewCanvas;
     private TransitionDrawable mTransition;
@@ -128,21 +127,21 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     public final static int StockButtonsQty = 3;
     public final static String[] StockClickActions = {
-        AokpTarget.ACTION_BACK,
-        AokpTarget.ACTION_HOME,
-        AokpTarget.ACTION_RECENTS,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL };
+        AwesomeAction.ACTION_BACK,
+        AwesomeAction.ACTION_HOME,
+        AwesomeAction.ACTION_RECENTS,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL };
     public final static String[] StockLongpress = {
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL,
-        AokpTarget.ACTION_NULL };
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL,
+        AwesomeAction.ACTION_NULL };
 
     FrameLayout rot0;
     FrameLayout rot90;
@@ -270,7 +269,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = ((KeyButtonView)generateKey(true, KEY_BACK_ALT)).getDrawable(); // res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mAokpTarget = new AokpTarget(context);
         mRecentsIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
         mRecentsLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
         mRecentsAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
@@ -354,7 +352,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                         mLongpressActions[j],
                         mPortraitIcons[j]);
                 v.setTag((landscape ? "key_land_" : "key_") + j);
-                v.setAokpTarget(mAokpTarget);
+//                v.setAokpTarget(mAokpTarget);
                 iconUri = mPortraitIcons[j];
                 if (iconUri != null && iconUri.length() > 0) {
                     // custom icon from the URI here
@@ -364,7 +362,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                     }
                     v.setTint(false);
                 } else {
-                    v.setImageDrawable(mAokpTarget.getIconImage(mClickActions[j]));
+                    v.setImageDrawable(AwesomeAction.getInstance(mContext).getIconImage(mClickActions[j]));
                     v.setTint(mClickActions[j].startsWith("**"));
                 }
                 addButton(navButtonLayout, v, landscape && !mLeftyMode);
@@ -517,8 +515,13 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             String iconUri) {
 
         final int iconSize = 80;
-        ExtensibleKeyButtonView v = new ExtensibleKeyButtonView(mContext, null, clickAction,
+        ExtensibleKeyButtonView v = null;
+        if(AwesomeAction.ACTION_RECENTS.equals(clickAction)) {
+            v = new RecentsKeyButtonView(mContext, null, clickAction, longpress);
+        } else {
+            v = new ExtensibleKeyButtonView(mContext, null, clickAction,
                 longpress);
+        }
         v.setLayoutParams(getLayoutParams(landscape, iconSize));
         v.setGlowBackground(landscape ? R.drawable.ic_sysbar_highlight_land
                 : R.drawable.ic_sysbar_highlight);

@@ -75,7 +75,6 @@ public class KeyButtonView extends ImageView {
     protected boolean mHandlingLongpress = false;
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
-    Context mContext;
 
     private ColorUtils.ColorSettingInfo mLastButtonColor;
     private ColorUtils.ColorSettingInfo mLastGlowColor;
