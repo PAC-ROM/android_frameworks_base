@@ -72,6 +72,7 @@ import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
+import com.android.systemui.quicksettings.QuietHoursTile;
 import com.android.systemui.quicksettings.RingerModeTile;
 import com.android.systemui.quicksettings.ScreenTimeoutTile;
 import com.android.systemui.quicksettings.SleepScreenTile;
@@ -86,6 +87,9 @@ import com.android.systemui.quicksettings.WiFiDisplayTile;
 import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.DesktopModeTile;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -178,6 +182,8 @@ public class QuickSettingsController {
                 qs = new MobileNetworkTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_LOCKSCREEN)) {
                 qs = new ToggleLockscreenTile(mContext, inflater, mContainerView, this);
+            } else if (tile.equals(TILE_NETWORKMODE) && telephonySupported) {
+                qs = new MobileNetworkTypeTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_AUTOROTATE)) {
                 qs = new AutoRotateTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_AIRPLANE)) {
