@@ -280,8 +280,6 @@
   <java-symbol type="bool" name="config_speed_up_audio_on_mt_calls" />
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
   <java-symbol type="bool" name="config_samsung_stk" />
-  
-  <java-symbol type="array" name="config_telephony_set_audioparameters" />
 
   <java-symbol type="integer" name="config_cursorWindowSize" />
   <java-symbol type="integer" name="config_longPressOnPowerBehavior" />
@@ -898,6 +896,7 @@
   <java-symbol type="array" name="special_locale_names" />
   <java-symbol type="array" name="config_masterVolumeRamp" />
   <java-symbol type="array" name="config_cdma_dun_supported_types" />
+  <java-symbol type="array" name="config_telephony_set_audioparameters" />
 
   <java-symbol type="drawable" name="default_wallpaper" />
   <java-symbol type="drawable" name="indicator_input_error" />
