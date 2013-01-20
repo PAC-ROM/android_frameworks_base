@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
- 
+
 package com.android.server.power;
 
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
+import android.app.PacBusyDialog;
 import android.app.Dialog;
 import android.app.IActivityManager;
 import android.app.ProgressDialog;
@@ -60,11 +61,11 @@ public final class ShutdownThread extends Thread {
 
     // length of vibration before shutting down
     private static final int SHUTDOWN_VIBRATE_MS = 500;
-    
+
     // state tracking
     private static Object sIsStartedGuard = new Object();
     private static boolean sIsStarted = false;
-    
+
     private static boolean mReboot;
     private static boolean mRebootSafeMode;
     private static String mRebootReason;
@@ -77,7 +78,7 @@ public final class ShutdownThread extends Thread {
 
     // static instance of this thread
     private static final ShutdownThread sInstance = new ShutdownThread();
-    
+
     private final Object mActionDoneSync = new Object();
     private boolean mActionDone;
     private Context mContext;
@@ -87,10 +88,10 @@ public final class ShutdownThread extends Thread {
     private Handler mHandler;
 
     private static AlertDialog sConfirmDialog;
-    
+
     private ShutdownThread() {
     }
- 
+
     /**
      * Request a clean shutdown, waiting for subsystems to clean up their
      * state etc.  Must be called from a Looper thread in which its UI
@@ -240,15 +241,18 @@ public final class ShutdownThread extends Thread {
 
         // throw up an indeterminate system dialog to indicate radio is
         // shutting down.
-        ProgressDialog pd = new ProgressDialog(context);
+        PacBusyDialog pd = new PacBusyDialog(context, android.R.style.Theme_Translucent_NoTitleBar);
         pd.setTitle(context.getText(mReboot ? com.android.internal.R.string.reboot_system :
                 com.android.internal.R.string.power_off));
         pd.setMessage(context.getText(mReboot ? com.android.internal.R.string.reboot_progress :
                 com.android.internal.R.string.shutdown_progress));
-        pd.setIndeterminate(true);
-        pd.setCancelable(false);
+        //pd.setIndeterminate(true);
         pd.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-
+        pd.getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_DIM_BEHIND
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        pd.getWindow().setDimAmount(1);
+        pd.setCancelable(false);
         pd.show();
 
         sInstance.mContext = context;
@@ -324,14 +328,14 @@ public final class ShutdownThread extends Thread {
         }
 
         Log.i(TAG, "Sending shutdown broadcast...");
-        
+
         // First send the high-level shut down broadcast.
         mActionDone = false;
         Intent intent = new Intent(Intent.ACTION_SHUTDOWN);
         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         mContext.sendOrderedBroadcastAsUser(intent,
                 UserHandle.ALL, null, br, mHandler, 0, null, null);
-        
+
         final long endTime = SystemClock.elapsedRealtime() + MAX_BROADCAST_TIME;
         synchronized (mActionDoneSync) {
             while (!mActionDone) {
@@ -346,9 +350,9 @@ public final class ShutdownThread extends Thread {
                 }
             }
         }
-        
+
         Log.i(TAG, "Shutting down activity manager...");
-        
+
         final IActivityManager am =
             ActivityManagerNative.asInterface(ServiceManager.checkService("activity"));
         if (am != null) {
