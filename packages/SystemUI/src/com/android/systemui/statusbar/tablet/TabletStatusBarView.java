@@ -1,36 +1,45 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2010 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.statusbar.tablet;
 
-import com.android.systemui.R;
+//import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
-import com.android.systemui.statusbar.DelegateViewHelper;
-
+//import com.android.systemui.statusbar.DelegateViewHelper;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Slog;
 import android.view.View;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+
+import java.math.BigInteger;
 
 public class TabletStatusBarView extends FrameLayout {
     private Handler mHandler;
@@ -39,7 +48,7 @@ public class TabletStatusBarView extends FrameLayout {
     private final View[] mIgnoreChildren = new View[MAX_PANELS];
     private final View[] mPanels = new View[MAX_PANELS];
     private final int[] mPos = new int[2];
-    private DelegateViewHelper mDelegateHelper;
+//    private DelegateViewHelper mDelegateHelper;
 
     public TabletStatusBarView(Context context) {
         this(context, null);
@@ -47,37 +56,41 @@ public class TabletStatusBarView extends FrameLayout {
 
     public TabletStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDelegateHelper = new DelegateViewHelper(this);
+//        mDelegateHelper = new DelegateViewHelper(this);
+
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false,
-                new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateColor();
-                    }
-                });
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(false);
+                }});
     }
 
     public void setDelegateView(View view) {
-        mDelegateHelper.setDelegateView(view);
+//        mDelegateHelper.setDelegateView(view);
     }
 
     public void setBar(BaseStatusBar phoneStatusBar) {
-        mDelegateHelper.setBar(phoneStatusBar);
+//        mDelegateHelper.setBar(phoneStatusBar);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mDelegateHelper != null) {
+/*        if (mDelegateHelper != null) {
             mDelegateHelper.onInterceptTouchEvent(event);
-        }
+        }*/
         return true;
+    }
+
+    @Override
+    public void onFinishInflate() {
+        updateColor(true);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        // Find the view we wish to grab events from in order to detect search gesture.
+/*        // Find the view we wish to grab events from in order to detect search gesture.
         // Depending on the device, this will be one of the id's listed below.
         // If we don't find one, we'll use the view provided in the constructor above (this view).
         View view = findViewById(R.id.navigationArea);
@@ -85,8 +98,7 @@ public class TabletStatusBarView extends FrameLayout {
             view = findViewById(R.id.nav_buttons);
         }
         mDelegateHelper.setSourceView(view);
-        mDelegateHelper.setInitialTouchRegion(view);
-        updateColor();
+        mDelegateHelper.setInitialTouchRegion(view);*/
     }
 
     @Override
@@ -121,9 +133,9 @@ public class TabletStatusBarView extends FrameLayout {
         if (TabletStatusBar.DEBUG) {
             Slog.d(TabletStatusBar.TAG, "TabletStatusBarView not intercepting event");
         }
-        if (mDelegateHelper != null && mDelegateHelper.onInterceptTouchEvent(ev)) {
+/*        if (mDelegateHelper != null && mDelegateHelper.onInterceptTouchEvent(ev)) {
             return true;
-        }
+        }*/
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -148,20 +160,39 @@ public class TabletStatusBarView extends FrameLayout {
     }
 
     /**
-     * Let the status bar know that if you tap on ignore while panel is showing, don't do anything.
-     *
-     * Debounces taps on, say, a popup's trigger when the popup is already showing.
-     */
+* Let the status bar know that if you tap on ignore while panel is showing, don't do anything.
+*
+* Debounces taps on, say, a popup's trigger when the popup is already showing.
+*/
     public void setIgnoreChildren(int index, View ignore, View panel) {
         mIgnoreChildren[index] = ignore;
         mPanels[index] = panel;
     }
 
-    private void updateColor() {
-        int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR, 0xFF000000);
-        float alpha = Color.alpha(color);
-        this.setBackground(new ColorDrawable(color));
-        this.setAlpha(alpha);
+    private void updateColor(boolean defaults) {
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+
+        if (defaults) {
+            cnv.drawColor(0xFF000000);
+            setBackground(new BitmapDrawable(bm));
+            return;
+        }
+
+        String setting = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR);
+        String[] colors = (setting == null || setting.equals("")  ?
+                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : setting).split(
+                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String currentColor = colors[Integer.parseInt(colors[2])];
+
+        cnv.drawColor(new BigInteger(currentColor, 16).intValue());
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+                getBackground(), new BitmapDrawable(bm)});
+        transition.setCrossFadeEnabled(true);
+        setBackground(transition);
+        transition.startTransition(1000);
     }
 }

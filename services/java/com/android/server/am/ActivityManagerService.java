@@ -8475,19 +8475,20 @@ public final class ActivityManagerService extends ActivityManagerNative
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
         } else if (adj >= ProcessList.SERVICE_B_ADJ) {
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE;
-        } else if (adj >= ProcessList.HOME_APP_ADJ) {
-            if (currApp != null) {
-                currApp.lru = 0;
-            }
-            return ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
         } else if (adj >= ProcessList.SERVICE_ADJ) {
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE;
         } else if (adj >= ProcessList.HEAVY_WEIGHT_APP_ADJ) {
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_CANT_SAVE_STATE;
-        } else if (adj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
-            return ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE;
         } else if (adj >= ProcessList.VISIBLE_APP_ADJ) {
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
+        } else if (adj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
+            return ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE;
+        } else if (adj >= ProcessList.HOME_APP_ADJ) {
+            if (currApp != null) {
+                currApp.lru = 0;
+            }
+//            return ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
+            return ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         } else {
             return ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         }
@@ -8871,7 +8872,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 TaskRecord tr = mRecentTasks.get(i);
                 if (dumpPackage != null) {
                     if (tr.realActivity == null ||
-                            !dumpPackage.equals(tr.realActivity)) {
+                            !dumpPackage.equals(tr.realActivity.getPackageName())) {
                         continue;
                     }
                 }
@@ -10045,20 +10046,20 @@ public final class ActivityManagerService extends ActivityManagerNative
                 oomAdj = buildOomTag("bak", "  ", r.setAdj, ProcessList.HIDDEN_APP_MIN_ADJ);
             } else if (r.setAdj >= ProcessList.SERVICE_B_ADJ) {
                 oomAdj = buildOomTag("svcb ", null, r.setAdj, ProcessList.SERVICE_B_ADJ);
-            } else if (r.setAdj >= ProcessList.PREVIOUS_APP_ADJ) {
-                oomAdj = buildOomTag("prev ", null, r.setAdj, ProcessList.PREVIOUS_APP_ADJ);
-            } else if (r.setAdj >= ProcessList.HOME_APP_ADJ) {
-                oomAdj = buildOomTag("home ", null, r.setAdj, ProcessList.HOME_APP_ADJ);
-            } else if (r.setAdj >= ProcessList.SERVICE_ADJ) {
-                oomAdj = buildOomTag("svc  ", null, r.setAdj, ProcessList.SERVICE_ADJ);
             } else if (r.setAdj >= ProcessList.BACKUP_APP_ADJ) {
                 oomAdj = buildOomTag("bkup ", null, r.setAdj, ProcessList.BACKUP_APP_ADJ);
+            } else if (r.setAdj >= ProcessList.SERVICE_ADJ) {
+                oomAdj = buildOomTag("svc  ", null, r.setAdj, ProcessList.SERVICE_ADJ);
+            } else if (r.setAdj >= ProcessList.PREVIOUS_APP_ADJ) {
+                oomAdj = buildOomTag("prev ", null, r.setAdj, ProcessList.PREVIOUS_APP_ADJ);
             } else if (r.setAdj >= ProcessList.HEAVY_WEIGHT_APP_ADJ) {
                 oomAdj = buildOomTag("hvy  ", null, r.setAdj, ProcessList.HEAVY_WEIGHT_APP_ADJ);
-            } else if (r.setAdj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
-                oomAdj = buildOomTag("prcp ", null, r.setAdj, ProcessList.PERCEPTIBLE_APP_ADJ);
             } else if (r.setAdj >= ProcessList.VISIBLE_APP_ADJ) {
                 oomAdj = buildOomTag("vis  ", null, r.setAdj, ProcessList.VISIBLE_APP_ADJ);
+            } else if (r.setAdj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
+                oomAdj = buildOomTag("prcp ", null, r.setAdj, ProcessList.PERCEPTIBLE_APP_ADJ);
+            } else if (r.setAdj >= ProcessList.HOME_APP_ADJ) {
+                oomAdj = buildOomTag("home ", null, r.setAdj, ProcessList.HOME_APP_ADJ);
             } else if (r.setAdj >= ProcessList.FOREGROUND_APP_ADJ) {
                 oomAdj = buildOomTag("fore ", null, r.setAdj, ProcessList.FOREGROUND_APP_ADJ);
             } else if (r.setAdj >= ProcessList.PERSISTENT_PROC_ADJ) {
@@ -11882,7 +11883,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 // r.record is null if findServiceLocked() failed the caller permission check
                 if (r.record == null) {
                     throw new SecurityException(
-                            "Permission Denial: Accessing service " + r.record.name
+                            "Permission Denial: Accessing service"
                             + " from pid=" + Binder.getCallingPid()
                             + ", uid=" + Binder.getCallingUid()
                             + " requires " + r.permission);
@@ -14299,10 +14300,10 @@ public final class ActivityManagerService extends ActivityManagerNative
             // we will skip some of them.
             if (adj < ProcessList.FOREGROUND_APP_ADJ) {
                 // System process will not get dropped, ever
-            } else if (adj < ProcessList.VISIBLE_APP_ADJ) {
-                adj = ProcessList.VISIBLE_APP_ADJ;
             } else if (adj < ProcessList.PERCEPTIBLE_APP_ADJ) {
                 adj = ProcessList.PERCEPTIBLE_APP_ADJ;
+            } else if (adj < ProcessList.VISIBLE_APP_ADJ) {
+                adj = ProcessList.VISIBLE_APP_ADJ;
             } else if (adj < ProcessList.HIDDEN_APP_MIN_ADJ) {
                 adj = ProcessList.HIDDEN_APP_MIN_ADJ;
             } else if (adj < ProcessList.HIDDEN_APP_MAX_ADJ) {
@@ -14323,16 +14324,17 @@ public final class ActivityManagerService extends ActivityManagerNative
                 importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
             } else if (adj >= ProcessList.SERVICE_B_ADJ) {
                 importance =  ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE;
-            } else if (adj >= ProcessList.HOME_APP_ADJ) {
-                importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
             } else if (adj >= ProcessList.SERVICE_ADJ) {
                 importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE;
             } else if (adj >= ProcessList.HEAVY_WEIGHT_APP_ADJ) {
                 importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_CANT_SAVE_STATE;
-            } else if (adj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
-                importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE;
             } else if (adj >= ProcessList.VISIBLE_APP_ADJ) {
                 importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
+            } else if (adj >= ProcessList.PERCEPTIBLE_APP_ADJ) {
+                importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE;
+            } else if (adj >= ProcessList.HOME_APP_ADJ) {
+//                importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
+                importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
             } else if (adj >= ProcessList.FOREGROUND_APP_ADJ) {
                 importance = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
             } else {

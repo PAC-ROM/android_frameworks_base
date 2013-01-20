@@ -40,16 +40,16 @@
   <java-symbol type="id" name="action_menu_presenter" />
   <java-symbol type="id" name="action_mode_close_button" />
   <java-symbol type="id" name="activity_chooser_view_content" />
-  <java-symbol type="id" name="albumart" />
+  <!-- <java-symbol type="id" name="albumart" /> -->
   <java-symbol type="id" name="alertTitle" />
   <java-symbol type="id" name="allow_button" />
   <java-symbol type="id" name="alwaysUse" />
   <java-symbol type="id" name="amPm" />
   <java-symbol type="id" name="authtoken_type" />
   <java-symbol type="id" name="back_button" />
-  <java-symbol type="id" name="btn_next" />
+  <!-- <java-symbol type="id" name="btn_next" />
   <java-symbol type="id" name="btn_play" />
-  <java-symbol type="id" name="btn_prev" />
+  <java-symbol type="id" name="btn_prev" /> -->
   <java-symbol type="id" name="button_bar" />
   <java-symbol type="id" name="buttonPanel" />
   <java-symbol type="id" name="by_common" />
@@ -69,6 +69,10 @@
   <java-symbol type="id" name="deny_button" />
   <java-symbol type="id" name="description" />
   <java-symbol type="id" name="divider" />
+  <java-symbol type="id" name="color_picker_view" />
+  <java-symbol type="id" name="old_color_panel" />
+  <java-symbol type="id" name="new_color_panel" />
+  <java-symbol type="id" name="hex" />
   <java-symbol type="id" name="edit_query" />
   <java-symbol type="id" name="edittext_container" />
   <java-symbol type="id" name="enter_pin_section" />
@@ -264,6 +268,7 @@
   <java-symbol type="bool" name="config_useMasterVolume" />
   <java-symbol type="bool" name="config_enableWallpaperService" />
   <java-symbol type="bool" name="config_sendAudioBecomingNoisy" />
+<!--  <java-symbol type="bool" name="config_show_cmIMESwitcher"/>  -->
   <java-symbol type="bool" name="config_enableScreenshotChord" />
   <java-symbol type="bool" name="config_bluetooth_default_profiles" />
   <java-symbol type="bool" name="config_wifiApFirmwareReload" />
@@ -446,6 +451,10 @@
   <java-symbol type="string" name="date_time" />
   <java-symbol type="string" name="date_time_set" />
   <java-symbol type="string" name="date_time_done" />
+  <java-symbol type="string" name="color_picker" />
+  <java-symbol type="string" name="color_picker_hint" />
+  <java-symbol type="string" name="color_picker_hex" />
+  <java-symbol type="string" name="color_picker_arrow_right" />
   <java-symbol type="string" name="day_of_week_long_friday" />
   <java-symbol type="string" name="day_of_week_long_monday" />
   <java-symbol type="string" name="day_of_week_long_saturday" />
@@ -1021,6 +1030,9 @@
   <java-symbol type="drawable" name="unlock_wave" />
   <java-symbol type="drawable" name="ic_lockscreen_camera" />
   <java-symbol type="drawable" name="ic_lockscreen_silent" />
+  <java-symbol type="drawable" name="ic_lockscreen_soundon" />
+  <java-symbol type="drawable" name="ic_lockscreen_vib" />
+  <java-symbol type="drawable" name="ic_lockscreen_home" />
   <java-symbol type="drawable" name="ic_lockscreen_unlock" />
   <java-symbol type="drawable" name="ic_lockscreen_camera" />
   <java-symbol type="drawable" name="ic_action_assist_generic" />
@@ -1215,6 +1227,7 @@
   <java-symbol type="bool" name="config_carDockEnablesAccelerometer" />
   <java-symbol type="bool" name="config_deskDockEnablesAccelerometer" />
   <java-symbol type="bool" name="config_disableMenuKeyInLockScreen" />
+  <java-symbol type="bool" name="config_disableHomeUnlockSetting" />
   <java-symbol type="bool" name="config_enableLockBeforeUnlockScreen" />
   <java-symbol type="bool" name="config_enableLockScreenRotation" />
   <java-symbol type="bool" name="config_lidControlsSleep" />
@@ -1225,6 +1238,7 @@
   <java-symbol type="dimen" name="navigation_bar_height_landscape" />
   <java-symbol type="dimen" name="navigation_bar_width" />
   <java-symbol type="dimen" name="status_bar_height" />
+  <java-symbol type="dimen" name="status_bar_height_phablet" />
   <java-symbol type="dimen" name="lockscreen_target_inset" />
   <java-symbol type="drawable" name="ic_jog_dial_sound_off" />
   <java-symbol type="drawable" name="ic_jog_dial_sound_on" />
@@ -1257,7 +1271,7 @@
   <java-symbol type="id" name="button7" />
   <java-symbol type="id" name="carrier" />
   <java-symbol type="id" name="date" />
-  <java-symbol type="id" name="date_line" />
+<!--  <java-symbol type="id" name="date_line" />  -->
   <java-symbol type="id" name="eight" />
   <java-symbol type="id" name="emergencyCallButton" />
   <java-symbol type="id" name="faceLockAreaView" />
@@ -1319,6 +1333,8 @@
   <java-symbol type="layout" name="keyguard_screen_sim_puk_portrait" />
   <java-symbol type="layout" name="keyguard_screen_tab_unlock" />
   <java-symbol type="layout" name="keyguard_screen_tab_unlock_land" />
+  <java-symbol type="layout" name="keyguard_screen_tab_octounlock" />
+  <java-symbol type="layout" name="keyguard_screen_tab_octounlock_land" />
   <java-symbol type="layout" name="keyguard_screen_unlock_landscape" />
   <java-symbol type="layout" name="keyguard_screen_unlock_portrait" />
   <java-symbol type="layout" name="recent_apps_dialog" />
@@ -1564,9 +1580,11 @@
   <java-symbol type="string" name="enable_explore_by_touch_warning_message" />
 
   <java-symbol type="layout" name="resolver_grid" />
+  <java-symbol type="layout" name="resolver_grid_alt" />
   <java-symbol type="id" name="resolver_grid" />
   <java-symbol type="id" name="button_once" />
   <java-symbol type="id" name="button_always" />
+  <java-symbol type="id" name="checkbox_always" />
   <java-symbol type="integer" name="config_maxResolverActivityColumns" />
 
   <!-- From SystemUI -->
@@ -1621,7 +1639,7 @@
   <java-symbol type="raw" name="fallbackring" />
 
   <!-- From KeyguardStatusViewManager -->
-  <java-symbol type="dimen" name="keyguard_lockscreen_status_line_font_right_margin" />
+<!--  <java-symbol type="dimen" name="keyguard_lockscreen_status_line_font_right_margin" /> -->
 
   <!-- From Settings -->
   <java-symbol type="array" name="config_mobile_hotspot_provision_app" />
@@ -3174,6 +3192,9 @@
      a ListView). -->
   <public type="layout" name="simple_list_item_activated_2" id="0x01090017" />
 
+  <!-- Simple color dialog layout. -->
+  <public type="layout" name="dialog_color_picker" id="0x01090018" />
+
   <public type="drawable" name="dialog_holo_dark_frame" id="0x010800b2" />
   <public type="drawable" name="dialog_holo_light_frame" id="0x010800b3" />
 
@@ -3648,6 +3669,7 @@
   <public type="color" name="holo_orange_dark" id="0x01060019" />
   <public type="color" name="holo_purple" id="0x0106001a" />
   <public type="color" name="holo_blue_bright" id="0x0106001b" />
+  <public type="color" name="holo_white_light" id="0x0106001c" />
 
 <!-- ===============================================================
    Resources added in version 16 of the platform (Jelly Bean)
@@ -3691,6 +3713,8 @@
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="integer" name="config_wallpaperMaxWidth" />
 
+  <java-symbol type="bool" name="config_isTegra3" />
+
   <!-- Notification and battery light -->
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
@@ -3700,9 +3724,9 @@
   <java-symbol type="string" name="global_action_screenshot" />
   <java-symbol type="string" name="global_action_choose_profile" />
   <java-symbol type="string" name="global_action_reboot" />
-  <java-symbol type="string" name="global_actions_expanded_desktop" />
-  <java-symbol type="string" name="global_actions_expanded_desktop_off_status" />
-  <java-symbol type="string" name="global_actions_expanded_desktop_on_status" />
+  <java-symbol type="string" name="global_actions_toggle_expanded_desktop_mode" />
+  <java-symbol type="string" name="global_actions_expanded_desktop_mode_off_status" />
+  <java-symbol type="string" name="global_actions_expanded_desktop_mode_on_status" />
   <java-symbol type="string" name="global_actions" />
   <java-symbol type="string" name="reboot_system" />
   <java-symbol type="string" name="reboot_progress" />
@@ -3837,6 +3861,68 @@
   <java-symbol type="id" name="update_time" />
   <java-symbol type="id" name="weather_temps_panel" />
 
+  <!-- Weather AOKP -->
+  <java-symbol type="drawable" name="weather_aokp_na" />
+  <java-symbol type="drawable" name="weather_aokp_0" />
+  <java-symbol type="drawable" name="weather_aokp_1" />
+  <java-symbol type="drawable" name="weather_aokp_2" />
+  <java-symbol type="drawable" name="weather_aokp_3" />
+  <java-symbol type="drawable" name="weather_aokp_4" />
+  <java-symbol type="drawable" name="weather_aokp_5" />
+  <java-symbol type="drawable" name="weather_aokp_6" />
+  <java-symbol type="drawable" name="weather_aokp_7" />
+  <java-symbol type="drawable" name="weather_aokp_8" />
+  <java-symbol type="drawable" name="weather_aokp_9" />
+  <java-symbol type="drawable" name="weather_aokp_10" />
+  <java-symbol type="drawable" name="weather_aokp_11" />
+  <java-symbol type="drawable" name="weather_aokp_12" />
+  <java-symbol type="drawable" name="weather_aokp_13" />
+  <java-symbol type="drawable" name="weather_aokp_14" />
+  <java-symbol type="drawable" name="weather_aokp_15" />
+  <java-symbol type="drawable" name="weather_aokp_16" />
+  <java-symbol type="drawable" name="weather_aokp_17" />
+  <java-symbol type="drawable" name="weather_aokp_18" />
+  <java-symbol type="drawable" name="weather_aokp_19" />
+  <java-symbol type="drawable" name="weather_aokp_20" />
+  <java-symbol type="drawable" name="weather_aokp_21" />
+  <java-symbol type="drawable" name="weather_aokp_22" />
+  <java-symbol type="drawable" name="weather_aokp_23" />
+  <java-symbol type="drawable" name="weather_aokp_24" />
+  <java-symbol type="drawable" name="weather_aokp_25" />
+  <java-symbol type="drawable" name="weather_aokp_26" />
+  <java-symbol type="drawable" name="weather_aokp_27" />
+  <java-symbol type="drawable" name="weather_aokp_28" />
+  <java-symbol type="drawable" name="weather_aokp_29" />
+  <java-symbol type="drawable" name="weather_aokp_30" />
+  <java-symbol type="drawable" name="weather_aokp_31" />
+  <java-symbol type="drawable" name="weather_aokp_32" />
+  <java-symbol type="drawable" name="weather_aokp_33" />
+  <java-symbol type="drawable" name="weather_aokp_34" />
+  <java-symbol type="drawable" name="weather_aokp_35" />
+  <java-symbol type="drawable" name="weather_aokp_36" />
+  <java-symbol type="drawable" name="weather_aokp_37" />
+  <java-symbol type="drawable" name="weather_aokp_38" />
+  <java-symbol type="drawable" name="weather_aokp_39" />
+  <java-symbol type="drawable" name="weather_aokp_40" />
+  <java-symbol type="drawable" name="weather_aokp_41" />
+  <java-symbol type="drawable" name="weather_aokp_42" />
+  <java-symbol type="drawable" name="weather_aokp_43" />
+  <java-symbol type="drawable" name="weather_aokp_44" />
+  <java-symbol type="drawable" name="weather_aokp_45" />
+  <java-symbol type="drawable" name="weather_aokp_46" />
+  <java-symbol type="drawable" name="weather_aokp_47" />
+  <java-symbol type="id" name="city" />
+  <java-symbol type="id" name="condition" />
+  <java-symbol type="id" name="condition_image" />
+  <java-symbol type="id" name="current_temp" />
+  <java-symbol type="id" name="high_temp" />
+  <java-symbol type="id" name="humidity" />
+  <java-symbol type="id" name="low_temp" />
+  <java-symbol type="id" name="weather" />
+  <java-symbol type="id" name="weatherpanel" />
+  <java-symbol type="id" name="weatherpanel_slash" />
+  <java-symbol type="id" name="winds" />
+
   <!-- Lock screen calendar -->
   <java-symbol type="drawable" name="ic_lock_idle_calendar" />
   <java-symbol type="id" name="calendar_panel" />
@@ -3933,4 +4019,76 @@
   <!-- HW rotation lock -->
   <java-symbol type="string" name="toast_rotation_unlocked" />
   <java-symbol type="string" name="toast_rotation_locked" />
+
+  <!-- IME Picker showing upon pressing Sym Key -->
+  <java-symbol type="bool" name="config_symKeyShowsImePicker" />
+
+  <!-- Stylus gestures -->
+  <java-symbol type="bool" name="config_stylusGestures" />
+
+  <!-- AOKP lockscreen -->
+  <java-symbol type="id" name="screen_info" />
+
+  <!-- Calendar -->
+  <java-symbol type="id" name="calendar" />
+  <java-symbol type="id" name="event_title" />
+  <java-symbol type="id" name="event_details" />
+  <java-symbol type="layout" name="calendar_entry" />
+  <java-symbol type="string" name="lockscreen_calendar_tomorrow" />
+
+  <!-- Always show battery status on lockscreen -->
+  <java-symbol type="string" name="lockscreen_always_battery" />
+  <java-symbol type="string" name="lockscreen_always_low_battery" />
+
+  <!-- Weather -->
+  <public type="string" name="weatherpanel_slash" />
+  <public type="string" name="update_weather" />
+  <public type="drawable" name="weather_condition" />
+
+  <!-- Hide Navbar -->
+  <java-symbol type="layout" name="global_actions_navbar_mode" />
+  <java-symbol type="id" name="navbartoggle" />
+  <java-symbol type="id" name="navbarhome" />
+  <java-symbol type="id" name="navbarback" />
+  <java-symbol type="id" name="navbarmenu" />
+
+  <!-- Power Menu -->
+  <java-symbol type="drawable" name="ic_lock_screenshot" />
+  <java-symbol type="string" name="global_action_screenshot" />
+
+  <!-- Lockscreen Music Layout -->
+  <java-symbol type="id" name="album_aokp" />
+  <java-symbol type="id" name="albumart_aokp" />
+  <java-symbol type="id" name="albumart_stock" />
+  <java-symbol type="id" name="artist_aokp" />
+  <java-symbol type="id" name="btn_next_aokp" />
+  <java-symbol type="id" name="btn_next_stock" />
+  <java-symbol type="id" name="btn_play_aokp" />
+  <java-symbol type="id" name="btn_play_stock" />
+  <java-symbol type="id" name="btn_prev_aokp" />
+  <java-symbol type="id" name="btn_prev_stock" />
+  <java-symbol type="id" name="layout_aokp" />
+  <java-symbol type="id" name="layout_stock" />
+  <java-symbol type="id" name="title_aokp" />
+  <java-symbol type="id" name="title_stock" />
+
+  <!-- Custom Vibrations -->
+  <java-symbol type="string" name="vibration_picker_title"/>
+  <java-symbol type="string" name="vibration_picker_del_title"/>
+  <java-symbol type="layout" name="vibration_picker_dialog"/>
+
+  <!-- Alt lockscreen -->
+  <java-symbol type="layout" name="keyguard_screen_info_circles" />
+  <java-symbol type="layout" name="keyguard_screen_tab_unlock_circles" />
+  <java-symbol type="layout" name="keyguard_screen_tab_unlock_circles_land" />
+  <java-symbol type="layout" name="keyguard_transport_control_circles" />
+  <java-symbol type="drawable" name="unlock_halo_circles" />
+  <java-symbol type="drawable" name="unlock_ring_circles" />
+  <java-symbol type="drawable" name="unlock_wave_circles" />
+  <java-symbol type="id" name="ampm" />
+  <java-symbol type="id" name="sep" />
+  <java-symbol type="id" name="time_alt" />
+  <java-symbol type="id" name="timeDisplayHours" />
+  <java-symbol type="id" name="timeDisplayMinutes" />
+
 </resources>

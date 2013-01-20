@@ -316,13 +316,14 @@
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     
     <!-- label for item that screenshots in phone options dialog -->
-    <string name="global_action_screenshot">Screenshot</string>
+<!--2    <string name="global_action_screenshot">Screenshot</string> -->
 
-    <string name="global_actions_expanded_desktop">Expanded desktop</string>
+    <!-- label for item that toggles expand desktop mode -->
+    <string name="global_actions_toggle_expanded_desktop_mode">Expanded desktop</string>
     <!-- status message in phone options dialog for when expand desktop mode is on -->
-    <string name="global_actions_expanded_desktop_on_status">Expanded desktop is ON</string>
+    <string name="global_actions_expanded_desktop_mode_on_status">Enabled</string>
     <!-- status message in phone options dialog for when expand desktop mode is off -->
-    <string name="global_actions_expanded_desktop_off_status">Expanded desktop is OFF</string>
+    <string name="global_actions_expanded_desktop_mode_off_status">Disabled</string>
 
     <!-- Button to reboot the phone, within the Reboot Options dialog -->
     <string name="reboot_reboot">Reboot</string>
@@ -419,6 +420,12 @@
 
     <!-- status message in phone options dialog for when airplane mode is off -->
     <string name="global_actions_airplane_mode_off_status">Airplane mode is OFF</string>
+
+    <!-- label for item that screenshots in phone options dialog -->
+    <string name="global_action_screenshot">Screenshot</string>
+
+    <!-- label for item that toggles NavBar Hide -->
+    <string name="global_actions_toggle_navbar_hide">Navigation Bar Controls</string>
 
     <!-- Text to use when the number in a notification info is too large
          (greater than status_bar_notification_info_maxnum, defined in
@@ -2002,6 +2009,10 @@
     <!-- When the lock screen is showing and the battery is low, warn user to plug
          in the phone soon and show current percentage. -->
     <string name="lockscreen_low_battery">Connect your charger, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
+    <!-- AOKP -->
+    <!-- Showing the Battery % while not plugged in. -->
+    <string name="lockscreen_always_battery">Discharging, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
+    <string name="lockscreen_always_low_battery">Connect your charger, <xliff:g id="number">%d</xliff:g><xliff:g id="percent">%%</xliff:g></string>
 
     <!-- Shown in the lock screen when there is no SIM card. -->
     <string name="lockscreen_missing_sim_message_short">No SIM card.</string>
@@ -3017,6 +3028,12 @@
     <!-- Name of the button in the date/time picker to accept the date/time change -->
     <string name="date_time_done">Done</string>
 
+    <!-- Color picker dialog strings -->
+    <string name="color_picker">Color picker</string>
+    <string name="color_picker_hint">Press on color to apply</string>
+    <string name="color_picker_hex">Hex:</string>
+    <string name="color_picker_arrow_right" translatable="false">→</string>
+
     <!-- Security Permissions strings (old)-->
     <!-- The default permission group for any permissions that have not explicitly set a group. -->
     <string name="default_permission_group">Default</string>
@@ -3780,4 +3797,16 @@
     <!-- Hardware Rotation lock string -->
     <string name="toast_rotation_unlocked">Display Rotation Unlocked</string>
     <string name="toast_rotation_locked">Display Rotation Locked</string>
+
+    <!-- Lockscreen calendar string -->
+    <string name="lockscreen_calendar_tomorrow">Tomorrow</string>
+
+    <!-- Lockscreen weather slash string -->
+    <string name="weatherpanel_slash">/</string>
+    <string name="update_weather">Updating weather</string>
+
+    <!-- Vibration picker dialog title -->
+    <string name="vibration_picker_title">Select vibration</string>
+    <string name="vibration_picker_del_title">Delete vibration</string>
+
 </resources>

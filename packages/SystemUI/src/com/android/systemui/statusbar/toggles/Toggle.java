@@ -16,16 +16,20 @@
 
 package com.android.systemui.statusbar.toggles;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.Vibrator;
 import android.provider.Settings;
-import android.view.SoundEffectConstants;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -38,11 +42,9 @@ import com.android.systemui.R;
 /**
  * TODO: Listen for changes to the setting.
  */
-public abstract class Toggle implements OnCheckedChangeListener {
+public abstract class Toggle implements OnCheckedChangeListener, OnClickListener {
 
     protected static final String TAG = "Toggle";
-
-    private static final int VIBRATE_DURATION = 10; // 10 ms, not intrusive time
 
     View mView;
     protected Context mContext;
@@ -51,82 +53,108 @@ public abstract class Toggle implements OnCheckedChangeListener {
     protected ImageView mIcon;
     protected TextView mText;
     protected CompoundButton mToggle;
-
-    protected Vibrator mVibrator;
+    protected ImageView mBackground;
 
     protected boolean mSystemChange = false;
-    final int mLayout;
-    final int defaultColor;
-    final int defaultOffColor;
+    final boolean useAltButtonLayout;
+    protected int enabledColor;
+    protected int disabledColor;
+    protected int textColor;
+    protected float toggleAlpha;
+    protected float toggleBgAlpha;
+
+    // haptic feedback for toggle press
+    protected boolean hapticEnabled;
+    protected boolean hapticTogglesEnabled;
+    protected Vibrator vib;
 
     public Toggle(Context context) {
         mContext = context;
 
-        mLayout = Settings.System.getInt(
+        vib = (Vibrator) mContext.getSystemService(mContext.VIBRATOR_SERVICE);
+
+        hapticEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.HAPTIC_FEEDBACK_ENABLED, false);
+
+        hapticTogglesEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.HAPTIC_FEEDBACK_TOGGLES_ENABLED, false);
+
+        useAltButtonLayout = Settings.System.getInt(
                 context.getContentResolver(),
-                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, TogglesView.LAYOUT_TOGGLE);
+                Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS, 1) == 1;
 
-        defaultColor = context.getResources().getColor(
-            com.android.internal.R.color.holo_blue_light);
+        textColor = Settings.System.getInt(
+                context.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_TEXT_COLOR, 0xFF33B5E5);
 
-        float[] hsv = new float[3];
-        Color.colorToHSV(defaultColor, hsv);
-        hsv[2] *= 0.5f;
-        defaultOffColor = Color.HSVToColor(hsv);
+        int enabledColorValue = Settings.System.getInt(
+                context.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_ENABLED_COLOR, 0xFF33B5E5);
 
-        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        int disabledColorValue = Settings.System.getInt(
+                context.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_DISABLED_COLOR, 0xFF4C4C4C);
 
-        switch (mLayout) {
-            case TogglesView.LAYOUT_SWITCH:
-                mView = View.inflate(mContext, R.layout.toggle_switch, null);
-                break;
-            case TogglesView.LAYOUT_TOGGLE:
-            case TogglesView.LAYOUT_BUTTON:
-                mView = View.inflate(mContext, R.layout.toggle_toggle, null);
-                break;
-            case TogglesView.LAYOUT_MULTIROW:
-                mView = View.inflate(mContext, R.layout.toggle_multirow, null);
-                break;
-        }
+        toggleAlpha = Settings.System.getFloat(
+                context.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_ALPHA, 0.7f);
+
+        toggleBgAlpha = Settings.System.getFloat(
+                context.getContentResolver(),
+                Settings.System.STATUSBAR_TOGGLES_BACKGROUND, 0.0f);
+
+        float[] enabledHsv = new float[3];
+        float[] disabledHsv = new float[3];
+        Color.colorToHSV(enabledColorValue, enabledHsv);
+        Color.colorToHSV(disabledColorValue, disabledHsv);
+        enabledHsv[2] *= 1.0f;
+        disabledHsv[2] *= 1.0f;
+        enabledColor = Color.HSVToColor(enabledHsv);
+        disabledColor = Color.HSVToColor(disabledHsv);
+
+
+        mView = View.inflate(mContext,
+                useAltButtonLayout ? R.layout.toggle_button : R.layout.toggle,
+                null);
 
         mIcon = (ImageView) mView.findViewById(R.id.icon);
         mToggle = (CompoundButton) mView.findViewById(R.id.toggle);
         mText = (TextView) mView.findViewById(R.id.label);
+        mBackground = (ImageView) mView.findViewById(R.id.toggle_background);
 
         mToggle.setOnCheckedChangeListener(this);
+        mToggle.setOnClickListener(this);
+
         mToggle.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (onLongPress()) {
                     collapseStatusBar();
                     return true;
-                } else {
+                } else
                     return false;
-                }
             }
         });
+
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
     }
 
     public void updateDrawable(boolean toggle) {
-        Drawable bg = null;
-        switch(mLayout){
-            case TogglesView.LAYOUT_TOGGLE:
-                bg = mContext.getResources().getDrawable(
-                        R.drawable.btn_toggle_small);
-                break;
-            case TogglesView.LAYOUT_BUTTON:
-                bg = mContext.getResources().getDrawable(
-                        R.drawable.btn_toggle_fit);
-                break;
-            default:
-                return;
-        }
+        Drawable toggleBg = mContext.getResources().getDrawable(R.drawable.toggle_background);
+        toggleBg.setAlpha((int) (toggleBgAlpha * 255));
+        mBackground.setBackgroundDrawable(toggleBg);
+        mText.setTextColor(textColor);
+        if (!useAltButtonLayout)
+            return;
 
-        if (toggle) {
-            bg.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
-        } else {
-            bg.setColorFilter(defaultOffColor, PorterDuff.Mode.SRC_ATOP);
-        }
+        Drawable bg = mContext.getResources().getDrawable(
+                toggle ? R.drawable.btn_on : R.drawable.btn_off);
+        if (toggle)
+            bg.setColorFilter(enabledColor, PorterDuff.Mode.SRC_ATOP);
+        else
+            bg.setColorFilter(disabledColor, PorterDuff.Mode.SRC_ATOP);
+        bg.setAlpha((int) (toggleAlpha * 255));
         mToggle.setBackgroundDrawable(bg);
     }
 
@@ -168,12 +196,17 @@ public abstract class Toggle implements OnCheckedChangeListener {
     @Override
     public final void onCheckedChanged(CompoundButton buttonView,
             boolean isChecked) {
-        if (mSystemChange) return;
-
-        mView.playSoundEffect(SoundEffectConstants.CLICK);
-        mVibrator.vibrate(VIBRATE_DURATION);
-
+        if (mSystemChange) {
+            return;
+        }
         onCheckChanged(isChecked);
+    }
+
+    @Override
+    public final void onClick(View v) {
+        if(hapticEnabled == true && hapticTogglesEnabled == true && vib != null) {
+            vib.vibrate(10);
+        }
     }
 
     public View getView() {
@@ -202,5 +235,36 @@ public abstract class Toggle implements OnCheckedChangeListener {
     }
 
     protected void onStatusbarExpanded() {
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HAPTIC_FEEDBACK_ENABLED), false, this);
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HAPTIC_FEEDBACK_TOGGLES_ENABLED), false, this);
+
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    protected void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        hapticEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+            Settings.System.HAPTIC_FEEDBACK_ENABLED, false);
+
+        hapticTogglesEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+            Settings.System.HAPTIC_FEEDBACK_TOGGLES_ENABLED, false);
     }
 }

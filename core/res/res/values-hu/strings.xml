@@ -166,6 +166,13 @@
     <!-- label for item that screenshots in phone options dialog -->
     <string name="global_action_screenshot">Képernyőmentés</string>
 
+    <!-- label for item that toggles expand desktop mode -->
+    <string name="global_actions_toggle_expanded_desktop_mode">Kiterjesztett képernyő</string>
+    <!-- status message in phone options dialog for when expand desktop mode is on -->
+    <string name="global_actions_expanded_desktop_mode_on_status">Engedélyezve</string>
+    <!-- status message in phone options dialog for when expand desktop mode is off -->
+    <string name="global_actions_expanded_desktop_mode_off_status">Letiltva</string>
+
     <!-- Button to reboot the phone, within the Reboot Options dialog -->
     <string name="reboot_reboot">Újraindítás</string>
     <!-- Button to reboot the phone into recovery, within the Reboot Options dialog -->
@@ -1029,7 +1036,7 @@
     <string name="smv_process" msgid="5120397012047462446">"<xliff:g id="PROCESS">%1$s</xliff:g> folyamat megsértette az általa kényszerített Szigorú üzemmód irányelvet."</string>
     <string name="android_upgrading_title" msgid="1584192285441405746">"Android frissítése folyamatban..."</string>
     <string name="android_upgrading_apk" msgid="7904042682111526169">"Alkalmazás optimalizálása: <xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="NUMBER_1">%2$d</xliff:g>."</string>
-    <string name="android_upgrading_starting_apps" msgid="451464516346926713">"Kezdő alkalmazások."</string>
+    <string name="android_upgrading_starting_apps" msgid="451464516346926713">"Alkalmazások indítása."</string>
     <string name="android_upgrading_complete" msgid="1405954754112999229">"Rendszerindítás befejezése."</string>
     <string name="heavy_weight_notification" msgid="9087063985776626166">"<xliff:g id="APP">%1$s</xliff:g> fut"</string>
     <string name="heavy_weight_notification_detail" msgid="1721681741617898865">"Érintse meg az alkalmazásra váltáshoz"</string>

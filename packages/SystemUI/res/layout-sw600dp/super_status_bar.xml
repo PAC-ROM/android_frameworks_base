@@ -28,7 +28,7 @@
 
     <include layout="@layout/status_bar"
         android:layout_width="match_parent"
-        android:layout_height="@*android:dimen/status_bar_height"
+        android:layout_height="@*android:dimen/status_bar_height_phablet"
         />
 
     <include layout="@layout/status_bar_expanded"

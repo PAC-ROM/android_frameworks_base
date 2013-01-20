@@ -16,15 +16,31 @@
 
 package com.android.systemui.statusbar.policy;
 
+import android.app.ActivityManagerNative;
+import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
+import android.content.ActivityNotFoundException;
+import android.provider.Settings;
+import android.os.Handler;
+import android.os.RemoteException;
+import android.speech.RecognizerIntent;
 import android.text.TextUtils.TruncateAt;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,8 +48,9 @@ import android.widget.TextView;
 import com.android.systemui.R;
 
 import java.util.Date;
+import java.net.URISyntaxException;
 
-public final class DateView extends LinearLayout {
+public final class DateView extends LinearLayout implements OnClickListener, OnLongClickListener {
     private static final String TAG = "DateView";
 
     private TextView mDoW;
@@ -42,6 +59,17 @@ public final class DateView extends LinearLayout {
     private boolean mAttachedToWindow;
     private boolean mWindowVisible;
     private boolean mUpdating;
+
+    private Intent intent;
+
+    final static String ACTION_EVENT = "**event**";
+    final static String ACTION_ALARM = "**alarm**";
+    final static String ACTION_TODAY = "**today**";
+    final static String ACTION_VOICEASSIST = "**assist**";
+    final static String ACTION_NOTHING = "**nothing**";
+
+    private String mShortClick;
+    private String mLongClick;
 
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -95,6 +123,22 @@ public final class DateView extends LinearLayout {
         // Add the TextViews
         addView(positionDoW == 0 ? mDoW : mDate);
         addView(positionDate != 0 ? mDate : mDoW);
+
+//         if(isClickable()){
+            setOnClickListener(this);
+            setOnLongClickListener(this);
+
+            SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+            settingsObserver.observe();
+            updateSettings();
+            if (mShortClick == null || mShortClick == "") {
+            mShortClick = "**nothing**";
+            }
+            if (mLongClick == null || mLongClick == "") {
+            mLongClick = "**nothing**";
+            }
+//        }
+
     }
 
     @Override
@@ -180,4 +224,122 @@ public final class DateView extends LinearLayout {
             }
         }
     }
+
+    @Override
+    public void onClick(View v) {
+
+        StatusBarManager statusBarManager = (StatusBarManager) getContext().getSystemService(Context.STATUS_BAR_SERVICE);
+        if (mShortClick.equals(ACTION_NOTHING)) {
+            return;
+        } else {
+            try {
+                ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (mShortClick.equals(ACTION_TODAY)) {
+                 // A date-time specified in milliseconds since the epoch.
+                 long startMillis = System.currentTimeMillis();
+                 Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+                 builder.appendPath("time");
+                 ContentUris.appendId(builder, startMillis);
+                 intent = new Intent(Intent.ACTION_VIEW)
+                      .setData(builder.build());
+            } else if (mShortClick.equals(ACTION_EVENT)) {
+                 intent = new Intent(Intent.ACTION_INSERT)
+                      .setData(Events.CONTENT_URI);
+            } else if (mShortClick.equals(ACTION_VOICEASSIST)) {
+                 intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            } else if (mShortClick.equals(ACTION_ALARM)) {
+                 intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            } else {
+                try {
+                    intent = Intent.parseUri(mShortClick, 0);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            } catch (ActivityNotFoundException e){
+                e.printStackTrace();
+            }
+            statusBarManager.collapse();
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+
+        StatusBarManager statusBarManager = (StatusBarManager) getContext().getSystemService(Context.STATUS_BAR_SERVICE);
+        if (mLongClick.equals(ACTION_NOTHING)) {
+            return true;
+        } else {
+            try {
+                ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (mLongClick.equals(ACTION_TODAY)) {
+                 // A date-time specified in milliseconds since the epoch.
+                 long startMillis = System.currentTimeMillis();
+                 Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+                 builder.appendPath("time");
+                 ContentUris.appendId(builder, startMillis);
+                 intent = new Intent(Intent.ACTION_VIEW)
+                      .setData(builder.build());
+            } else if (mLongClick.equals(ACTION_EVENT)) {
+                 intent = new Intent(Intent.ACTION_INSERT)
+                      .setData(Events.CONTENT_URI);
+            } else if (mLongClick.equals(ACTION_VOICEASSIST)) {
+                 intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            } else if (mLongClick.equals(ACTION_ALARM)) {
+                 intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            } else {
+                try {
+                    intent = Intent.parseUri(mLongClick, 0);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            } catch (ActivityNotFoundException e){
+                e.printStackTrace();
+            }
+            statusBarManager.collapse();
+        }
+        return true;
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+	void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_DATE_SHORTCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_DATE_LONGCLICK), false, this);
+        }
+
+         @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+    protected void updateSettings() {
+        ContentResolver cr = mContext.getContentResolver();
+
+        mShortClick = Settings.System.getString(cr,
+                Settings.System.NOTIFICATION_DATE_SHORTCLICK);
+
+        mLongClick = Settings.System.getString(cr,
+                Settings.System.NOTIFICATION_DATE_LONGCLICK);
+    }
+
 }

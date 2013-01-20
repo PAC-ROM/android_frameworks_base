@@ -99,8 +99,26 @@
     <!-- Name of the button that links to the Wifi settings screen. [CHAR LIMIT=NONE] -->
     <string name="status_bar_settings_wifi_button">Wi-Fi</string>
 
+    <!-- Name of the button that links to the Bluetooth settings screen. [CHAR LIMIT=NONE] -->
+    <string name="status_bar_settings_bluetooth_button">Bluetooth</string>
+
     <!-- Label in the system panel for airplane mode (all radios are turned off)[CHAR LIMIT=30] -->
     <string name="status_bar_settings_airplane">Airplane mode</string>
+
+    <!-- Label in the system panel for gps state [CHAR LIMIT=30] -->
+    <string name="status_bar_settings_location">GPS</string>
+
+    <!-- Label in the system panel for flashlight state [CHAR LIMIT=30] -->
+    <string name="status_bar_settings_flashlight">LED flashlight</string>
+
+    <!-- Label in the system panel for mobile data state [CHAR LIMIT=30] -->
+    <string name="status_bar_settings_mobile_data">Mobile data</string>
+
+    <!-- Label in the system panel for network mode [CHAR LIMIT=30] -->
+    <string name="status_bar_settings_network_mode">2G/3G</string>
+
+    <!-- Label in the system panel for sound [CHAR LIMIT=30] -->
+    <string name="status_bar_settings_sound_mode">Sound</string>
 
     <!-- Label in system panel saying the device will use the orientation sensor to rotate [CHAR LIMIT=30] -->
     <string name="status_bar_settings_auto_rotation">Auto-rotate screen</string>
@@ -384,6 +402,8 @@
     <!-- Content text for do-not-disturb mode notification -->
     <string name="notifications_off_text">Tap here to turn notifications back on.</string>
 
+    <string name="widgets">Widgets</string>
+
     <!-- Description of the button in the phone-style notification panel that controls auto-rotation, when auto-rotation is on. [CHAR LIMIT=NONE] -->
     <string name="accessibility_rotation_lock_off">Screen will rotate automatically.</string>
 
@@ -401,7 +421,7 @@
     <string name="powerwidget_screen_timeout_toast">Screen timeout set to: %1$d %2$s</string>
 
     <!-- Dialog title for navigation bar button selection -->
-    <string name="navbar_dialog_title">Choose action to assign</string>
+<!--    <string name="navbar_dialog_title">Choose action to assign</string>
     <string name="navbar_home_button">Home button</string>
     <string name="navbar_recent_button">Recent button</string>
     <string name="navbar_search_button">Search button</string>
@@ -410,8 +430,10 @@
     <string name="navbar_menu_conditional_button">Menu (autoHide) button</string>
     <string name="navbar_menu_always_button">Menu (alwaysShow) button</string>
     <string name="navbar_menu_big_button">Menu button</string>
-
-    <string name="toggle_bluetooth">Bluetooth</string>
+-->
+    <!-- AOKP Toggles -->
+    <string name="shortcut_label">AOKP Actions</string>
+    <string name="toggle_bt">BT</string>
     <string name="toggle_data">Data</string>
     <string name="toggle_lte">LTE</string>
     <string name="toggle_rotate">Rotate</string>
@@ -424,10 +446,58 @@
     <string name="toggle_silent">Silent</string>
     <string name="toggle_torch">Torch</string>
     <string name="toggle_sync">Sync</string>
-    <string name="toggle_tether">Tethering</string>
+    <string name="toggle_swagger">Swagger</string>
+    <string name="toggle_fcharge">FastChrg</string>
+    <string name="toggle_tether">Tether</string>
     <string name="toggle_nfc">NFC</string>
-    <string name="toggle_donotdisturb">Don\'t disturb</string>
+    <string name="status_bar_settings_toggles">Toggles</string>
+
+    <string name="toggle_navbar">Toggle NavBar</string>
+    <string name="toggle_widgets">Toggle Widgets</string>
+    <string name="toggle_ring_vib">Toggle Ring/Vib</string>
+    <string name="toggle_ring_silent">Toggle Ring/Silent</string>
+    <string name="toggle_ring_vib_silent">Toggle Ring/Vib/Silent</string>
+    <string name="go_to_homescreen">Go To Homescreen</string>
+    <string name="lockscreen_unlock">Lockscreen - Unlock</string>
 
     <!-- Label in drop down to identify brightness slider -->
     <string name="brightness_label">Brightness</string>
+
+    <string name="battery_test">99</string>
+
+    <string name="recents_kill_all_button_text">Kill all</string>
+    <string name="app_killed_message">App killed</string>
+    <string name="update_weather">Updating weather</string>
+
+    <string name="wifi">WIFI</string>
+    <string name="bt">BT</string>
+    <string name="gps">GPS</string>
+    <string name="rotate">ROTATE</string>
+    <string name="swagger">SWAGGER</string>
+    <string name="sync">SYNC</string>
+    <string name="silent">SILENT</string>
+    <string name="memory">RAM</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
+    <string name="service_background_processes"><xliff:g id="memory">%1$s</xliff:g> free</string>
+    <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
+    <string name="service_foreground_processes"><xliff:g id="memory">%1$s</xliff:g> used</string>
+    <!-- Text to label a process entry with the process name. -->
+    <string name="service_process_name"><xliff:g id="process">%1$s</xliff:g></string>
+    <!-- Running services, description for a service in the started state -->
+    <string name="service_client_name"><xliff:g id="client_name">%1$s</xliff:g></string>
+    <!-- Running services, description for a service in the started state -->
+    <string name="service_started_by_app">Started by app.</string>
+    <!-- Descriptive text of a running process: singular process, singular service. -->
+    <string name="running_processes_item_description_s_s"><xliff:g id="numprocess">%1$d</xliff:g>
+        process and <xliff:g id="numservices">%2$d</xliff:g> service</string>
+    <!-- Descriptive text of a running process: singular process, plural service. -->
+    <string name="running_processes_item_description_s_p"><xliff:g id="numprocess">%1$d</xliff:g>
+        process and <xliff:g id="numservices">%2$d</xliff:g> services</string>
+     <!-- Descriptive text of a running process: plural process, singular service. -->
+    <string name="running_processes_item_description_p_s"><xliff:g id="numprocess">%1$d</xliff:g>
+        processes and <xliff:g id="numservices">%2$d</xliff:g> service</string>
+    <!-- Descriptive text of a running process: plural process, plural service. -->
+    <string name="running_processes_item_description_p_p"><xliff:g id="numprocess">%1$d</xliff:g>
+        processes and <xliff:g id="numservices">%2$d</xliff:g> services</string>
+
 </resources>

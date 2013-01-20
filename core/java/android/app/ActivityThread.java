@@ -2110,7 +2110,6 @@ public final class ActivityThread {
 
         try {
             Application app = r.packageInfo.makeApplication(false, mInstrumentation);
-
             if (localLOGV) Slog.v(TAG, "Performing launch of " + r);
             if (localLOGV) Slog.v(
                     TAG, r + ": app=" + app
@@ -2695,11 +2694,38 @@ public final class ActivityThread {
                     r.pendingResults = null;
                 }
 
+                // Per-App-Extras
                 if (ExtendedPropertiesUtils.isInitialized()) {
                     try {
-                        Settings.System.putInt(r.activity.getContentResolver(),
-                                Settings.System.NAV_BAR_COLOR,
-                                ExtendedPropertiesUtils.mGlobalHook.navbarColor);
+                        for (int i = 0; i < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; i++) {
+                            // Fetch defaults
+                            String setting = Settings.System.getString(r.activity.getContentResolver(),
+                                    ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i]);
+
+                            String[] colors = (setting == null || setting.equals("") ?
+                                   ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i] : setting).split(
+                                   ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+
+                            // Sanity check
+                            if (colors.length != 3) {
+                                colors = ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i].split(
+                                       ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[i]);
+                            }
+
+                            // Change color
+                            String currentColor = colors[Integer.parseInt(colors[2])];
+                            String appColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
+                            String nextColor = appColor == null ? colors[0] : appColor;
+
+                            if (nextColor != currentColor) {
+                                Settings.System.putString(r.activity.getContentResolver(),
+                                       ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
+                                       colors[0] + "|" + nextColor + "|1");
+                            }
+                        }
                     } catch (Exception e) {
                         // Current application is null, or hook is not set
                     }

@@ -902,6 +902,14 @@ public interface WindowManagerPolicy {
     public void notifyLidSwitchChanged(long whenNanos, boolean lidOpen);
     
     /**
+     * Tell the policy that the jack switch has changed state.
+     * @param whenNanos The time when the change occurred in uptime nanoseconds..
+     * @param switchCode Explains the Jack types
+     * @param jackOpen True if the jacktype is now inserted.
+     */
+    public void notifyJackSwitchChanged(long whenNanos, int switchCode, boolean jackOpen);
+
+    /**
      * Tell the policy if anyone is requesting that keyguard not come on.
      *
      * @param enabled Whether keyguard can be on or not.  does not actually
@@ -1010,6 +1018,11 @@ public interface WindowManagerPolicy {
      * user can start interacting with it.
      */
     public void systemBooted();
+
+    /**
+     * name of package being worked on durring boot time message.
+     */
+    public void setPackageName(String pkgName);
 
     /**
      * Show boot time message to the user.

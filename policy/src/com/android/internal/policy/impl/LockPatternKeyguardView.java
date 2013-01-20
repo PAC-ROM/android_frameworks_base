@@ -23,6 +23,8 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.AlertDialog;
+import android.app.Profile;
+import android.app.ProfileManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,7 +41,6 @@ import android.os.Parcelable;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -123,8 +124,12 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
 
     // The music control widget
     private TransportControlView mTransportControlView;
+    private View mInfoView;
 
     private Parcelable mSavedState;
+
+    // We can use the profile manager to override security
+    private ProfileManager mProfileManager;
 
     /**
      * Either a lock screen (an informational keyguard screen), or an unlock
@@ -238,6 +243,11 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
             if (DEBUG) Log.v(TAG, "View " + view + " requested show transports");
             view.setVisibility(View.VISIBLE);
 
+            // Hide the info views
+            if (mInfoView != null) {
+                mInfoView.setVisibility(View.INVISIBLE);
+            }
+
             // TODO: examine all widgets to derive clock status
             mUpdateMonitor.reportClockVisible(false);
 
@@ -254,6 +264,11 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
         public void requestHide(View view) {
             if (DEBUG) Log.v(TAG, "View " + view + " requested hide transports");
             view.setVisibility(View.GONE);
+
+            // Show the info views
+            if (mInfoView != null) {
+                mInfoView.setVisibility(View.VISIBLE);
+            }
 
             // TODO: examine all widgets to derive clock status
             mUpdateMonitor.reportClockVisible(true);
@@ -461,6 +476,7 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
         mPluggedIn = mUpdateMonitor.isDevicePluggedIn();
         mScreenOn = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).isScreenOn();
         mUpdateMonitor.registerInfoCallback(mInfoCallback);
+        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
 
         /**
          * We'll get key events the current screen doesn't use. see
@@ -827,7 +843,8 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
         boolean secure = false;
         switch (unlockMode) {
             case Pattern:
-                secure = mLockPatternUtils.isLockPatternEnabled();
+                secure = mLockPatternUtils.isLockPatternEnabled() &&
+                    mProfileManager.getActiveProfile().getScreenLockMode() != Profile.LockMode.INSECURE;
                 break;
             case SimPin:
                 secure = mUpdateMonitor.getSimState() == IccCard.State.PIN_REQUIRED;
@@ -839,7 +856,8 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
                 secure = true;
                 break;
             case Password:
-                secure = mLockPatternUtils.isLockPasswordEnabled();
+                secure = mLockPatternUtils.isLockPasswordEnabled() &&
+                    mProfileManager.getActiveProfile().getScreenLockMode() != Profile.LockMode.INSECURE;
                 break;
             case Unknown:
                 // This means no security is set up
@@ -996,6 +1014,7 @@ public class LockPatternKeyguardView extends KeyguardViewBase {
             mTransportControlView.setVisibility(View.GONE); // hide until it requests being shown.
             mTransportControlView.setCallback(mWidgetCallback);
         }
+        mInfoView = view.findViewById(R.id.screen_info);
     }
 
     /**

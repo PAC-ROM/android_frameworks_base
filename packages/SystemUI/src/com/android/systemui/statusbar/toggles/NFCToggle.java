@@ -31,7 +31,6 @@ public class NFCToggle extends Toggle {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
             if (NfcAdapter.ACTION_ADAPTER_STATE_CHANGED.equals(intent.getAction())) {
                 final boolean enabled = (intent.getIntExtra(NfcAdapter.EXTRA_ADAPTER_STATE,
                         NfcAdapter.STATE_OFF) == NfcAdapter.STATE_ON);
@@ -40,7 +39,7 @@ public class NFCToggle extends Toggle {
             }
         }
     };
-
+    
     private boolean getNfcState() {
         if (mNfcAdapter == null) {
             Log.d(TAG, "NFC service not running.");
@@ -50,7 +49,7 @@ public class NFCToggle extends Toggle {
             return mNfcAdapter.isEnabled();
         }
     }
-
+    
     private void setNfcState(final boolean desiredState) {
         if (mNfcAdapter == null) {
             Log.d(TAG, "NFC service not running.");
@@ -81,6 +80,9 @@ public class NFCToggle extends Toggle {
 
     @Override
     protected void onCheckChanged(boolean checked) {
+        if (mNfcAdapter == null) { // try to get it again
+            mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
+        }
         if (checked != mNfcEnabled) {
             mNfcEnabled = checked;
             setNfcState(mNfcEnabled);

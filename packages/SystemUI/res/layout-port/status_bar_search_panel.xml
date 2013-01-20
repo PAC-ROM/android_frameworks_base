@@ -30,6 +30,7 @@
         android:id="@+id/search_bg_protect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal|bottom"
         android:layout_marginBottom="0dip">
 
         <RelativeLayout
@@ -44,6 +45,7 @@
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/navbar_search_panel_height"
+                android:layout_gravity="bottom|center_horizontal"
                 android:gravity="top|center_horizontal"
 
                 prvandroid:targetDrawables="@array/navbar_search_targets"
@@ -60,6 +62,7 @@
                 prvandroid:glowRadius="@*android:dimen/glowpadview_glow_radius"
                 prvandroid:pointDrawable="@*android:drawable/ic_lockscreen_glowdot"
                />
+<!--                android:layout_alignParentBottom="true"-->
 
         </RelativeLayout>
 

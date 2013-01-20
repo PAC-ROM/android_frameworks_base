@@ -40,7 +40,7 @@
         />
 
     <!-- CyanogenMod Weather Panel -->
-    <RelativeLayout
+<!--    <RelativeLayout
         android:id="@+id/weather_panel"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -136,7 +136,7 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
+-->
     <com.android.internal.widget.DigitalClock android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -195,6 +195,29 @@
 
     </LinearLayout>
 
+    <!-- AOKP -->
+    <com.android.internal.policy.impl.WeatherText
+        android:id="@+id/weather"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:gravity="right"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="16sp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ViewFlipper
+        android:id="@+id/calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inAnimation="@anim/calendar_fadein"
+        android:outAnimation="@anim/calendar_fadeout"
+        android:layout_marginTop="10dip"
+        android:layout_gravity="right"
+        android:drawablePadding="4dip" />
+
     <!-- Status1 is generally battery status and informational messages -->
     <TextView
         android:id="@+id/status1"
@@ -218,8 +241,13 @@
         android:visibility="invisible"
         />
 
+    <!-- AOKP -->
+    <include
+        layout="@layout/weatherpanel"
+        android:layout_gravity="right" />
+
     <!-- CyanogenMod Calendar Panel -->
-    <LinearLayout
+<!--    <LinearLayout
         android:id="@+id/calendar_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -281,5 +309,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-
+-->
 </LinearLayout>

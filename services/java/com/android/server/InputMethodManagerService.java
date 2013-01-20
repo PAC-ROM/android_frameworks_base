@@ -392,6 +392,8 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.SELECTED_INPUT_METHOD_SUBTYPE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_STATUSBAR_IME_SWITCHER), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_IME_SWITCHER),
                     false, new ContentObserver(mHandler) {
                         public void onChange(boolean selfChange) {
@@ -1440,7 +1442,10 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
             unbindCurrentMethodLocked(true);
         }
 
+        // code to disable the CM Phone IME switcher with config_show_cmIMESwitcher set = false
         try {
+/*            mShowOngoingImeSwitcherForPhones = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.STATUS_BAR_IME_SWITCHER) == 1;*/
             if(ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout") < 720) {
                 mShowOngoingImeSwitcherForPhones = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_IME_SWITCHER) == 1;
@@ -1448,8 +1453,13 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
                 mShowOngoingImeSwitcherForPhones = false;
             }
         } catch (SettingNotFoundException e) {
+/*            mShowOngoingImeSwitcherForPhones = mRes.getBoolean(
+            com.android.internal.R.bool.config_show_cmIMESwitcher);*/
             mShowOngoingImeSwitcherForPhones = false;
         }
+
+        mShowOngoingImeSwitcherForPhones = Settings.System.getBoolean(mContext.getContentResolver(),
+			                Settings.System.SHOW_STATUSBAR_IME_SWITCHER, true);
     }
 
     /* package */ void setInputMethodLocked(String id, int subtypeId) {

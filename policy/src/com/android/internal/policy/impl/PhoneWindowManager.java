@@ -206,6 +206,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_ACTION_SEARCH = 3;
     private static final int KEY_ACTION_VOICE_SEARCH = 4;
     private static final int KEY_ACTION_IN_APP_SEARCH = 5;
+    private static final int KEY_ACTION_TORCH = 6;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
@@ -270,6 +271,42 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static public final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
     static public final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
     static public final String SYSTEM_DIALOG_REASON_ASSIST = "assist";
+
+    // Useful scan codes.
+    //private static final int SW_LID = 0x00;
+    private static final int SW_HEADPHONE_INSERT = 0x02;
+    private static final int SW_MICROPHONE_INSERT = 0x04;
+    //ToDo: This needs to be revisted once the kernel has support to report ANC event
+    private static final int SW_ANC_INSERT = 0x08;
+    private static final int SW_HEADSET_INSERT = (SW_HEADPHONE_INSERT|SW_MICROPHONE_INSERT);
+    private static final int SW_ANC_HEADPHONE_INSERT = 0x10;
+    private static final int SW_ANC_MICROPHONE_INSERT = 0x20;
+    private static final int SW_ANC_HEADSET_INSERT = (SW_ANC_HEADPHONE_INSERT|SW_ANC_MICROPHONE_INSERT);
+    private static final int BTN_MOUSE = 0x110;
+
+    // Useful HeadSet codes... Same definition as WireAccessoryObserver.java
+    private static int mHeadsetJackState = 0;
+    private static boolean mIsAncOn = false;
+    private static final int BIT_HEADSET = (1 << 0);
+    private static final int BIT_HEADSET_SPEAKER_ONLY = (1 << 1);
+    //Useful Headset codes... QC added definitions
+    private static final int BIT_HEADSET_MIC_ONLY = (1 << 2);
+    private static final int BIT_ANC_HEADSET = (1 << 3);
+    private static final int BIT_ANC_HEADSET_SPEAKER_ONLY = (1 << 4);
+    private static final int BIT_ANC_HEADSET_MIC_ONLY = (1 << 5);
+    private static final int SUPPORTED_HEADSETS = (BIT_HEADSET|BIT_HEADSET_SPEAKER_ONLY|BIT_HEADSET_MIC_ONLY |
+                                                   BIT_ANC_HEADSET|BIT_ANC_HEADSET_SPEAKER_ONLY|BIT_ANC_HEADSET_MIC_ONLY);
+
+    private static final int BIT_HEADSET_NO_MIC = BIT_HEADSET_SPEAKER_ONLY;
+    private static final int BIT_ANC_HEADSET_NO_MIC = BIT_ANC_HEADSET_SPEAKER_ONLY;
+    private static final int ANC_HEADSETS_WITH_MIC = BIT_ANC_HEADSET;
+    private static final int HEADSETS_WITH_MIC = BIT_HEADSET;
+
+    private String mHeadsetName = "Headset";
+    private int mPrevHeadsetState = 0;
+    private int mCurHeadsetState = 0;
+    private boolean mHeadsetIntent = false;
+    private final Object mHeadsetLock = new Object();
 
     /**
      * These are the system UI flags that, when changing, can cause the layout
@@ -345,11 +382,19 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mStatusBarHeight;
     WindowState mNavigationBar = null;
     boolean mHasNavigationBar = false;
+    // in order to properly setup the NavBar and still be able to hide it when the user
+    // selects to, I need to know if its first boot.
+    private boolean mNavBarFirstBootFlag = true;
+    // Will determine if NavBar goes to the left side in Landscape Mode
+    private boolean mLeftyMode;
     boolean mCanHideNavigationBar = false;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     boolean mNavigationBarOnBottom = true; // is the navigation bar on the bottom *right now*?
     int[] mNavigationBarHeightForRotation = new int[4];
     int[] mNavigationBarWidthForRotation = new int[4];
+    int mUserNavBarHeight;
+    int mUserNavBarHeightLand;
+    int mUserNavBarWidth;
 
     WindowState mKeyguard = null;
     KeyguardViewMediator mKeyguardMediator;
@@ -399,6 +444,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mLongPressOnPowerBehavior = -1;
     boolean mScreenOnEarly = false;
     boolean mScreenOnFully = false;
+    int mScreenOffReason;
     boolean mOrientationSensorEnabled = false;
     int mCurrentAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     boolean mHasSoftInput = false;
@@ -414,13 +460,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // The last window we were told about in focusChanged.
     WindowState mFocusedWindow;
     IApplicationToken mFocusedApp;
-
-    // Behavior of volume wake
-    boolean mVolumeWakeScreen;
-
-    // Behavior of volbtn music controls
-    boolean mVolBtnMusicControls;
-    boolean mIsLongPress;
 
     private static final class PointerLocationInputEventReceiver extends InputEventReceiver {
         private final PointerLocationView mView;
@@ -555,6 +594,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Behavior of ENDCALL Button.  (See Settings.System.END_BUTTON_BEHAVIOR.)
     int mEndcallBehavior;
 
+    // Behavior of home unlock
+    boolean mHomeUnlockScreen;
+
     // Behavior of POWER button while in-call and screen on.
     // (See Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR.)
     int mIncallPowerBehavior;
@@ -582,6 +624,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mVolumeUpKeyTriggered;
     private boolean mPowerKeyTriggered;
     private long mPowerKeyTime;
+    private boolean mVolumeWakeScreen;
+    boolean mVolBtnMusicControls;
+    boolean mIsLongPress;
 
     ShortcutManager mShortcutManager;
     PowerManager.WakeLock mBroadcastWakeLock;
@@ -641,11 +686,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.VOLUME_WAKE_SCREEN), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.VOLBTN_MUSIC_CONTROLS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HOME_UNLOCK_SCREEN), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USER_ROTATION), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -655,11 +698,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.DEFAULT_INPUT_METHOD), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLUME_WAKE_SCREEN), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLUME_MUSIC_CONTROLS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     "fancy_rotation_anim"), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_STATUS), false, this);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
@@ -680,6 +725,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HARDWARE_KEY_REBINDING), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANDED_DESKTOP_STATE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_SHOW), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_SHOW_NOW), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_HEIGHT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_WIDTH), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_LEFTY_MODE), false, this);
             if (SEPARATE_TIMEOUT_FOR_SCREEN_SAVER) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
                         "screensaver_timeout"), false, this);
@@ -1016,6 +1075,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KEY_ACTION_IN_APP_SEARCH:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
                 break;
+            case KEY_ACTION_TORCH:
+                Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
+                i.putExtra("bright", false);
+                mContext.sendBroadcast(i);
             default:
                 break;
         }
@@ -1273,7 +1336,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         int sysLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
 
-        if (sysLayout < 600) {
+/*        if (sysLayout < 600) {
             // 0-599dp: "phone" UI with a separate status & navigation bar
             mHasSystemNavBar = false;
             mNavigationBarCanMove = true;
@@ -1304,9 +1367,242 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         } else {
             mHdmiRotation = mLandscapeRotation;
         }
+*/
+/*        mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height);
+
+        // Height of the navigation bar when presented horizontally at bottom
+        mNavigationBarHeightForRotation[mPortraitRotation] =
+        mNavigationBarHeightForRotation[mUpsideDownRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_HEIGHT,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_height));
+
+        mNavigationBarHeightForRotation[mLandscapeRotation] =
+        mNavigationBarHeightForRotation[mSeascapeRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_height_landscape));
+
+        // Width of the navigation bar when presented vertically along one side
+        mNavigationBarWidthForRotation[mPortraitRotation] =
+        mNavigationBarWidthForRotation[mUpsideDownRotation] =
+        mNavigationBarWidthForRotation[mLandscapeRotation] =
+        mNavigationBarWidthForRotation[mSeascapeRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_WIDTH,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_width));
+*/
+        int shortSizeDp = shortSize
+                * DisplayMetrics.DENSITY_DEFAULT
+                / DisplayMetrics.DENSITY_DEVICE;
+
+        // tabletui switch
+        boolean mTabletui = Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.MODE_TABLET_UI, false);
+        if (!mTabletui) {
+
+             // SystemUI (status bar) layout policy
+//             if (shortSizeDp < 600) {
+             if (sysLayout < 600) {
+                 // 0-599dp: "phone" UI with a separate status & navigation bar
+                 mHasSystemNavBar = false;
+                 mNavigationBarCanMove = true;
+                 Settings.System.putInt(mContext.getContentResolver(),
+                     Settings.System.TABLET_UI, 0);
+//             } else if (shortSizeDp < 720) {
+             } else if (sysLayout < 720) {
+                 // 600-719dp: "phone" UI with modifications for larger screens
+                 mHasSystemNavBar = false;
+                 mNavigationBarCanMove = false;
+                 Settings.System.putInt(mContext.getContentResolver(),
+                         Settings.System.TABLET_UI, 2);
+             } else {
+                 // 720dp: "tablet" UI with a single combined status & navigation bar
+                 mHasSystemNavBar = true;
+                 mNavigationBarCanMove = false;
+                 Settings.System.putInt(mContext.getContentResolver(),
+                         Settings.System.TABLET_UI, 1);
+             }
+         } else { // forced Tablet Mode
+              mHasSystemNavBar = true;
+              mNavigationBarCanMove = false;
+              Settings.System.putInt(mContext.getContentResolver(),
+                  Settings.System.TABLET_UI, 1);
+         }
+
+         if (!mHasSystemNavBar) {
+             final boolean showByDefault = mContext.getResources().getBoolean(
+                     com.android.internal.R.bool.config_showNavigationBar);
+             mHasNavigationBar = Settings.System.getBoolean(mContext.getContentResolver(),
+                     Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
+             //
+             // at first boot up, we need to make sure navbar gets created
+             // (or obey framework setting). 
+             // this should quickly get over-ridden by the settings observer
+             // if it was disabled by the user.
+             //
+             if (mNavBarFirstBootFlag) {
+                 mNavBarFirstBootFlag = false;
+             } else {
+                 mHasNavigationBar = mHasNavigationBar &&
+                         Settings.System.getBoolean(mContext.getContentResolver(),
+                                 Settings.System.NAVIGATION_BAR_SHOW_NOW, mHasNavigationBar);
+             }
+         } else {
+             // Allow a system property to override this. Used by the emulator.
+             // See also hasNavigationBar().
+             String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
+            if (!"".equals(navBarOverride)) {
+                 if (navBarOverride.equals("1"))
+                     mHasNavigationBar = false;
+                 else if (navBarOverride.equals("0"))
+                     mHasNavigationBar = true;
+             }
+         }
+
+/*         if (!mHasNavigationBar) {
+             mNavigationBarWidthForRotation[mPortraitRotation] =
+                     mNavigationBarWidthForRotation[mUpsideDownRotation] =
+                     mNavigationBarWidthForRotation[mLandscapeRotation] =
+                     mNavigationBarWidthForRotation[mSeascapeRotation] = 0;
+             mNavigationBarHeightForRotation[mPortraitRotation] =
+                     mNavigationBarHeightForRotation[mUpsideDownRotation] =
+                     mNavigationBarHeightForRotation[mLandscapeRotation] =
+                     mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+         }
+*/
+         if (mHasSystemNavBar) {
+             // The system bar is always at the bottom. If you are watching
+             // a video in landscape, we don't need to hide it if we can
+             // still
+             // show a 16:9 aspect ratio with it.
+             int longSizeDp = longSize
+                     * DisplayMetrics.DENSITY_DEFAULT
+                     / DisplayMetrics.DENSITY_DEVICE;
+             int barHeightDp = mNavigationBarHeightForRotation[mLandscapeRotation]
+                     * DisplayMetrics.DENSITY_DEFAULT
+                     / DisplayMetrics.DENSITY_DEVICE;
+             int aspect = ((shortSizeDp - barHeightDp) * 16) / longSizeDp;
+             // We have computed the aspect ratio with the bar height taken
+             // out to be 16:aspect. If this is less than 9, then hiding
+             // the navigation bar will provide more useful space for wide
+             // screen movies.
+             mCanHideNavigationBar = aspect < 9;
+         } else if (mHasNavigationBar) {
+             // The navigation bar is at the right in landscape; it seems
+             // always useful to hide it for showing a video.
+             mCanHideNavigationBar = true;
+         } else {
+             mCanHideNavigationBar = false;
+         }
+
+         if ("portrait".equals(SystemProperties.get("persist.demo.hdmirotation"))) {
+             mHdmiRotation = mPortraitRotation;
+         } else {
+             mHdmiRotation = mLandscapeRotation;
+         }
     }
 
     public void getDimensions(){
+        // Get actual system DPI and actual sysUI DPI
+        // Needed to first calculate values independend of android scaling, then calculate scaling according to sysUI
+/*        int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
+        int sysUIDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
+        
+        float statusBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        float navigationBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.navigation_bar_height) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        float navigationBarWidth = ((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.navigation_bar_width) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        float navigationBarHeightLandscape = ((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.navigation_bar_height_landscape) *
+                DisplayMetrics.DENSITY_DEVICE / sysDpi) /
+                DisplayMetrics.DENSITY_DEVICE * sysUIDpi;
+
+        mStatusBarHeight = Math.round(statusBarHeight);
+*/
+/*        // Height of the navigation bar when presented horizontally at bottom
+        mNavigationBarHeightForRotation[mPortraitRotation] = 
+                mNavigationBarHeightForRotation[mUpsideDownRotation] = Math.round(navigationBarHeight);
+
+        mNavigationBarHeightForRotation[mLandscapeRotation] =
+                mNavigationBarHeightForRotation[mSeascapeRotation] = Math.round(navigationBarHeightLandscape);
+*/
+        mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height);
+
+        // Height of the navigation bar when presented horizontally at bottom
+        mNavigationBarHeightForRotation[mPortraitRotation] =
+        mNavigationBarHeightForRotation[mUpsideDownRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_HEIGHT,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_height));
+
+        mNavigationBarHeightForRotation[mLandscapeRotation] =
+        mNavigationBarHeightForRotation[mSeascapeRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_height_landscape));
+
+/*        // Width of the navigation bar when presented vertically along one side
+        mNavigationBarWidthForRotation[mPortraitRotation] = mNavigationBarWidthForRotation[mUpsideDownRotation] =
+                mNavigationBarWidthForRotation[mLandscapeRotation] = mNavigationBarWidthForRotation[mSeascapeRotation] =
+                Math.round(navigationBarWidth);
+*/
+        // Width of the navigation bar when presented vertically along one side
+        mNavigationBarWidthForRotation[mPortraitRotation] =
+        mNavigationBarWidthForRotation[mUpsideDownRotation] =
+        mNavigationBarWidthForRotation[mLandscapeRotation] =
+        mNavigationBarWidthForRotation[mSeascapeRotation] =
+                Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_WIDTH,
+                    mContext.getResources()
+                            .getDimensionPixelSize(
+                                    com.android.internal.R.dimen.navigation_bar_width));
+
+        // In case that we removed nav bar, set all sizes to 0 again
+        if(!mHasNavigationBar){
+            if(!mHasSystemNavBar || Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1){
+                mNavigationBarWidthForRotation[mPortraitRotation]
+                        = mNavigationBarWidthForRotation[mUpsideDownRotation]
+                        = mNavigationBarWidthForRotation[mLandscapeRotation]
+                        = mNavigationBarWidthForRotation[mSeascapeRotation]
+                        = mNavigationBarHeightForRotation[mPortraitRotation]
+                        = mNavigationBarHeightForRotation[mUpsideDownRotation]
+                        = mNavigationBarHeightForRotation[mLandscapeRotation]
+                        = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
+            }
+        }
+    }
+
+    public void getDimensions1(){
         // Get actual system DPI and actual sysUI DPI
         // Needed to first calculate values independend of android scaling, then calculate scaling according to sysUI
         int sysDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
@@ -1375,16 +1671,23 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mRingHomeBehavior = Settings.Secure.getInt(resolver,
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR,
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT);
-            mVolumeWakeScreen = (Settings.System.getInt(resolver,
-                    Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
-            mVolBtnMusicControls = (Settings.System.getInt(resolver,
-                    Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
+            mHomeUnlockScreen = (Settings.System.getInt(resolver,
+                    Settings.System.HOME_UNLOCK_SCREEN, 0) == 1);
 
             mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAV_BAR_STATUS, 
                     !hasHardwareKeys() ? 1 : 0) == 1 && Settings.System.getInt(mContext.getContentResolver(), 
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) != 1 && !mHasSystemNavBar;
 
-            getDimensions();
+        int sysLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
+            if (sysLayout < 600) {
+                getDimensions();
+            } else if (sysLayout < 720) {
+                getDimensions();
+            } else {
+                getDimensions1();
+            }
+
+//            getDimensions();
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
@@ -1469,6 +1772,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mUserRotationAngles = Settings.System.getInt(resolver,
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, -1);
 
+            mVolumeWakeScreen = (Settings.System.getInt(resolver,
+                    Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
+            mVolBtnMusicControls = (Settings.System.getInt(resolver,
+                    Settings.System.VOLUME_MUSIC_CONTROLS, 0) == 1);
+
             if (mSystemReady) {
                 int pointerLocation = Settings.System.getInt(resolver,
                         Settings.System.POINTER_LOCATION, 0);
@@ -1512,6 +1820,32 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (updateRotation) {
             updateRotation(true);
         }
+        boolean showByDefault = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        showByDefault = showByDefault || Settings.System.getBoolean(resolver,
+                        Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
+        boolean showNavBarNow = Settings.System.getBoolean(resolver,
+                Settings.System.NAVIGATION_BAR_SHOW_NOW, showByDefault);
+        int NavHeight = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_HEIGHT, 0);
+        int NavHeightLand = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE, 0);
+        int NavWidth = Settings.System.getInt(resolver,
+                Settings.System.NAVIGATION_BAR_WIDTH, 0);
+        if (NavHeight != mUserNavBarHeight || NavHeightLand != mUserNavBarHeightLand || NavWidth !=mUserNavBarWidth) {
+            mUserNavBarHeight = NavHeight;
+            mUserNavBarHeightLand = NavHeightLand;
+            mUserNavBarWidth = NavWidth;
+            if(mDisplay != null)
+                setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
+        }
+        if (mHasNavigationBar != showNavBarNow) {
+            mHasNavigationBar = showNavBarNow;
+            if(mDisplay != null)
+                setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight);
+        }
+        mLeftyMode = Settings.System.getBoolean(resolver,
+                Settings.System.NAVIGATION_BAR_LEFTY_MODE, false);
     }
 
     private void enablePointerLocation() {
@@ -2080,7 +2414,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     @Override
     public long interceptKeyBeforeDispatching(WindowState win, KeyEvent event, int policyFlags) {
         final boolean keyguardOn = keyguardOn();
-        final int keyCode = event.getKeyCode();
+//        final int keyCode = event.getKeyCode();
+        int keyCode = event.getKeyCode();
         final int scanCode = event.getScanCode();
         final int repeatCount = event.getRepeatCount();
         final int metaState = event.getMetaState();
@@ -2359,10 +2694,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (Settings.Secure.getInt(mContext.getContentResolver(),
-                    Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) == 1) {
+//            if (Settings.Secure.getInt(mContext.getContentResolver(),
+//                    Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) == 1) {
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.KILL_APP_LONGPRESS_BACK, 0) == 1) {
                 if (down && repeatCount == 0) {
                     mHandler.postDelayed(mBackLongPress, mBackKillTimeout);
+                } else if (!down) {
+                    mHandler.removeCallbacks(mBackLongPress);
                 }
             }
         }
@@ -2822,6 +3161,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // decided that it can't be hidden (because of the screen aspect ratio),
         // then take that into account.
         navVisible |= !mCanHideNavigationBar;
+        navVisible &= (Settings.System.getInt(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
 
         if (mNavigationBar != null) {
             // Force the navigation bar to its appropriate place and
@@ -2858,29 +3198,56 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // we can tell the app that it is covered by it.
                     mSystemBottom = mTmpNavigationFrame.top;
                 }
-            } else {
-                // Landscape screen; nav bar goes to the right.
-                int left = displayWidth - mNavigationBarWidthForRotation[displayRotation];
-                if (mHdmiPlugged) {
-                    if (left > mExternalDisplayWidth) {
-                        left = mExternalDisplayWidth;
+            } else { // Navbar is on side - but could be Left or Right
+                if (mLeftyMode) {
+                    // Landscape screen; nav bar goes to the Left.
+                    int right = mNavigationBarWidthForRotation[displayRotation];
+                    if (mHdmiPlugged) {
+                        if (right > mExternalDisplayWidth) {
+                            right = mExternalDisplayWidth;
+                        }
                     }
-                }
-                mTmpNavigationFrame.set(left, 0, displayWidth, displayHeight);
-                mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
-                if (navVisible) {
-                    mNavigationBar.showLw(true);
-                    mDockRight = mTmpNavigationFrame.left;
-                    mRestrictedScreenWidth = mDockRight - mDockLeft;
+                    mTmpNavigationFrame.set(0, 0, right, displayHeight);
+                    mStableLeft = mStableFullscreenLeft = mTmpNavigationFrame.right;
+                    if (navVisible) {
+                        mNavigationBar.showLw(true);
+                        mDockLeft = mTmpNavigationFrame.right;
+                        mRestrictedScreenWidth = mDockRight - mDockLeft;
+                        mRestrictedScreenLeft =  mTmpNavigationFrame.right;
+                    } else {
+                        // We currently want to hide the navigation UI.
+                        mNavigationBar.hideLw(true);
+                    }
+                    if (navVisible && !mNavigationBar.isAnimatingLw()) {
+                        // If the nav bar is currently requested to be visible,
+                        // and not in the process of animating on or off, then
+                        // we can tell the app that it is covered by it.
+                        mSystemLeft = mTmpNavigationFrame.right;
+                    }
                 } else {
-                    // We currently want to hide the navigation UI.
-                    mNavigationBar.hideLw(true);
-                }
-                if (navVisible && !mNavigationBar.isAnimatingLw()) {
-                    // If the nav bar is currently requested to be visible,
-                    // and not in the process of animating on or off, then
-                    // we can tell the app that it is covered by it.
-                    mSystemRight = mTmpNavigationFrame.left;
+                     // Landscape screen; nav bar goes to the right.
+                    int left = displayWidth - mNavigationBarWidthForRotation[displayRotation];
+                    if (mHdmiPlugged) {
+                        if (left > mExternalDisplayWidth) {
+                            left = mExternalDisplayWidth;
+                        }
+                    }
+                    mTmpNavigationFrame.set(left, 0, displayWidth, displayHeight);
+                    mStableRight = mStableFullscreenRight = mTmpNavigationFrame.left;
+                    if (navVisible) {
+                        mNavigationBar.showLw(true);
+                        mDockRight = mTmpNavigationFrame.left;
+                        mRestrictedScreenWidth = mDockRight - mDockLeft;
+                    } else {
+                        // We currently want to hide the navigation UI.
+                        mNavigationBar.hideLw(true);
+                    }
+                    if (navVisible && !mNavigationBar.isAnimatingLw()) {
+                        // If the nav bar is currently requested to be visible,
+                        // and not in the process of animating on or off, then
+                        // we can tell the app that it is covered by it.
+                        mSystemRight = mTmpNavigationFrame.left;
+                    }
                 }
             }
             // Make sure the content and current rectangles are updated to
@@ -2953,8 +3320,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         systemRect.top = mSystemTop;
         systemRect.right = mSystemRight;
         systemRect.bottom = mSystemBottom;
-        if (mStatusBar != null) return mStatusBar.getSurfaceLayer();
-        if (mNavigationBar != null) return mNavigationBar.getSurfaceLayer();
         return 0;
     }
 
@@ -3554,6 +3919,225 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         setHdmiPlugged(!mHdmiPlugged);
     }
 
+    /** {@inheritDoc} */
+    public void notifyJackSwitchChanged(long whenNanos, int switchCode, boolean switchState) {
+        Slog.d(TAG,"notifyJackSwitchChanged(): switchCode "+switchCode+" switchState "+switchState);
+        synchronized(mHeadsetLock) {
+            if(switchCode == SW_ANC_INSERT) {
+                if(switchState) {
+                    mIsAncOn = true;
+                    if((mHeadsetJackState & BIT_HEADSET) != 0) {
+                        mHeadsetJackState &= ~BIT_HEADSET;
+                        mHeadsetJackState |= BIT_ANC_HEADSET;
+                    }
+                    if((mHeadsetJackState & BIT_HEADSET_SPEAKER_ONLY) != 0) {
+                        mHeadsetJackState &= ~BIT_HEADSET_SPEAKER_ONLY;
+                        mHeadsetJackState |= BIT_ANC_HEADSET_SPEAKER_ONLY;
+                    }
+                    if((mHeadsetJackState & BIT_HEADSET_MIC_ONLY) != 0) {
+                        mHeadsetJackState &= ~BIT_HEADSET_MIC_ONLY;
+                        mHeadsetJackState |= BIT_ANC_HEADSET_MIC_ONLY;
+                    }
+                } else {
+                    mIsAncOn = false;
+                    if((mHeadsetJackState & BIT_ANC_HEADSET) != 0) {
+                        mHeadsetJackState &= ~BIT_ANC_HEADSET;
+                        mHeadsetJackState |= BIT_HEADSET;
+                    }
+                    if((mHeadsetJackState & BIT_ANC_HEADSET_SPEAKER_ONLY) != 0) {
+                        mHeadsetJackState &= ~BIT_ANC_HEADSET_SPEAKER_ONLY;
+                        mHeadsetJackState |= BIT_HEADSET_SPEAKER_ONLY;
+                    }
+                    if((mHeadsetJackState & BIT_ANC_HEADSET_MIC_ONLY) != 0) {
+                        mHeadsetJackState &= ~BIT_ANC_HEADSET_MIC_ONLY;
+                        mHeadsetJackState |= BIT_HEADSET_MIC_ONLY;
+                    }
+                }
+            } else if ( switchCode == SW_HEADPHONE_INSERT) {
+                if (switchState) {
+                    if(mIsAncOn) {
+                        mHeadsetJackState |= BIT_ANC_HEADSET_SPEAKER_ONLY;
+                    } else {
+                        mHeadsetJackState |= BIT_HEADSET_SPEAKER_ONLY;
+                    }
+                } else if( (mHeadsetJackState & BIT_HEADSET) != 0 ) {
+                    mHeadsetJackState &= ~BIT_HEADSET;
+                    mHeadsetJackState |= BIT_HEADSET_MIC_ONLY;
+                } else if( (mHeadsetJackState & BIT_ANC_HEADSET) != 0 ) {
+                    mHeadsetJackState &= ~BIT_ANC_HEADSET;
+                    mHeadsetJackState |= BIT_ANC_HEADSET_MIC_ONLY;
+                } else {
+                    if(mIsAncOn) {
+                        mHeadsetJackState &= ~BIT_ANC_HEADSET_SPEAKER_ONLY;
+                    } else {
+                        mHeadsetJackState &= ~BIT_HEADSET_SPEAKER_ONLY;
+                    }
+                }
+            } else if ( switchCode == SW_MICROPHONE_INSERT) {
+                if (switchState) {
+                    if(mIsAncOn) {
+                        mHeadsetJackState |= BIT_ANC_HEADSET_MIC_ONLY;
+                    } else {
+                        mHeadsetJackState |= BIT_HEADSET_MIC_ONLY;
+                    }
+                } else if( (mHeadsetJackState & BIT_HEADSET) != 0 ) {
+                    mHeadsetJackState &= ~BIT_HEADSET;
+                    mHeadsetJackState |= BIT_HEADSET_SPEAKER_ONLY;
+                } else if( (mHeadsetJackState & BIT_ANC_HEADSET) != 0 ) {
+                    mHeadsetJackState &= ~BIT_ANC_HEADSET;
+                    mHeadsetJackState |= BIT_ANC_HEADSET_SPEAKER_ONLY;
+                } else {
+                    if(mIsAncOn) {
+                        mHeadsetJackState &= ~BIT_ANC_HEADSET_MIC_ONLY;
+                    } else {
+                        mHeadsetJackState &= ~BIT_HEADSET_MIC_ONLY;
+                    }
+                }
+            }
+
+            if( mHeadsetJackState == SW_HEADSET_INSERT ) {
+                // If both Speaker and Mic bits are set, remove them and
+                // set Headset bit to indicate Headset insertion
+                mHeadsetJackState = BIT_HEADSET;
+            }
+
+            if( mHeadsetJackState == SW_ANC_HEADSET_INSERT ) {
+                mHeadsetJackState = BIT_ANC_HEADSET;
+            }
+            update();
+        } // synchronized(mHeadsetLock)
+    }
+
+    private final void update() {
+
+        // Retain only relevant bits
+        int headsetState = mHeadsetJackState & SUPPORTED_HEADSETS;
+        // Set default delay to 10msec to allow all the events to reach before sending intent
+        int delay = 10;
+        // reject all suspect transitions: only accept state changes from:
+        // - a: 0 heaset to 1 headset
+        // - b: 1 headset to 0 headset
+        if (mCurHeadsetState == headsetState) {
+            return;
+        }
+
+        if (headsetState == 0) {
+            Intent intent = new Intent(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+            mContext.sendBroadcast(intent);
+            // It can take hundreds of ms flush the audio pipeline after
+            // apps pause audio playback, but audio route changes are
+            // immediate, so delay the route change by 1000ms.
+            // This could be improved once the audio sub-system provides an
+            // interface to clear the audio pipeline.
+            delay = 1000;
+        } else {
+            // Insert the same delay for headset connection so that the connection event is not
+            // broadcast before the disconnection event in case of fast removal/insertion
+            if ( mIntentHandler.hasMessages(0)) {
+                delay = 1000;
+            }
+        }
+        mBroadcastWakeLock.acquire();
+        Slog.d(TAG,"update(): sending Message to IntentHander with delay of "+delay);
+        mIntentHandler.sendMessageDelayed( mIntentHandler.obtainMessage(0, mHeadsetName),
+                                           delay);
+    }
+
+    private synchronized final void sendIntents(String headsetName) {
+
+        Slog.d(TAG,"sendIntents(): mHeadsetJackState "+mHeadsetJackState+" mCurHeadsetState "+mCurHeadsetState+" mPrevHeadsetState "+mPrevHeadsetState);
+        int headsetState;
+
+        synchronized(mHeadsetLock) {
+            headsetState = mHeadsetJackState & SUPPORTED_HEADSETS;
+            if (mCurHeadsetState == headsetState) {
+                return;
+            }
+            mPrevHeadsetState = mCurHeadsetState;
+            mCurHeadsetState = headsetState;
+        }
+
+        int allHeadsets = SUPPORTED_HEADSETS;
+        //Handle unplug events first and then handle plug-in events
+        for (int curHeadset = 1; curHeadset < SUPPORTED_HEADSETS; curHeadset <<= 1) {
+            if (((headsetState & curHeadset) == 0) && ((mPrevHeadsetState & curHeadset) == curHeadset)) {
+                if ((curHeadset & allHeadsets) != 0) {
+                    sendIntent(curHeadset, headsetState, mPrevHeadsetState, headsetName);
+                    allHeadsets &= ~curHeadset;
+                }
+            }
+        }
+
+        for (int curHeadset = 1; curHeadset < SUPPORTED_HEADSETS; curHeadset <<= 1) {
+            if (((headsetState & curHeadset) == curHeadset) && ((mPrevHeadsetState & curHeadset) == 0)) {
+                if ((curHeadset & allHeadsets) != 0) {
+                    sendIntent(curHeadset, headsetState, mPrevHeadsetState, headsetName);
+                    allHeadsets &= ~curHeadset;
+                }
+            }
+        }
+    }
+
+    private final void sendIntent(int headset, int headsetState, int prevHeadsetState, String headsetName) {
+
+        if ((headsetState & headset) != (prevHeadsetState & headset)) {
+            // Pack up the values and broadcast them to everyone
+            int state = 0;
+            int device = 0;
+
+
+            if ((headset & BIT_HEADSET) != 0) {
+                device = AudioManager.DEVICE_OUT_WIRED_HEADSET;
+            } else if ((headset & BIT_HEADSET_SPEAKER_ONLY) != 0) {
+                device = AudioManager.DEVICE_OUT_WIRED_HEADPHONE;
+            } else if ((headset & BIT_HEADSET_MIC_ONLY ) != 0) {
+                device = 0;
+            } else if ((headset & BIT_ANC_HEADSET) != 0) {
+                device = 0;//AudioManager.DEVICE_OUT_ANC_HEADSET;
+            } else if ((headset & BIT_ANC_HEADSET_SPEAKER_ONLY) != 0) {
+                device = 0;//AudioManager.DEVICE_OUT_ANC_HEADPHONE;
+            } else if ((headset & BIT_ANC_HEADSET_MIC_ONLY) != 0) {
+                device = 0;
+            } else {
+                Slog.e(TAG, "setDeviceState() invalid headset type: "+headset);
+                return;
+            }
+
+            if ((headsetState & headset) != 0) {
+                state = 1;
+            } else {
+                state = 0;
+            }
+
+            if (mSystemBooted) {
+                final AudioManager am = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+                if (am == null) {
+                    Log.e(TAG, "sendIntent: couldn't get AudioManager reference");
+                    return;
+                }
+                Slog.d(TAG,"sendIntent(): device "+device+" state "+state);
+                am.setWiredDeviceConnectionState(device, state, headsetName);
+            } else {
+                Slog.d(TAG,"system not booted yet, call setWiredDeviceConnectionState later");
+            }
+        }
+    }
+
+    private final Handler mIntentHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+        Slog.d(TAG,"Headset detect: Inside handleMessage() for IntentHandler" + (String)msg.obj);
+            if (mSystemBooted) {
+            sendIntents((String)msg.obj);
+            } else {
+                Log.e(TAG, "system not booted yet, send headset intent later");
+                mHeadsetIntent = true;
+                mHeadsetName = (String)msg.obj;
+            }
+            mBroadcastWakeLock.release();
+        }
+    };
+
     /**
      * @return Whether music is being played right now.
      */
@@ -3722,8 +4306,26 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (keyCode == KeyEvent.KEYCODE_POWER) {
             policyFlags |= WindowManagerPolicy.FLAG_WAKE;
         }
-        final boolean isWakeKey = (policyFlags
-                & (WindowManagerPolicy.FLAG_WAKE | WindowManagerPolicy.FLAG_WAKE_DROPPED)) != 0;
+        boolean isWakeKey = (policyFlags
+                & (WindowManagerPolicy.FLAG_WAKE | WindowManagerPolicy.FLAG_WAKE_DROPPED)) != 0 ||
+                             ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) && mVolumeWakeScreen) ||
+                             ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) && mVolumeWakeScreen);
+
+            // volume-wake: heed to proximity sensor
+            final boolean isOffByProx = (mScreenOffReason == WindowManagerPolicy.OFF_BECAUSE_OF_PROX_SENSOR);
+            if (isWakeKey
+                    && (!mVolumeWakeScreen || isOffByProx)
+                    && ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))) {
+                isWakeKey = false;
+            }
+
+            // music is playing, don't wake the screen in case we need to skip track
+            if (isMusicActive()
+                    && mVolBtnMusicControls
+                    && mVolumeWakeScreen
+                    && isWakeKey
+                    && ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)))
+                isWakeKey = false;
 
         // Basic policy based on screen state and keyguard.
         // FIXME: This policy isn't quite correct.  We shouldn't care whether the screen
@@ -3743,10 +4345,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             result = 0;
             if (down && isWakeKey) {
                 if (keyguardActive) {
-                    // If the keyguard is showing, let it decide what to do with the wake key.
-                    mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode,
-                            mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED);
-                } else if ((keyCode != KeyEvent.KEYCODE_VOLUME_UP) && (keyCode != KeyEvent.KEYCODE_VOLUME_DOWN)) {
+                    // send power key code to wake the screen
+                    if((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) && isWakeKey) {
+                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(KeyEvent.KEYCODE_POWER,
+                                mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED);
+                    } else {
+                        // If the keyguard is showing, let it decide what to do with the wake key.
+                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode,
+                                mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED);
+                    }
+                } else {
                     // Otherwise, wake the device ourselves.
                     result |= ACTION_POKE_USER_ACTIVITY;
                 }
@@ -3755,38 +4363,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Handle special keys.
         switch (keyCode) {
-            case KeyEvent.KEYCODE_ENDCALL: {
-                result &= ~ACTION_PASS_TO_USER;
-                if (down) {
-                    ITelephony telephonyService = getTelephonyService();
-                    boolean hungUp = false;
-                    if (telephonyService != null) {
-                        try {
-                            hungUp = telephonyService.endCall();
-                        } catch (RemoteException ex) {
-                            Log.w(TAG, "ITelephony threw RemoteException", ex);
-                        }
-                    }
-                    interceptPowerKeyDown(!isScreenOn || hungUp);
-                } else {
-                    if (interceptPowerKeyUp(canceled)) {
-                        if ((mEndcallBehavior
-                                & Settings.System.END_BUTTON_BEHAVIOR_HOME) != 0) {
-                            if (goHome()) {
-                                break;
-                            }
-                        }
-                        if ((mEndcallBehavior
-                                & Settings.System.END_BUTTON_BEHAVIOR_SLEEP) != 0) {
-                            result = (result & ~ACTION_POKE_USER_ACTIVITY) | ACTION_GO_TO_SLEEP;
-                        }
-                    }
-                }
-                break;
-            }
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE: {
+                if (mVolBtnMusicControls && !down) {
+                    mHandler.removeMessages(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK);
+
+                    // delay handling volume events if mVolBtnMusicControls is desired
+                    if (!mIsLongPress && (result & ACTION_PASS_TO_USER) == 0)
+                        handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
+                }
                 if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                     if (down) {
                         if (isScreenOn && !mVolumeDownKeyTriggered
@@ -3854,39 +4440,59 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             Log.w(TAG, "ITelephony threw RemoteException", ex);
                         }
                     }
-                }
-                if (isMusicActive() && (result & ACTION_PASS_TO_USER) == 0) {
-                    if (mVolBtnMusicControls && down && (keyCode != KeyEvent.KEYCODE_VOLUME_MUTE)) {
-                        mIsLongPress = false;
-                        int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
+
+                    if (isMusicActive() && (result & ACTION_PASS_TO_USER) == 0) {
+                        // Care for long-press actions to skip tracks
+                        if (mVolBtnMusicControls) {
+                            // initialize long press flag to false for volume events
+                            mIsLongPress = false;
+                            // Use a message dispatcher to the Audio Service for track control
+                            // The dispatcher will set the long press flag once called
+                            int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
                                 KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PREVIOUS;
-                        Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,
+                            Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,
                                 new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), newKeyCode, 0));
-                        msg.setAsynchronous(true);
-                        mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
+                            msg.setAsynchronous(true);
+                            mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
+                        } else {
+                            // If music is playing but we decided not to pass the key to the
+                            // application, handle the volume change here.
+                            handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
+                        }
                         break;
-                    } else {
-                        if (mVolBtnMusicControls && !down) {
-                            mHandler.removeMessages(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK);
-                            if (mIsLongPress) {
+                    }
+                }
+                break;
+            }
+
+            case KeyEvent.KEYCODE_ENDCALL: {
+                result &= ~ACTION_PASS_TO_USER;
+                if (down) {
+                    ITelephony telephonyService = getTelephonyService();
+                    boolean hungUp = false;
+                    if (telephonyService != null) {
+                        try {
+                            hungUp = telephonyService.endCall();
+                        } catch (RemoteException ex) {
+                            Log.w(TAG, "ITelephony threw RemoteException", ex);
+                        }
+                    }
+                    interceptPowerKeyDown(!isScreenOn || hungUp);
+                } else {
+                    if (interceptPowerKeyUp(canceled)) {
+                        if ((mEndcallBehavior
+                                & Settings.System.END_BUTTON_BEHAVIOR_HOME) != 0) {
+                            if (goHome()) {
                                 break;
                             }
                         }
-                        if (!isScreenOn && !mVolumeWakeScreen) {
-                            handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
+                        if ((mEndcallBehavior
+                                & Settings.System.END_BUTTON_BEHAVIOR_SLEEP) != 0) {
+                            result = (result & ~ACTION_POKE_USER_ACTIVITY) | ACTION_GO_TO_SLEEP;
                         }
                     }
                 }
-                if (isScreenOn || !mVolumeWakeScreen) {
-                    break;
-                } else if (keyguardActive) {
-                    keyCode = KeyEvent.KEYCODE_POWER;
-                    mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode,
-                            mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED);
-                } else {
-                    result |= ACTION_POKE_USER_ACTIVITY;
-                    break;
-                }
+                break;
             }
 
             case KeyEvent.KEYCODE_POWER: {
@@ -4121,6 +4727,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         synchronized (mLock) {
             updateOrientationListenerLp();
             updateLockScreenTimeout();
+            mScreenOffReason = why;
         }
     }
 
@@ -4508,10 +5115,32 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     public void systemBooted() {
         synchronized (mLock) {
             mSystemBooted = true;
+            if (mHeadsetIntent) {
+                Log.e(TAG, "send headset intent after system booted");
+                sendIntents(mHeadsetName);
+            }
         }
     }
 
     ProgressDialog mBootMsgDialog = null;
+    /**
+     * name of package currently being dex optimized
+     * as shown through this.showBootMessage(msg, always);
+     */
+    static String currentPackageName;
+    public void setPackageName(String pkgName) {
+        if (pkgName == null) {
+            pkgName = "stop.looking.at.me.swan";
+        }
+        this.currentPackageName = pkgName;
+    }
+
+    // debugging 'Android is upgrading...' ProgressDialog
+    final boolean DEBUG_BOOTMSG = false;
+
+    // this method is called to create, if needed, and update boot ProgressDialog
+    // see @link frameworks/base/services/java/com/android/server/pm/
+    // PackageManagerService.performBootDexOpt()
 
     /** {@inheritDoc} */
     public void showBootMessage(final CharSequence msg, final boolean always) {
@@ -4558,6 +5187,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mBootMsgDialog.show();
                 }
                 mBootMsgDialog.setMessage(msg);
+                if (DEBUG_BOOTMSG) Log.d(TAG, "********** showBootMessage(" + msg +", " + always + ") updated ***********");
+                if (currentPackageName != null) {
+                    mBootMsgDialog.setTitle(msg);
+                    mBootMsgDialog.setMessage(currentPackageName);
+                    if (DEBUG_BOOTMSG) Log.d(TAG, "setTitle: " + msg + " setMessage: " + currentPackageName);
+                } else {
+                    if (DEBUG_BOOTMSG) Log.d(TAG, "failed; CURRENT_PACKAGE_NAME == null");
+                }
+                if (msg.equals(mContext.getResources().getString(R.string.android_upgrading_starting_apps))) {
+                    if (DEBUG_BOOTMSG) Log.d(TAG, "starting apps so we use normal layout");
+                    mBootMsgDialog.setTitle(R.string.android_upgrading_title);
+                    mBootMsgDialog.setMessage(mContext.getResources().getString(R.string.android_upgrading_starting_apps));
+
+                } else {
+                    if (DEBUG_BOOTMSG) Log.d(TAG, "not starting apps");
+                }
             }
         });
     }

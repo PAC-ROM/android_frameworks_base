@@ -49,6 +49,7 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
     protected String[] mLastDataIface = new String[20];
     boolean RILJ_LOGV = true;
     boolean RILJ_LOGD = true;
+    boolean skipCdmaSubcription = needsOldRilFeature("skipCdmaSubcription");
 
     private final int RIL_INT_RADIO_OFF = 0;
     private final int RIL_INT_RADIO_UNAVALIABLE = 1;
@@ -157,11 +158,9 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
         status.setUniversalPinState(p.readInt());
         status.setGsmUmtsSubscriptionAppIndex(p.readInt());
         status.setCdmaSubscriptionAppIndex(p.readInt());
-
         status.setImsSubscriptionAppIndex(p.readInt());
 
         int numApplications = p.readInt();
-
         // limit to maximum allowed applications
         if (numApplications > IccCardStatus.CARD_MAX_APPS) {
             numApplications = IccCardStatus.CARD_MAX_APPS;
@@ -178,14 +177,16 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
             ca.pin1_replaced = p.readInt();
             ca.pin1 = ca.PinStateFromRILInt(p.readInt());
             ca.pin2 = ca.PinStateFromRILInt(p.readInt());
-            p.readInt(); //remaining_count_pin1
-            p.readInt(); //remaining_count_puk1
-            p.readInt(); //remaining_count_pin2
-            p.readInt(); //remaining_count_puk2
+            if (!needsOldRilFeature("skippinpukcount")) {
+                p.readInt(); //remaining_count_pin1
+                p.readInt(); //remaining_count_puk1
+                p.readInt(); //remaining_count_pin2
+                p.readInt(); //remaining_count_puk2
+            }
             status.addApplication(ca);
         }
         int appIndex = -1;
-        if (mPhoneType == RILConstants.CDMA_PHONE) {
+        if (mPhoneType == RILConstants.CDMA_PHONE && !skipCdmaSubcription) {
             appIndex = status.getCdmaSubscriptionAppIndex();
             Log.d(LOG_TAG, "This is a CDMA PHONE " + appIndex);
         } else {
@@ -577,7 +578,7 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
         switch(response) {
             //case RIL_UNSOL_RESPONSE_RADIO_STATE_CHANGED: ret =  responseVoid(p); break;
             case RIL_UNSOL_RIL_CONNECTED: ret = responseInts(p); break;
-            case 1035: ret = responseVoid(p); break; // RIL_UNSOL_VOICE_RADIO_TECH_CHANGED
+            case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED: ret = responseVoid(p); break;
             case 1036: ret = responseVoid(p); break; // RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED
             case 1037: ret = responseVoid(p); break; // RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE
             case 1038: ret = responseVoid(p); break; // RIL_UNSOL_DATA_NETWORK_STATE_CHANGED
@@ -601,7 +602,7 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
 
                 notifyRegistrantsRilConnectionChanged(((int[])ret)[0]);
                 break;
-            case 1035:
+            case RIL_UNSOL_VOICE_RADIO_TECH_CHANGED:
             case 1036:
                 break;
             case 1037: // RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE
@@ -705,7 +706,7 @@ public class QualcommSharedRIL extends RIL implements CommandsInterface {
                         mRil.setRadioState(CommandsInterface.RadioState.RADIO_ON);
                     } else {
                         int appIndex = -1;
-                        if (mPhoneType == RILConstants.CDMA_PHONE) {
+                        if (mPhoneType == RILConstants.CDMA_PHONE && !skipCdmaSubcription) {
                             appIndex = status.getCdmaSubscriptionAppIndex();
                             Log.d(LOG_TAG, "This is a CDMA PHONE " + appIndex);
                         } else {
