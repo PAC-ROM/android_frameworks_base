@@ -52,6 +52,7 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -270,10 +271,10 @@ public class KeyguardHostView extends KeyguardViewBase {
         showPrimarySecurityScreen(false);
         updateSecurityViews();
 
-        if (Settings.System.getBoolean(getContext().getContentResolver(),
+        mExpandChallengeView = (View) findViewById(R.id.expand_challenge_handle);
+        if (mExpandChallengeView != null) {
+            if (Settings.System.getBoolean(getContext().getContentResolver(),
                 Settings.System.LOCKSCREEN_LONGPRESS_CHALLENGE, false)) {
-            mExpandChallengeView = (View) findViewById(R.id.expand_challenge_handle);
-            if (mExpandChallengeView != null) {
                 mExpandChallengeView.setOnLongClickListener(mFastUnlockClickListener);
             }
         }
@@ -284,6 +285,9 @@ public class KeyguardHostView extends KeyguardViewBase {
     private final OnLongClickListener mFastUnlockClickListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING
+                    | HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             showNextSecurityScreenOrFinish(false);
             return true;
         }
