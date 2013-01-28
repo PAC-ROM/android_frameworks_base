@@ -16,10 +16,6 @@
 
 package com.android.systemui.statusbar.tablet;
 
-import com.android.systemui.R;
-import com.android.systemui.statusbar.BaseStatusBar;
-import com.android.systemui.statusbar.DelegateViewHelper;
-
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
