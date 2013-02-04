@@ -194,7 +194,6 @@
     <string name="quick_settings_nfc_off_label">NFC desactivado</string>
     <string name="quick_settings_sync_label">Sincronización activada</string>
     <string name="quick_settings_sync_off_label">Sincronización desactivada</string>
-    <string name="quick_settings_gps">GPS</string>
     <string name="quick_settings_screen_sleep">Apagar pantalla</string>
     <string name="quick_settings_ringer_on">Sonido activado</string>
     <string name="quick_settings_ringer_off">Sonido desactivado</string>
