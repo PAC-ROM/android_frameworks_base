@@ -3100,12 +3100,6 @@ public final class Settings {
         public static final String NOTIFICATION_SOUND_LIMITER_THRESHOLD = "notification_sound_limiter_threshold";
 
         /**
-         * Show the pending notification counts as overlays on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
-
-        /**
          * Show the notification ticker (or not)
          * @hide
          */
