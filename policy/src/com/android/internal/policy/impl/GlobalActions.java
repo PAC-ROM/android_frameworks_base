@@ -132,6 +132,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasVibrator;
     private boolean mEnableNavBarHideToggle = true;
     private boolean mRebootMenu;
+    private boolean mShowRebootOnLock = true;
     private Profile mChosenProfile;
 
     /**
@@ -165,6 +166,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mAirplaneModeObserver);
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator != null && vibrator.hasVibrator();
+        
+        mShowRebootOnLock = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_DIALOG_SHOW_REBOOT_KEYGUARD, true);
     }
 
     /**
@@ -315,6 +319,18 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             new SinglePressAction(
                     com.android.internal.R.drawable.ic_lock_power_off,
                     R.string.global_action_power_off) {
+                
+                public boolean showDuringKeyguard() {
+                    if (mShowRebootOnLock) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                public boolean showBeforeProvisioning() {
+                    return true;
+                }
 
                 public void onPress() {
                     // shutdown by making sure radio and power are handled accordingly.
@@ -323,14 +339,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
                 public boolean onLongPress() {
                     mWindowManagerFuncs.rebootSafeMode(true);
-                    return true;
-                }
-
-                public boolean showDuringKeyguard() {
-                    return true;
-                }
-
-                public boolean showBeforeProvisioning() {
                     return true;
                 }
             });
@@ -350,7 +358,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     }
 
                     public boolean showDuringKeyguard() {
-                        return true;
+                        if (mShowRebootOnLock) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
 
                     public boolean showBeforeProvisioning() {
