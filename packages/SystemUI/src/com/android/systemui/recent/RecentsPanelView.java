@@ -57,7 +57,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -91,7 +90,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private ViewHolder mItemToAnimateInWhenWindowAnimationIsFinished;
     private boolean mWaitingForWindowAnimation;
 
-    private Button mRecentsKillAllButton;
+    private ImageView mRecentsKillAllButton;
     private LinearColorBar mRamUsageBar;
 
     private RecentTasksLoader mRecentTasksLoader;
@@ -373,6 +372,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             // if there are no apps, bring up a "No recent apps" message
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(getTasks() == 0 ? View.VISIBLE : View.INVISIBLE);
+            mRecentsKillAllButton.setVisibility(getTasks() == 0 ? View.GONE : View.VISIBLE);
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -497,16 +497,16 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             }
         }
 
-        mRecentsKillAllButton = (Button) findViewById(R.id.recents_kill_all_button);
+        mRecentsKillAllButton = (ImageView) findViewById(R.id.recents_kill_all_button);
         if (mRecentsKillAllButton != null){
-                mRecentsKillAllButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        killAllRecentApps();
-                    }
-                });
+            mRecentsKillAllButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mRecentsContainer.removeAllViewsInLayout();
+                }
+            });
         }
-       UpdateRamBar();
+        UpdateRamBar();
     }
 
     @Override
@@ -860,23 +860,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             }
         });
         popup.show();
-    }
-
-    private void killAllRecentApps(){
-        final ActivityManager am = (ActivityManager)
-                mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        if(!mRecentTaskDescriptions.isEmpty()){
-            for(TaskDescription ad : mRecentTaskDescriptions){
-                am.removeTask(ad.persistentTaskId, ActivityManager.REMOVE_TASK_KILL_PROCESS);
-                // Accessibility feedback
-                setContentDescription(
-                        mContext.getString(R.string.accessibility_recents_item_dismissed, ad.getLabel()));
-                sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
-                setContentDescription(null);
-            }
-            mRecentTaskDescriptions.clear();
-        }
-        dismissAndGoBack();
     }
 
     private void UpdateRamBar(){
