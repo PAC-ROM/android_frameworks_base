@@ -142,7 +142,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
+public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+        NetworkController.UpdateUIListener {
     static final String TAG = "PhoneStatusBar";
     public static final boolean DEBUG = BaseStatusBar.DEBUG;
     public static final boolean SPEW = false;
@@ -915,6 +916,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         // listen for USER_SETUP_COMPLETE setting (per-user)
         resetUserSetupObserver();
 
+        mNetworkController.setListener(this);
+
         return mStatusBarView;
     }
 
@@ -1445,6 +1448,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         if (!mShowCarrierInPanel || mCarrierAndWifiView == null) {
             return;
         }
+
+    /**
+     * Listen for UI updates and refresh layout.
+     */
+    public void onUpdateUI() {
+        updateCarrierLabelVisibility(true);
+    }
+
+    protected void updateCarrierLabelVisibility(boolean force) {
+        if (!mShowCarrierInPanel) return;
         // The idea here is to only show the carrier label when there is enough room to see it,
         // i.e. when there aren't enough notifications to fill the panel.
         if (SPEW) {
