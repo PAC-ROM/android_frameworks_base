@@ -3007,13 +3007,6 @@ public final class Settings {
         public static final String LOCKSCREEN_SHORTCUTS = "lockscreen_shortcuts";
 
         /**
-         * Allows to define the limit notifcations once per X seconds
-         * The value is a an integer.
-         * @hide
-         */
-        public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
-
-        /**
          * Show the notification ticker (or not)
          * @hide
          */
