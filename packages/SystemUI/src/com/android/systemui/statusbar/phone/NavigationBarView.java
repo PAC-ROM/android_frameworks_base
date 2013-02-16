@@ -21,11 +21,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.app.StatusBarManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
@@ -79,14 +75,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     final static boolean SLIPPERY_WHEN_DISABLED= true;
 
     final static boolean ANIMATE_HIDE_TRANSITION = false; // turned off because it introduces unsightly delay when videos goes to full screen
-    final static String NAVBAR_EDIT = "android.intent.action.NAVBAR_EDIT";
-
-    private static boolean EDIT_MODE;
-    private NavbarEditor mEditBar;
-    private NavBarReceiver mNavBarReceiver;
-    private OnClickListener mRecentsClickListener;
-    private OnTouchListener mRecentsPreloadListener;
-    private OnTouchListener mHomeSearchActionListener;
 
     protected IStatusBarService mBarService;
     final Display mDisplay;
@@ -166,33 +154,20 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     private H mHandler = new H();
 
-    public static boolean getEditMode() {
-        return EDIT_MODE;
-    }
-    
-    protected void setListener(OnClickListener RecentsClickListener, OnTouchListener RecentsPreloadListener, OnTouchListener HomeSearchActionListener) {
-        mRecentsClickListener = RecentsClickListener;
-        mRecentsPreloadListener = RecentsPreloadListener;
-        mHomeSearchActionListener = HomeSearchActionListener;
+    public View getRecentsButton() {
+        return mCurrentView.findViewById(R.id.recent_apps);
     }
 
-    protected void toggleButtonListener(boolean enable) {
-        View recentView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_RECENT);
-        if (recentView != null) {
-            recentView.setOnClickListener(enable ? mRecentsClickListener : null);
-            recentView.setOnTouchListener(enable ? mRecentsPreloadListener : null);
-        }
-        View homeView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_HOME);
-        if (homeView != null) {
-            homeView.setOnTouchListener(enable ? mHomeSearchActionListener : null);
-        }
+    public View getMenuButton() {
+        return mCurrentView.findViewById(R.id.menu);
     }
 
-    private void setButtonWithTagVisibility(String string, int visibility) {
-        View findView = mCurrentView.findViewWithTag(string);
-        if (findView != null) {
-            findView.setVisibility(visibility);
-        }
+    public View getBackButton() {
+        return mCurrentView.findViewById(R.id.back);
+    }
+
+    public View getHomeButton() {
+        return mCurrentView.findViewById(R.id.home);
     }
 
     // for when home is disabled, but search isn't
@@ -215,14 +190,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mVertical = false;
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
-        updateResources();
 
-        mNavBarReceiver = new NavBarReceiver();
-        mContext.registerReceiver(mNavBarReceiver, new IntentFilter(NAVBAR_EDIT));
-    }
-
-    protected void updateResources() {
-        final Resources res = mContext.getResources();
         mBackIcon = res.getDrawable(R.drawable.ic_sysbar_back);
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
@@ -284,36 +252,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         }
     }
 
-    public class NavBarReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean edit = intent.getBooleanExtra("edit", false);
-            boolean save = intent.getBooleanExtra("save", false);
-            if (edit != EDIT_MODE) {
-                EDIT_MODE = edit;
-                if (EDIT_MODE) {
-                    toggleButtonListener(false);
-                    mEditBar.setupListeners();
-                    mEditBar.updateKeys();
-                } else {
-                    mEditBar.dismissDialog();
-                    if (save) {
-                        mEditBar.saveKeys();
-                    }
-                    mEditBar.reInflate();
-                    mEditBar = new NavbarEditor((ViewGroup) mCurrentView.findViewById(R.id.container), mVertical);
-                    mEditBar.updateKeys();
-                    toggleButtonListener(true);
-                    if (save) {
-                        mEditBar.updateLowLights(mCurrentView);
-                    }
-                    ((ViewGroup) mCurrentView.findViewById(R.id.mid_nav_buttons)).setLayoutTransition(
-                            new LayoutTransition());
-                }
-            }
-        }
-    }
-
     public void notifyScreenOn(boolean screenOn) {
         mScreenOn = screenOn;
         setDisabledFlags(mDisabledFlags, true);
@@ -345,6 +283,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, force);
     }
 
+
     @Override
     public void setNavigationIconHints(int button, int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
@@ -356,6 +295,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         }
 
         mNavigationIconHints = hints;
+
         getBackButton().setAlpha(
             (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_NOP)) ? 0.5f : 1.0f);
         getHomeButton().setAlpha(
@@ -374,6 +314,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                     ? (mVertical ? mRecentsAltLandIcon : mRecentsAltIcon)
                     : (mVertical ? mRecentsLandIcon : mRecentsIcon));
         }
+
         setDisabledFlags(mDisabledFlags, true);
     }
 
@@ -411,13 +352,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             }
         }
 
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_BACK, disableBack ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_HOME, disableHome ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_RECENT, disableRecent ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_RECENT, disableRecent ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_ALWAYS_MENU, disableRecent ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_MENU_BIG, disableRecent ? View.INVISIBLE : View.VISIBLE);
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_SEARCH, disableRecent ? View.INVISIBLE : View.VISIBLE);
+        getBackButton()   .setVisibility(disableBack       ? View.INVISIBLE : View.VISIBLE);
+        getHomeButton()   .setVisibility(disableHome       ? View.INVISIBLE : View.VISIBLE);
+        getRecentsButton().setVisibility(disableRecent     ? View.INVISIBLE : View.VISIBLE);
+
         getSearchLight().setVisibility((disableHome && !disableSearch) ? View.VISIBLE : View.GONE);
     }
 
@@ -446,7 +384,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
         mShowMenu = show;
 
-        setButtonWithTagVisibility(NavbarEditor.NAVBAR_CONDITIONAL_MENU, mShowMenu ? View.VISIBLE : View.INVISIBLE);
+        getMenuButton().setVisibility(mShowMenu ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void setLowProfile(final boolean lightsOut) {
@@ -510,31 +448,30 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     @Override
     public void onFinishInflate() {
-        mRotatedViews[Configuration.ORIENTATION_PORTRAIT] = findViewById(R.id.rot0);
-        mRotatedViews[Configuration.ORIENTATION_LANDSCAPE] = findViewById(R.id.rot90);
-        mCurrentView = mRotatedViews[mContext.getResources().getConfiguration().orientation];
+        mRotatedViews[Surface.ROTATION_0] = 
+        mRotatedViews[Surface.ROTATION_180] = findViewById(R.id.rot0);
+
+        mRotatedViews[Surface.ROTATION_90] = findViewById(R.id.rot90);
+        
+        mRotatedViews[Surface.ROTATION_270] = NAVBAR_ALWAYS_AT_RIGHT
+                                                ? findViewById(R.id.rot90)
+                                                : findViewById(R.id.rot270);
+
+
         if (ColorUtils.getPerAppColorState(mContext)) {
             updateColor();
         }
+
+        mCurrentView = mRotatedViews[Surface.ROTATION_0];
     }
 
     public void reorient() {
-        int rot = mContext.getResources().getConfiguration().orientation;
-        for (int i=1; i<3; i++) {
+        final int rot = mDisplay.getRotation();
+        for (int i=0; i<4; i++) {
             mRotatedViews[i].setVisibility(View.GONE);
         }
         mCurrentView = mRotatedViews[rot];
         mCurrentView.setVisibility(View.VISIBLE);
-        if (NavbarEditor.isDevicePhone()) {
-            rot = mDisplay.getRotation();
-            mVertical = (rot == Surface.ROTATION_90 || rot == Surface.ROTATION_270);
-        } else {
-            mVertical = getWidth() > 0 && getHeight() > getWidth();
-        }
-        mEditBar = new NavbarEditor((ViewGroup) mCurrentView.findViewById(R.id.container), mVertical);
-        mEditBar.updateKeys();
-        mEditBar.updateLowLights(mCurrentView);
-        toggleButtonListener(true);
 
         mDeadZone = (DeadZone) mCurrentView.findViewById(R.id.deadzone);
 
@@ -556,12 +493,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        ViewGroup mid_nav = (ViewGroup) mCurrentView.findViewById(R.id.mid_nav_buttons);
-        View vViews[] = new View[mid_nav.getChildCount()];
-        for (int cc = 0;cc < mid_nav.getChildCount(); cc++) {
-            vViews[cc] = mid_nav.getChildAt(cc);
-        }
-        mDelegateHelper.setInitialTouchRegion(vViews);
+        mDelegateHelper.setInitialTouchRegion(getHomeButton(), getBackButton(), getRecentsButton());
     }
 
     @Override
@@ -570,7 +502,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                     "onSizeChanged: (%dx%d) old: (%dx%d)", w, h, oldw, oldh));
 
         final boolean newVertical = w > 0 && h > w;
-        System.out.println(newVertical + " vs " + mVertical);
         if (newVertical != mVertical) {
             mVertical = newVertical;
             //Slog.v(TAG, String.format("onSizeChanged: h=%d, w=%d, vert=%s", h, w, mVertical?"y":"n"));
@@ -601,18 +532,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         return super.onInterceptTouchEvent(ev);
     }
     */
-
-    private View getHomeButton() {
-        return mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_HOME);
-    }
-
-    private View getRecentsButton() {
-        return mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_RECENT);
-    }
-
-    private View getBackButton() {
-        return mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_BACK);
-    }
+        
 
     private String getResourceName(int resId) {
         if (resId != 0) {
@@ -670,9 +590,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                         mLowProfile ? "true" : "false",
                         mShowMenu ? "true" : "false"));
 
-        final View back = mCurrentView.findViewWithTag("back");
-        final View home = mCurrentView.findViewWithTag("home");
-        final View recent = mCurrentView.findViewWithTag("recent");
+        final View back = getBackButton();
+        final View home = getHomeButton();
+        final View recent = getRecentsButton();
+        final View menu = getMenuButton();
 
         pw.println("      back: "
                 + PhoneStatusBar.viewInfo(back)
@@ -685,6 +606,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         pw.println("      rcnt: "
                 + PhoneStatusBar.viewInfo(recent)
                 + " " + visibilityToString(recent.getVisibility())
+                );
+        pw.println("      menu: "
+                + PhoneStatusBar.viewInfo(menu)
+                + " " + visibilityToString(menu.getVisibility())
                 );
         pw.println("    }");
     }
