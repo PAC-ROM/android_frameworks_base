@@ -121,9 +121,6 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final int SCORE_DISPLAY_THRESHOLD = Notification.PRIORITY_MIN
             * NOTIFICATION_PRIORITY_MULTIPLIER;
 
-    private HashMap<String, Long> mNotifSoundLimiter = new HashMap<String, Long>();
-    private long mNotifSoundLimiterThreshold = -1;
-
     private static final boolean ENABLE_BLOCKED_NOTIFICATIONS = true;
     private static final boolean ENABLE_BLOCKED_TOASTS = true;
 
@@ -325,6 +322,10 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
         writeBlockDb();
     }
+
+
+    private HashMap<String, Long> mAnnoyingNotifications = new HashMap<String, Long>();
+    private long mAnnoyingNotificationThreshold = -1;
 
     private static String idDebugString(Context baseContext, String packageName, int id) {
         Context c = null;
@@ -634,7 +635,7 @@ public class NotificationManagerService extends INotificationManager.Stub
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_LIGHT_PULSE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_SOUND_LIMITER_THRESHOLD), false, this);
+                    Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_LIGHT_OFF), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -661,8 +662,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                 updateNotificationPulse();
             }
 
-            mNotifSoundLimiterThreshold = Settings.System.getLong(resolver,
-                    Settings.System.NOTIFICATION_SOUND_LIMITER_THRESHOLD, 0);
+            mAnnoyingNotificationThreshold = Settings.System.getLong(resolver,
+                    Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0);
 
             Resources resources = mContext.getResources();
             mDefaultNotificationColor = Settings.System
@@ -1229,7 +1230,7 @@ public class NotificationManagerService extends INotificationManager.Stub
             if (((mDisabledNotifications & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) == 0)
                     && (!(old != null
                         && (notification.flags & Notification.FLAG_ONLY_ALERT_ONCE) != 0 ))
-                    && !isOverNotifSoundThreshold(pkg)
+                    && !notificationIsAnnoying(pkg)
                     && (r.userId == UserHandle.USER_ALL ||
                         (r.userId == userId && r.userId == currentUser))
                     && mSystemReady) {
@@ -1335,18 +1336,22 @@ public class NotificationManagerService extends INotificationManager.Stub
         idOut[0] = id;
     }
 
-    private boolean isOverNotifSoundThreshold(String pkg) {
-        if (mNotifSoundLimiterThreshold <= 0) return false;
+    private boolean notificationIsAnnoying(String pkg) {
+        if (mAnnoyingNotificationThreshold <= 0) {
+            return false;
+        }
 
         // Skip framework
-        if ("android".equals(pkg)) return false;
+        if ("android".equals(pkg)) {
+            return false;
+        }
 
         long currentTime = System.currentTimeMillis();
-        if (mNotifSoundLimiter.containsKey(pkg)
-                && (currentTime - mNotifSoundLimiter.get(pkg) < mNotifSoundLimiterThreshold)) {
+        if (mAnnoyingNotifications.containsKey(pkg)
+                && (currentTime - mAnnoyingNotifications.get(pkg) < mAnnoyingNotificationThreshold)) {
             return true;
         } else {
-            mNotifSoundLimiter.put(pkg, currentTime);
+            mAnnoyingNotifications.put(pkg, currentTime);
             return false;
         }
     }
