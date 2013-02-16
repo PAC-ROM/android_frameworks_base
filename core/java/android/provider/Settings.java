@@ -2943,13 +2943,6 @@ public final class Settings {
         public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
         /**	
-         * Allows lockscreen to be rotated
-         * The value is boolean (1 or 0).
-         * @hide
-         */
-        public static final String LOCKSCREEN_ALLOW_ROTATION = "lockscreen_allow_rotation";
-
-        /**	
          * Allows lockscreen to show homescreen widgets
          * The value is boolean (1 or 0).
          * @hide
