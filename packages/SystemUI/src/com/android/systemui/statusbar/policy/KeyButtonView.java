@@ -123,10 +123,6 @@ public class KeyButtonView extends ImageView {
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
 
-        clearColorFilter();
-        BUTTON_QUIESCENT_ALPHA = 0.70f;
-        setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
-
         // Only watch for per app color changes when the setting is in check
         if (ColorUtils.getPerAppColorState(mContext)) {
 
@@ -156,9 +152,8 @@ public class KeyButtonView extends ImageView {
                 Settings.System.NAV_BUTTON_COLOR);
         if (!colorInfo.lastColorString.equals(mLastButtonColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
-                clearColorFilter();
-                BUTTON_QUIESCENT_ALPHA = 0.70f;
-                setDrawingAlpha(BUTTON_QUIESCENT_ALPHA);
+                SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+                settingsObserver.observe();
             } else {
                 setColorFilter(ColorUtils.extractRGB(colorInfo.lastColor) | 0xFF000000, PorterDuff.Mode.SRC_ATOP);
                 BUTTON_QUIESCENT_ALPHA = (float)ColorUtils.extractAlpha(colorInfo.lastColor) / 255f;
@@ -173,7 +168,8 @@ public class KeyButtonView extends ImageView {
                 Settings.System.NAV_GLOW_COLOR);
         if (!colorInfo.lastColorString.equals(mLastGlowColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
-                mGlowBG.clearColorFilter();
+                SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+                settingsObserver.observe();
             } else {
                 mGlowBG.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_ATOP);
             }
