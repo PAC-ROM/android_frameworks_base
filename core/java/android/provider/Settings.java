@@ -2761,12 +2761,6 @@ public final class Settings {
         public static final String SCREEN_LOCK_SLIDE_SCREENOFF_DELAY = "screen_lock_slide_screenoff_delay";
 
         /**
-         * Whether to use the custom quick unlock screen control
-         * @hide
-         */
-        public static final String LOCKSCREEN_QUICK_UNLOCK_CONTROL = "lockscreen_quick_unlock_control";
-
-        /**
          * Whether to unlock the menu key.  The value is boolean (1 or 0).
          * @hide
          */
