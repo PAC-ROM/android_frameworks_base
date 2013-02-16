@@ -175,6 +175,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     private TransitionDrawable mTransition;
     public ColorUtils.ColorSettingInfo mLastIconColor;
     public ColorUtils.ColorSettingInfo mLastBackgroundColor;
+    protected int mClockColor = com.android.internal.R.color.holo_blue_light;
 
     // UI-specific methods
 
@@ -436,6 +437,9 @@ public abstract class BaseStatusBar extends SystemUI implements
             mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});
             mBarView.setBackground(mTransition);
 
+            TextSettingsObserver textObserver = new TextSettingsObserver(new Handler());
+            textObserver.observe();
+
             mLastIconColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
             mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, ExtendedPropertiesUtils.isTablet()
                     ? Settings.System.NAV_BAR_COLOR : Settings.System.STATUS_BAR_COLOR);
@@ -588,8 +592,13 @@ public abstract class BaseStatusBar extends SystemUI implements
         ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
                 Settings.System.STATUS_ICON_COLOR);
         if (!colorInfo.lastColorString.equals(mLastIconColor.lastColorString)) {
-            if(mClock != null) mClock.setTextColor(colorInfo.lastColor);
-            if(mCClock != null) mCClock.setTextColor(colorInfo.lastColor);
+            if (colorInfo.isLastColorNull) {
+                TextSettingsObserver textObserver = new TextSettingsObserver(new Handler());
+                textObserver.observe();
+            } else {
+                if(mClock != null) mClock.setTextColor(colorInfo.lastColor);
+                if(mCClock != null) mCClock.setTextColor(colorInfo.lastColor);
+            }
             if(mSignalCluster != null) mSignalCluster.setColor(colorInfo);
             if(mBatteryController != null) mBatteryController.setColor(colorInfo);
             if(mSbBatteryController != null) mSbBatteryController.setColor(colorInfo);
@@ -1548,5 +1557,38 @@ public abstract class BaseStatusBar extends SystemUI implements
     public boolean inKeyguardRestrictedInputMode() {
         KeyguardManager km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
         return km.inKeyguardRestrictedInputMode();
+    }
+
+    private final class TextSettingsObserver extends ContentObserver {
+        TextSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_CLOCK_COLOR), false,
+                    this);
+            updateTextColor();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateTextColor();
+        }
+    }
+
+    protected void updateTextColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mClockColor = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_COLOR,
+                0xFF33B5E5);
+
+        if (mClockColor == Integer.MIN_VALUE) {
+            // flag to reset the color
+            mClockColor = 0xFF33B5E5;
+        }
+        if(mClock != null) mClock.setTextColor(mClockColor);
+        if(mCClock != null) mCClock.setTextColor(mClockColor);
     }
 }

@@ -80,8 +80,6 @@ public class Clock extends TextView {
 
     protected int mClockStyle = STYLE_CLOCK_RIGHT;
 
-    protected int mClockColor = com.android.internal.R.color.holo_blue_light;
-
     private Context mContext;
     private boolean mShowAlways;
 
@@ -97,9 +95,6 @@ public class Clock extends TextView {
                     false, this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_CLOCK_STYLE), false,
-                    this);
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUSBAR_CLOCK_COLOR), false,
                     this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_CLOCK_WEEKDAY), false,
@@ -188,8 +183,6 @@ public class Clock extends TextView {
 
     protected void updateParameters() {
         ContentResolver resolver = mContext.getContentResolver();
-        int defaultColor = getResources().getColor(
-                com.android.internal.R.color.holo_blue_light);
 
         mAmPmStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE, AM_PM_STYLE_GONE);   
@@ -198,14 +191,6 @@ public class Clock extends TextView {
         mWeekdayStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_WEEKDAY, WEEKDAY_STYLE_GONE);
         mClockFormatString = null;
-
-        mClockColor = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_CLOCK_COLOR, defaultColor);
-        if (mClockColor == Integer.MIN_VALUE) {
-            // flag to reset the color
-            mClockColor = defaultColor;
-        }
-        setTextColor(mClockColor);
 
         updateClockVisibility();
     }
