@@ -39,6 +39,8 @@ public class WifiText extends TextView {
 
     private ColorUtils.ColorSettingInfo mLastTextColor;
 
+    private SettingsObserver mSettingsObserver;
+
     public WifiText(Context context) {
         this(context, null);
     }
@@ -102,8 +104,8 @@ public class WifiText extends TextView {
         if (!mAttached) {
             mAttached = true;
             mHandler = new Handler();
-            SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-            settingsObserver.observe();
+            mSettingsObserver = new SettingsObserver(mHandler);
+            mSettingsObserver.observe();
             mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
             mContext.registerReceiver(rssiReceiver, new IntentFilter(WifiManager.RSSI_CHANGED_ACTION));
             updateSettings();
@@ -115,7 +117,8 @@ public class WifiText extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             mAttached = false;
-           mContext.unregisterReceiver(rssiReceiver);
+            mContext.unregisterReceiver(rssiReceiver);
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
         }
     }
 

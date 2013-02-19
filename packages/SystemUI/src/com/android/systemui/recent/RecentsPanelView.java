@@ -305,7 +305,20 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRecentsActivity = (RecentsActivity) context;
         a.recycle();
         mSettingsObserver = new SettingsObserver(mHandler);
+        updateSettings();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         mSettingsObserver.observe();
+        updateSettings();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+        super.onDetachedFromWindow();
     }
 
     public int numItemsInOneScreenful() {
