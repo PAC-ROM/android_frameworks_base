@@ -556,10 +556,11 @@
     <string name="quick_settings_usb_tether_on_label">Tethering</string>
     <string name="quick_settings_wifiap">Wi-Fi AP</string>
     <string name="quick_settings_wifiap_off">Wi-Fi AP off</string>
-    <string name="quick_settings_lte">LTE</string>
-    <string name="quick_settings_lte_off">LTE off</string>
     <string name="quick_settings_volume">Volume</string>
     <string name="quick_settings_quiethours">Quiet hours</string>
+    <string name="quick_settings_quiethours_off">Quiet hours off</string>
+    <string name="quick_settings_lte">LTE</string>
+    <string name="quick_settings_lte_off">LTE off</string>
     <string name="quick_settings_pib_label">PIB</string>
     <string name="quick_settings_pib_on_label">PIB On</string>
     <string name="quick_settings_pib_off_label">PIB Off</string>

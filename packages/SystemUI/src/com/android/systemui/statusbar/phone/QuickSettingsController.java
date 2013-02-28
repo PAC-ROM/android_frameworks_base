@@ -25,10 +25,12 @@ import static com.android.internal.util.cm.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.cm.QSConstants.TILE_DELIMITER;
 import static com.android.internal.util.cm.QSConstants.TILE_GPS;
 import static com.android.internal.util.cm.QSConstants.TILE_LOCKSCREEN;
+import static com.android.internal.util.cm.QSConstants.TILE_LTE;
 import static com.android.internal.util.cm.QSConstants.TILE_MOBILEDATA;
 import static com.android.internal.util.cm.QSConstants.TILE_NETWORKMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_NFC;
 import static com.android.internal.util.cm.QSConstants.TILE_PROFILE;
+import static com.android.internal.util.cm.QSConstants.TILE_QUIETHOURS;
 import static com.android.internal.util.cm.QSConstants.TILE_RINGER;
 import static com.android.internal.util.cm.QSConstants.TILE_SCREENTIMEOUT;
 import static com.android.internal.util.cm.QSConstants.TILE_SETTINGS;
@@ -37,7 +39,6 @@ import static com.android.internal.util.cm.QSConstants.TILE_SYNC;
 import static com.android.internal.util.cm.QSConstants.TILE_TORCH;
 import static com.android.internal.util.cm.QSConstants.TILE_USER;
 import static com.android.internal.util.cm.QSConstants.TILE_VOLUME;
-import static com.android.internal.util.cm.QSConstants.TILE_QUIETHOURS;
 import static com.android.internal.util.cm.QSConstants.TILE_WIFI;
 import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_DESKTOPMODE;
@@ -47,6 +48,7 @@ import static com.android.internal.util.cm.QSUtils.deviceSupportsBluetooth;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsTelephony;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsUsbTether;
 import static com.android.internal.util.cm.QSUtils.systemProfilesEnabled;
+import static com.android.internal.util.cm.QSUtils.deviceSupportsLte;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -71,12 +73,14 @@ import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
 import com.android.systemui.quicksettings.GPSTile;
 import com.android.systemui.quicksettings.InputMethodTile;
+import com.android.systemui.quicksettings.LteTile;
 import com.android.systemui.quicksettings.MobileNetworkTile;
 import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.ProfileTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
+import com.android.systemui.quicksettings.QuietHoursTile;
 import com.android.systemui.quicksettings.RingerModeTile;
 import com.android.systemui.quicksettings.ScreenTimeoutTile;
 import com.android.systemui.quicksettings.SleepScreenTile;
@@ -86,7 +90,6 @@ import com.android.systemui.quicksettings.TorchTile;
 import com.android.systemui.quicksettings.UsbTetherTile;
 import com.android.systemui.quicksettings.UserTile;
 import com.android.systemui.quicksettings.VolumeTile;
-import com.android.systemui.quicksettings.QuietHoursTile;
 import com.android.systemui.quicksettings.WiFiDisplayTile;
 import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
@@ -140,6 +143,7 @@ public class QuickSettingsController {
         // Filter items not compatible with device
         boolean bluetoothSupported = deviceSupportsBluetooth();
         boolean telephonySupported = deviceSupportsTelephony(mContext);
+        boolean lteSupported = deviceSupportsLte(mContext);
 
         if (!bluetoothSupported) {
             TILES_DEFAULT.remove(TILE_BLUETOOTH);
@@ -149,6 +153,10 @@ public class QuickSettingsController {
             TILES_DEFAULT.remove(TILE_WIFIAP);
             TILES_DEFAULT.remove(TILE_MOBILEDATA);
             TILES_DEFAULT.remove(TILE_NETWORKMODE);
+        }
+
+        if (!lteSupported) {
+            TILES_DEFAULT.remove(TILE_LTE);
         }
 
         // Read the stored list of tiles
@@ -202,15 +210,15 @@ public class QuickSettingsController {
                 qs = new TorchTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_SLEEP)) {
                 qs = new SleepScreenTile(mContext, inflater, mContainerView, this);
-            } else if (tile.equals(TILE_NFC)) {
-                // User cannot add the NFC tile if the device does not support it
-                // No need to check again here
-                qs = new NfcTile(mContext, inflater, mContainerView, this);
-             } else if (tile.equals(TILE_PROFILE)) {
+            } else if (tile.equals(TILE_PROFILE)) {
                 mTileStatusUris.add(Settings.System.getUriFor(Settings.System.SYSTEM_PROFILES_ENABLED));
                 if (systemProfilesEnabled(resolver)) {
                     qs = new ProfileTile(mContext, inflater, mContainerView, this);
                 }
+            } else if (tile.equals(TILE_NFC)) {
+                // User cannot add the NFC tile if the device does not support it
+                // No need to check again here
+                qs = new NfcTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_DESKTOPMODE)) {
                 qs = new DesktopModeTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_HYBRID)) {
@@ -219,6 +227,8 @@ public class QuickSettingsController {
                 qs = new TogglePibTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_VOLUME)) {
                 qs = new VolumeTile(mContext, inflater, mContainerView, this, mHandler);
+            } else if (tile.equals(TILE_LTE)) {
+                qs = new LteTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_QUIETHOURS)) {
                 qs = new QuietHoursTile(mContext, inflater, mContainerView, this);
             }
