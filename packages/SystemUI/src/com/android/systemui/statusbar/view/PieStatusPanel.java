@@ -37,12 +37,14 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -63,6 +65,7 @@ public class PieStatusPanel {
     public static final int QUICK_SETTINGS_PANEL = 1;
 
     private Context mContext;
+    private View mContentHeader;
     private ScrollView mScrollView;
     private View mClearButton;
     private View mContentFrame;
@@ -89,6 +92,8 @@ public class PieStatusPanel {
 
         mPanelParents[NOTIFICATIONS_PANEL] = (ViewGroup) mNotificationPanel.getParent();
         mPanelParents[QUICK_SETTINGS_PANEL] = (ViewGroup) mQS.getParent();
+
+        mContentHeader = (View) mPanel.getBar().mContainer.findViewById(R.id.content_header);
 
         mContentFrame = (View) mPanel.getBar().mContainer.findViewById(R.id.content_frame);
         mScrollView = (ScrollView) mPanel.getBar().mContainer.findViewById(R.id.content_scroll);
@@ -173,7 +178,7 @@ public class PieStatusPanel {
                             public void run() {
                                 try {
                                     mNotificationPanel.setViewRemoval(true);
-                                    clearAll();
+                                    mPanel.getBar().getService().onClearAllNotifications();
                                 } catch (Exception ex) { }
                             }
                         };
@@ -199,7 +204,8 @@ public class PieStatusPanel {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                hideNotificationsPanel();
+                                mPostCollapseCleanup.run();
+                                hidePanels(true);
                             }
                         }, totalDelay + 225);
                     }
@@ -270,41 +276,6 @@ public class PieStatusPanel {
         hidePanel(mNotificationPanel);
     }
 
-    public void clearAll(){
-        if (mNotificationData != null) {
-            final boolean any = mNotificationData.size() > 0;
-            final boolean clearable = any && mNotificationData.hasClearableItems();
-            if (mCurrentViewState == QUICK_SETTINGS_PANEL) {
-                return; 
-            } else if (mClearButton.isShown()) {
-                if (clearable != (mClearButton.getAlpha() == 1.0f)) {
-                    ObjectAnimator clearAnimation = ObjectAnimator.ofFloat(
-                        mClearButton, "alpha", clearable ? 1.0f : 0.0f).setDuration(250);
-                    clearAnimation.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (mClearButton.getAlpha() <= 0.0f) {
-                                mClearButton.setVisibility(View.INVISIBLE);
-                            }
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            if (mClearButton.getAlpha() <= 0.0f) {
-                                mClearButton.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    });
-                    clearAnimation.start();
-                }
-            } else {
-                mClearButton.setAlpha(clearable ? 1.0f : 0.0f);
-                mClearButton.setVisibility(clearable ? View.VISIBLE : View.INVISIBLE);
-            }
-            mClearButton.setEnabled(clearable);
-        }
-    }
-
     private void showPanel(View panel) {
         mContentFrame.setBackgroundColor(0);
         ValueAnimator alphAnimation  = ValueAnimator.ofInt(0, 1);
@@ -319,6 +290,11 @@ public class PieStatusPanel {
         alphAnimation.setDuration(600);
         alphAnimation.setInterpolator(new DecelerateInterpolator());
         alphAnimation.start();
+
+        AlphaAnimation alphaUp = new AlphaAnimation(0, 1);
+        alphaUp.setFillAfter(true);
+        alphaUp.setDuration(1000);
+        mContentHeader.startAnimation(alphaUp);
 
         ViewGroup parent = getPanelParent(panel);
         parent.removeAllViews();
@@ -343,6 +319,7 @@ public class PieStatusPanel {
     public void updatePanelConfiguration() {
         int padding = mContext.getResources().getDimensionPixelSize(R.dimen.pie_panel_padding);
         mScrollView.setPadding(padding,0,padding,0);
+        mContentHeader.setPadding(padding,0,padding,0);
     }
 
     private void ShowClearAll(boolean show){
