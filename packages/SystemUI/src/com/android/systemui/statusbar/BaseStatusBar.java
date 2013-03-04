@@ -527,7 +527,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
                 mContainer = (PieExpandPanel)inflater.inflate(R.layout.pie_expanded_panel, null);
-                mContainer.init(mPile);
+                mContainer.init(mPile, mContainer.findViewById(R.id.content_scroll));
                 mWindowManager.addView(mContainer, PieStatusPanel.getFlipPanelLayoutParams());
             }
 
@@ -549,6 +549,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     addPieInLocation(Gravity.BOTTOM);
                     break;
             }
+
+
         } else {
             mPieControlsTrigger = null;
             mPieControlPanel = null;
