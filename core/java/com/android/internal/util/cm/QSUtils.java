@@ -15,6 +15,11 @@ import android.telephony.TelephonyManager;
 import com.android.internal.telephony.PhoneConstants;
 
 public class QSUtils {
+        public static boolean deviceSupportsImeSwitcher(Context ctx) {
+            Resources res = ctx.getResources();
+            return res.getBoolean(com.android.internal.R.bool.config_show_cmIMESwitcher);
+        }
+
         public static boolean deviceSupportsUsbTether(Context ctx) {
             ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
             return (cm.getTetherableUsbRegexs().length != 0);
