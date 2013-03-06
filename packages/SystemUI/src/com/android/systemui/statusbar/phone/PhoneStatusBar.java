@@ -1707,6 +1707,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         
         final boolean halfWayDone = mFlipSettingsView.getVisibility() == View.VISIBLE;
         final int zeroOutDelays = halfWayDone ? 0 : 1;
+        
+        if (!halfWayDone) {
+            mFlipSettingsView.setScaleX(0f);
+            mScrollView.setScaleX(1f);
+        }
 
         mFlipSettingsView.setVisibility(View.VISIBLE);
         mFlipSettingsView.setScaleX(0f);
