@@ -39,7 +39,6 @@ public class AwesomeConstants {
      * For clarity, **null** should probably also be just before APP.  New actions
      * should be added prior to **null**
      */
-
     public static enum AwesomeConstant {
         ACTION_HOME          { @Override public String value() { return "**home**";}},
         ACTION_BACK          { @Override public String value() { return "**back**";}},

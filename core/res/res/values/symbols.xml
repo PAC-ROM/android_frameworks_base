@@ -2108,6 +2108,8 @@
   <java-symbol type="string" name="action_ribbon"/>
   <java-symbol type="string" name="action_widgets"/>
   <java-symbol type="string" name="action_app_window"/>
+  <java-symbol type="string" name="action_null"/>
+  <java-symbol type="string" name="action_app"/>
 
   <!--  Animations -->
   <java-symbol type="string" name="animation_fade"/>
@@ -2167,7 +2169,7 @@
   <java-symbol type="string" name="privacy_guard_notification_detail" />
   <java-symbol type="drawable" name="stat_notify_privacy_guard" />
 
-  <!-- Boot message dialog -->
+  <!-- PAC dialog -->
   <java-symbol type="drawable" name="busy_dlg_animation" />
   <java-symbol type="drawable" name="busy_dlg_animation_0" />
   <java-symbol type="drawable" name="busy_dlg_animation_1" />

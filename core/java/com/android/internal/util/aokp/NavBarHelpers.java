@@ -33,9 +33,7 @@ public class NavBarHelpers {
 
     // These items will be subtracted from NavBar Actions when RC requests list of
     // Available Actions
-    private static final AwesomeConstant[] EXCLUDED_FROM_NAVBAR = {
-            AwesomeConstant.ACTION_UNLOCK,
-            AwesomeConstant.ACTION_CAMERA,
+    private final AwesomeConstant[] EXCLUDED_FROM_NAVBAR = {
             AwesomeConstant.ACTION_CLOCKOPTIONS,
             AwesomeConstant.ACTION_SILENT,
             AwesomeConstant.ACTION_VIB,
@@ -55,7 +53,7 @@ public class NavBarHelpers {
         }
         if (uri.startsWith("**")) {
             return AwesomeConstants.getActionIcon(mContext, uri);
-        } else {  // This must be an app 
+        } else {  // This must be an app
             try {
                 actionIcon = mContext.getPackageManager().getActivityIcon(Intent.parseUri(uri, 0));
             } catch (NameNotFoundException e) {
@@ -72,29 +70,9 @@ public class NavBarHelpers {
     }
 
     public static String[] getNavBarActions() {
-        boolean itemFound;
-        String[] mActions;
-        ArrayList<String> mActionList = new ArrayList<String>();
-        String[] mActionStart = AwesomeConstants.AwesomeActions();
-        int startLength = mActionStart.length;
-        int excludeLength = EXCLUDED_FROM_NAVBAR.length;
-        for (int i = 0; i < startLength; i++) {
-            itemFound = false;
-            for (int j = 0; j < excludeLength; j++) {
-                if (mActionStart[i].equals(EXCLUDED_FROM_NAVBAR[j].value())) {
-                    itemFound = true;
-                }
-            }
-            if (!itemFound) {
-                mActionList.add(mActionStart[i]);
-            }
-        }
-        int actionSize = mActionList.size();
-        mActions = new String[actionSize];
-        for (int i = 0; i < actionSize; i++) {
-            mActions[i] = mActionList.get(i);
-        }
-        return mActions;
+        // I need to find a good way to subtract the Excluded array from All actions.
+        // for now, just return all Actions.
+        return AwesomeConstants.AwesomeActions();
     }
 
     public static String getProperSummary(Context mContext, String uri) {
@@ -103,7 +81,7 @@ public class NavBarHelpers {
         }
         if (uri.startsWith("**")) {
             return AwesomeConstants.getProperName(mContext, uri);
-        } else {  // This must be an app 
+        } else {  // This must be an app
             try {
                 Intent intent = Intent.parseUri(uri, 0);
                 if (Intent.ACTION_MAIN.equals(intent.getAction())) {

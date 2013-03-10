@@ -317,7 +317,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             notificationsBehaviour = Settings.System.getInt(
                     mContext.getContentResolver(), Settings.System.NOTIFICATIONS_BEHAVIOUR, 0);
         }
-    }; 
+    };
 
     private RemoteViews.OnClickHandler mOnClickHandler = new RemoteViews.OnClickHandler() {
         @Override
@@ -405,14 +405,14 @@ public abstract class BaseStatusBar extends SystemUI implements
         mDisplay = mWindowManager.getDefaultDisplay();
 
         mProvisioningObserver.onChange(false); // set up
-        SettingsObserver.onChange(false); 
+        SettingsObserver.onChange(false);
         mContext.getContentResolver().registerContentObserver(
                 Settings.Global.getUriFor(Settings.Global.DEVICE_PROVISIONED), true,
                 mProvisioningObserver);
 
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.NOTIFICATIONS_BEHAVIOUR), true,
-                SettingsObserver); 
+                SettingsObserver);
 
         mBarService = IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE));
@@ -1471,7 +1471,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         if (notificationsBehaviour != 3) {
             entry.setLargeView(expandedLarge);
-        } 
+        }
 
         return true;
     }
@@ -1725,10 +1725,10 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected boolean expandView(NotificationData.Entry entry, boolean expand) {
-        int rowHeight = mContext.getResources().getDimensionPixelSize(R.dimen.notification_row_min_height); 
+        int rowHeight = mContext.getResources().getDimensionPixelSize(R.dimen.notification_row_min_height);
         ViewGroup.LayoutParams lp = entry.row.getLayoutParams();
         if (entry.expandable() && notificationsBehaviour != 3 && notificationsBehaviour != 1
-                && (expand || notificationsBehaviour == 2)) { 
+                && (expand || notificationsBehaviour == 2)) {
             if (DEBUG) Slog.d(TAG, "setting expanded row height to WRAP_CONTENT");
             lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         } else {

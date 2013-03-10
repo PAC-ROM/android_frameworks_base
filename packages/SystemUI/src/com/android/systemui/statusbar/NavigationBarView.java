@@ -64,8 +64,8 @@ import java.math.BigInteger;
 
 import static com.android.internal.util.aokp.AwesomeConstants.*;
 import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
-import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.aokp.NavBarHelpers;
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.systemui.recent.RecentsActivity.NavigationCallback;
@@ -104,7 +104,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     boolean mHidden, mLowProfile, mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
-
     private Drawable mBackIcon, mBackLandIcon, mBackAltIcon, mBackAltLandIcon,
             mRecentsIcon, mRecentsLandIcon, mRecentsAltIcon, mRecentsAltLandIcon;
     private boolean mMenuArrowKeys;
@@ -180,7 +179,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     public int mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
     private int mMenuVisbility;
     private int mMenuLocation;
-    private boolean mHasBigMenuButton = false;
 
     private class H extends Handler {
         public void handleMessage(Message m) {
@@ -391,7 +389,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                     .findViewById(R.id.lights_out));
 
             // Add the Main Nav Buttons
-            mHasBigMenuButton = false;
             String iconUri = "";
             for (int j = 0; j < mNumberOfButtons; j++) {
                 ExtensibleKeyButtonView v = generateKey(landscape, mClickActions[j],
@@ -415,10 +412,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 addLightsOutButton(lightsOut, v, landscape && !mLeftyMode, false);
 
                 if (v.getId() == R.id.back){
-                	mBackIcon = mBackLandIcon = v.getDrawable();
-                }
-                if (v.getId() == R.id.navbar_menu_big){
-                    mHasBigMenuButton = true;
+                	mBackIcon = v.getDrawable();
                 }
                 if (mNumberOfButtons == 3 && j != (mNumberOfButtons - 1)) {
                     // add separator view here
@@ -639,7 +633,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     public void setNavigationIconHints(int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
-  
+
         if (DEBUG) {
             android.widget.Toast.makeText(mContext,
                 "Navigation icon hints = " + hints,
@@ -664,7 +658,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         }
         updateMenuArrowKeys();
     }
-    
+
     @Override
     public void setNavigationIconHints(int button, int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
