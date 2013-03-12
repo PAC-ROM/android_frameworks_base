@@ -1121,6 +1121,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         } catch (RemoteException ex) {
         }
     }
+
+    private void updateHWOverlays() {
+        final boolean expDesktop = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        if (expDesktop || mSystemUiLayout == 1000) {
+            // Before switching to fullscreen safe current HW state, then disable
+            mDisableOverlays = updateFlingerOptions();
+            writeDisableOverlaysOption(1);
+        }
+        else {
+            // When leaving fullscreen switch back to original HW state
+            int disableOverlays = updateFlingerOptions();
+            if (disableOverlays != mDisableOverlays) writeDisableOverlaysOption(mDisableOverlays);
+        }
+    }
 	
     /** {@inheritDoc} */
     public void init(Context context, IWindowManager windowManager,
@@ -1159,6 +1174,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
                 // Update layout
                 update(true);
+				updateHWOverlays();
                 
                 // Reset trigger
                 Settings.System.putInt(mContext.getContentResolver(), Settings.System.USER_INTERFACE_STATE, 0);
@@ -1171,21 +1187,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             @Override
             public void onChange(boolean selfChange) {
 			
-			boolean expDesktop = Settings.System.getInt(mContext.getContentResolver(), 
-				Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
-
-			if (!expDesktop) { 
-			// When leaving fullscreen switch back to original HW state
-				int disableOverlays = updateFlingerOptions();
-				if (disableOverlays != mDisableOverlays) writeDisableOverlaysOption(mDisableOverlays);
-			} else {
-			// Before switching to fullscreen safe current HW state, then disable
-                mDisableOverlays = updateFlingerOptions();
-                writeDisableOverlaysOption(1);
-            }
-			
-                updateHybridLayout();
+				updateHybridLayout();
                 update(false);
+				updateHWOverlays();
 
                 if (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_RESTART_LAUNCHER, 1) == 1) {
