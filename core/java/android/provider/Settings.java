@@ -2683,6 +2683,12 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
+		
+		/**
+		* Restart Launcher
+		* @hide
+		*/
+        public static final String EXPANDED_DESKTOP_RESTART_LAUNCHER = "expanded_desktop_restart_launcher";
 
         /**
          * Expanded desktop style (with status bar or without status bar)

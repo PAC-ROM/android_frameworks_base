@@ -57,6 +57,7 @@ import android.os.IRemoteCallback;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -556,8 +557,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mVolumeWakeScreen;
     private boolean mVolBtnMusicControls;
     private boolean mIsLongPress;
-
-    private int mSystemDpi = 0;
+	
+	// HW overlays state
+	int mDisableOverlays = 0;
+    
+	private int mSystemDpi = 0;
     private int mSystemUiDpi = 0;
     private int mSystemUiLayout = 0;
     private int mNavigationBarDpi = 0;
@@ -1081,7 +1085,58 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         });
     }
+	
+    private int updateFlingerOptions() {
+        int disableOverlays = 0;
+        try {
+            IBinder flinger = ServiceManager.getService("SurfaceFlinger");
+            if (flinger != null) {
+                Parcel data = Parcel.obtain();
+                Parcel reply = Parcel.obtain();
+                data.writeInterfaceToken("android.ui.ISurfaceComposer");
+                flinger.transact(1010, data, reply, 0);
+                reply.readInt();
+                reply.readInt();
+                reply.readInt();
+                reply.readInt();
+                disableOverlays = reply.readInt();
+                reply.recycle();
+                data.recycle();
+            }
+        } catch (RemoteException ex) {
+        }
+        return disableOverlays;
+    }
 
+    private void writeDisableOverlaysOption(int state) {
+        try {
+            IBinder flinger = ServiceManager.getService("SurfaceFlinger");
+            if (flinger != null) {
+                Parcel data = Parcel.obtain();
+                data.writeInterfaceToken("android.ui.ISurfaceComposer");
+                data.writeInt(state);
+                flinger.transact(1008, data, null, 0);
+                data.recycle();
+            }
+        } catch (RemoteException ex) {
+        }
+    }
+
+    private void updateHWOverlays() {
+        final boolean expDesktop = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        if (expDesktop || mSystemUiLayout == 1000) {
+            // Before switching to fullscreen safe current HW state, then disable
+            mDisableOverlays = updateFlingerOptions();
+            writeDisableOverlaysOption(1);
+        }
+        else {
+            // When leaving fullscreen switch back to original HW state
+            int disableOverlays = updateFlingerOptions();
+            if (disableOverlays != mDisableOverlays) writeDisableOverlaysOption(mDisableOverlays);
+        }
+    }
+	
     /** {@inheritDoc} */
     public void init(Context context, IWindowManager windowManager,
             WindowManagerFuncs windowManagerFuncs) {
@@ -1099,7 +1154,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         try {
             mOrientationListener.setCurrentRotation(windowManager.getRotation());
         } catch (RemoteException ex) { }
-
+		
+		mDisableOverlays = updateFlingerOptions();
+		updateHWOverlays();
         updateHybridLayout();
 
         mSettingsObserver = new SettingsObserver(mHandler);
@@ -1118,6 +1175,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
                 // Update layout
                 update(true);
+				updateHWOverlays();
                 
                 // Reset trigger
                 Settings.System.putInt(mContext.getContentResolver(), Settings.System.USER_INTERFACE_STATE, 0);
@@ -1129,25 +1187,30 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
-                updateHybridLayout();
+			
+				updateHybridLayout();
                 update(false);
+				updateHWOverlays();
 
-                // Restart default launcher activity
-                final PackageManager mPm = mContext.getPackageManager();
-                final ActivityManager am = (ActivityManager)mContext
-                        .getSystemService(Context.ACTIVITY_SERVICE);
-                final Intent intent = new Intent(Intent.ACTION_MAIN); 
-                intent.addCategory(Intent.CATEGORY_HOME); 
-                final ResolveInfo res = mPm.resolveActivity(intent, 0);
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_RESTART_LAUNCHER, 1) == 1) {
+                    // Restart default launcher activity
+                    final PackageManager mPm = mContext.getPackageManager();
+                    final ActivityManager am = (ActivityManager)mContext
+                            .getSystemService(Context.ACTIVITY_SERVICE);
+                    final Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    final ResolveInfo res = mPm.resolveActivity(intent, 0);
 
-                // Launcher is running task #1
-                List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);
-                if (runningTasks != null) {
-                    for (ActivityManager.RunningTaskInfo task : runningTasks) {
-                        String packageName = task.baseActivity.getPackageName();
-                        if (packageName.equals(res.activityInfo.packageName)) {
-                            closeApplication(packageName);
-                            break;
+                    // Launcher is running task #1
+                    List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);
+                    if (runningTasks != null) {
+                        for (ActivityManager.RunningTaskInfo task : runningTasks) {
+                            String packageName = task.baseActivity.getPackageName();
+                            if (packageName.equals(res.activityInfo.packageName)) {
+                                closeApplication(packageName);
+                                break;
+                            }
                         }
                     }
                 }
