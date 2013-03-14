@@ -232,6 +232,10 @@ public class QuickSettingsController {
         mBar = bar;
     }
 
+    public void setService(PhoneStatusBar phoneStatusBar) {
+        mStatusBarService = phoneStatusBar;
+    }
+
     void addQuickSettings(LayoutInflater inflater){
         // Load the user configured tiles
         loadTiles();
