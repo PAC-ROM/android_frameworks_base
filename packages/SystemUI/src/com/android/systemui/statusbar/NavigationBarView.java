@@ -99,9 +99,9 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             mRecentsIcon, mRecentsLandIcon, mRecentsAltIcon, mRecentsAltLandIcon;
     private boolean mMenuArrowKeys;
     private boolean mColorAllIcons;
-    
+    private SettingsObserver mSettingsObserver;
     public DelegateViewHelper mDelegateHelper;
-
+    private Context mContext;
     private Canvas mCurrentCanvas;
     private Canvas mNewCanvas;
     private TransitionDrawable mTransition;
@@ -253,6 +253,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     public NavigationBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        mContext = context;
         mHidden = false;
 
         mDisplay = ((WindowManager)context.getSystemService(
@@ -675,8 +676,13 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             } else {
                 return;
             }
-            WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
-            wm.updateViewLayout(this, lp);
+            try  {
+                WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+                wm.updateViewLayout(this, lp);
+            } catch (IllegalArgumentException e) {
+                // Let it go.  This should only happen when NavBar is on 'AutoHide' so the NavBar exists, but
+                // isn't attached to the window at this time.
+            }
         }
     }
 
@@ -863,8 +869,21 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
         // this takes care of making the buttons
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
+        mSettingsObserver = new SettingsObserver(new Handler());
+	updateSettings();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mSettingsObserver.observe();
+        updateSettings();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+        super.onDetachedFromWindow();
     }
 
     public void reorient() {
@@ -887,9 +906,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         if (DEBUG) {
             Slog.d(TAG, "reorient(): rot=" + mDisplay.getRotation());
         }
-        // Reset recents hints after reorienting
-        ((ImageView)getRecentsButton()).setImageDrawable(mVertical
-                ? mRecentsLandIcon : mRecentsIcon);
     }
 
     @Override

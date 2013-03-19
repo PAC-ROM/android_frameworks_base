@@ -2952,7 +2952,7 @@ public final class Settings {
          * Quick Settings Panel Tiles to Use
          * @hide
          */
-        public static final String QUICK_SETTINGS_TILES = "quick_settings_tiles";
+        public static final String QUICK_SETTINGS = "quick_settings";
 
         /**
          * QuickSettings panel dynamic alarm tile
@@ -2977,6 +2977,24 @@ public final class Settings {
          * @hide
          */
         public static final String QS_DYNAMIC_WIFI = "qs_dyanmic_wifi";
+
+	/**
+         * Quick Settings Panel dynamic usb-tether Tiles
+         * @hide
+         */
+        public static final String QS_DYNAMIC_USBTETHER = "qs_dyanmic_usbtether";
+
+	/**
+         * Quick Settings Quick Pulldown
+         * @hide
+         */
+        public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
+
+	/**
+         * Quick Settings Collapse Pane
+         * @hide
+         */
+        public static final String QS_COLLAPSE_PANEL = "qs_collapse_panel";
 
         /**
          * Volume keys control cursor in text fields (default is 0)

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 
+import com.android.systemui.R;
+
 public class LockScreenButton extends PowerButton {
     private static final String KEY_DISABLED = "lockscreen_disabled";
 
