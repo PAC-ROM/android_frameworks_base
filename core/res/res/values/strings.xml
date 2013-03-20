@@ -315,7 +315,7 @@
     <string name="reboot_system" product="default">Reboot phone</string>
 
     <!-- label for item that toggles expand desktop mode -->
-    <string name="global_action_expanded_desktop">Expanded desktop</string>
+    <string name="global_action_expanded_desktop">Full screen (Pie)</string>
     <!-- status message in phone options dialog for when expand desktop mode is on -->
     <string name="global_action_expanded_desktop_on">Enabled</string>
     <!-- status message in phone options dialog for when expand desktop mode is off -->
