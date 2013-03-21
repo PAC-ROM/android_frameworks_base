@@ -19,7 +19,10 @@ package com.android.systemui.statusbar.phone;
 import android.animation.LayoutTransition;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.content.res.TypedArray;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -38,6 +41,10 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     // The number of columns in the QuickSettings grid
     private int mNumColumns;
+    private int mNumFinalColumns;
+
+    // Duplicate number of columns in the QuickSettings grid on landscape view
+    private boolean mDuplicateColumnsLandscape;
 
     // The gap between tiles in the QuickSettings grid
     private float mCellGap;
@@ -50,6 +57,8 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     private int mTextSize;
     private int mTextPadding;
+    private Context mContext;
+    private Resources mResources;
 
     private boolean mSingleRow;
     private Context mContext;
@@ -60,7 +69,10 @@ public class QuickSettingsContainerView extends FrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickSettingsContainer, 0, 0);
         mSingleRow = a.getBoolean(R.styleable.QuickSettingsContainer_singleRow, false);
         a.recycle();
+
         mContext = context;
+        mResources = getContext().getResources();
+
         updateResources();
     }
 
@@ -77,26 +89,31 @@ public class QuickSettingsContainerView extends FrameLayout {
         ContentResolver resolver = mContext.getContentResolver();
         mSmallIcons = Settings.System.getIntForUser(resolver,
                 Settings.System.QUICK_SETTINGS_SMALL_ICONS, 0, UserHandle.USER_CURRENT) == 1;
-        mCellGap = r.getDimension(R.dimen.quick_settings_cell_gap);
-        mNumColumns = r.getInteger(R.integer.quick_settings_num_columns);
-        mTextSize = (int) mSize3Tiles;
-        mTextPadding = (int) mPadding3Tiles;
-        if (mSmallIcons) {
-            mNumColumns = r.getInteger(R.integer.quick_settings_num_columns_small);
-            mTextSize = (int) mSize4Tiles;
-            mTextPadding = (int) mPadding4Tiles;
-        }
+        mCellGap = mResources.getDimension(R.dimen.quick_settings_cell_gap);
+        mNumColumns = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_PER_ROW, 3, UserHandle.USER_CURRENT);
+        // do not allow duplication on tablets or any device which do not have
+        // flipsettings
+        mDuplicateColumnsLandscape = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE,
+                1, UserHandle.USER_CURRENT) == 1
+                        && mResources.getBoolean(R.bool.config_hasFlipSettingsPanel);
         requestLayout();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mDuplicateColumnsLandscape && isLandscape()) {
+            mNumFinalColumns = mNumColumns * 2;
+        } else {
+            mNumFinalColumns = mNumColumns;
+        }
         // Calculate the cell width dynamically
         int width = MeasureSpec.getSize(widthMeasureSpec);
 
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
-                (mNumColumns - 1) * mCellGap);
-        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumColumns);
+                (mNumFinalColumns - 1) * mCellGap);
+        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);
         int cellHeight = 0;
         float cellGap = mCellGap;
 
@@ -109,7 +126,7 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
 
         // Update each of the children's widths accordingly to the cell width
-        final int N = getChildCount();
+        int N = getChildCount();
         int totalWidth = 0;
         int cursor = 0;
         for (int i = 0; i < N; ++i) {
@@ -120,6 +137,10 @@ public class QuickSettingsContainerView extends FrameLayout {
                 int colSpan = v.getColumnSpan();
                 lp.width = (int) ((colSpan * cellWidth) + (colSpan - 1) * cellGap);
                 lp.height = cellHeight;
+
+                if (mNumFinalColumns > 3 && !isLandscape()) {
+                    lp.height = (lp.width * mNumFinalColumns - 1) / mNumFinalColumns;
+                }
 
                 // Measure the child
                 int newWidthSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
@@ -132,7 +153,7 @@ public class QuickSettingsContainerView extends FrameLayout {
 
         // Set the measured dimensions.  We always fill the tray width, but wrap to the height of
         // all the tiles.
-        int numRows = (int) Math.ceil((float) cursor / mNumColumns);
+        int numRows = (int) Math.ceil((float) cursor / mNumFinalColumns);
         int newHeight = (int) ((numRows * cellHeight) + ((numRows - 1) * cellGap)) +
                 getPaddingTop() + getPaddingBottom();
         if (mSingleRow) {
@@ -145,11 +166,8 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        final int N = getChildCount();
-        final boolean isLayoutRtl = isLayoutRtl();
-        final int width = getWidth();
-
-        int x = getPaddingStart();
+        int N = getChildCount();
+        int x = getPaddingLeft();
         int y = getPaddingTop();
         int cursor = 0;
 
@@ -159,59 +177,60 @@ public class QuickSettingsContainerView extends FrameLayout {
             cellGap /= 2;
         }
 
+        if (mDuplicateColumnsLandscape && isLandscape()) {
+            mNumFinalColumns = mNumColumns * 2;
+        } else {
+            mNumFinalColumns = mNumColumns;
+        }
+
         for (int i = 0; i < N; ++i) {
-            QuickSettingsTileView child = (QuickSettingsTileView) getChildAt(i);
-            ViewGroup.LayoutParams lp = child.getLayoutParams();
-            if (child.getVisibility() != GONE) {
-                final int col = cursor % mNumColumns;
-                final int colSpan = child.getColumnSpan();
-
-                final int childWidth = lp.width;
-                final int childHeight = lp.height;
-
-                int row = (int) (cursor / mNumColumns);
+            QuickSettingsTileView v = (QuickSettingsTileView) getChildAt(i);
+            ViewGroup.LayoutParams lp = v.getLayoutParams();
+            if (v.getVisibility() != GONE) {
+                int col = cursor % mNumFinalColumns;
+                int colSpan = v.getColumnSpan();
+                int row = cursor / mNumFinalColumns;
 
                 // Push the item to the next row if it can't fit on this one
-                if ((col + colSpan) > mNumColumns && !mSingleRow) {
-                    x = getPaddingStart();
-                    y += childHeight + cellGap;
+                if ((col + colSpan) > mNumFinalColumns) {
+                    x = getPaddingLeft();
+                    y += lp.height + mCellGap;
                     row++;
                 }
 
-                final int childLeft = (isLayoutRtl) ? width - x - childWidth : x;
-                final int childRight = childLeft + childWidth;
-
-                final int childTop = y;
-                final int childBottom = childTop + childHeight;
-
                 // Layout the container
-                child.layout(childLeft, childTop, childRight, childBottom);
+                v.layout(x, y, x + lp.width, y + lp.height);
 
                 // Offset the position by the cell gap or reset the position and cursor when we
                 // reach the end of the row
-                cursor += child.getColumnSpan();
-                if (cursor < (((row + 1) * mNumColumns)) || mSingleRow) {
-                    x += childWidth + cellGap;
+                cursor += v.getColumnSpan();
+                if (cursor < (((row + 1) * mNumFinalColumns))) {
+                    x += lp.width + mCellGap;
                 } else if (!mSingleRow) {
-                    x = getPaddingStart();
-                    y += childHeight + cellGap;
+                    x = getPaddingLeft();
+                    y += lp.height + cellGap;
                 }
             }
         }
     }
 
+    private boolean isLandscape() {
+        final boolean isLandscape =
+            Resources.getSystem().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+        return isLandscape;
+    }
+
     public int getTileTextSize() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mSmallIcons = Settings.System.getIntForUser(resolver,
-                Settings.System.QUICK_SETTINGS_SMALL_ICONS, 0, UserHandle.USER_CURRENT) == 1;
-        if (mSmallIcons) {
-            int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
-            boolean isTablet = mContext.getResources().
-                    getBoolean(R.bool.config_recents_interface_for_tablets);
-            return mTextSize = (isTablet || dpi > DisplayMetrics.DENSITY_HIGH) ?
-                    (int) mSize4Tiles : (int) mSmallSize4Tiles;
-        } else {
-            return mTextSize = (int) mSize3Tiles;
+        // get tile text size based on column count
+        switch (mNumColumns) {
+            case 5:
+                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_size);
+            case 4:
+                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_size);
+            case 3:
+            default:
+                return mResources.getDimensionPixelSize(R.dimen.qs_3_column_text_size);
         }
     }
 
@@ -223,6 +242,16 @@ public class QuickSettingsContainerView extends FrameLayout {
             return mTextPadding = (int) mPadding4Tiles;
         } else {
             return mTextPadding = (int) mPadding3Tiles;
+        }
+        // get tile text padding based on column count
+        switch (mNumColumns) {
+            case 5:
+                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_padding);
+            case 4:
+                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_padding);
+            case 3:
+            default:
+                return mResources.getDimensionPixelSize(R.dimen.qs_tile_margin_below_icon);
         }
     }
 }
