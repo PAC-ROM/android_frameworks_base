@@ -154,7 +154,7 @@ public class NotificationPanelView extends PanelView {
         boolean shouldRecycleEvent = false;
         if (PhoneStatusBar.SETTINGS_DRAG_SHORTCUT
                 && mStatusBar.mHasFlipSettings) {
-            boolean shouldFlip = false;
+            boolean flip = false;
             boolean swipeFlipJustFinished = false;
             boolean swipeFlipJustStarted = false;
 
@@ -166,19 +166,28 @@ public class NotificationPanelView extends PanelView {
                         // Pointer is at the handle portion of the view?
                         mGestureStartY > getHeight() - mHandleBarHeight - getPaddingBottom();
                     mOkToFlip = getExpandedHeight() == 0;
+                    if (event.getX(0) > getWidth() * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE) &&
+                            Settings.System.getInt(getContext().getContentResolver(),
+                                    Settings.System.QS_QUICK_PULLDOWN, 0) == 1) {
+                        flip = true;
+                    } else if (event.getX(0) < getWidth() * (1.0f - STATUS_BAR_SETTINGS_LEFT_PERCENTAGE) &&
+                            Settings.System.getInt(getContext().getContentResolver(),
+                                    Settings.System.QS_QUICK_PULLDOWN, 0) == 2) {
+                        flip = true;
+                    }
                     if (mFastTogglePos == 1) {
                         if ((event.getX(0) > getWidth()
                                 * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE)
                                 && mFastToggleEnabled)
                                 && !mFastToggleEnabled) {
-                            shouldFlip = true;
+                        flip = true;
                         }
                     } else if (mFastTogglePos == 2) {
                         if ((event.getX(0) < getWidth()
                                 * (1.0f - STATUS_BAR_SETTINGS_LEFT_PERCENTAGE)
                                 && mFastToggleEnabled)
                                 && !mFastToggleEnabled) {
-                            shouldFlip = true;
+                        flip = true;
                         }
                     }
                     break;
@@ -217,7 +226,7 @@ public class NotificationPanelView extends PanelView {
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN:
-                        shouldFlip = true;
+                    flip = true;
                     break;
                     
                 case MotionEvent.ACTION_UP:
@@ -226,7 +235,7 @@ public class NotificationPanelView extends PanelView {
                     mTrackingSwipe = false;
                     break;
             }
-            if(mOkToFlip && shouldFlip) {
+            if (mOkToFlip && flip) {
                 float miny = event.getY(0);
                 float maxy = miny;
                 for (int i=1; i<event.getPointerCount(); i++) {
