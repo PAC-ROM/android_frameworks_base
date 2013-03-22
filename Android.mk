@@ -32,10 +32,6 @@ ifdef WIFI_AP_DRIVER_MODULE_PATH
 LOCAL_CFLAGS += -DWIFI_AP_HAS_OWN_DRIVER	
 endif
 
-ifneq ($(BOARD_WIFI_CLASS),)
-LOCAL_SRC_FILES += $(call find-other-java-files,$(BOARD_WIFI_CLASS))
-endif
-
 # FRAMEWORKS_BASE_SUBDIRS comes from build/core/pathmap.mk
 LOCAL_SRC_FILES := $(call find-other-java-files,$(FRAMEWORKS_BASE_SUBDIRS))
 
