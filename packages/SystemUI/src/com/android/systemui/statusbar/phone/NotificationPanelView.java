@@ -286,10 +286,6 @@ public class NotificationPanelView extends PanelView {
             }
 
         }
-        final boolean result = mHandleView.dispatchTouchEvent(event);
-        if (shouldRecycleEvent) {
-            event.recycle();
-        }
-        return result;
+        return mHandleView.dispatchTouchEvent(event);
     }
 }
