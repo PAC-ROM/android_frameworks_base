@@ -28,7 +28,8 @@ public class QSConstants {
         public static final String TILE_USBTETHER = "toggleUsbTether";
         public static final String TILE_DESKTOPMODE = "toggleDesktopMode";
         public static final String TILE_VOLUME = "toggleVolume";
-	public static final String TILE_QUIETHOURS = "toggleQuietHours";
+     	public static final String TILE_QUIETHOURS = "toggleQuietHours";
+        public static final String TILE_HYBRID = "toggleHybrid";
 
         public static final String TILE_DELIMITER = "|";
         public static ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -41,7 +42,7 @@ public class QSConstants {
             TILES_DEFAULT.add(TILE_MOBILEDATA);
             TILES_DEFAULT.add(TILE_BATTERY);
             TILES_DEFAULT.add(TILE_AIRPLANE);
-            TILES_DEFAULT.add(TILE_BLUETOOTH);
+            TILES_DEFAULT.add(TILE_HYBRID);
             TILES_DEFAULT.add(TILE_DESKTOPMODE);
         }
 }
