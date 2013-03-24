@@ -72,7 +72,6 @@ import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
-import com.android.systemui.quicksettings.QuietHoursTile;
 import com.android.systemui.quicksettings.RingerModeTile;
 import com.android.systemui.quicksettings.ScreenTimeoutTile;
 import com.android.systemui.quicksettings.SleepScreenTile;
