@@ -170,6 +170,7 @@
   <java-symbol type="id" name="switch_old" />
   <java-symbol type="id" name="switchWidget" />
   <java-symbol type="id" name="text" />
+  <java-symbol type="id" name="label" />
   <java-symbol type="id" name="time" />
   <java-symbol type="id" name="time_current" />
   <java-symbol type="id" name="timeDisplayBackground" />
@@ -1123,6 +1124,10 @@
   <java-symbol type="anim" name="slide_in_child_bottom" />
   <java-symbol type="anim" name="slide_in_right" />
   <java-symbol type="anim" name="slide_out_left" />
+  <java-symbol type="anim" name="slide_in_left" />
+  <java-symbol type="anim" name="slide_out_right" />
+  <java-symbol type="anim" name="slide_in_up" />
+  <java-symbol type="anim" name="slide_out_down" />
 
   <java-symbol type="menu" name="webview_copy" />
   <java-symbol type="menu" name="webview_find" />
@@ -2010,5 +2015,50 @@
   <!-- Stylus gestures -->
   <java-symbol type="bool" name="config_stylusGestures" />
   <java-symbol type="string" name="stylus_app_not_installed" />
+
+ <!-- Navigation Ring -->
+  <java-symbol type="drawable" name="ic_navbar_blank" />
+  <java-symbol type="drawable" name="ic_navbar_blank_activated" />
+  <java-symbol type="drawable" name="ic_action_empty" />
+
+  <!--  Awesome Action -->
+  <java-symbol type="string" name="action_home"/>
+  <java-symbol type="string" name="action_back"/>
+  <java-symbol type="string" name="action_recents"/>
+  <java-symbol type="string" name="action_recents_gb"/>
+  <java-symbol type="string" name="action_search"/>
+  <java-symbol type="string" name="action_screenshot"/>
+  <java-symbol type="string" name="action_menu"/>
+  <java-symbol type="string" name="action_ime"/>
+  <java-symbol type="string" name="action_kill"/>
+  <java-symbol type="string" name="action_lastapp"/>
+  <java-symbol type="string" name="action_power"/>
+  <java-symbol type="string" name="action_notifications"/>
+  <java-symbol type="string" name="action_assist"/>
+  <java-symbol type="string" name="action_clockoptions"/>
+  <java-symbol type="string" name="action_voiceassist"/>
+  <java-symbol type="string" name="action_torch"/>
+  <java-symbol type="string" name="action_silent"/>
+  <java-symbol type="string" name="action_vib"/>
+  <java-symbol type="string" name="action_silent_vib"/>
+  <java-symbol type="string" name="action_event"/>
+  <java-symbol type="string" name="action_today"/>
+  <java-symbol type="string" name="action_alarm"/>
+  <java-symbol type="string" name="action_unlock"/>
+  <java-symbol type="string" name="action_camera"/>
+  <java-symbol type="string" name="action_null"/>
+  <java-symbol type="string" name="action_app"/>
+  <java-symbol type="string" name="action_ribbon"/>
+  <java-symbol type="string" name="action_widgets"/>
+
+  <!--  AOKP Ribbon -->
+  <java-symbol type="layout" name="target_button" />
+  <java-symbol type="id" name="ribbon" />
+  <java-symbol type="id" name="container" />
+  <java-symbol type="id" name="keyguard_ribbon_and_battery" />
+  <java-symbol type="dimen" name="icon_size_20" />
+  <java-symbol type="dimen" name="icon_size_15" />
+  <java-symbol type="dimen" name="notification_ribbon_padding" />
+  <java-symbol type="dimen" name="lockscreen_ribbon_padding" />
 
 </resources>

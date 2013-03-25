@@ -103,6 +103,8 @@ import com.android.systemui.statusbar.view.PieStatusPanel;
 import com.android.systemui.statusbar.view.PieExpandPanel;
 import com.android.systemui.statusbar.WidgetView;
 
+import com.android.systemui.aokp.AokpSwipeRibbon;
+
 import java.util.ArrayList;
 import java.math.BigInteger;
 
@@ -123,6 +125,8 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected static final int MSG_HIDE_INTRUDER = 1027;
 
     private WidgetView mWidgetView;
+
+    private AokpSwipeRibbon mAokpSwipeRibbon;
 
     protected static final boolean ENABLE_INTRUDERS = false;
 
@@ -379,6 +383,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         createAndAddWindows();
         // create WidgetView
         mWidgetView = new WidgetView(mContext,null);
+        mAokpSwipeRibbon = new AokpSwipeRibbon(mContext,null,"bottom");
+        mAokpSwipeRibbon = new AokpSwipeRibbon(mContext,null,"left");
+        mAokpSwipeRibbon = new AokpSwipeRibbon(mContext,null,"right");
         disable(switches[0]);
         setSystemUiVisibility(switches[1], 0xffffffff);
         topAppWindowChanged(switches[2] != 0);
