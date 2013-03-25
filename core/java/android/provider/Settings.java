@@ -2886,11 +2886,6 @@ public final class Settings {
 
         /**
          * Foreground App
-         * @hide
-         */
-        public static final String FOREGROUND_APP = "foreground_app";
-
-        /**
          * Pie menu, should default to 1 (yes, show)
          * @hide
          */

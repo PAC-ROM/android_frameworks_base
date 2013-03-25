@@ -16,7 +16,6 @@
 
 package com.android.server;
 
-import android.app.ActivityManager;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Slog;
-import android.provider.Settings;
 
 import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.statusbar.IStatusBarService;
@@ -54,7 +52,6 @@ public class StatusBarManagerService extends IStatusBarService.Stub
     implements WindowManagerService.OnHardKeyboardStatusChangeListener
 {
     static final String TAG = "StatusBarManagerService";
-    static final String PARANOID_PREFERENCES_PKG = "com.paranoid.preferences";
     static final boolean SPEW = false;
 
     final Context mContext;
@@ -280,17 +277,6 @@ public class StatusBarManagerService extends IStatusBarService.Stub
                         if (mBar != null) {
                             try {
                                 mBar.topAppWindowChanged(menuVisible);
-                                ActivityManager am = (ActivityManager) mContext.
-                                        getSystemService(Context.ACTIVITY_SERVICE);
-                                // The first in the list of RunningTasks is always the foreground task.
-                                ActivityManager.RunningTaskInfo foregroundTaskInfo = 
-                                        am.getRunningTasks(1).get(0);
-                                String foregroundTaskPackageName = 
-                                        foregroundTaskInfo.topActivity.getPackageName();
-                                if (!foregroundTaskPackageName.equals(PARANOID_PREFERENCES_PKG)) {
-                                    Settings.System.putString(mContext.getContentResolver(),
-                                            Settings.System.FOREGROUND_APP, foregroundTaskPackageName);
-                                }
                             } catch (Exception ex) {
                             }
                         }
