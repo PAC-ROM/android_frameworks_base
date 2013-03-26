@@ -179,7 +179,6 @@ public class NotificationPanelView extends PanelView {
                         if ((event.getX(0) > getWidth()
                                 * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE)
                                 && mFastToggleEnabled)
-                                || (mStatusBar.skipToSettingsPanel())
                                 && !mFastToggleEnabled) {
                         flip = true;
                         }
@@ -187,10 +186,11 @@ public class NotificationPanelView extends PanelView {
                         if ((event.getX(0) < getWidth()
                                 * (1.0f - STATUS_BAR_SETTINGS_LEFT_PERCENTAGE)
                                 && mFastToggleEnabled)
-                                || (mStatusBar.skipToSettingsPanel())
                                 && !mFastToggleEnabled) {
                         flip = true;
                         }
+                    } else if (mStatusBar.skipToSettingsPanel()) {
+                      flip = true;
                     }
                     break;
                 

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -22,15 +23,20 @@ import android.widget.ImageView;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
+import com.android.systemui.statusbar.policy.BrightnessController;
 import com.android.systemui.statusbar.policy.BrightnessController.BrightnessStateChangeCallback;
+import com.android.systemui.statusbar.policy.ToggleSlider;
 
 public class BrightnessTile extends QuickSettingsTile implements BrightnessStateChangeCallback {
 
     private static final String TAG = "BrightnessTile";
 
     private final int mBrightnessDialogLongTimeout;
+    private final int mBrightnessDialogShortTimeout;
     private Dialog mBrightnessDialog;
+    private BrightnessController mBrightnessController;
     private final Handler mHandler;
+    private final BrightnessObserver mBrightnessObserver;
     private boolean autoBrightness = true;
 
     public BrightnessTile(Context context, LayoutInflater inflater,
@@ -40,7 +46,9 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
         mHandler = handler;
 
         mBrightnessDialogLongTimeout = mContext.getResources().getInteger(R.integer.quick_settings_brightness_dialog_long_timeout);
+        mBrightnessDialogShortTimeout = mContext.getResources().getInteger(R.integer.quick_settings_brightness_dialog_short_timeout);
 
+        mBrightnessObserver = new BrightnessObserver(mHandler);
         mOnClick = new OnClickListener() {
 
             @Override
@@ -50,20 +58,6 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
             }
         };
 
-        mOnLongClick = new OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                startSettingsActivity(Settings.ACTION_DISPLAY_SETTINGS);
-                return true;
-            }
-
-        };
-
-        qsc.registerObservedContent(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS)
-                , this);
-        qsc.registerObservedContent(Settings.System.getUriFor(Settings.System
-                .SCREEN_BRIGHTNESS_MODE), this);
         onBrightnessLevelChanged();
     }
 
@@ -73,6 +67,15 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
             mBrightnessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             mBrightnessDialog.setContentView(R.layout.quick_settings_brightness_dialog);
             mBrightnessDialog.setCanceledOnTouchOutside(true);
+            mBrightnessController = new BrightnessController(mContext,
+                    (ImageView) mBrightnessDialog.findViewById(R.id.brightness_icon),
+                    (ToggleSlider) mBrightnessDialog.findViewById(R.id.brightness_slider));
+            mBrightnessDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    mBrightnessController = null;
+                }
+            });
             mBrightnessDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             mBrightnessDialog.getWindow().getAttributes().privateFlags |=
                     WindowManager.LayoutParams.PRIVATE_FLAG_SHOW_FOR_ALL_USERS;
@@ -104,18 +107,7 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
     };
 
     @Override
-    void onPostCreate() {
-        updateTile();
-        super.onPostCreate();
-    }
-
-    @Override
-    public void updateResources() {
-        updateTile();
-        super.updateResources();
-    }
-
-    private synchronized void updateTile() {
+    public void onBrightnessLevelChanged() {
         int mode;
         try {
             mode = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -128,17 +120,35 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
                     : R.drawable.ic_qs_brightness_auto_off;
             mLabel = mContext.getString(R.string.quick_settings_brightness_label);
         } catch (SettingNotFoundException e) {
-            Log.e(TAG, "Brightness setting not found", e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if(mTile != null){
+            updateQuickSettings();
         }
     }
 
-    @Override
-    public void onBrightnessLevelChanged() {
-        updateResources();
+    private class BrightnessObserver extends ContentObserver {
+        public BrightnessObserver(Handler handler) {
+            super(handler);
+            startObserving();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onBrightnessLevelChanged();
+        }
+
+        public void startObserving() {
+            final ContentResolver cr = mContext.getContentResolver();
+            cr.unregisterContentObserver(this);
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE),
+                    false, this);
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
+                    false, this);
+        }
     }
 
-    @Override
-    public void onChangeUri(ContentResolver resolver, Uri uri) {
-        updateResources();
-    }
 }
