@@ -117,6 +117,8 @@ public class QuickSettings {
 
     private Handler mHandler;
 
+    private int mTileTextSize;
+
     // The set of QuickSettingsTiles that have dynamic spans (and need to be updated on
     // configuration change)
     private final ArrayList<QuickSettingsTileView> mDynamicSpannedTiles =
@@ -259,6 +261,8 @@ public class QuickSettings {
 
     public void setupQuickSettings() {
         // Setup the tiles that we are going to be showing (including the temporary ones)
+        mTileTextSize = ((QuickSettingsContainerView) mContainerView).updateTileTextSize();
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         addUserTiles(mContainerView, inflater);
@@ -321,6 +325,7 @@ public class QuickSettings {
                 ImageView iv = (ImageView) view.findViewById(R.id.user_imageview);
                 TextView tv = (TextView) view.findViewById(R.id.user_textview);
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
                 iv.setImageDrawable(us.avatar);
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_user, state.label));
@@ -346,6 +351,7 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.brightness_textview);
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
                 dismissBrightnessDialog(mBrightnessDialogShortTimeout);
             }
         });
@@ -387,6 +393,7 @@ public class QuickSettings {
             public void refreshView(QuickSettingsTileView view, State state) {
                 TextView tv = (TextView) view.findViewById(R.id.settings_tileview);
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
             }
         });
         parent.addView(settingsTile);
@@ -435,6 +442,7 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.wifi_textview);
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, wifiState.iconId, 0, 0);
                 tv.setText(wifiState.label);
+                tv.setTextSize(1, mTileTextSize);
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_wifi,
                         wifiState.signalContentDescription,
@@ -473,6 +481,7 @@ public class QuickSettings {
                         iov.setImageDrawable(null);
                     }
                     tv.setText(state.label);
+                    tv.setTextSize(1, mTileTextSize);
                     view.setContentDescription(mContext.getResources().getString(
                             R.string.accessibility_quick_settings_mobile,
                             rssiState.signalContentDescription, rssiState.dataContentDescription,
@@ -500,6 +509,7 @@ public class QuickSettings {
                     TextView tv = (TextView) view.findViewById(R.id.rotation_lock_textview);
                     tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                     tv.setText(state.label);
+                    tv.setTextSize(1, mTileTextSize);
                 }
             });
             parent.addView(rotationLockTile);
@@ -538,6 +548,7 @@ public class QuickSettings {
                 iv.setImageDrawable(d);
                 iv.setImageLevel(batteryState.batteryLevel);
                 tv.setText(t);
+                tv.setTextSize(1, mTileTextSize);
                 view.setContentDescription(
                         mContext.getString(R.string.accessibility_quick_settings_battery, t));
             }
@@ -560,6 +571,7 @@ public class QuickSettings {
                 view.setContentDescription(
                         mContext.getString(R.string.accessibility_quick_settings_airplane, airplaneState));
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
             }
         });
         parent.addView(airplaneTile);
@@ -614,6 +626,7 @@ public class QuickSettings {
                             R.string.accessibility_quick_settings_bluetooth,
                             bluetoothState.stateContentDescription));
                     tv.setText(label);
+                    tv.setTextSize(1, mTileTextSize);
                 }
             });
             parent.addView(bluetoothTile);
@@ -642,6 +655,7 @@ public class QuickSettings {
             public void refreshView(QuickSettingsTileView view, State alarmState) {
                 TextView tv = (TextView) view.findViewById(R.id.alarm_textview);
                 tv.setText(alarmState.label);
+                tv.setTextSize(1, mTileTextSize);
                 view.setVisibility(alarmState.enabled ? View.VISIBLE : View.GONE);
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_alarm, alarmState.label));
@@ -664,6 +678,7 @@ public class QuickSettings {
             public void refreshView(QuickSettingsTileView view, State state) {
                 TextView tv = (TextView) view.findViewById(R.id.location_textview);
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
                 view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
             }
         });
@@ -684,6 +699,7 @@ public class QuickSettings {
             public void refreshView(QuickSettingsTileView view, State state) {
                 TextView tv = (TextView) view.findViewById(R.id.wifi_display_textview);
                 tv.setText(state.label);
+                tv.setTextSize(1, mTileTextSize);
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                 view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
             }
@@ -712,6 +728,7 @@ public class QuickSettings {
                     TextView tv = (TextView) view.findViewById(R.id.ime_textview);
                     if (state.label != null) {
                         tv.setText(state.label);
+                        tv.setTextSize(1, mTileTextSize);
                     }
                     view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
                 }
