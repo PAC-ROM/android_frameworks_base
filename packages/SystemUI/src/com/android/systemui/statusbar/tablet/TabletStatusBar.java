@@ -198,6 +198,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     KeyEvent mSpaceBarKeyEvent = null;
 
     View mCompatibilityHelpDialog = null;
+    public View[] mPieDummyTrigger = new View[4];
 
     // for disabling the status bar
     int mDisabled = 0;
@@ -574,6 +575,13 @@ public class TabletStatusBar extends BaseStatusBar implements
                 Slog.e(TAG, "Tablet device cannot show navigation bar and system bar");
             }
         } catch (RemoteException ex) {
+        }
+
+        // Overload screen with views that literally do nothing, thank you Google
+        int dummyGravity[] = {Gravity.LEFT, Gravity.TOP, Gravity.RIGHT, Gravity.BOTTOM};  
+        for (int i = 0; i < 4; i++) {
+            mPieDummyTrigger[i] = new View(mContext);
+            mWindowManager.addView(mPieDummyTrigger[i], getDummyTriggerLayoutParams(mContext, dummyGravity[i]));
         }
 
         // set recents activity navigation bar view
@@ -1737,7 +1745,8 @@ public class TabletStatusBar extends BaseStatusBar implements
         // If the device hasn't been through Setup, we only show system notifications
         for (int i=0; i<N; i++) {
             Entry ent = mNotificationData.get(N-i-1);
-            if (provisioned || showNotificationEvenIfUnprovisioned(ent.notification)) {
+            if (provisioned || showNotificationEvenIfUnprovisioned(ent.notification)
+                && !notificationIsForCurrentUser(ent.notification)) {
                 toShow.add(ent.row);
             }
         }

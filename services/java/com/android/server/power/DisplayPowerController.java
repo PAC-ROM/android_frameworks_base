@@ -32,6 +32,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.SystemSensorManager;
+import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -383,7 +384,6 @@ final class DisplayPowerController {
 
         mUseSoftwareAutoBrightnessConfig = resources.getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
-
         if (mUseSoftwareAutoBrightnessConfig) {
             final ContentResolver cr = mContext.getContentResolver();
             final ContentObserver observer = new ContentObserver(mHandler) {
@@ -480,7 +480,6 @@ final class DisplayPowerController {
                 return null;
             }
         }
-
         return values;
     }
 
