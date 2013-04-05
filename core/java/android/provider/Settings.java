@@ -1798,6 +1798,13 @@ public final class Settings {
          */
         public static final String AUTO_BRIGHTNESS_BACKLIGHT = "auto_brightness_backlight";
 
+		/**
+         * Touch Key Light Duration
+         *
+         * @hide
+         */
+        public static final String TOUCHKEY_LIGHT_DUR = "touchkey_light_dir";
+
         /**
          * Whether to enable the electron beam animation when turning screen on
          *
