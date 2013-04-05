@@ -243,12 +243,12 @@ public final class ActivityManagerService  extends ActivityManagerNative
     // The minimum amount of time between successive GC requests for a process.
     static final int GC_MIN_INTERVAL = 60*1000;
 
-    // The rate at which we check for apps using excessive power -- 15 mins.
-    static final int POWER_CHECK_DELAY = (DEBUG_POWER_QUICK ? 2 : 15) * 60*1000;
+    // The rate at which we check for apps using excessive power -- 10 mins.
+    static final int POWER_CHECK_DELAY = (DEBUG_POWER_QUICK ? 2 : 10) * 60*1000;
 
     // The minimum sample duration we will allow before deciding we have
     // enough data on wake locks to start killing things.
-    static final int WAKE_LOCK_MIN_CHECK_DURATION = (DEBUG_POWER_QUICK ? 1 : 5) * 60*1000;
+    static final int WAKE_LOCK_MIN_CHECK_DURATION = (DEBUG_POWER_QUICK ? 1 : 2) * 60*1000;
 
     // The minimum sample duration we will allow before deciding we have
     // enough data on CPU usage to start killing things.
