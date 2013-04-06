@@ -37,6 +37,7 @@ public class QuickSettingsTile implements OnClickListener {
     protected BaseStatusBar mStatusbarService;
     protected QuickSettingsController mQsc;
     protected int mTileTextSize; 
+    protected int mTileTextColor; 
 
     public QuickSettingsTile(Context context, LayoutInflater inflater, QuickSettingsContainerView container, QuickSettingsController qsc) {
         mContext = context;
@@ -48,6 +49,7 @@ public class QuickSettingsTile implements OnClickListener {
         mQsc = qsc;
         mTileLayout = R.layout.quick_settings_tile_generic;
         mTileTextSize = ((QuickSettingsContainerView) mContainerView).updateTileTextSize(); 
+        mTileTextColor = ((QuickSettingsContainerView) mContainerView).updateTileTextColor(); 
     }
 
     public void setupQuickSettingsTile() {
@@ -81,6 +83,9 @@ public class QuickSettingsTile implements OnClickListener {
         tv.setCompoundDrawablesWithIntrinsicBounds(0, mDrawable, 0, 0);
         tv.setText(mLabel);
         tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
+        }
     }
 
     void startSettingsActivity(String action) {

@@ -118,6 +118,7 @@ public class QuickSettings {
     private Handler mHandler;
 
     private int mTileTextSize;
+    private int mTileTextColor;
 
     // The set of QuickSettingsTiles that have dynamic spans (and need to be updated on
     // configuration change)
@@ -262,6 +263,7 @@ public class QuickSettings {
     public void setupQuickSettings() {
         // Setup the tiles that we are going to be showing (including the temporary ones)
         mTileTextSize = ((QuickSettingsContainerView) mContainerView).updateTileTextSize();
+        mTileTextColor = ((QuickSettingsContainerView) mContainerView).updateTileTextColor();
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
@@ -326,6 +328,9 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.user_textview);
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 iv.setImageDrawable(us.avatar);
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_user, state.label));
@@ -352,6 +357,9 @@ public class QuickSettings {
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 dismissBrightnessDialog(mBrightnessDialogShortTimeout);
             }
         });
@@ -394,6 +402,9 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.settings_tileview);
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
             }
         });
         parent.addView(settingsTile);
@@ -443,6 +454,9 @@ public class QuickSettings {
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, wifiState.iconId, 0, 0);
                 tv.setText(wifiState.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_wifi,
                         wifiState.signalContentDescription,
@@ -482,6 +496,9 @@ public class QuickSettings {
                     }
                     tv.setText(state.label);
                     tv.setTextSize(1, mTileTextSize);
+                    if (mTileTextColor != -2) {
+                        tv.setTextColor(mTileTextColor);
+                    }
                     view.setContentDescription(mContext.getResources().getString(
                             R.string.accessibility_quick_settings_mobile,
                             rssiState.signalContentDescription, rssiState.dataContentDescription,
@@ -510,6 +527,9 @@ public class QuickSettings {
                     tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                     tv.setText(state.label);
                     tv.setTextSize(1, mTileTextSize);
+                    if (mTileTextColor != -2) {
+                        tv.setTextColor(mTileTextColor);
+                    }
                 }
             });
             parent.addView(rotationLockTile);
@@ -549,6 +569,9 @@ public class QuickSettings {
                 iv.setImageLevel(batteryState.batteryLevel);
                 tv.setText(t);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 view.setContentDescription(
                         mContext.getString(R.string.accessibility_quick_settings_battery, t));
             }
@@ -572,6 +595,9 @@ public class QuickSettings {
                         mContext.getString(R.string.accessibility_quick_settings_airplane, airplaneState));
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
             }
         });
         parent.addView(airplaneTile);
@@ -627,6 +653,9 @@ public class QuickSettings {
                             bluetoothState.stateContentDescription));
                     tv.setText(label);
                     tv.setTextSize(1, mTileTextSize);
+                    if (mTileTextColor != -2) {
+                        tv.setTextColor(mTileTextColor);
+                    }
                 }
             });
             parent.addView(bluetoothTile);
@@ -656,6 +685,9 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.alarm_textview);
                 tv.setText(alarmState.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 view.setVisibility(alarmState.enabled ? View.VISIBLE : View.GONE);
                 view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_alarm, alarmState.label));
@@ -679,6 +711,9 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.location_textview);
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
             }
         });
@@ -700,6 +735,9 @@ public class QuickSettings {
                 TextView tv = (TextView) view.findViewById(R.id.wifi_display_textview);
                 tv.setText(state.label);
                 tv.setTextSize(1, mTileTextSize);
+                if (mTileTextColor != -2) {
+                    tv.setTextColor(mTileTextColor);
+                }
                 tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                 view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
             }
@@ -729,6 +767,9 @@ public class QuickSettings {
                     if (state.label != null) {
                         tv.setText(state.label);
                         tv.setTextSize(1, mTileTextSize);
+                        if (mTileTextColor != -2) {
+                            tv.setTextColor(mTileTextColor);
+                        }
                     }
                     view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
                 }

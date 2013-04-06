@@ -2555,6 +2555,13 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
+         * text color on qs tiles
+         *
+         * @hide
+         */
+        public static final String QUICK_TILES_TEXT_COLOR = "quick_tiles_text_color";
+
+        /**
          * Quick Settings Panel Tiles to Use
          *
          * @hide
