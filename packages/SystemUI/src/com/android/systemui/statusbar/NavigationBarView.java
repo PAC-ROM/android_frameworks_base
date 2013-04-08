@@ -165,7 +165,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     public static final int KEY_BACK_ALT = 1000;
 
 
-
+    public int mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
     private int mMenuVisbility;
     private int mMenuLocation;
     private boolean mHasBigMenuButton = false;
@@ -887,16 +887,16 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     }
 
     public void reorient() {
-        final int rot = mDisplay.getRotation();
-        for (int i=0; i<4; i++) {
+        int rot = mDisplay.getRotation();
+        for (int i=0; i<3; i++) {
             mRotatedViews[i].setVisibility(View.GONE);
-        }
-        if (mCurrentUIMode !=0) { // this is either a tablet of Phablet.  Need to stay at Rot_0
-            mCurrentView = mRotatedViews[Surface.ROTATION_0];
-        } else {
-            mCurrentView = mRotatedViews[rot];
-        }
-        mCurrentView.setVisibility(View.VISIBLE);
+           }
+           if (mSystemUiLayout != 360) { // this is either a tablet of Phablet.  Need to stay at Rot_0
+               mCurrentView = mRotatedViews[Surface.ROTATION_0];
+           } else {
+               mCurrentView = mRotatedViews[rot];
+           }
+           mCurrentView.setVisibility(View.VISIBLE);
 
         // force the low profile & disabled states into compliance
         setLowProfile(mLowProfile, false, true /* force */);
