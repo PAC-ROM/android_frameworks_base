@@ -47,6 +47,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -62,6 +63,8 @@ public class Clock extends TextView {
     private String mClockFormatString;
     private SimpleDateFormat mClockFormat;
     private Locale mLocale;
+    private String mMonthFormatString;
+    
 
     private static final int AM_PM_STYLE_NORMAL  = 0;
     private static final int AM_PM_STYLE_SMALL   = 1;
@@ -74,6 +77,12 @@ public class Clock extends TextView {
     public static final int WEEKDAY_STYLE_NORMAL = 2;
 
     protected int mWeekdayStyle = WEEKDAY_STYLE_GONE;
+    
+    public static final int CLOCK_MONTH_DISPLAY_GONE = 0;
+    public static final int CLOCK_MONTH_DISPLAY_SMALL = 1;
+    public static final int CLOCK_MONTH_DISPLAY_NORMAL = 2;
+
+    protected int mClockMonthDisplay = CLOCK_MONTH_DISPLAY_GONE;
 
     public static final int STYLE_HIDE_CLOCK     = 0;
     public static final int STYLE_CLOCK_RIGHT    = 1;
@@ -99,6 +108,9 @@ public class Clock extends TextView {
                     this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_CLOCK_WEEKDAY), false,
+                    this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_CLOCK_MONTH_DISPLAY), false,
                     this);
         }
 
@@ -198,6 +210,8 @@ public class Clock extends TextView {
                 Settings.System.STATUSBAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT);
         mWeekdayStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_WEEKDAY, WEEKDAY_STYLE_GONE);
+        mClockMonthDisplay = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_MONTH_DISPLAY, CLOCK_MONTH_DISPLAY_GONE);
         mClockFormatString = null;
 
         updateClockVisibility();
@@ -241,10 +255,21 @@ public class Clock extends TextView {
 
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-
+        
         String todayIs = null;
-        String result = sdf.format(mCalendar.getTime());
-
+        String monthString = null;
+        String result = sdf.format(calendar.getTime());
+        
+        if (mClockMonthDisplay != CLOCK_MONTH_DISPLAY_GONE) {
+        
+            if (mClockMonthDisplay == CLOCK_MONTH_DISPLAY_SMALL) {
+                monthString = (new SimpleDateFormat("d")).format(mCalendar.getTime()) + " " + (new SimpleDateFormat("MMM")).format(mCalendar.getTime()) + " ";
+            } else if (mClockMonthDisplay == CLOCK_MONTH_DISPLAY_NORMAL) {
+                monthString = (new SimpleDateFormat("d")).format(mCalendar.getTime()) + " " + (new SimpleDateFormat("MMMMM")).format(mCalendar.getTime()) + " ";
+            }
+            result = monthString.toString() + result;
+        }
+        
         if (mWeekdayStyle != WEEKDAY_STYLE_GONE) {
             todayIs = (new SimpleDateFormat("E")).format(mCalendar.getTime()) + " ";
             result = todayIs + result;
@@ -271,6 +296,7 @@ public class Clock extends TextView {
                 }
             }
         }
+        
         if (mWeekdayStyle != WEEKDAY_STYLE_NORMAL) {
             if (todayIs != null) {
                 if (mWeekdayStyle == WEEKDAY_STYLE_GONE) {
@@ -284,6 +310,7 @@ public class Clock extends TextView {
                 }
             }
         }
+        
         return formatted;
     }
 }
