@@ -3257,6 +3257,32 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_CLOCK_WEEKDAY = "statusbar_clock_weekday";
+        
+        /**
+        * Shows date before clock time
+        * 0 - No Date
+        * 1 - Normal Date
+        * @hide
+        */
+        public static final String STATUSBAR_CLOCK_DATE_DISPLAY = "statusbar_clock_date_display";
+        
+        /**
+        * Shows month before clock time
+        * 0 - No Month
+        * 1 - Small Month 
+        * 2 - Normal/Long Month 
+        * @hide
+        */
+        public static final String STATUSBAR_CLOCK_MONTH_DISPLAY = "statusbar_clock_month";
+        
+        /**
+        * Sets the date string style
+        * 0 - Regular style
+        * 1 - Lowercase
+        * 2 - Uppercase
+        * @hide
+        */
+        public static final String STATUSBAR_CLOCK_MONTH_STYLE = "statusbar_clock_month_style";
 
         /**
          * Show the pending notification counts as overlays on the statusbar
