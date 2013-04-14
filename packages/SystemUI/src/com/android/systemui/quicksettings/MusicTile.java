@@ -49,20 +49,11 @@ public class MusicTile extends QuickSettingsTile {
 
     private int mCurrentState = MEDIA_STATE_UNKNOWN;
 
-    public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, final QuickSettingsController qsc,
-            Handler handler, String id) {
-        mInstance = null;
-        mInstance = new MusicTile(context, inflater, container, qsc, handler);
-        return mInstance;
-    }
-
     private Context mContext;
 
-    public MusicTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, final QuickSettingsController qsc,
+    public MusicTile(Context context, final QuickSettingsController qsc,
             Handler handler) {
-        super(context, inflater, container, qsc);
+        super(context, qsc);
 
         mContext = context;
 

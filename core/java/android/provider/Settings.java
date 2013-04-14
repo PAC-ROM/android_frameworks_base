@@ -3332,17 +3332,6 @@ public final class Settings {
         public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
 
         /**
-         * Quick Settings Panel Tiles to Use
-         * @hide
-         */
-        public static final String QUICK_SETTINGS = "quick_settings";
-
-        /**
-         * QuickSettings panel dynamic alarm tile
-         * @hide
-         */
-
-        /**
          * Volume keys control cursor in text fields (default is 0)
          * 0 - Disabled
          * 1 - Volume up/down moves cursor left/right

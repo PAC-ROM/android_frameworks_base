@@ -16,9 +16,9 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 
 public class TogglePibTile extends QuickSettingsTile {
 
-    public TogglePibTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc);
+    public TogglePibTile(Context context,
+            QuickSettingsController qsc, Handler handler) {
+        super(context, qsc);
 
         mLabel = context.getString(R.string.quick_settings_pib_label);
         mOnClick = new OnClickListener() {
@@ -26,6 +26,9 @@ public class TogglePibTile extends QuickSettingsTile {
             public void onClick(View v) {
                 Settings.Secure.putInt(mContext.getContentResolver(),
                         Settings.Secure.UI_INVERTED_MODE, !getUiInvertedMode() ? 2 : 1);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 

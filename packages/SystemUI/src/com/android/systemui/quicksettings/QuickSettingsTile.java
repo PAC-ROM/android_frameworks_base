@@ -22,14 +22,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.systemui.R;
 import java.util.Random;
 
 import com.android.systemui.statusbar.BaseStatusBar;
-import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsTileView;
@@ -37,12 +36,11 @@ import com.android.systemui.statusbar.phone.QuickSettingsTileView;
 public class QuickSettingsTile implements OnClickListener {
 
     protected final Context mContext;
-    protected final ViewGroup mContainerView;
-    protected final LayoutInflater mInflater;
+    protected QuickSettingsContainerView mContainer;
     protected QuickSettingsTileView mTile;
     protected OnClickListener mOnClick;
     protected OnLongClickListener mOnLongClick;
-    protected int mTileLayout;
+    protected final int mTileLayout;
     protected int mDrawable;
     protected String mLabel;
     protected BaseStatusBar mStatusbarService;
@@ -65,36 +63,45 @@ public class QuickSettingsTile implements OnClickListener {
         android.R.color.holo_green_light
     };
 
-    public QuickSettingsTile(Context context, LayoutInflater inflater, QuickSettingsContainerView container, QuickSettingsController qsc) {
+    public QuickSettingsTile(Context context, QuickSettingsController qsc) {
+        this(context, qsc, R.layout.quick_settings_tile_basic);
+    }
+
+    public QuickSettingsTile(Context context, QuickSettingsController qsc, int layout) {
         mContext = context;
-        mContainerView = container;
-        mInflater = inflater;
         mDrawable = R.drawable.ic_notifications;
         mLabel = mContext.getString(R.string.quick_settings_label_enabled);
         mStatusbarService = qsc.mStatusBarService;
         mQsc = qsc;
-        mTileLayout = R.layout.quick_settings_tile_generic;
-        mTileTextSize = ((QuickSettingsContainerView) mContainerView).updateTileTextSize(); 
-        mTileTextColor = ((QuickSettingsContainerView) mContainerView).updateTileTextColor(); 
+        mTileLayout = layout;
+        setTextSize(mQsc.getTileTextSize());
+        setTextColor(mQsc.getTileTextColor()); 
     }
 
-    public void setupQuickSettingsTile() {
-            createQuickSettings();
-            onPostCreate();
-            updateQuickSettings();
-            mTile.setOnClickListener(this);
-            mTile.setOnLongClickListener(mOnLongClick);
-    }
-
-    void createQuickSettings() {
-        mTile = (QuickSettingsTileView) mInflater.inflate(R.layout.quick_settings_tile, mContainerView, false);
-        mTile.setContent(mTileLayout, mInflater);
-        mContainerView.addView(mTile);
+    public void setupQuickSettingsTile(LayoutInflater inflater, QuickSettingsContainerView container) {
+        mTile = (QuickSettingsTileView) inflater.inflate(R.layout.quick_settings_tile, container, false);
+        mTile.setContent(mTileLayout, inflater);
+        mContainer = container;
+        mContainer.addView(mTile);
+        onPostCreate();
+        updateQuickSettings();
+        mTile.setOnClickListener(this);
+        mTile.setOnLongClickListener(mOnLongClick);
         setColor();
         setRandomColor();
     }
 
+    public final void setTextSize(int size) {
+        mTileTextSize = size;
+    }
+
+    public final void setTextColor(int color) {
+        mTileTextColor = color;
+    }
+
     void onPostCreate(){}
+
+    public void onDestroy() {}
 
     public void onReceive(Context context, Intent intent) {}
 
@@ -109,13 +116,15 @@ public class QuickSettingsTile implements OnClickListener {
     void updateQuickSettings() {
         TextView tv = (TextView) mTile.findViewById(R.id.text);
         if (tv != null) {
-            ImageView iv = (ImageView) mTile.findViewById(R.id.image);
             tv.setText(mLabel);
-            iv.setImageDrawable(mContext.getResources().getDrawable(mDrawable));
             tv.setTextSize(1, mTileTextSize);
             if (mTileTextColor != -2) {
                 tv.setTextColor(mTileTextColor);
             }
+        }
+        ImageView image = (ImageView) mTile.findViewById(R.id.image);
+        if (image != null) {
+            image.setImageResource(mDrawable);
         }
     }
 

@@ -10,10 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.LayoutInflater;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.settings.BrightnessController.BrightnessStateChangeCallback;
 
@@ -21,9 +19,8 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
 
     private static final String TAG = "BrightnessTile";
 
-    public BrightnessTile(Context context, LayoutInflater inflater, QuickSettingsContainerView container, final QuickSettingsController qsc){		
-	        super(context, inflater, container, qsc);
-
+    public BrightnessTile(Context context, final QuickSettingsController qsc) {
+        super(context, qsc);
 
         mOnClick = new OnClickListener() {
             @Override

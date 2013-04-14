@@ -32,18 +32,19 @@ public class HybridTile extends QuickSettingsTile {
     private String mDefaultLabel;
     private String mPackageName;
     private String mSourceDir;
-    private String mStatus1, mStatus2;
+    private String mStatus;
     private String mColor = STOCK_COLORS;
+    private QuickSettingsController mQsc;
 
     private PackageManager mPm;
 
-    public HybridTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc);
+    public HybridTile(Context context, 
+            QuickSettingsController qsc, Handler handler) {
+        super(context, qsc, R.layout.quick_settings_tile_hybrid);
 
+        mQsc = qsc;
         mDefaultLabel = context.getString(R.string.quick_settings_hybrid_label);
         mLabel = mDefaultLabel;
-        mTileLayout = R.layout.quick_settings_tile_hybrid;
         mPm = context.getPackageManager();
 
         mOnClick = new OnClickListener() {
@@ -98,11 +99,10 @@ public class HybridTile extends QuickSettingsTile {
                     getAppInfoFromPackageName(mPackageName);
             mSourceDir = appInfo.sourceDir;
 
-            mStatus1 = String.valueOf(ExtendedPropertiesUtils.getActualProperty(mPackageName +
-                    ExtendedPropertiesUtils.PARANOID_DPI_SUFFIX)) + " DPI";
-
-            mStatus2 = String.valueOf(ExtendedPropertiesUtils.getActualProperty(mPackageName +
-                    ExtendedPropertiesUtils.PARANOID_LAYOUT_SUFFIX)) + " P";
+            mStatus = String.valueOf(ExtendedPropertiesUtils.getActualProperty(mPackageName +
+                    ExtendedPropertiesUtils.PARANOID_DPI_SUFFIX)) + " DPI / " +
+                    String.valueOf(ExtendedPropertiesUtils.getActualProperty(mPackageName +
+                    ExtendedPropertiesUtils.PARANOID_LAYOUT_SUFFIX)) + "P";
 
             mColor = ExtendedPropertiesUtils.getProperty(mPackageName +
                     ExtendedPropertiesUtils.PARANOID_COLORS_SUFFIX, STOCK_COLORS);
@@ -118,13 +118,15 @@ public class HybridTile extends QuickSettingsTile {
     @Override
     void updateQuickSettings() {
 
-        TextView status1 = (TextView) mTile.findViewById(R.id.hybrid_status1);
-        status1.setText(mStatus1);
-        TextView status2 = (TextView) mTile.findViewById(R.id.hybrid_status2);
-        status2.setText(mStatus2);
+        TextView status = (TextView) mTile.findViewById(R.id.hybrid_status);
+        status.setText(mStatus);
+        status.setTextColor(mQsc.getTileTextColor());
+
 
         TextView app = (TextView) mTile.findViewById(R.id.hybrid_app);
         app.setText(mLabel);
+        app.setTextSize(1, mQsc.getTileTextSize());
+        app.setTextColor(mQsc.getTileTextColor());
 
         // Color changes
 

@@ -48,12 +48,13 @@ public class CameraTile extends QuickSettingsTile {
     private static final int CAMERA_ID = 0;
 
     private Handler mHandler;
-    private TextView mTextView;
+    private View mIconContainer;
     private FrameLayout mSurfaceLayout;
     private SurfaceView mSurfaceView;
     private View mFlashView;
 
     private Camera mCamera;
+    private QuickSettingsController mQsc;
     private CameraOrientationListener mCameraOrientationListener = null;
     private int mOrientation;
     private int mJpegRotation;
@@ -138,7 +139,7 @@ public class CameraTile extends QuickSettingsTile {
                 }
             }, 100);
 
-            mTextView.setVisibility(View.GONE);
+            mIconContainer.setVisibility(View.GONE);
             mSurfaceView = new CameraPreview(mContext, mCamera);
             mSurfaceView.setVisibility(View.VISIBLE);
             mSurfaceLayout.addView(mSurfaceView, 0);
@@ -225,7 +226,7 @@ public class CameraTile extends QuickSettingsTile {
             mCameraStarted = false;
             mCameraOrientationListener.disable();
 
-            mTextView.setVisibility(View.VISIBLE);
+            mIconContainer.setVisibility(View.VISIBLE);
             mSurfaceView.setVisibility(View.GONE);
             mSurfaceLayout.removeView(mSurfaceView);
             mSurfaceView = null;
@@ -241,15 +242,13 @@ public class CameraTile extends QuickSettingsTile {
         }
     };
 
-    public CameraTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc);
+    public CameraTile(Context context, QuickSettingsController qsc, Handler handler) {
+        super(context, qsc, R.layout.quick_settings_tile_camera);
 
+        mQsc = qsc;
         mHandler = handler;
-
-        mTileLayout = R.layout.quick_settings_tile_camera;
-
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
+
         try {
             final Resources camRes = context.getPackageManager()
                     .getResourcesForApplication("com.android.gallery3d");
@@ -280,7 +279,10 @@ public class CameraTile extends QuickSettingsTile {
             }
         };
 
-        mTextView = (TextView) mTile.findViewById(R.id.camera_text);
+        mIconContainer = mTile.findViewById(R.id.icon_container);
+        TextView mTextView = (TextView) mTile.findViewById(R.id.camera_text);
+        mTextView.setTextSize(1, mQsc.getTileTextSize());
+        mTextView.setTextColor(mQsc.getTileTextColor());
         mSurfaceLayout = (FrameLayout) mTile.findViewById(R.id.camera_surface_holder);
         mFlashView = mTile.findViewById(R.id.camera_surface_flash_overlay);
 
@@ -297,7 +299,7 @@ public class CameraTile extends QuickSettingsTile {
     }
 
     private PanelView getContainingPanel() {
-        ViewParent parent = mContainerView;
+        ViewParent parent = mContainer;
         while (parent != null) {
             if (parent instanceof PanelView) {
                 return (PanelView) parent;

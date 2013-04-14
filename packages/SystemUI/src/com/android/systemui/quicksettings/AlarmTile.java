@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,10 +18,9 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 
 public class AlarmTile extends QuickSettingsTile {
 
-    public AlarmTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container,
+    public AlarmTile(Context context, 
             QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc);
+        super(context, qsc);
 
         mOnClick = new View.OnClickListener() {
             @Override
@@ -51,8 +51,8 @@ public class AlarmTile extends QuickSettingsTile {
 
     private synchronized void updateTile() {
         mDrawable = R.drawable.ic_qs_alarm_on;
-        mLabel = Settings.System.getString(mContext.getContentResolver(),
-                Settings.System.NEXT_ALARM_FORMATTED);
+        mLabel = Settings.System.getStringForUser(mContext.getContentResolver(),
+                Settings.System.NEXT_ALARM_FORMATTED, UserHandle.USER_CURRENT);
     }
 
     @Override

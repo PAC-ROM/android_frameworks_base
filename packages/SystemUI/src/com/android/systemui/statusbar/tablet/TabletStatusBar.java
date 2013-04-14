@@ -169,12 +169,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     private int mMaxNotificationIcons = 5;
 
     TabletStatusBarView mStatusBarView;
-
-    /*boolean mIsSlidingDrawer = false;
-    static boolean mAutoHide = false;
-    static long mAutoHideTime = 10000;
-    static boolean mIsDrawerOpen = true;*/
-
     View mNotificationArea;
     View mNotificationTrigger;
     NotificationIconArea mNotificationIconArea;

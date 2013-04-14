@@ -14,12 +14,13 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.NetworkSignalChangedCallback;
 
 public class AirplaneModeTile extends QuickSettingsTile implements NetworkSignalChangedCallback{
-
+    private NetworkController mController;
     private boolean enabled = false;
 
-    public AirplaneModeTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc) {
-        super(context, inflater, container, qsc);
+    public AirplaneModeTile(Context context, QuickSettingsController qsc, NetworkController controller) {
+        super(context, qsc);
+
+        mController = controller;
 
         mOnClick = new View.OnClickListener() {
             @Override
@@ -48,10 +49,15 @@ public class AirplaneModeTile extends QuickSettingsTile implements NetworkSignal
 
     @Override
     void onPostCreate() {
-        NetworkController controller = new NetworkController(mContext);
-        controller.addNetworkSignalChangedCallback(this);
+        mController.addNetworkSignalChangedCallback(this);
         updateTile();
         super.onPostCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        mController.removeNetworkSignalChangedCallback(this);
+        super.onDestroy();
     }
 
     @Override

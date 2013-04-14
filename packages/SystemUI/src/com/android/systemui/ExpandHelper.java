@@ -616,4 +616,3 @@ public class ExpandHelper implements Gefingerpoken, OnClickListener {
         mVibrator.vibrate(duration);
     }
 }
-

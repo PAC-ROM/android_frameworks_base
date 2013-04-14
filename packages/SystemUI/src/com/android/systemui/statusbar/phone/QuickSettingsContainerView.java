@@ -169,33 +169,4 @@ public class QuickSettingsContainerView extends FrameLayout {
         return isLandscape;
     }
 
-    public int updateTileTextSize() {
-        int tileTextSize;
-        int numColumns = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUICK_TILES_PER_ROW,
-                getContext().getResources().getInteger(R.integer.quick_settings_num_columns));
-
-        // adjust Tile Text Size based on column count
-        switch (numColumns) {
-            case 5:
-                tileTextSize = 7;
-                break;
-            case 4:
-                tileTextSize = 10;
-                break;
-            case 3:
-            default:
-                tileTextSize = 12;
-                break;
-        }
-        return tileTextSize;
-    }
-
-    public int updateTileTextColor() {
-        int tileTextColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUICK_TILES_TEXT_COLOR, -2);
-
-        return tileTextColor;
-    }
-
 }
