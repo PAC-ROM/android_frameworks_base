@@ -146,6 +146,18 @@ public class SearchPanelView extends FrameLayout implements
 
         mObserver = new SettingsObserver(new Handler());
     }
+    
+    private void startAssistActivity() {
+        if (!mBar.isDeviceProvisioned()) return;
+
+        // Close Recent Apps if needed
+        mBar.animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_SEARCH_PANEL);
+        boolean isKeyguardShowing = false;
+        try {
+            isKeyguardShowing = mWm.isKeyguardLocked();
+        } catch (RemoteException e) {
+
+        }
 
         if (isKeyguardShowing) {
             // Have keyguard show the bouncer and launch the activity if the user succeeds.

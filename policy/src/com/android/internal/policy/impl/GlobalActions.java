@@ -171,8 +171,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
      * Show the global actions dialog (creating if necessary)
      * @param keyguardLocked True if keyguard is locked
      */
-    public void showDialog(boolean keyguardLocked, boolean isDeviceProvisioned) {
+     
+    public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned) {
+        showDialog(keyguardShowing, isDeviceProvisioned, false);
+    }
+     
+    public void showDialog(boolean keyguardLocked, boolean isDeviceProvisioned,
+        boolean isRebootSubMenu) {
         mKeyguardLocked = keyguardLocked;
+        mRebootMenu = isRebootSubMenu;
         mDeviceProvisioned = isDeviceProvisioned;
         if (mDialog != null) {
             if (mUiContext != null) {
@@ -335,11 +342,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mItems.add(
                 new SinglePressAction(R.drawable.ic_lock_reboot, R.string.global_action_reboot) {
                     public void onPress() {
-                        mWindowManagerFuncs.reboot(true);
+                        showDialog(mKeyguardLocked, mDeviceProvisioned, true);
                     }
 
                     public boolean onLongPress() {
-                        mWindowManagerFuncs.rebootSafeMode(true);
                         return true;
                     }
 
