@@ -33,6 +33,10 @@ public class QSUtils {
         public static boolean deviceSupportsBluetooth() {
             return (BluetoothAdapter.getDefaultAdapter() != null);
         }
+        
+        public static boolean systemProfilesEnabled(ContentResolver resolver) {
+            return (Settings.System.getInt(resolver, Settings.System.SYSTEM_PROFILES_ENABLED, 1) == 1);
+        }
 
         public static boolean deviceSupportsNfc(Context ctx) {
             return NfcAdapter.getDefaultAdapter(ctx) != null;

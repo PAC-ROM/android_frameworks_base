@@ -124,7 +124,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private MyAdapter mAdapter;
 
-    private boolean mKeyguardShowing = false;
+    private boolean mKeyguardLocked = false;
     private boolean mDeviceProvisioned = false;
     private ToggleAction.State mAirplaneState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
@@ -132,6 +132,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasVibrator;
     private boolean mEnableNavBarHideToggle = true;
     private boolean mRebootMenu;
+    private boolean mShowRebootOnLock = true;
     private Profile mChosenProfile;
 
     /**
@@ -165,20 +166,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mAirplaneModeObserver);
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator != null && vibrator.hasVibrator();
+        
+        mShowRebootOnLock = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_DIALOG_SHOW_REBOOT_KEYGUARD, true);
     }
 
     /**
      * Show the global actions dialog (creating if necessary)
-     * @param keyguardShowing True if keyguard is showing
+     * @param keyguardLocked True if keyguard is locked
      */
+     
     public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned) {
         showDialog(keyguardShowing, isDeviceProvisioned, false);
     }
-
-    public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned,
-            boolean isRebootSubMenu) {
+     
+    public void showDialog(boolean keyguardLocked, boolean isDeviceProvisioned,
+        boolean isRebootSubMenu) {
+        mKeyguardLocked = keyguardLocked;
         mRebootMenu = isRebootSubMenu;
-        mKeyguardShowing = keyguardShowing;
         mDeviceProvisioned = isDeviceProvisioned;
         if (mDialog != null) {
             if (mUiContext != null) {
@@ -314,6 +319,18 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             new SinglePressAction(
                     com.android.internal.R.drawable.ic_lock_power_off,
                     R.string.global_action_power_off) {
+                
+                public boolean showDuringKeyguard() {
+                    if (mShowRebootOnLock) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                public boolean showBeforeProvisioning() {
+                    return true;
+                }
 
                 public void onPress() {
                     // shutdown by making sure radio and power are handled accordingly.
@@ -322,14 +339,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
                 public boolean onLongPress() {
                     mWindowManagerFuncs.rebootSafeMode(true);
-                    return true;
-                }
-
-                public boolean showDuringKeyguard() {
-                    return true;
-                }
-
-                public boolean showBeforeProvisioning() {
                     return true;
                 }
             });
@@ -341,7 +350,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mItems.add(
                 new SinglePressAction(R.drawable.ic_lock_reboot, R.string.global_action_reboot) {
                     public void onPress() {
-                        showDialog(mKeyguardShowing, mDeviceProvisioned, true);
+                        showDialog(mKeyguardLocked, mDeviceProvisioned, true);
                     }
 
                     public boolean onLongPress() {
@@ -349,7 +358,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     }
 
                     public boolean showDuringKeyguard() {
-                        return true;
+                        if (mShowRebootOnLock) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
 
                     public boolean showBeforeProvisioning() {
@@ -762,7 +775,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     /**
      * The adapter used for the list within the global actions dialog, taking
      * into account whether the keyguard is showing via
-     * {@link GlobalActions#mKeyguardShowing} and whether the device is provisioned
+     * {@link GlobalActions#mKeyguardLocked} and whether the device is provisioned
      * via {@link GlobalActions#mDeviceProvisioned}.
      */
     private class MyAdapter extends BaseAdapter {
@@ -773,7 +786,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             for (int i = 0; i < mItems.size(); i++) {
                 final Action action = mItems.get(i);
 
-                if (mKeyguardShowing && !action.showDuringKeyguard()) {
+                if (mKeyguardLocked && !action.showDuringKeyguard()) {
                     continue;
                 }
                 if (!mDeviceProvisioned && !action.showBeforeProvisioning()) {
@@ -799,7 +812,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             int filteredPos = 0;
             for (int i = 0; i < mItems.size(); i++) {
                 final Action action = mItems.get(i);
-                if (mKeyguardShowing && !action.showDuringKeyguard()) {
+                if (mKeyguardLocked && !action.showDuringKeyguard()) {
                     continue;
                 }
                 if (!mDeviceProvisioned && !action.showBeforeProvisioning()) {
@@ -814,7 +827,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             throw new IllegalArgumentException("position " + position
                     + " out of range of showable actions"
                     + ", filtered count=" + getCount()
-                    + ", keyguardshowing=" + mKeyguardShowing
+                    + ", keyguardlocked=" + mKeyguardLocked
                     + ", provisioned=" + mDeviceProvisioned);
         }
 

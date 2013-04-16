@@ -28,6 +28,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_LOCKSCREEN;
 import static com.android.internal.util.cm.QSConstants.TILE_MOBILEDATA;
 import static com.android.internal.util.cm.QSConstants.TILE_NETWORKMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_NFC;
+import static com.android.internal.util.cm.QSConstants.TILE_PROFILE;
 import static com.android.internal.util.cm.QSConstants.TILE_RINGER;
 import static com.android.internal.util.cm.QSConstants.TILE_SCREENTIMEOUT;
 import static com.android.internal.util.cm.QSConstants.TILE_SETTINGS;
@@ -44,6 +45,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_HYBRID;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsBluetooth;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsTelephony;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsUsbTether;
+import static com.android.internal.util.cm.QSUtils.systemProfilesEnabled;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -72,6 +74,7 @@ import com.android.systemui.quicksettings.MobileNetworkTile;
 import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PreferencesTile;
+import com.android.systemui.quicksettings.ProfileTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
 import com.android.systemui.quicksettings.RingerModeTile;
 import com.android.systemui.quicksettings.ScreenTimeoutTile;
@@ -94,6 +97,7 @@ import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class QuickSettingsController {
     private static String TAG = "QuickSettingsController";
@@ -104,6 +108,9 @@ public class QuickSettingsController {
         = new HashMap<String, ArrayList<QuickSettingsTile>>();
     public HashMap<Uri, ArrayList<QuickSettingsTile>> mObserverMap
         = new HashMap<Uri, ArrayList<QuickSettingsTile>>();
+        
+    // Uris that need to be monitored for updating tile status
+    private HashSet<Uri> mTileStatusUris = new HashSet<Uri>();
 
     private final Context mContext;
     private ArrayList<QuickSettingsTile> mQuickSettingsTiles;
@@ -197,6 +204,11 @@ public class QuickSettingsController {
                 // User cannot add the NFC tile if the device does not support it
                 // No need to check again here
                 qs = new NfcTile(mContext, inflater, mContainerView, this);
+             } else if (tile.equals(TILE_PROFILE)) {
+                mTileStatusUris.add(Settings.System.getUriFor(Settings.System.SYSTEM_PROFILES_ENABLED));
+                if (systemProfilesEnabled(resolver)) {
+                    qs = new ProfileTile(mContext, inflater, mContainerView, this);
+                }
             } else if (tile.equals(TILE_DESKTOPMODE)) {
                 qs = new DesktopModeTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_HYBRID)) {
