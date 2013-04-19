@@ -2780,7 +2780,7 @@ public final class Settings {
         public static final String APP_SIDEBAR_SORT_TYPE = "app_sidebar_sort_type";
 
         /**
-         * How to sort and order the items in the app sidebar
+         * User defined transparency level for sidebar
          *
          * @hide
          */
@@ -2799,6 +2799,13 @@ public final class Settings {
          * @hide
          */
         public static final String QUICK_TILES_PER_ROW = "quick_tiles_per_row";
+
+        /**
+         * Width and height of items in sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_ITEM_SIZE = "app_sidebar_item_size";
 
         /**
          * number of tiles per row in quick settings
