@@ -231,6 +231,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     // settings
     QuickSettingsController mQS;
     boolean mHasSettingsPanel, mHideSettingsPanel, mHasFlipSettings;
+    boolean mUiModeIsToggled;
     SettingsPanelView mSettingsPanel;
     View mFlipSettingsView;
     QuickSettingsContainerView mSettingsContainer;
@@ -563,6 +564,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClearButton.setVisibility(View.INVISIBLE);
         mClearButton.setEnabled(false);
         mDateView = (DateView)mStatusBarWindow.findViewById(R.id.date);
+
+        mUiModeIsToggled = Settings.Secure.getInt(mContext.getContentResolver(),
+                              Settings.Secure.UI_MODE_IS_TOGGLED, 0) == 1;
 
         if (mStatusBarView.hasFullWidthNotifications()) {
             mHideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
@@ -3096,7 +3100,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         public void onChange(boolean selfChange) {
             boolean hideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
                                     Settings.System.QS_DISABLE_PANEL, 0) == 1;
-            if (hideSettingsPanel != mHideSettingsPanel) {
+            boolean uiModeIsToggled = Settings.Secure.getInt(mContext.getContentResolver(),
+                                    Settings.Secure.UI_MODE_IS_TOGGLED, 0) == 1;
+
+            if (hideSettingsPanel != mHideSettingsPanel
+                || uiModeIsToggled != mUiModeIsToggled) {
                 recreateStatusBar();
             }
 
@@ -3150,6 +3158,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.getUriFor(Settings.System.QUICK_TILES_TEXT_COLOR),
                     false, this);
 
+            cr.registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.UI_MODE_IS_TOGGLED),
+                    false, this);
         }
     }
     class SettingsObserver extends ContentObserver {
