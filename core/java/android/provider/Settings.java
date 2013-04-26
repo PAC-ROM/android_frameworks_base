@@ -2770,21 +2770,49 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String APP_SIDE_BAR_ENABLED = "app_sidebar_enabled";
-
-        /**
-         * How to sort and order the items in the app sidebar
-         *
-         * @hide
-         */
-        public static final String APP_SIDEBAR_SORT_TYPE = "app_sidebar_sort_type";
+        public static final String APP_SIDEBAR_ENABLED = "app_sidebar_enabled";
 
         /**
          * User defined transparency level for sidebar
          *
          * @hide
          */
-         public static final String APP_SIDEBAR_TRANSPARENCY = "app_sidebar_transparency";
+        public static final String APP_SIDEBAR_TRANSPARENCY = "app_sidebar_transparency";
+
+        /**
+         * Disable text labels for app sidebar items
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_DISABLE_LABELS = "app_sidebar_disable_labels";
+
+        /**
+         * Position of app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_POSITION = "app_sidebar_position";
+
+        /**
+         * Position of app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_USE_TAB = "app_sidebar_use_tab";
+
+        /**
+         * Position of app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_TAB_POSITION = "app_sidebar_tab_position";
+
+        /**
+         * Position of app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_TAB_SCALE = "app_sidebar_tab_scale";
 
         /**
          * Quick Settings Panel Tiles to Use
@@ -2799,20 +2827,6 @@ public final class Settings {
          * @hide
          */
         public static final String QUICK_TILES_PER_ROW = "quick_tiles_per_row";
-
-        /**
-         * Width and height of items in sidebar
-         *
-         * @hide
-         */
-        public static final String APP_SIDEBAR_ITEM_SIZE = "app_sidebar_item_size";
-
-        /**
-         * List of apps to exclude from sidebar
-         *
-         * @hide
-         */
-        public static final String APP_SIDEBAR_EXCLUDE_LIST = "app_sidebar_exclude_list";
 
         /**
          * number of tiles per row in quick settings

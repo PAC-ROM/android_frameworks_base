@@ -281,9 +281,6 @@
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
 
-    <!-- SideBar -->
-    <dimen name="app_sidebar_item_size">60dp</dimen>
-
     <!-- Constant for hidden ribbon drag handle -->
     <dimen name="ribbon_drag_handle_height">25dp</dimen>
 
@@ -302,5 +299,19 @@
     <!-- Height of carrier label + close handle -->
     <dimen name="weather_text_margin">56dp</dimen>
 
+    <!-- SideBar -->
+    <dimen name="app_sidebar_item_size">60dp</dimen>
     <dimen name="app_sidebar_item_padding">2dp</dimen>
+    <dimen name="tab_width">16dp</dimen>
+    <dimen name="tab_height">32dp</dimen>
+    <dimen name="drag_item_size">80dp</dimen>
+    <dimen name="icon_size">48dp</dimen>
+    <dimen name="item_title_text_size">12sp</dimen>
+    <dimen name="item_above_below_delta">16dp</dimen>
+    <dimen name="folder_padding">0dp</dimen>
+    <dimen name="folder_name_padding">10dp</dimen>
+    <dimen name="folder_width">290dp</dimen>
+    <dimen name="folder_height">480dp</dimen>
+    <dimen name="setup_sidebar_width">90dp</dimen>
+
 </resources>

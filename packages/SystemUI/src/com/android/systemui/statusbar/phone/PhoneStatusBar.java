@@ -205,6 +205,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     private boolean showingAltCluster = false;
 
     private AppSidebar mAppSidebar;
+    private int mSidebarPosition;
 
     // These are no longer handled by the policy, because we need custom strategies for them
     BluetoothController mBluetoothController;
@@ -624,6 +625,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         // set recents activity navigation bar view
         RecentsActivity.addNavigationCallback(mNavigationBarView);
 
+        if (mRecreating) {
+            if (mAppSidebar != null)
+                mWindowManager.removeView(mAppSidebar);
+        }
+        mAppSidebar = (AppSidebar)View.inflate(context, R.layout.app_sidebar, null);
+        mWindowManager.addView(mAppSidebar, getAppSidebarLayoutParams(mSidebarPosition));
+
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.TRANSLUCENT;
 
@@ -1004,7 +1012,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.FILL_VERTICAL;
+        lp.gravity = Gravity.TOP | Gravity.FILL_VERTICAL;
+        lp.gravity |= position == AppSidebar.SIDEBAR_POSITION_LEFT ? Gravity.LEFT : Gravity.RIGHT;
         lp.setTitle("AppSidebar");
 
         return lp;
@@ -3212,6 +3221,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 if (DEBUG) {
                     Slog.v(TAG, "configuration changed: " + mContext.getResources().getConfiguration());
                 }
+                Configuration config = mContext.getResources().getConfiguration();
                 mDisplay.getSize(mCurrentDisplaySize);
 
                 updateResources();
@@ -3223,6 +3233,22 @@ public class PhoneStatusBar extends BaseStatusBar {
                     mNavigationBarView.mDelegateHelper.setSwapXY((
                             mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                             && (mCurrentUIMode == 0));
+                }
+                try {
+                    // position app sidebar on left if in landscape orientation and device has a navbar
+                    if (mWindowManagerService.hasNavigationBar() &&
+                            NavbarEditor.isDevicePhone(mContext) &&
+                            config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        mWindowManager.updateViewLayout(mAppSidebar,
+                                getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAppSidebar.setPosition(AppSidebar.SIDEBAR_POSITION_LEFT);
+                            }
+                        }, 500);
+                    }
+                } catch (RemoteException e) {
                 }
             }
             else if (Intent.ACTION_SCREEN_ON.equals(action)) {
@@ -3708,6 +3734,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.AUTO_HIDE_STATUSBAR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.APP_SIDEBAR_POSITION), false, this);
         }
 
         @Override
@@ -3735,6 +3763,13 @@ public class PhoneStatusBar extends BaseStatusBar {
 
             if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
+            }
+
+            int sidebarPosition = Settings.System.getInt(
+                    resolver, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
+            if (sidebarPosition != mSidebarPosition) {
+                mSidebarPosition = sidebarPosition;
+                mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
             }
         }
     }
