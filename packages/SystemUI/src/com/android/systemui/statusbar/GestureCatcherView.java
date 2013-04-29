@@ -180,10 +180,6 @@ public class GestureCatcherView extends LinearLayout{
         }
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DRAG_HANDLE_WEIGHT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DRAG_HANDLE_OPACITY), false, this);
         }
          @Override
         public void onChange(boolean selfChange) {
@@ -192,10 +188,8 @@ public class GestureCatcherView extends LinearLayout{
     }
    protected void updateSettings() {
         ContentResolver cr = mContext.getContentResolver();
-        mDragButtonOpacity = Settings.System.getInt(cr, Settings.System.DRAG_HANDLE_OPACITY, 50);
         mPhoneMode = Settings.System.getInt(cr,Settings.System.CURRENT_UI_MODE, 0) == 0;
 
-        mButtonWeight = Settings.System.getInt(cr, Settings.System.DRAG_HANDLE_WEIGHT, 5);
         updateLayout();
     }
 }

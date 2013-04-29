@@ -247,7 +247,10 @@
 
     <dimen name="pie_panel_padding">20dp</dimen>
     <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
-    
+
+    <!-- Constant for hidden navbar drag handle -->
+    <dimen name="drag_handle_height">10dp</dimen>
+
     <!-- Notification Shortcuts -->
     <dimen name="notification_shortcuts_close_handle_height">26dp</dimen>
     <dimen name="notification_shortcuts_spacing_height">88dp</dimen>

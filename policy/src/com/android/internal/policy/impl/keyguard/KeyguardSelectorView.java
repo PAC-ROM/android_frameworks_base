@@ -20,12 +20,15 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityManagerNative;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -47,12 +50,23 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import static com.android.internal.util.aokp.AwesomeConstants.*;
@@ -148,6 +162,17 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     }
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
+
+       final Runnable SetLongPress = new Runnable () {
+            public void run() {
+                if (!mGlowPadLock) {
+                    mGlowPadLock = true;
+                    mLongPress = true;
+                    mContext.unregisterReceiver(receiver);
+                    launchAction(longActivities[mTarget]);
+                 }
+            }
+        };
 
         public void onTrigger(View v, int target) {
             if (mStoredTargets == null) {
@@ -340,6 +365,10 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     @Override
     public void showUsabilityHint() {
         mGlowPadView.ping();
+    }
+
+    public boolean isScreenPortrait() {
+        return res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
     private void updateTargets() {
@@ -582,5 +611,21 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mIsBouncing = false;
         KeyguardSecurityViewHelper.
                 hideBouncer(mSecurityMessageDisplay, mFadeView, mBouncerFrame, duration);
+    }
+
+    public class UnlockReceiver extends BroadcastReceiver {
+        public static final String ACTION_UNLOCK_RECEIVER = "com.android.lockscreen.ACTION_UNLOCK_RECEIVER";
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_UNLOCK_RECEIVER)) {
+                if (!mUnlockBroadcasted) {
+                    mUnlockBroadcasted = true;
+                    mCallback.userActivity(0);
+                    mCallback.dismiss(false);
+                }
+            }
+            mContext.unregisterReceiver(receiver);
+        }
     }
 }

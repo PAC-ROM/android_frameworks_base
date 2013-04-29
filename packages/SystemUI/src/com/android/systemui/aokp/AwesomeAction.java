@@ -57,7 +57,9 @@ import android.widget.Toast;
 import static com.android.internal.util.aokp.AwesomeConstants.*;
 import com.android.systemui.statusbar.WidgetView;
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.systemui.R;
+import com.android.internal.R;
+
+import com.android.systemui.statusbar.WidgetView;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -129,47 +131,47 @@ public class AwesomeAction {
                         Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                         if(vib != null){
                             vib.vibrate(50);
-                    }
-                } else {
-                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
-                    if (tg != null) {
-                        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
+                    }else{
+                        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
+                        if(tg != null){
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
                     }
                 }
-            }
                 break;
             case ACTION_SILENT:
-            if (am != null) {
-                if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
-                    am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                } else {
-                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
-                    if (tg != null) {
-                        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                if(am != null){
+                    if(am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+                        am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    }else{
+                        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
+                        if(tg != null){
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
                     }
                 }
-            }
             break;
             case ACTION_SILENT_VIB:
-            if (am != null) {
-                if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-                    am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-                    Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-                    if (vib != null) {
-                        vib.vibrate(50);
-                    }
-                } else if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
-                    am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                } else {
-                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION,
-                    if (tg != null) {
-                        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                if(am != null){
+                    if(am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                        am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                        Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+                        if(vib != null){
+                            vib.vibrate(50);
+                        }
+                    } else if(am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                        am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    } else {
+                        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, (int)(ToneGenerator.MAX_VOLUME * 0.85));
+                        if(tg != null){
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
                     }
                 }
-            }
             break;
             case ACTION_POWER:
                 injectKeyDelayed(KeyEvent.KEYCODE_POWER);
@@ -276,9 +278,9 @@ public class AwesomeAction {
             final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(),
                     SystemClock.uptimeMillis(),
                     KeyEvent.ACTION_UP, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
-                    KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
-            InputManager.getInstance().injectInputEvent(ev,
-                    InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+                    KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY, InputDevice.SOURCE_KEYBOARD);
+                    InputManager.getInstance().injectInputEvent(ev,
+                        InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
         }
     }
 
