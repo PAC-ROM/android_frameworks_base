@@ -42,6 +42,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_WIFI;
 import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_DESKTOPMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_HYBRID;
+import static com.android.internal.util.cm.QSConstants.TILE_PIB;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsBluetooth;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsTelephony;
 import static com.android.internal.util.cm.QSUtils.deviceSupportsUsbTether;
@@ -91,6 +92,7 @@ import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.DesktopModeTile;
 import com.android.systemui.quicksettings.HybridTile;
+import com.android.systemui.quicksettings.TogglePibTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,6 +215,8 @@ public class QuickSettingsController {
                 qs = new DesktopModeTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_HYBRID)) {
                 qs = new HybridTile(mContext, inflater, mContainerView, this, mHandler);
+            } else if (tile.equals(TILE_PIB)) {
+                qs = new TogglePibTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_VOLUME)) {
                 qs = new VolumeTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_QUIETHOURS)) {

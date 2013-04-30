@@ -560,6 +560,9 @@
     <string name="quick_settings_lte_off">LTE off</string>
     <string name="quick_settings_volume">Volume</string>
     <string name="quick_settings_quiethours">Quiet hours</string>
+    <string name="quick_settings_pib_label">PIB</string>
+    <string name="quick_settings_pib_on_label">PIB On</string>
+    <string name="quick_settings_pib_off_label">PIB Off</string>
 
     <!-- Text to display next to the minimal graphical battery meter.  [CHAR LIMIT=3] -->
     <string name="status_bar_settings_battery_meter_min_format" translatable="false">
