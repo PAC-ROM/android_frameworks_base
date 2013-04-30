@@ -78,7 +78,14 @@ public class SbBatteryController extends LinearLayout {
     public static final int STYLE_ICON_TEXT = 2;
     public static final int STYLE_ICON_CENTERED_TEXT = 3;
     public static final int STYLE_ICON_CIRCLE = 4;
-    public static final int STYLE_HIDE = 5;
+    public static final int STYLE_ICON_FULL_CIRCLE = 5;
+    public static final int STYLE_ICON_GAUGE = 6;
+    public static final int STYLE_ICON_HONEYCOMB = 7;
+    public static final int STYLE_ICON_DROID = 8;
+    public static final int STYLE_ICON_SPHERE = 9;
+    public static final int STYLE_ICON_NUMBERS = 10;
+    public static final int STYLE_ICON_DIGITAL_NUMBERS = 11;
+    public static final int STYLE_HIDE = 12;
 
     public SbBatteryController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -172,6 +179,27 @@ public class SbBatteryController extends LinearLayout {
         if (mBatteryStyle == STYLE_ICON_CIRCLE) {
             mIcon = mPlugged ? R.drawable.stat_sys_battery_charge_circle
                     : R.drawable.stat_sys_battery_circle;
+        } else if (mBatteryStyle == STYLE_ICON_FULL_CIRCLE) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_full_circle_charge
+                    : R.drawable.stat_sys_battery_full_circle;
+        } else if (mBatteryStyle == STYLE_ICON_GAUGE) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_gauge_charge
+                    : R.drawable.stat_sys_battery_gauge;
+        } else if (mBatteryStyle == STYLE_ICON_HONEYCOMB) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_honeycomb_charge
+                    : R.drawable.stat_sys_battery_honeycomb;
+        } else if (mBatteryStyle == STYLE_ICON_DROID) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_droid_charge
+                    : R.drawable.stat_sys_battery_droid;
+        } else if (mBatteryStyle == STYLE_ICON_SPHERE) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_sphere_charge
+                    : R.drawable.stat_sys_battery_sphere;
+        } else if (mBatteryStyle == STYLE_ICON_NUMBERS) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_numbers_charge
+                    : R.drawable.stat_sys_battery_numbers;
+        } else if (mBatteryStyle == STYLE_ICON_DIGITAL_NUMBERS) {
+            mIcon = mPlugged ? R.drawable.stat_sys_battery_digital_numbers_charge
+                    : R.drawable.stat_sys_battery_digital_numbers;
         } else {
             mIcon = mPlugged ? R.drawable.stat_sys_battery_charge
                     : R.drawable.stat_sys_battery;
@@ -291,6 +319,48 @@ public class SbBatteryController extends LinearLayout {
                 setVisibility(View.GONE);
                 break;
             case STYLE_ICON_CIRCLE:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_FULL_CIRCLE:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_GAUGE:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_HONEYCOMB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_DROID:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_SPHERE:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_NUMBERS:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_DIGITAL_NUMBERS:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);

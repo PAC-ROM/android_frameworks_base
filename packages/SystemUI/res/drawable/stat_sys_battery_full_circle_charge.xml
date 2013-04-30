@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<level-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:maxLevel="0">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim0" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim1" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim2" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim3" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim4" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim5" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim6" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim7" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim8" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim9" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim10" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim11" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim12" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim13" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim14" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim15" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim16" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim17" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim18" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim19" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim20" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim21" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim22" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim23" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim24" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim25" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim26" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim27" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim28" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim29" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim30" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim31" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim32" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim33" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim34" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim35" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim36" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim37" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim38" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim39" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim40" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim41" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim42" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim43" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim44" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim45" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim46" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim47" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim48" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim49" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim50" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim51" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim52" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim53" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim54" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim55" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim56" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim57" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim58" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim59" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim60" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim61" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim62" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim63" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim64" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim65" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim66" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim67" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim68" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim69" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim70" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim71" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim72" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim73" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim74" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim75" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim76" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim77" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim78" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim79" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="15">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim16" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim17" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim18" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim19" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim20" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim21" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim22" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim23" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim24" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim25" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim26" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim27" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim28" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim29" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim30" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim31" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim32" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim33" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim34" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim35" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim36" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim37" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim38" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim39" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim40" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim41" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim42" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim43" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim44" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim45" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim46" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim47" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim48" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim49" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim50" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim51" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim52" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim53" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim54" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim55" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim56" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim57" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim58" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim59" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim60" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim61" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim62" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim63" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim64" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim65" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim66" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim67" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim68" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim69" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim70" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim71" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim72" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim73" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim74" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim75" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim76" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim77" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim78" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim79" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="30">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim30" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim31" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim32" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim33" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim34" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim35" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim36" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim37" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim38" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim39" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim40" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim41" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim42" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim43" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim44" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim45" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim46" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim47" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim48" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim49" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim50" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim51" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim52" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim53" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim54" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim55" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim56" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim57" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim58" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim59" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim60" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim61" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim62" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim63" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim64" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim65" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim66" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim67" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim68" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim69" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim70" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim71" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim72" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim73" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim74" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim75" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim76" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim77" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim78" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim79" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="45">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim45" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim46" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim47" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim48" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim49" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim50" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim51" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim52" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim53" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim54" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim55" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim56" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim57" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim58" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim59" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim60" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim61" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim62" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim63" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim64" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim65" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim66" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim67" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim68" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim69" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim70" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim71" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim72" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim73" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim74" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim75" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim76" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim77" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim78" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim79" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="60">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim60" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim61" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim62" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim63" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim64" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim65" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim66" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim67" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim68" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim69" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim70" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim71" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim72" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim73" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim74" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim75" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim76" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim77" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim78" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim79" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="80">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim80" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim81" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim82" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim83" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim84" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim85" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim86" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim87" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim88" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim89" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="90">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim90" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim91" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim92" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim93" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim94" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="95">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim95" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim96" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim97" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim98" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="99">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim99" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+    <item android:maxLevel="101">
+        <animation-list android:oneshot="false"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:duration="1000" android:drawable="@drawable/stat_sys_battery_full_circle_charge_animfull" />
+            <item android:duration="500" android:drawable="@drawable/stat_sys_battery_full_circle_charge_anim100" />
+        </animation-list>
+    </item>
+</level-list>
