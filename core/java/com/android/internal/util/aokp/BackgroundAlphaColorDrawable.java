@@ -1,5 +1,4 @@
-
-package com.android.internal.utilaokp;
+package com.android.internal.util.aokp;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
