@@ -86,6 +86,7 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -2418,6 +2419,9 @@ public class Activity extends ContextThemeWrapper
         return onKeyShortcut(event.getKeyCode(), event);
     }
 
+    boolean mightBeMyGesture = false;
+    float tStatus;
+
     /**
      * Called to process touch screen events.  You can override this to
      * intercept all touch screen events before they are dispatched to the
@@ -2429,6 +2433,43 @@ public class Activity extends ContextThemeWrapper
      * @return boolean Return true if this event was consumed.
      */
     public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        switch (ev.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                tStatus = ev.getY();
+                if (tStatus < getStatusBarHeight())
+                {
+                    mightBeMyGesture = true;
+                    return true;
+                }
+                break;
+                case MotionEvent.ACTION_MOVE:
+                if (mightBeMyGesture)
+                {
+                    if(ev.getY() > tStatus)
+                    {
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        mHandler.postDelayed(new Runnable() {
+                                                 public void run() {
+                                                                           getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                                                           getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                                 }
+
+                                                 }, 10000);
+                    }
+
+                    mightBeMyGesture = false;
+
+                    return true;
+                }
+                break;
+            default:
+                mightBeMyGesture = false;
+                break;
+        }
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             onUserInteraction();
         }
@@ -2436,6 +2477,10 @@ public class Activity extends ContextThemeWrapper
             return true;
         }
         return onTouchEvent(ev);
+    }
+
+    public int getStatusBarHeight() {
+        return getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
     }
 
     /**
@@ -3125,7 +3170,7 @@ public class Activity extends ContextThemeWrapper
         if (mManagedDialogs == null) {
             throw missingDialog(id);
         }
-        
+
         final ManagedDialog md = mManagedDialogs.get(id);
         if (md == null) {
             throw missingDialog(id);
@@ -3179,35 +3224,35 @@ public class Activity extends ContextThemeWrapper
      * This hook is called when the user signals the desire to start a search.
      *
      * <p>You can use this function as a simple way to launch the search UI, in response to a
-     * menu item, search button, or other widgets within your activity. Unless overidden, 
+     * menu item, search button, or other widgets within your activity. Unless overidden,
      * calling this function is the same as calling
      * {@link #startSearch startSearch(null, false, null, false)}, which launches
      * search for the current activity as specified in its manifest, see {@link SearchManager}.
      *
      * <p>You can override this function to force global search, e.g. in response to a dedicated
      * search key, or to block search entirely (by simply returning false).
-     * 
+     *
      * @return Returns {@code true} if search launched, and {@code false} if activity blocks it.
      *         The default implementation always returns {@code true}.
      *
      * @see android.app.SearchManager
      */
     public boolean onSearchRequested() {
-        startSearch(null, false, null, false); 
+        startSearch(null, false, null, false);
         return true;
     }
 
     /**
      * This hook is called to launch the search UI.
      *
-     * <p>It is typically called from onSearchRequested(), either directly from 
-     * Activity.onSearchRequested() or from an overridden version in any given 
+     * <p>It is typically called from onSearchRequested(), either directly from
+     * Activity.onSearchRequested() or from an overridden version in any given
      * Activity.  If your goal is simply to activate search, it is preferred to call
      * onSearchRequested(), which may have been overriden elsewhere in your Activity.  If your goal
      * is to inject specific data such as context data, it is preferred to <i>override</i>
      * onSearchRequested(), so that any callers to it will benefit from the override.
      *
-     * @param initialQuery Any non-null non-empty string will be inserted as 
+     * @param initialQuery Any non-null non-empty string will be inserted as
      * pre-entered text in the search query box.
      * @param selectInitialQuery If true, the intial query will be preselected, which means that
      * any further typing will replace it.  This is useful for cases where an entire pre-formed
@@ -3215,23 +3260,23 @@ public class Activity extends ContextThemeWrapper
      * inserted query.  This is useful when the inserted query is text that the user entered,
      * and the user would expect to be able to keep typing.  <i>This parameter is only meaningful
      * if initialQuery is a non-empty string.</i>
-     * @param appSearchData An application can insert application-specific 
-     * context here, in order to improve quality or specificity of its own 
+     * @param appSearchData An application can insert application-specific
+     * context here, in order to improve quality or specificity of its own
      * searches.  This data will be returned with SEARCH intent(s).  Null if
      * no extra data is required.
      * @param globalSearch If false, this will only launch the search that has been specifically
-     * defined by the application (which is usually defined as a local search).  If no default 
+     * defined by the application (which is usually defined as a local search).  If no default
      * search is defined in the current application or activity, global search will be launched.
      * If true, this will always launch a platform-global (e.g. web-based) search instead.
      *
      * @see android.app.SearchManager
      * @see #onSearchRequested
      */
-    public void startSearch(String initialQuery, boolean selectInitialQuery, 
+    public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
         ensureSearchManager();
         mSearchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-                        appSearchData, globalSearch); 
+                        appSearchData, globalSearch);
     }
 
     /**
@@ -3356,7 +3401,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see #startActivity 
+     * @see #startActivity
      */
     public void startActivityForResult(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode, null);
@@ -3365,8 +3410,8 @@ public class Activity extends ContextThemeWrapper
     /**
      * Launch an activity for which you would like a result when it finished.
      * When this activity exits, your
-     * onActivityResult() method will be called with the given requestCode. 
-     * Using a negative requestCode is the same as calling 
+     * onActivityResult() method will be called with the given requestCode.
+     * Using a negative requestCode is the same as calling
      * {@link #startActivity} (the activity is not launched as a sub-activity).
      *
      * <p>Note that this method should only be used with Intent protocols
@@ -3376,11 +3421,11 @@ public class Activity extends ContextThemeWrapper
      * are launching uses the singleTask launch mode, it will not run in your
      * task and thus you will immediately receive a cancel result.
      *
-     * <p>As a special case, if you call startActivityForResult() with a requestCode 
+     * <p>As a special case, if you call startActivityForResult() with a requestCode
      * >= 0 during the initial onCreate(Bundle savedInstanceState)/onResume() of your
-     * activity, then your window will not be displayed until a result is 
-     * returned back from the started activity.  This is to avoid visible 
-     * flickering when redirecting to another activity. 
+     * activity, then your window will not be displayed until a result is
+     * returned back from the started activity.  This is to avoid visible
+     * flickering when redirecting to another activity.
      *
      * <p>This method throws {@link android.content.ActivityNotFoundException}
      * if there was no Activity found to run the given Intent.
@@ -3394,7 +3439,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see #startActivity 
+     * @see #startActivity
      */
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         if (mParent == null) {
@@ -3578,7 +3623,7 @@ public class Activity extends ContextThemeWrapper
      * <p>This method throws {@link android.content.ActivityNotFoundException}
      * if there was no Activity found to run the given Intent.
      *
-     * @param intent The intent to start. 
+     * @param intent The intent to start.
      * @param options Additional options for how the Activity should be started.
      * See {@link android.content.Context#startActivity(Intent, Bundle)
      * Context.startActivity(Intent, Bundle)} for more details.
@@ -3586,7 +3631,7 @@ public class Activity extends ContextThemeWrapper
      * @throws android.content.ActivityNotFoundException
      *
      * @see {@link #startActivity(Intent)}
-     * @see #startActivityForResult 
+     * @see #startActivityForResult
      */
     @Override
     public void startActivity(Intent intent, Bundle options) {
@@ -3719,16 +3764,16 @@ public class Activity extends ContextThemeWrapper
     /**
      * A special variation to launch an activity only if a new activity
      * instance is needed to handle the given Intent.  In other words, this is
-     * just like {@link #startActivityForResult(Intent, int)} except: if you are 
+     * just like {@link #startActivityForResult(Intent, int)} except: if you are
      * using the {@link Intent#FLAG_ACTIVITY_SINGLE_TOP} flag, or
-     * singleTask or singleTop 
+     * singleTask or singleTop
      * {@link android.R.styleable#AndroidManifestActivity_launchMode launchMode},
-     * and the activity 
-     * that handles <var>intent</var> is the same as your currently running 
-     * activity, then a new instance is not needed.  In this case, instead of 
-     * the normal behavior of calling {@link #onNewIntent} this function will 
-     * return and you can handle the Intent yourself. 
-     * 
+     * and the activity
+     * that handles <var>intent</var> is the same as your currently running
+     * activity, then a new instance is not needed.  In this case, instead of
+     * the normal behavior of calling {@link #onNewIntent} this function will
+     * return and you can handle the Intent yourself.
+     *
      * <p>This function can only be called from a top-level activity; if it is
      * called from a child activity, a runtime exception will be thrown.
      *
@@ -3854,7 +3899,7 @@ public class Activity extends ContextThemeWrapper
     }
 
     /**
-     * This is called when a child activity of this one calls its 
+     * This is called when a child activity of this one calls its
      * {@link #startActivity} or {@link #startActivityForResult} method.
      *
      * <p>This method throws {@link android.content.ActivityNotFoundException}
@@ -3869,10 +3914,10 @@ public class Activity extends ContextThemeWrapper
      *
      * @throws android.content.ActivityNotFoundException
      *
-     * @see #startActivity 
-     * @see #startActivityForResult 
+     * @see #startActivity
+     * @see #startActivityForResult
      */
-    public void startActivityFromChild(Activity child, Intent intent, 
+    public void startActivityFromChild(Activity child, Intent intent,
             int requestCode, Bundle options) {
         Instrumentation.ActivityResult ar =
             mInstrumentation.execStartActivity(
@@ -3898,13 +3943,13 @@ public class Activity extends ContextThemeWrapper
      * @see Fragment#startActivity
      * @see Fragment#startActivityForResult
      */
-    public void startActivityFromFragment(Fragment fragment, Intent intent, 
+    public void startActivityFromFragment(Fragment fragment, Intent intent,
             int requestCode) {
         startActivityFromFragment(fragment, intent, requestCode, null);
     }
 
     /**
-     * This is called when a Fragment in this activity calls its 
+     * This is called when a Fragment in this activity calls its
      * {@link Fragment#startActivity} or {@link Fragment#startActivityForResult}
      * method.
      *
@@ -3913,7 +3958,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @param fragment The fragment making the call.
      * @param intent The intent to start.
-     * @param requestCode Reply request code.  < 0 if reply is not requested. 
+     * @param requestCode Reply request code.  < 0 if reply is not requested.
      * @param options Additional options for how the Activity should be started.
      * See {@link android.content.Context#startActivity(Intent, Bundle)
      * Context.startActivity(Intent, Bundle)} for more details.
@@ -3923,7 +3968,7 @@ public class Activity extends ContextThemeWrapper
      * @see Fragment#startActivity
      * @see Fragment#startActivityForResult
      */
-    public void startActivityFromFragment(Fragment fragment, Intent intent, 
+    public void startActivityFromFragment(Fragment fragment, Intent intent,
             int requestCode, Bundle options) {
         Instrumentation.ActivityResult ar =
             mInstrumentation.execStartActivity(
@@ -4042,8 +4087,8 @@ public class Activity extends ContextThemeWrapper
      * receive the data.
      *
      * <p class="note">Note: if the calling activity is not expecting a result (that is it
-     * did not use the {@link #startActivityForResult} 
-     * form that includes a request code), then the calling package will be 
+     * did not use the {@link #startActivityForResult}
+     * form that includes a request code), then the calling package will be
      * null.</p>
      *
      * <p class="note">Note: prior to {@link android.os.Build.VERSION_CODES#JELLY_BEAN_MR2},
@@ -4070,9 +4115,9 @@ public class Activity extends ContextThemeWrapper
      * receive the data.
      *
      * <p class="note">Note: if the calling activity is not expecting a result (that is it
-     * did not use the {@link #startActivityForResult} 
-     * form that includes a request code), then the calling package will be 
-     * null. 
+     * did not use the {@link #startActivityForResult}
+     * form that includes a request code), then the calling package will be
+     * null.
      *
      * @return The ComponentName of the activity that will receive your
      *         reply, or null if none.
@@ -4231,7 +4276,7 @@ public class Activity extends ContextThemeWrapper
     }
 
     /**
-     * This is called when a child activity of this one calls its 
+     * This is called when a child activity of this one calls its
      * {@link #finish} method.  The default implementation simply calls
      * finish() on this activity (the parent), finishing the entire group.
      *
@@ -4308,11 +4353,11 @@ public class Activity extends ContextThemeWrapper
     }
 
     /**
-     * Create a new PendingIntent object which you can hand to others 
-     * for them to use to send result data back to your 
-     * {@link #onActivityResult} callback.  The created object will be either 
-     * one-shot (becoming invalid after a result is sent back) or multiple 
-     * (allowing any number of results to be sent through it). 
+     * Create a new PendingIntent object which you can hand to others
+     * for them to use to send result data back to your
+     * {@link #onActivityResult} callback.  The created object will be either
+     * one-shot (becoming invalid after a result is sent back) or multiple
+     * (allowing any number of results to be sent through it).
      *
      * @param requestCode Private request code for the sender that will be
      * associated with the result data when it is returned.  The sender can not
@@ -4468,7 +4513,7 @@ public class Activity extends ContextThemeWrapper
 
     /**
      * Returns complete component name of this activity.
-     * 
+     *
      * @return Returns the complete component name for this activity
      */
     public ComponentName getComponentName()
@@ -4482,8 +4527,8 @@ public class Activity extends ContextThemeWrapper
      * {@link #getSharedPreferences(String, int)} method by passing in this activity's
      * class name as the preferences name.
      *
-     * @param mode Operating mode.  Use {@link #MODE_PRIVATE} for the default 
-     *             operation, {@link #MODE_WORLD_READABLE} and 
+     * @param mode Operating mode.  Use {@link #MODE_PRIVATE} for the default
+     *             operation, {@link #MODE_WORLD_READABLE} and
      *             {@link #MODE_WORLD_WRITEABLE} to control permissions.
      *
      * @return Returns the single SharedPreferences instance that can be used
@@ -4633,7 +4678,7 @@ public class Activity extends ContextThemeWrapper
      * <p>
      * In order for the progress bar to be shown, the feature must be requested
      * via {@link #requestWindowFeature(int)}.
-     * 
+     *
      * @param secondaryProgress The secondary progress for the progress bar. Valid ranges are from
      *            0 to 10000 (both inclusive).
      */
@@ -4720,7 +4765,7 @@ public class Activity extends ContextThemeWrapper
         }
 
         String fname = attrs.getAttributeValue(null, "class");
-        TypedArray a = 
+        TypedArray a =
             context.obtainStyledAttributes(attrs, com.android.internal.R.styleable.Fragment);
         if (fname == null) {
             fname = a.getString(com.android.internal.R.styleable.Fragment_name);
@@ -5087,7 +5132,7 @@ public class Activity extends ContextThemeWrapper
     }
 
     final void attach(Context context, ActivityThread aThread, Instrumentation instr, IBinder token,
-            Application application, Intent intent, ActivityInfo info, CharSequence title, 
+            Application application, Intent intent, ActivityInfo info, CharSequence title,
             Activity parent, String id, NonConfigurationInstances lastNonConfigurationInstances,
             Configuration config) {
         attach(context, aThread, instr, token, 0, application, intent, info, title, parent, id,
@@ -5153,7 +5198,7 @@ public class Activity extends ContextThemeWrapper
             mWindow.setUiOptions(info.uiOptions);
         }
         mUiThread = Thread.currentThread();
-        
+
         mMainThread = aThread;
         mInstrumentation = instr;
         mToken = token;
@@ -5437,7 +5482,7 @@ public class Activity extends ContextThemeWrapper
         return mResumed;
     }
 
-    void dispatchActivityResult(String who, int requestCode, 
+    void dispatchActivityResult(String who, int requestCode,
         int resultCode, Intent data) {
         if (false) Log.v(
             TAG, "Dispatching result: who=" + who + ", reqCode=" + requestCode
