@@ -43,6 +43,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.provider.Settings;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.IAudioService;
 import android.media.IRingtonePlayer;
@@ -133,6 +135,8 @@ public class NotificationManagerService extends INotificationManager.Stub
     final IBinder mForegroundToken = new Binder();
 
     private WorkerHandler mHandler;
+    private SettingsObserver mSettingsObserver;
+    private QuietHoursSettingsObserver mQuietHoursSettingsObserver;
     private StatusBarManagerService mStatusBar;
     private LightsService.Light mNotificationLight;
     private LightsService.Light mAttentionLight;
@@ -815,10 +819,10 @@ public class NotificationManagerService extends INotificationManager.Stub
         IntentFilter sdFilter = new IntentFilter(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         mContext.registerReceiver(mIntentReceiver, sdFilter);
 
-        SettingsObserver observer = new SettingsObserver(mHandler);
-        observer.observe();
-        QuietHoursSettingsObserver qhObserver = new QuietHoursSettingsObserver(mHandler);
-        qhObserver.observe();
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
+        mQuietHoursSettingsObserver= new QuietHoursSettingsObserver(mHandler);
+        mQuietHoursSettingsObserver.observe();
 
         ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
     }

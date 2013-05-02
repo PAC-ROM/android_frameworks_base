@@ -78,6 +78,10 @@ public class KeyButtonView extends ImageView {
 
     private ColorUtils.ColorSettingInfo mLastButtonColor;
     private ColorUtils.ColorSettingInfo mLastGlowColor;
+    
+    private Handler mHandler = new Handler();
+    private SettingsObserver mSettingsObserver;
+    private boolean mAttached = false;
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -124,8 +128,6 @@ public class KeyButtonView extends ImageView {
 
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
 
         // Only watch for per app color changes when the setting is in check
         if (ColorUtils.getPerAppColorState(mContext)) {
@@ -150,14 +152,36 @@ public class KeyButtonView extends ImageView {
                     }});
         }
     }
+    
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        if (!mAttached) {
+            mAttached = true;
+            mSettingsObserver = new SettingsObserver(new Handler());
+            mSettingsObserver.observe();
+            updateSettings();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if (mAttached) {
+            getContext().getContentResolver().unregisterContentObserver(mSettingsObserver);
+            mAttached = false;
+        }
+    }
 
     private void updateButtonColor() {
         ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
                 Settings.System.NAV_BUTTON_COLOR);
         if (!colorInfo.lastColorString.equals(mLastButtonColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
-                SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-                settingsObserver.observe();
+                mSettingsObserver = new SettingsObserver(mHandler);
+                mSettingsObserver.observe();
             } else {
                 setColorFilter(ColorUtils.extractRGB(colorInfo.lastColor) | 0xFF000000, PorterDuff.Mode.SRC_ATOP);
                 BUTTON_QUIESCENT_ALPHA = (float)ColorUtils.extractAlpha(colorInfo.lastColor) / 255f;
@@ -173,8 +197,8 @@ public class KeyButtonView extends ImageView {
                 Settings.System.NAV_GLOW_COLOR);
         if (!colorInfo.lastColorString.equals(mLastGlowColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
-                SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-                settingsObserver.observe();
+                mSettingsObserver = new SettingsObserver(mHandler);
+                mSettingsObserver.observe();
             } else {
                 mGlowBG.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_ATOP);
             }

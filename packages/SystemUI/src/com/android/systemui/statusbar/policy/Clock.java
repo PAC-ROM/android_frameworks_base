@@ -64,7 +64,7 @@ public class Clock extends TextView {
     private SimpleDateFormat mClockFormat;
     private Locale mLocale;
     private String mMonthFormatString;
-    
+    private SettingsObserver mSettingsObserver;
 
     private static final int AM_PM_STYLE_NORMAL  = 0;
     private static final int AM_PM_STYLE_SMALL   = 1;
@@ -137,8 +137,8 @@ public class Clock extends TextView {
 
         updateParameters();
 
-        SettingsObserver observer = new SettingsObserver(new Handler());
-        observer.observe();
+        mSettingsObserver = new SettingsObserver(new Handler());
+        mSettingsObserver.observe();
     }
 
     public void startBroadcastReceiver() {
@@ -176,6 +176,7 @@ public class Clock extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
             mAttached = false;
         }
     }
