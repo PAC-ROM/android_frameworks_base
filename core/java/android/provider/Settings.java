@@ -4390,6 +4390,19 @@ public final class Settings {
         };
 
         /**
+         * Whether Status bar should be hiidden when there are no
+         * notifications
+         * @hide
+         */
+        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
+
+        /**
+         * Whether Status Bar is currently hidden or not
+         * @hide
+         */
+        public static final String HIDE_STATUSBAR = "hide_statusbar";
+
+        /**
          * Whether to show statusbar signal text
          *
          * @hide
@@ -4621,7 +4634,7 @@ public final class Settings {
          * Notifications Expand Behavior
          * @hide
          */
-        public static final String NOTIFICATIONS_BEHAVIOUR = "notifications_behaviour"; 
+        public static final String NOTIFICATIONS_BEHAVIOUR = "notifications_behaviour";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
