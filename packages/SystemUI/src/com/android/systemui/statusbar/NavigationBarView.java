@@ -22,6 +22,7 @@ import java.io.File;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
+import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -61,17 +62,17 @@ import android.widget.LinearLayout;
 
 import java.math.BigInteger;
 
+import static com.android.internal.util.aokp.AwesomeConstants.*;
+import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.aokp.NavBarHelpers;
 import com.android.systemui.R;
-import static com.android.internal.util.aokp.AwesomeConstants.*;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.systemui.recent.RecentsActivity.NavigationCallback;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 import com.android.systemui.statusbar.policy.key.ExtensibleKeyButtonView;
-import com.android.systemui.statusbar.policy.key.RecentsKeyButtonView;
 
 public class NavigationBarView extends LinearLayout implements NavigationCallback {
     final static boolean DEBUG = false;
@@ -93,6 +94,9 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     boolean mVertical;
     boolean mScreenOn;
 
+    private boolean mNavBarAutoHide = false;
+    private boolean isRotating = false;
+
     boolean mHidden, mLowProfile, mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
@@ -103,6 +107,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     private boolean mColorAllIcons;
     private SettingsObserver mSettingsObserver;
     public DelegateViewHelper mDelegateHelper;
+    private BaseStatusBar mBar;
     private Context mContext;
     private Canvas mCurrentCanvas;
     private Canvas mNewCanvas;
@@ -202,6 +207,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     public void setBar(BaseStatusBar phoneStatusBar) {
         mDelegateHelper.setBar(phoneStatusBar);
+        mBar = phoneStatusBar;
     }
 
     @Override
@@ -214,6 +220,9 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (mBar != null) {
+            mBar.onBarTouchEvent(event);
+        }
         return mDelegateHelper.onInterceptTouchEvent(event);
     }
 
@@ -269,7 +278,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
 
-        mBackIcon = res.getDrawable(R.drawable.ic_sysbar_back);
+        mBackIcon = NavBarHelpers.getIconImage(mContext, AwesomeConstant.ACTION_BACK.value());
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = ((KeyButtonView)generateKey(true, KEY_BACK_ALT)).getDrawable(); // res.getDrawable(R.drawable.ic_sysbar_back_ime);
@@ -402,6 +411,18 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_LEFT), !landscape);
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_RIGHT), landscape);
             }
+            if (mSystemUiLayout >= 1000) {
+                // add spacer views to the outside edges to help with Glowscale cutoff
+                // We'll only do this for Tablet UI for now.  It was suffering the worst from
+                // glowscale cutoff.  I may add some user adjustable padding at a later date that
+                // we'll apply to all styles of NavBar.
+                View spacer = new View(mContext);
+                spacer.setLayoutParams(getSeparatorLayoutParams(landscape));
+                View spacer1 = new View(mContext);
+                spacer1.setLayoutParams(getSeparatorLayoutParams(landscape));
+                navButtonLayout.addView(spacer, 0);
+                navButtonLayout.addView(spacer1);
+            }
         }
     }
 
@@ -435,11 +456,11 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
             case KEY_MENU_RIGHT:
                 v = new KeyButtonView(mContext, null);
-                v.setLayoutParams(getLayoutParams(landscape, (mCurrentUIMode == 1) ? 80 : 40));
+                v.setLayoutParams(getLayoutParams(landscape, (mSystemUiLayout >= 1000) ? 80 : 40));
 
                 v.setId(R.id.menu);
                 v.setCode(KeyEvent.KEYCODE_MENU);
-                if (mCurrentUIMode == 1) {
+                if (mSystemUiLayout >= 1000) {
                     v.setImageResource(R.drawable.ic_sysbar_menu_big);
                     v.setVisibility(View.GONE);
                 } else {
@@ -454,11 +475,11 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 break;
             case KEY_MENU_LEFT:
                 v = new KeyButtonView(mContext, null);
-                v.setLayoutParams(getLayoutParams(landscape, (mCurrentUIMode == 1) ? 80 : 40));
+                v.setLayoutParams(getLayoutParams(landscape, (mSystemUiLayout >= 1000) ? 80 : 40));
 
                 v.setId(R.id.menu_left);
                 v.setCode(KeyEvent.KEYCODE_MENU);
-                if (mCurrentUIMode == 1) {
+                if (mSystemUiLayout >= 1000) {
                     v.setImageResource(R.drawable.ic_sysbar_menu_big);
                     v.setVisibility(View.GONE);
                 } else {
@@ -503,23 +524,15 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                         : R.drawable.ic_sysbar_highlight);
                 v.setTint(true);
         }
-
         return v;
     }
 
     private ExtensibleKeyButtonView generateKey(boolean landscape, String clickAction,
-            String longpress,
-            String iconUri) {
+            String longpress,String iconUri) {
 
-        final int iconSize = 80;
-        ExtensibleKeyButtonView v = null;
-        if(AwesomeConstant.ACTION_RECENTS.equals(clickAction)) {
-            v = new RecentsKeyButtonView(mContext, null, clickAction, longpress);
-        } else {
-            v = new ExtensibleKeyButtonView(mContext, null, clickAction,
-                longpress);
-        }
-        v.setLayoutParams(getLayoutParams(landscape, iconSize));
+        ExtensibleKeyButtonView v = new ExtensibleKeyButtonView(mContext, null,
+                clickAction, longpress);
+        v.setLayoutParams(getLayoutParams(landscape, 80));
         v.setGlowBackground(landscape ? R.drawable.ic_sysbar_highlight_land
                 : R.drawable.ic_sysbar_highlight);
         return v;
@@ -626,6 +639,13 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         setDisabledFlags(disabledFlags, false);
     }
 
+    private boolean isKeyguardEnabled() {
+        KeyguardManager km = (KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
+        if(km == null) return false;
+
+        return km.isKeyguardLocked();
+    }
+
     public void setDisabledFlags(int disabledFlags, boolean force) {
         if (!force && mDisabledFlags == disabledFlags) return;
 
@@ -637,7 +657,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
               && ((mNavigationIconHints & StatusBarManager.NAVIGATION_HINT_BACK_ALT) == 0);
         final boolean disableSearch = ((disabledFlags & View.STATUS_BAR_DISABLE_SEARCH) != 0);
 
-        if (mCurrentUIMode != 1 && SLIPPERY_WHEN_DISABLED) { // Tabletmode doesn't deal with slippery
+        if (mSystemUiLayout != 1000 && SLIPPERY_WHEN_DISABLED) { // Tabletmode doesn't deal with slippery
             setSlippery(disableHome && disableRecent && disableBack && disableSearch);
         }
         if (!mScreenOn && mCurrentView != null) {
@@ -663,7 +683,15 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
             }
         }
-        getSearchLight().setVisibility((disableHome && !disableSearch) ? View.VISIBLE : View.GONE);
+     // if Home is to be shown, then we hide the Searchlight.
+        getSearchLight().setVisibility((isKeyguardEnabled()&& disableHome) ? View.VISIBLE : View.GONE);
+        if (mNavBarAutoHide && !isRotating) {
+            if (isKeyguardEnabled())
+                mBar.setSearchLightOn(true);
+            else
+                mBar.setSearchLightOn(false);
+        }
+        isRotating = false;
         updateMenuArrowKeys();
     }
 
@@ -715,7 +743,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             case VISIBILITY_ALWAYS:
                 localShow = true;
             case VISIBILITY_SYSTEM:
-                if (mCurrentUIMode == 1) {
+                if (mSystemUiLayout >= 1000) {
                     rightButton.setImageResource(R.drawable.ic_sysbar_menu_big);
                     leftButton.setImageResource(R.drawable.ic_sysbar_menu_big);
                 } else {
@@ -734,7 +762,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 break;
             case VISIBILITY_SYSTEM_AND_INVIZ:
                 if (localShow) {
-                    if (mCurrentUIMode == 1) {
+                    if (mSystemUiLayout >= 1000) {
                         rightButton.setImageResource(R.drawable.ic_sysbar_menu_big);
                         leftButton.setImageResource(R.drawable.ic_sysbar_menu_big);
                     } else {
@@ -757,7 +785,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         // Tablet menu buttons should not take up space when hidden.
         switch (mMenuLocation) {
             case SHOW_BOTH_MENU:
-                if (mCurrentUIMode==1) {
+                if (mSystemUiLayout >= 1000) {
                     leftButton.setVisibility(localShow ? View.VISIBLE : View.GONE);
                     rightButton.setVisibility(localShow ? View.VISIBLE : View.GONE);
                 } else {
@@ -766,17 +794,17 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 }
                 break;
             case SHOW_LEFT_MENU:
-                if (mCurrentUIMode==1) {
+                if (mSystemUiLayout >= 1000) {
                     leftButton.setVisibility(localShow ? View.VISIBLE : View.GONE);
                 } else {
                     leftButton.setVisibility(localShow ? View.VISIBLE : View.INVISIBLE);
                 }
-                rightButton.setVisibility((mCurrentUIMode == 1) ? View.GONE : View.INVISIBLE);
+                rightButton.setVisibility((mSystemUiLayout >= 1000) ? View.GONE : View.INVISIBLE);
                 break;
             default:
             case SHOW_RIGHT_MENU:
-                leftButton.setVisibility((mCurrentUIMode == 1) ? View.GONE : View.INVISIBLE);
-                if (mCurrentUIMode==1) {
+                leftButton.setVisibility((mSystemUiLayout >= 1000) ? View.GONE : View.INVISIBLE);
+                if (mSystemUiLayout >= 1000) {
                     rightButton.setVisibility(localShow ? View.VISIBLE : View.GONE);
                 } else {
                     rightButton.setVisibility(localShow ? View.VISIBLE : View.INVISIBLE);

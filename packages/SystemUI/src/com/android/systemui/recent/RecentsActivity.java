@@ -68,15 +68,14 @@ public class RecentsActivity extends Activity {
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (CLOSE_RECENTS_INTENT.equals(action)) {
+            if (CLOSE_RECENTS_INTENT.equals(intent.getAction())) {
                 if (mRecentsPanel != null && mRecentsPanel.isShowing()) {
                     if (mShowing && !mForeground) {
                         // Captures the case right before we transition to another activity
                         mRecentsPanel.show(false);
                     }
                 }
-            } else if (WINDOW_ANIMATION_START_INTENT.equals(action)) {
+            } else if (WINDOW_ANIMATION_START_INTENT.equals(intent.getAction())) {
                 if (mRecentsPanel != null) {
                     mRecentsPanel.onWindowAnimationStart();
                 }
@@ -243,8 +242,8 @@ public class RecentsActivity extends Activity {
 
     private void handleIntent(Intent intent, boolean checkWaitingForAnimationParam) {
         super.onNewIntent(intent);
-        String action = intent.getAction();
-        if (TOGGLE_RECENTS_INTENT.equals(action)) {
+
+        if (TOGGLE_RECENTS_INTENT.equals(intent.getAction())) {
             if (mRecentsPanel != null) {
                 if (mRecentsPanel.isShowing()) {
                     dismissAndGoBack();
@@ -256,7 +255,7 @@ public class RecentsActivity extends Activity {
                             recentTasksLoader.isFirstScreenful(), waitingForWindowAnimation);
                 }
             }
-        } else if (CLEAR_RECENTS_INTENT.equals(action)) {
+        } else if (CLEAR_RECENTS_INTENT.equals(intent.getAction())) {
             if (mRecentsPanel != null) {
                 if (mRecentsPanel.isShowing()) {
                     mRecentsPanel.clearRecentViewList();

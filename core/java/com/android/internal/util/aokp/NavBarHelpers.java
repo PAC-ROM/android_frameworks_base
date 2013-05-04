@@ -26,7 +26,6 @@ import android.text.TextUtils;
 
 import static com.android.internal.util.aokp.AwesomeConstants.*;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 

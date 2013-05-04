@@ -178,7 +178,6 @@ public class NotificationPanelView extends PanelView {
                         flip = true;
                     }
                     break;
-                
                 case MotionEvent.ACTION_MOVE:
                     if (mStatusBar.mHideSettingsPanel)
                         break;
@@ -216,12 +215,10 @@ public class NotificationPanelView extends PanelView {
                         swipeFlipJustStarted = true;
                     }
                     break;
-
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (!mStatusBar.mHideSettingsPanel)
                         flip = true;
                     break;
-                    
                 case MotionEvent.ACTION_UP:
                     swipeFlipJustFinished = mSwipeTriggered;
                     mSwipeTriggered = false;
@@ -237,8 +234,8 @@ public class NotificationPanelView extends PanelView {
                     if (y > maxy) maxy = y;
                 }
                 if (maxy - miny < mHandleBarHeight) {
-                     if (getMeasuredHeight() < mHandleBarHeight) {
-                         mStatusBar.switchToSettings();
+                    if (getMeasuredHeight() < mHandleBarHeight) {
+                        mStatusBar.switchToSettings();
                 } else {
                         // Do not flip if the drag event started within the top bar
                         if (MotionEvent.ACTION_DOWN == event.getActionMasked() && event.getY(0) < mHandleBarHeight ) {

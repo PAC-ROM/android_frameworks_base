@@ -42,12 +42,10 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     // The gap between tiles in the QuickSettings grid
     private float mCellGap;
-
     private Context mContext;
 
     public QuickSettingsContainerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         mContext = context;
         updateResources();
     }

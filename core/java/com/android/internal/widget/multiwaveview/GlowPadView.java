@@ -679,6 +679,14 @@ public class GlowPadView extends View {
         }
     }
 
+    public void setMagneticTargets(boolean active) {
+        mMagneticTargets = active;
+    }
+
+    public void setOffset(float offset) {
+        mFirstItemOffset = (float) Math.toRadians(offset);
+    }
+
     public void setTargetResources(ArrayList<TargetDrawable> drawList) {
         if (mAnimatingTargets) {
             // postpone this change until we return to the initial state

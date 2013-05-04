@@ -1,7 +1,5 @@
 package com.android.systemui.statusbar.powerwidget;
 
-import com.android.systemui.R;
-
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
