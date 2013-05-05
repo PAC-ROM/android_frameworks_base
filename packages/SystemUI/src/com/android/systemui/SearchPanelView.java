@@ -364,9 +364,9 @@ public class SearchPanelView extends FrameLayout implements
 
          // Add Initial Place Holder Targets
         for (int i = 0; i < startPosOffset; i++) {
-            storedDraw.add(getTargetDrawable(""));
-            intentList.add(mEmpty);
-            longList.add(mEmpty);
+            storedDraw.add(NavRingHelpers.getTargetDrawable(mContext, null));
+            intentList.add(AwesomeConstant.ACTION_NULL.value());
+            longList.add(AwesomeConstant.ACTION_NULL.value());
         }
         // Add User Targets
         for (int i = 0; i < middleStart; i++) {
