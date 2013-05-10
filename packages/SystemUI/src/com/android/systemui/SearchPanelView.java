@@ -166,6 +166,7 @@ public class SearchPanelView extends FrameLayout implements
     private void startAssistActivity() {
         if (!mBar.isDeviceProvisioned()) return;
 
+        maybeSkipKeyguard();
         // Close Recent Apps if needed
         mBar.animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_SEARCH_PANEL);
         boolean isKeyguardShowing = false;
@@ -188,12 +189,6 @@ public class SearchPanelView extends FrameLayout implements
             Intent intent = ((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
                     .getAssistIntent(mContext, UserHandle.USER_CURRENT);
             if (intent == null) return;
-
-            try {
-                ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-            } catch (RemoteException e) {
-                // too bad, so sad...
-            }
 
             try {
                 ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext,
@@ -224,12 +219,13 @@ public class SearchPanelView extends FrameLayout implements
        final Runnable SetLongPress = new Runnable () {
             public void run() {
                 if (!mSearchPanelLock) {
-                    mLongPress = true;
-                    Log.d(TAG,"LongPress!");
-                    mBar.hideSearchPanel();
-                    maybeSkipKeyguard();
-                    AwesomeAction.launchAction(mContext, longList.get(mTarget));
                     mSearchPanelLock = true;
+                    mLongPress = true;
+                    if (shouldUnlock(longList.get(mTarget))) {
+                        maybeSkipKeyguard();
+                    }
+                    AwesomeAction.launchAction(mContext, longList.get(mTarget));
+                    mBar.hideSearchPanel();
                  }
             }
         };
@@ -267,7 +263,9 @@ public class SearchPanelView extends FrameLayout implements
                 if (AwesomeConstant.ACTION_ASSIST.equals(intentList.get(target))) {
                     startAssistActivity();
                 } else {
-                    maybeSkipKeyguard();
+                    if (shouldUnlock(intentList.get(target))) {
+                        maybeSkipKeyguard();
+                    }
                     AwesomeAction.launchAction(mContext, intentList.get(target));
                 }
                 mHandler.removeCallbacks(SetLongPress);
@@ -302,20 +300,30 @@ public class SearchPanelView extends FrameLayout implements
         setDrawables();
     }
 
-    private void maybeSkipKeyguard() {
-        try {
-            if (mWm.isKeyguardLocked() && !mWm.isKeyguardSecure()) {
-                ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-            }
-        } catch (RemoteException ignored) {
+
+    private boolean shouldUnlock(String action) {
+        if (action.equals(AwesomeConstant.ACTION_SILENT_VIB.value()) ||
+            action.equals(AwesomeConstant.ACTION_VIB.value()) ||
+            action.equals(AwesomeConstant.ACTION_POWER.value()) ||
+            action.equals(AwesomeConstant.ACTION_SILENT.value())) {
+            return false;
         }
+
+        return true;
+    }
+
+    private void maybeSkipKeyguard() {
+        Intent u = new Intent();
+        u.setAction("com.android.lockscreen.ACTION_UNLOCK_RECEIVER");
+        mContext.sendBroadcastAsUser(u, UserHandle.ALL);
     }
 
     private void setDrawables() {
         mLongPress = false;
         mSearchPanelLock = false;
-        String target3 = Settings.System.getString(mContext.getContentResolver(), Settings.System.SYSTEMUI_NAVRING[0]);
-        if (target3 == null || target3.equals("")) {
+
+        String tgtCenter = Settings.System.getString(mContext.getContentResolver(), Settings.System.SYSTEMUI_NAVRING[0]);
+        if (TextUtils.isEmpty(tgtCenter)) {
             Settings.System.putString(mContext.getContentResolver(), Settings.System.SYSTEMUI_NAVRING[0], AwesomeConstant.ACTION_ASSIST.value());
         }
 
@@ -609,10 +617,6 @@ public class SearchPanelView extends FrameLayout implements
                 resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING_ICON[i]), false, this);
             }
-        }
-
-        void unobserve() {
-            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         @Override

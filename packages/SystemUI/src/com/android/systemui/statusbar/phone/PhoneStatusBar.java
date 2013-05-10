@@ -2223,7 +2223,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 }
             }, FLIP_DURATION - 150);
         }
-        updateRibbon(true);
     }
 
     public void flipPanels() {
@@ -2234,10 +2233,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 flipToNotifications();
             }
         }
-    }
-
-    public void collapse() {
-        animateCollapsePanels();
     }
 
     public void animateCollapseQuickSettings() {
