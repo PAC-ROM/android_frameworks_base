@@ -55,7 +55,4 @@ interface IPowerManager
     void cpuBoost(int duration);
 
     void setKeyboardVisibility(boolean visible);
-
-    void setKeyboardLight(boolean on, int key);
-
 }
