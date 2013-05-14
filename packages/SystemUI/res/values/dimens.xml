@@ -280,6 +280,9 @@
 
     <!-- Constant for hidden navbar drag handle -->
     <dimen name="drag_handle_height">10dp</dimen>
+    
+    <!-- SideBar -->
+    <dimen name="app_sidebar_item_height">64dp</dimen>
 
     <!-- Constant for hidden ribbon drag handle -->
     <dimen name="ribbon_drag_handle_height">25dp</dimen>
