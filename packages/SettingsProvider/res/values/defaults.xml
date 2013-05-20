@@ -176,10 +176,18 @@
 
     <!-- Default for Settings.System.STATUS_BAR_BATTERY.
     0. Icon
-    1. Percentage
-    2. Circle
-    3. Circle with Percentage
-    4. None/Hidden -->
+    1. Text only
+    2. Icon with text
+    3. Icon with centered text
+    4. Circle mod (AOKPs)
+    5. Circle mod (CMs)
+    6. Gauge
+    7. Axiom honeycomb
+    8. Axiom droid
+    9. Axiomsphere
+    10. Nnumbers
+    11. Digital numbers
+    12. None/Hidden -->
     <integer name="def_battery_style">0</integer>
 
     <!-- Default for Settings.System.STATUS_BAR_NOTIF_COUNT. -->
