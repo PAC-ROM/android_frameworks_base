@@ -358,4 +358,7 @@
     <dimen name="notification_ribbon_padding">16dp</dimen>
     <dimen name="lockscreen_ribbon_padding">16dp</dimen>
 
+    <!-- Dummy dimen to make d2s buildable again -->
+    <dimen name="pie_trigger_thickness">10dp</dimen>
+
 </resources>
