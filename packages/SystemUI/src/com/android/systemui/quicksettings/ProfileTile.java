@@ -45,6 +45,8 @@ public class ProfileTile extends QuickSettingsTile {
             final QuickSettingsController qsc) {
         super(context, inflater, container, qsc);
 
+        qsc.registerAction(ProfileManagerService.INTENT_ACTION_PROFILE_UPDATED, this);
+
         mProfileReceiver = new ProfileReceiver();
         mProfileReceiver.registerSelf();
         mProfileManager = (ProfileManager) mContext.getSystemService(Context.PROFILE_SERVICE);
