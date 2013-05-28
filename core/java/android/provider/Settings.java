@@ -3055,6 +3055,12 @@ public final class Settings {
         public static final String SCREEN_LOCK_SLIDE_SCREENOFF_DELAY = "screen_lock_slide_screenoff_delay";
 
         /**
+         * Whether Status bar can be shown by swiping down in fullscreen apps
+         * @hide
+         */
+        public static final String FULLSCREEN_STATUSBAR = "fullscreen_statusbar";
+
+        /**
          * Whether to link ringtone and notification volumes
          * The value is boolean (1 or 0).
          * @hide

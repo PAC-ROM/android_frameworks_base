@@ -35,6 +35,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.provider.Settings;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -2447,21 +2448,24 @@ public class Activity extends ContextThemeWrapper
                 case MotionEvent.ACTION_MOVE:
                 if (mightBeMyGesture)
                 {
-                    if(ev.getY() > tStatus)
+                    if (Settings.System.getBoolean(getContentResolver(), Settings.System.FULLSCREEN_STATUSBAR, true))
                     {
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                        mHandler.postDelayed(new Runnable() {
-                                                 public void run() {
-                                                                           getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                                                                           getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                                                 }
+                        if(ev.getY() > tStatus)
+                        {
+                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            mHandler.postDelayed(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                }
 
-                                                 }, 10000);
+                            }, 10000);
+                        }
                     }
-
                     mightBeMyGesture = false;
-
                     return true;
                 }
                 break;
