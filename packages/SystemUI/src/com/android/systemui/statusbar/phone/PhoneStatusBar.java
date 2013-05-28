@@ -768,17 +768,21 @@ public class PhoneStatusBar extends BaseStatusBar {
             mDockBatteryController.addIconView((ImageView)mStatusBarView.findViewById(R.id.dock_battery));
         }
 
-        mEmergencyCallLabel = (TextView)mStatusBarWindow.findViewById(R.id.emergency_calls_only);
-        if (mEmergencyCallLabel != null) {
-            mNetworkController.addEmergencyLabelView(mEmergencyCallLabel);
-            mEmergencyCallLabel.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) { }});
-            mEmergencyCallLabel.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    updateCarrierAndWifiLabelVisibility(false);
-                }});
+        final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
+        if (isAPhone) {
+            mEmergencyCallLabel =
+                    (TextView) mStatusBarWindow.findViewById(R.id.emergency_calls_only);
+            if (mEmergencyCallLabel != null) {
+                mNetworkController.addEmergencyLabelView(mEmergencyCallLabel);
+                mEmergencyCallLabel.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) { }});
+                mEmergencyCallLabel.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        updateCarrierAndWifiLabelVisibility(false);
+                    }});
+            }
         }
 
         mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(mContext.getContentResolver(),
