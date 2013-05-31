@@ -2462,7 +2462,7 @@ public class Activity extends ContextThemeWrapper
                                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                                 }
 
-                            }, 10000);
+                            }, (Settings.System.getInt(getContentResolver(), Settings.System.FULLSCREEN_STATUSBAR_TIMEOUT, 10000)));
                         }
                     }
                     mightBeMyGesture = false;
