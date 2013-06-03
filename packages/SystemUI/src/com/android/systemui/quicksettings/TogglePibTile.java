@@ -25,7 +25,7 @@ public class TogglePibTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 Settings.Secure.putInt(mContext.getContentResolver(),
-                        Settings.Secure.UI_INVERTED_MODE, !getUiInvertedMode() ? 1 : 0);
+                        Settings.Secure.UI_INVERTED_MODE, !getUiInvertedMode() ? 2 : 1);
             }
         };
 
@@ -64,7 +64,7 @@ public class TogglePibTile extends QuickSettingsTile {
 
     private boolean getUiInvertedMode() {
         return Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.UI_INVERTED_MODE, 0) == 1;
+                Settings.Secure.UI_INVERTED_MODE, 1) == 2;
     }
 
     @Override
