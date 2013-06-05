@@ -31,7 +31,6 @@ public class QSConstants {
      	public static final String TILE_QUIETHOURS = "toggleQuietHours";
         public static final String TILE_HYBRID = "toggleHybrid";
         public static final String TILE_PIB = "togglePib";
-        public static final String TILE_MUSIC = "toggleMusic";
 
         public static final String TILE_DELIMITER = "|";
         public static ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
