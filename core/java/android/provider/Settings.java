@@ -915,12 +915,14 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.ANDROID_ID);
             MOVED_TO_SECURE.add(Secure.HTTP_PROXY);
             MOVED_TO_SECURE.add(Secure.LOCATION_PROVIDERS_ALLOWED);
+            MOVED_TO_SECURE.add(Secure.LOCK_BEFORE_UNLOCK);
             MOVED_TO_SECURE.add(Secure.LOCK_BIOMETRIC_WEAK_FLAGS);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_SHOW_ERROR_PATH);
             MOVED_TO_SECURE.add(Secure.LOCK_DOTS_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
+            MOVED_TO_SECURE.add(Secure.LOCKSCREEN_UNSECURE_USED);
             MOVED_TO_SECURE.add(Secure.LOGGING_ID);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_LAST_UPDATE);
@@ -5496,13 +5498,17 @@ public final class Settings {
         public static final String LOCK_SCREEN_OWNER_INFO_ENABLED =
             "lock_screen_owner_info_enabled";
 
-        /**
-         * Whether the unsecure widget screen will be shown before a secure
-         * lock screen
+         /**
+         * Stores used unsecure lockscreen for normal mode and unlock before unlock when merged
          * @hide
          */
-        public static final String LOCK_BEFORE_UNLOCK =
-            "lock_before_unlock";
+         public static final String LOCKSCREEN_UNSECURE_USED = "lockscreen_unsecure_used";
+
+         /*
+         * Stores value for lock before unlock
+         * @hide
+         */
+        public static final String LOCK_BEFORE_UNLOCK = "lock_before_unlock";
 
         /**
          * Determines the width and height of the LockPatternView widget

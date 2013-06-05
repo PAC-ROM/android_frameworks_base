@@ -345,6 +345,18 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
         mBouncerFrame = bouncerFrameView.getBackground();
+    
+        final int unsecureUnlockMethod = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.LOCKSCREEN_UNSECURE_USED, 1);
+        final int lockBeforeUnlock = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.LOCK_BEFORE_UNLOCK, 0);
+
+        //bring emergency button on slider lockscreen to front when lockBeforeUnlock is enabled
+        //to make it clickable
+        if (unsecureUnlockMethod == 0 && lockBeforeUnlock == 1) {
+            LinearLayout ecaContainer = (LinearLayout) findViewById(R.id.keyguard_selector_fade_container);
+            ecaContainer.bringToFront();
+        }
         mUnlockBroadcasted = false;
         filter = new IntentFilter();
         filter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
