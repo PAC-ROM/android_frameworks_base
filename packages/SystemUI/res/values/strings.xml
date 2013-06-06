@@ -533,6 +533,10 @@
     <string name="pie_hour_format_24">HH:mm</string>
     <string name="pie_am_pm">a</string>
 
+    <!-- QuickSettings: strings for Music Tile -->
+    <string name="quick_settings_music_play">Play</string>
+    <string name="quick_settings_music_pause">Pause</string>
+
     <!--  AOKP Strings can go here... -->
 
     <!--  App window Strings -->
