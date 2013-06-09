@@ -344,6 +344,9 @@ public class PanelView extends FrameLayout {
         mPeekHeight = res.getDimension(R.dimen.peek_height)
             + getPaddingBottom() // our window might have a dropshadow
             - (mHandleView == null ? 0 : mHandleView.getPaddingTop()); // the handle might have a topshadow
+        
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe(); 
 
     }
 
@@ -648,72 +651,72 @@ public class PanelView extends FrameLayout {
         }
     }
 
-	private void setPropFactor() {
-		Display display = getDisplay();
-		if(display == null)
-			return;
+    private void setPropFactor() {
+        Display display = getDisplay();
+        if(display == null)
+            return;
 
-		Point outSize = new Point();
-		display.getSize(outSize);
-		mPropFactor = Float.valueOf(android.os.PowerManager.BRIGHTNESS_ON)
-				/ Float.valueOf(outSize.x);
-	}
+        Point outSize = new Point();
+        display.getSize(outSize);
+        mPropFactor = Float.valueOf(android.os.PowerManager.BRIGHTNESS_ON) 
+                / Float.valueOf(outSize.x);
+    }
 
-	Runnable mChangeBrightnessRunnable = new Runnable() {
-		@Override
-		public void run() {
-			if(autoBrightnessEnabled()) {
-				// do nothing if auto brightness is enabled
-			} else if(mShouldReactToBrightnessSlider) {
-				if(lastBrightnessChanged != mBrightnessValue) {
-					// only change the brightness if it's different
-					try {
-						IPowerManager pw = IPowerManager.Stub
-								.asInterface(ServiceManager.getService("power"));
-						if (pw != null && mBrightnessValue != null && mTracking) {
-							pw.setTemporaryScreenBrightnessSettingOverride(mBrightnessValue);
-						}
-					} catch (RemoteException e1) {
-					}
-					lastBrightnessChanged = mBrightnessValue;
-				}
-			}
-		}
-	};
+    Runnable mChangeBrightnessRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(autoBrightnessEnabled()) {
+                // do nothing if auto brightness is enabled
+            } else if(mShouldReactToBrightnessSlider) {
+                if(lastBrightnessChanged != mBrightnessValue) {
+                    // only change the brightness if it's different
+                    try {
+                        IPowerManager pw = IPowerManager.Stub
+                                .asInterface(ServiceManager.getService("power"));
+                        if (pw != null && mBrightnessValue != null && mTracking) {
+                            pw.setTemporaryScreenBrightnessSettingOverride(mBrightnessValue);
+                        }
+                    } catch (RemoteException e1) {
+                    }
+                    lastBrightnessChanged = mBrightnessValue;
+                }
+            }
+        }
+    };
 
-	Runnable mSetShouldReact = new Runnable() {
-		@Override
-		public void run() {
-			mShouldReactToBrightnessSlider = true;
-		}
-	};
+    Runnable mSetShouldReact = new Runnable() {
+        @Override
+        public void run() {
+            mShouldReactToBrightnessSlider = true;
+        }
+    };
 
-	Runnable mOnStopChangingBrightnessRunnable = new Runnable() {
-		@Override
-		public void run() {
-			mHandler.removeCallbacks(mSetShouldReact);
-			if(autoBrightnessEnabled()) {
-				// eat the auto brightness!
-			} else {
-				// don't really care what happened, but auto brightness is disabled; save the value!
-				try {
-					Settings.System.putInt(mContext.getContentResolver(),
-							Settings.System.SCREEN_BRIGHTNESS, mBrightnessValue);
-				} catch (NullPointerException e2) {
-				}
-			}
-		}
-	};
+    Runnable mOnStopChangingBrightnessRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.removeCallbacks(mSetShouldReact);
+            if(autoBrightnessEnabled()) {
+                // eat the auto brightness!
+            } else {
+                // don't really care what happened, but auto brightness is disabled; save the value!
+                try {
+                    Settings.System.putInt(mContext.getContentResolver(),
+                            Settings.System.SCREEN_BRIGHTNESS, mBrightnessValue);
+                } catch (NullPointerException e2) {
+                }
+            }
+        }
+    };
 
-	private void changeBrightness() {
-		if(mShouldReactToBrightnessSlider) {
-			mHandler.removeCallbacks(mOnStopChangingBrightnessRunnable);
-			mHandler.postDelayed(mOnStopChangingBrightnessRunnable, 500);
-			mHandler.post(mChangeBrightnessRunnable);
-		}
-	}
+    private void changeBrightness() {
+        if(mShouldReactToBrightnessSlider) {
+            mHandler.removeCallbacks(mOnStopChangingBrightnessRunnable);
+            mHandler.postDelayed(mOnStopChangingBrightnessRunnable, 500);
+            mHandler.post(mChangeBrightnessRunnable);
+        }
+    }
 
-	private int checkMinMax(int brightness) {
+    private int checkMinMax(int brightness) {
         int min = 0;
         int max = 255;
 
@@ -726,13 +729,13 @@ public class PanelView extends FrameLayout {
         return brightness;
     }
 
-	private boolean autoBrightnessEnabled() {
+    private boolean autoBrightnessEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SCREEN_BRIGHTNESS_MODE,
                 Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     }
 
-	class SettingsObserver extends ContentObserver {
+    class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -751,9 +754,9 @@ public class PanelView extends FrameLayout {
         }
     }
 
-	private void updateSettings() {
-	    ContentResolver cr = mContext.getContentResolver();
-	    mBrightnessSliderEnabled = Settings.System.getBoolean(cr,
-	            Settings.System.STATUSBAR_BRIGHTNESS_SLIDER, true);
-	}
+    private void updateSettings() {
+        ContentResolver cr = mContext.getContentResolver();
+        mBrightnessSliderEnabled = Settings.System.getBoolean(cr,
+        Settings.System.STATUSBAR_BRIGHTNESS_SLIDER, true);
+    }
 }
