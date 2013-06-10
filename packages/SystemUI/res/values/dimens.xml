@@ -272,4 +272,6 @@
     <!-- Constant for hidden ribbon drag handle -->
     <dimen name="ribbon_drag_handle_height">25dp</dimen>
 
+    <dimen name="halo_content_max_width">250dp</dimen>
+
 </resources>
