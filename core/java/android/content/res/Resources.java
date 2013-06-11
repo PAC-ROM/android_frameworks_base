@@ -2290,4 +2290,4 @@ public class Resources extends ExtendedPropertiesUtils {
         mAssets.ensureStringBlocks();
         mCompatibilityInfo = CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
     }
-
+}
