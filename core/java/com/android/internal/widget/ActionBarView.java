@@ -227,7 +227,7 @@ public class ActionBarView extends AbsActionBarView {
         mExpandedHomeLayout.setOnClickListener(mExpandedActionViewUpListener);
         mExpandedHomeLayout.setContentDescription(getResources().getText(
                 R.string.action_bar_up_description));
-        
+
         // This needs to highlight/be focusable on its own.
         // TODO: Clean up the handoff between expanded/normal.
         final Drawable upBackground = mUpGoerFive.getBackground();
@@ -256,9 +256,9 @@ public class ActionBarView extends AbsActionBarView {
         }
 
         mContentHeight = a.getLayoutDimension(R.styleable.ActionBar_height, 0);
-        
+
         a.recycle();
-        
+
         mLogoNavItem = new ActionMenuItem(context, 0, android.R.id.home, 0, 0, mTitle);
 
         mUpGoerFive.setOnClickListener(mUpClickListener);
@@ -713,7 +713,7 @@ public class ActionBarView extends AbsActionBarView {
                     removeView(mTabScrollView);
                 }
             }
-            
+
             switch (mode) {
             case ActionBar.NAVIGATION_MODE_LIST:
                 if (mSpinner == null) {
@@ -765,11 +765,11 @@ public class ActionBarView extends AbsActionBarView {
     public View getCustomNavigationView() {
         return mCustomNavView;
     }
-    
+
     public int getNavigationMode() {
         return mNavigationMode;
     }
-    
+
     public int getDisplayOptions() {
         return mDisplayOptions;
     }
@@ -954,7 +954,7 @@ public class ActionBarView extends AbsActionBarView {
             availableWidth = Math.max(0, availableWidth - homeOffsetWidth);
             leftOfCenter = Math.max(0, availableWidth - homeOffsetWidth);
         }
-        
+
         if (mMenuView != null && mMenuView.getParent() == this) {
             availableWidth = measureChildView(mMenuView, availableWidth, exactHeightSpec, 0);
             rightOfCenter = Math.max(0, rightOfCenter - mMenuView.getMeasuredWidth());

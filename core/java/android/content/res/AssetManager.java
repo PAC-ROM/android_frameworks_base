@@ -62,25 +62,25 @@ public final class AssetManager extends ExtendedPropertiesUtils {
 
     private static final String TAG = "AssetManager";
     private static final boolean localLOGV = false || false;
-    
+
     private static final boolean DEBUG_REFS = false;
-    
+
     private static final Object sSync = new Object();
     /*package*/ static AssetManager sSystem = null;
 
     private final TypedValue mValue = new TypedValue();
     private final long[] mOffsets = new long[2];
-    
+
     // For communication with native code.
     private int mObject;
     private int mNObject;  // used by the NDK
 
     private StringBlock mStringBlocks[] = null;
-    
+
     private int mNumRefs = 1;
     private boolean mOpen = true;
-    private HashMap<Integer, RuntimeException> mRefStacks; 
- 
+    private HashMap<Integer, RuntimeException> mRefStacks;
+
     private String mAssetDir;
     private String mAppName;
 
@@ -123,7 +123,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
             }
         }
     }
-    
+
     private AssetManager(boolean isSystem) {
         if (DEBUG_REFS) {
             synchronized (this) {
@@ -241,7 +241,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
         }
         return retArray;
     }
-    
+
     /*package*/ final boolean getThemeValue(int theme, int ident,
             TypedValue outValue, boolean resolveRefs) {
         int block = loadThemeAttributeValue(theme, ident, outValue, resolveRefs);
@@ -302,10 +302,10 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * Open an asset using ACCESS_STREAMING mode.  This provides access to
      * files that have been bundled with an application as assets -- that is,
      * files placed in to the "assets" directory.
-     * 
+     *
      * @param fileName The name of the asset to open.  This name can be
      *                 hierarchical.
-     * 
+     *
      * @see #open(String, int)
      * @see #list
      */
@@ -318,11 +318,11 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * read its contents.  This provides access to files that have been bundled
      * with an application as assets -- that is, files placed in to the
      * "assets" directory.
-     * 
+     *
      * @param fileName The name of the asset to open.  This name can be
      *                 hierarchical.
      * @param accessMode Desired access mode for retrieving the data.
-     * 
+     *
      * @see #ACCESS_UNKNOWN
      * @see #ACCESS_STREAMING
      * @see #ACCESS_RANDOM
@@ -362,14 +362,14 @@ public final class AssetManager extends ExtendedPropertiesUtils {
 
     /**
      * Return a String array of all the assets at the given path.
-     * 
+     *
      * @param path A relative path within the assets, i.e., "docs/home.html".
-     * 
+     *
      * @return String[] Array of strings, one for each asset.  These file
      *         names are relative to 'path'.  You can open the file by
      *         concatenating 'path' and a name in the returned string (via
      *         File) and passing that to open().
-     * 
+     *
      * @see #open
      */
     public native final String[] list(String path)
@@ -381,7 +381,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * provides direct access to all of the files included in an application
      * package (not only its assets).  Applications should not normally use
      * this.
-     * 
+     *
      * @see #open(String)
      */
     public final InputStream openNonAsset(String fileName) throws IOException {
@@ -394,7 +394,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * provides direct access to all of the files included in an application
      * package (not only its assets).  Applications should not normally use
      * this.
-     * 
+     *
      * @see #open(String, int)
      */
     public final InputStream openNonAsset(String fileName, int accessMode)
@@ -405,7 +405,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
     /**
      * {@hide}
      * Open a non-asset in a specified package.  Not for use by applications.
-     * 
+     *
      * @param cookie Identifier of the package to be opened.
      * @param fileName Name of the asset to retrieve.
      */
@@ -417,7 +417,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
     /**
      * {@hide}
      * Open a non-asset in a specified package.  Not for use by applications.
-     * 
+     *
      * @param cookie Identifier of the package to be opened.
      * @param fileName Name of the asset to retrieve.
      * @param accessMode Desired access mode for retrieving the data.
@@ -442,7 +442,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
             throws IOException {
         return openNonAssetFd(0, fileName);
     }
-    
+
     public final AssetFileDescriptor openNonAssetFd(int cookie,
             String fileName) throws IOException {
         synchronized (this) {
@@ -457,20 +457,20 @@ public final class AssetManager extends ExtendedPropertiesUtils {
         }
         throw new FileNotFoundException("Asset absolute file: " + fileName);
     }
-    
+
     /**
      * Retrieve a parser for a compiled XML file.
-     * 
+     *
      * @param fileName The name of the file to retrieve.
      */
     public final XmlResourceParser openXmlResourceParser(String fileName)
             throws IOException {
         return openXmlResourceParser(0, fileName);
     }
-    
+
     /**
      * Retrieve a parser for a compiled XML file.
-     * 
+     *
      * @param cookie Identifier of the package to be opened.
      * @param fileName The name of the file to retrieve.
      */
@@ -485,7 +485,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
     /**
      * {@hide}
      * Split a theme package with DRM-protected resources into two files.
-     * 
+     *
      * @param packageFileName Original theme package file name.
      * @param lockedFileName Name of the new "locked" file with DRM resources.
      * @param drmProtectedresources Array of names of DRM-protected assets.
@@ -498,7 +498,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * {@hide}
      * Retrieve a non-asset as a compiled XML file.  Not for use by
      * applications.
-     * 
+     *
      * @param fileName The name of the file to retrieve.
      */
     /*package*/ final XmlBlock openXmlBlockAsset(String fileName)
@@ -510,7 +510,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * {@hide}
      * Retrieve a non-asset as a compiled XML file.  Not for use by
      * applications.
-     * 
+     *
      * @param cookie Identifier of the package to be opened.
      * @param fileName Name of the asset to retrieve.
      */
@@ -570,7 +570,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
             super.finalize();
         }
     }
-    
+
     public final class AssetInputStream extends InputStream {
         public final int getAssetInt() {
             return mAsset;
@@ -806,7 +806,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
     /*package*/ native final String getResourcePackageName(int resid);
     /*package*/ native final String getResourceTypeName(int resid);
     /*package*/ native final String getResourceEntryName(int resid);
-    
+
     private native final int openAsset(String fileName, int accessMode);
     private final native ParcelFileDescriptor openAssetFd(String fileName,
             long[] outOffsets) throws IOException;
@@ -855,17 +855,17 @@ public final class AssetManager extends ExtendedPropertiesUtils {
      * {@hide}
      */
     public native static final int getGlobalAssetCount();
-    
+
     /**
      * {@hide}
      */
     public native static final String getAssetAllocations();
-    
+
     /**
      * {@hide}
      */
     public native static final int getGlobalAssetManagerCount();
-    
+
     private native final int newTheme();
     private native final void deleteTheme(int theme);
     /*package*/ native static final void applyThemeStyle(int theme, int styleRes, boolean force);
@@ -915,7 +915,7 @@ public final class AssetManager extends ExtendedPropertiesUtils {
         }
         mNumRefs++;
     }
-    
+
     private final void decRefsLocked(int id) {
         if (DEBUG_REFS && mRefStacks != null) {
             mRefStacks.remove(id);

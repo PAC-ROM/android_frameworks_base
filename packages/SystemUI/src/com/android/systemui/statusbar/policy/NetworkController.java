@@ -544,7 +544,7 @@ public class NetworkController extends BroadcastReceiver {
                 mPhoneSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
                     R.drawable.stat_sys_signal_null);
                 mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
-            	mDataSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
+                mDataSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
                     R.drawable.stat_sys_signal_null);
             }
         } else {
@@ -557,7 +557,7 @@ public class NetworkController extends BroadcastReceiver {
                     mPhoneSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
                         R.drawable.stat_sys_signal_null);
                     mQSPhoneSignalIconId = R.drawable.ic_qs_signal_no_signal;
-                	mDataSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
+                    mDataSignalIconId = (mUseAltSignal ? R.drawable.stat_sys_signal_null_alt :
                         R.drawable.stat_sys_signal_null);
                 }
                 mContentDescriptionPhoneSignal = mContext.getString(
@@ -694,12 +694,12 @@ public class NetworkController extends BroadcastReceiver {
                         // display 1xRTT for IS95A/B
                         mDataIconList = mUseAltSignal ? TelephonyIcons.DATA_1X_ALT[mInetCondition] :
                         TelephonyIcons.DATA_1X[mInetCondition];
-                    	mDataTypeIconId = mDataIconList[0];
+                        mDataTypeIconId = mDataIconList[0];
                         mQSDataTypeIconId = (isConnected ? R.drawable.ic_qs_signal_full_1x
                                 : R.drawable.ic_qs_signal_1x);
                         mContentDescriptionDataType = mContext.getString(
-                            R.string.accessibility_data_connection_cdma);
-						break;
+                                R.string.accessibility_data_connection_cdma);
+                        break;
                     } else {
                         // fall through
                     }
@@ -707,7 +707,7 @@ public class NetworkController extends BroadcastReceiver {
                     if (!mShowAtLeastThreeGees) {
                         mDataIconList = mUseAltSignal ? TelephonyIcons.DATA_1X_ALT[mInetCondition] :
                         TelephonyIcons.DATA_1X[mInetCondition];
-                    	mDataTypeIconId = mDataIconList[0];
+                        mDataTypeIconId = mDataIconList[0];
                         mQSDataTypeIconId = (isConnected ? R.drawable.ic_qs_signal_full_1x
                                 : R.drawable.ic_qs_signal_1x);
                         mContentDescriptionDataType = mContext.getString(
@@ -763,12 +763,12 @@ public class NetworkController extends BroadcastReceiver {
             if (isCdmaEri()) {
                 mDataTypeIconId = mUseAltSignal ? R.drawable.stat_sys_data_connected_roam_alt :
                     R.drawable.stat_sys_data_connected_roam;
-				mQSDataTypeIconId = R.drawable.ic_qs_signal_r;
+                mQSDataTypeIconId = R.drawable.ic_qs_signal_r;
             }
         } else if (mPhone.isNetworkRoaming()) {
                 mDataTypeIconId = mUseAltSignal ? R.drawable.stat_sys_data_connected_roam_alt :
                     R.drawable.stat_sys_data_connected_roam;
-				mQSDataTypeIconId = R.drawable.ic_qs_signal_r;
+                mQSDataTypeIconId = R.drawable.ic_qs_signal_r;
         }
     }
 

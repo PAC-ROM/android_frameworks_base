@@ -49,12 +49,12 @@ public class ColorUtils {
         public String systemColorString;
         public String currentColorString;
         public String lastColorString;
-        
+
         public int systemColor;
         public int currentColor;
         public int lastColor;
         public int defaultColor;
-        
+
         public int speed;
 
         public boolean isSystemColorNull;
@@ -74,7 +74,7 @@ public class ColorUtils {
     private static final double COMPARATIVE_FACTOR = 3.5;
     private static final double COMPARATIVE_NUMBER = COMPARATIVE_FACTOR * 125;
     private static final double BLACK_OFFSET = 15;
-    
+
     public static boolean getPerAppColorState(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.PER_APP_COLOR, 1) == 1;
@@ -82,7 +82,7 @@ public class ColorUtils {
 
     public static void setColor(Context context, String settingName, String systemColor,
             String currentColor, int index) {
-        Settings.System.putString(context.getContentResolver(), settingName, 
+        Settings.System.putString(context.getContentResolver(), settingName,
                 systemColor + "|" + currentColor + "|" + index);
     }
 
@@ -93,7 +93,7 @@ public class ColorUtils {
     }
 
     public static int hexToInt(String hexString) {
-        // Don't even bother with an exception if string is null        
+        // Don't even bother with an exception if string is null
         if (hexString == null) return 0;
 
         try {
@@ -112,7 +112,7 @@ public class ColorUtils {
         if (result.currentSetting != null) {
             result.currentSetting = result.currentSetting.toUpperCase();
         }
-  
+
         // Parse
         String[] colors = (result.currentSetting == null || result.currentSetting.isEmpty()  ?
                 ColorUtils.NO_COLOR : result.currentSetting).split(
@@ -134,7 +134,7 @@ public class ColorUtils {
         if (!isSane) {
             Settings.System.putString(context.getContentResolver(), settingName, ColorUtils.NO_COLOR);
             colors = ColorUtils.NO_COLOR.split(ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        }        
+        }
 
         // Get index
         result.currentIndex = Integer.parseInt(colors[2]);
@@ -201,11 +201,11 @@ public class ColorUtils {
 
     private static int getColorDifference(int color1, int color2) {
         int[] rgb1 = {Color.red(color1), Color.green(color1), Color.blue(color1)};
-        int[] rgb2 = {Color.red(color2), Color.green(color2), Color.blue(color2)}; 
+        int[] rgb2 = {Color.red(color2), Color.green(color2), Color.blue(color2)};
         return Math.abs(rgb1[0] - rgb2[0]) +
                Math.abs(rgb1[1] - rgb2[1]) +
-               Math.abs(rgb1[2] - rgb2[2]); 
-    }  
+               Math.abs(rgb1[2] - rgb2[2]);
+    }
 
     public static int getComplementaryColor(int bgcolor, Context context) {
         Resources res = context.getResources();
@@ -233,7 +233,7 @@ public class ColorUtils {
                 minKey = i;
                 minValue = currValue;
             }
-        }      
+        }
         return res.getColor(AVAILABLE_COLORS[minKey]);
     }
 }
