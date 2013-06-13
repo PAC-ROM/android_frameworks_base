@@ -2706,6 +2706,13 @@ public final class Settings {
         public static final String HALO_HIDE = "halo_hide";
 
         /**
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
+         * @hide
+         */
+        public static final String HALO_PAUSE = "halo_pause";
+
+        /**
          * Use the Notification Power Widget? (Who wouldn't!)
          *
          * @hide
