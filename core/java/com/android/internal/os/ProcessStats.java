@@ -30,13 +30,14 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 public class ProcessStats {
     private static final String TAG = "ProcessStats";
     private static final boolean DEBUG = false;
     private static final boolean localLOGV = DEBUG || false;
-    
+
     private static final int[] PROCESS_STATS_FORMAT = new int[] {
         PROC_SPACE_TERM,
         PROC_SPACE_TERM|PROC_PARENS,
@@ -59,7 +60,7 @@ public class ProcessStats {
     static final int PROCESS_STAT_MAJOR_FAULTS = 1;
     static final int PROCESS_STAT_UTIME = 2;
     static final int PROCESS_STAT_STIME = 3;
-    
+
     /** Stores user time and system time in 100ths of a second. */
     private final long[] mProcessStatsData = new long[4];
     /** Stores user time and system time in 100ths of a second. */
@@ -121,14 +122,14 @@ public class ProcessStats {
     private final float[] mLoadAverageData = new float[3];
 
     private final boolean mIncludeThreads;
-    
+
     private float mLoad1 = 0;
     private float mLoad5 = 0;
     private float mLoad15 = 0;
-    
+
     private long mCurrentSampleTime;
     private long mLastSampleTime;
-    
+
     private long mCurrentSampleRealTime;
     private long mLastSampleRealTime;
 
@@ -147,7 +148,7 @@ public class ProcessStats {
 
     private int[] mCurPids;
     private int[] mCurThreadPids;
-    
+
     private final ArrayList<Stats> mProcStats = new ArrayList<Stats>();
     private final ArrayList<Stats> mWorkingProcs = new ArrayList<Stats>();
     private boolean mWorkingProcsSorted;
@@ -171,6 +172,11 @@ public class ProcessStats {
      */
     private long[] mCpuSpeeds;
 
+    /**
+     * The lastmodified date of sysfs entry to detect change in available scaling frequency
+     */
+    private Date mLastModified = null;
+
     public static class Stats {
         public final int pid;
         final String statFile;
@@ -178,7 +184,7 @@ public class ProcessStats {
         final String threadsDir;
         final ArrayList<Stats> threadStats;
         final ArrayList<Stats> workingThreads;
-        
+
         public boolean interesting;
 
         public String baseName;
@@ -197,12 +203,12 @@ public class ProcessStats {
         public long base_majfaults;
         public int rel_minfaults;
         public int rel_majfaults;
-        
+
         public boolean active;
         public boolean working;
         public boolean added;
         public boolean removed;
-        
+
         Stats(int _pid, int parentPid, boolean includeThreads) {
             pid = _pid;
             if (parentPid < 0) {
@@ -253,27 +259,27 @@ public class ProcessStats {
     public ProcessStats(boolean includeThreads) {
         mIncludeThreads = includeThreads;
     }
-    
+
     public void onLoadChanged(float load1, float load5, float load15) {
     }
-    
+
     public int onMeasureProcessName(String name) {
         return 0;
     }
-    
+
     public void init() {
         if (DEBUG) Slog.v(TAG, "Init: " + this);
         mFirst = true;
         update();
     }
-    
+
     public void update() {
         if (DEBUG) Slog.v(TAG, "Update: " + this);
         mLastSampleTime = mCurrentSampleTime;
         mCurrentSampleTime = SystemClock.uptimeMillis();
         mLastSampleRealTime = mCurrentSampleRealTime;
         mCurrentSampleRealTime = SystemClock.elapsedRealtime();
-        
+
         final long[] sysCpu = mSystemCpuData;
         if (Process.readProcFile("/proc/stat", SYSTEM_CPU_FORMAT,
                 null, sysCpu, null)) {
@@ -333,11 +339,11 @@ public class ProcessStats {
 
         mWorkingProcsSorted = false;
         mFirst = false;
-    }    
-    
+    }
+
     private int[] collectStats(String statsFile, int parentPid, boolean first,
             int[] curPids, ArrayList<Stats> allProcs) {
-        
+
         int[] pids = Process.getPids(statsFile, curPids);
         int NP = (pids == null) ? 0 : pids.length;
         int NS = allProcs.size();
@@ -349,7 +355,7 @@ public class ProcessStats {
                 break;
             }
             Stats st = curStatsIndex < NS ? allProcs.get(curStatsIndex) : null;
-            
+
             if (st != null && st.pid == pid) {
                 // Update an existing process...
                 st.added = false;
@@ -367,7 +373,7 @@ public class ProcessStats {
                             PROCESS_STATS_FORMAT, null, procStats, null)) {
                         continue;
                     }
-                    
+
                     final long minfaults = procStats[PROCESS_STAT_MINOR_FAULTS];
                     final long majfaults = procStats[PROCESS_STAT_MAJOR_FAULTS];
                     final long utime = procStats[PROCESS_STAT_UTIME];
@@ -417,7 +423,7 @@ public class ProcessStats {
 
                 continue;
             }
-            
+
             if (st == null || st.pid > pid) {
                 // We have a new process!
                 st = new Stats(pid, parentPid, mIncludeThreads);
@@ -471,7 +477,7 @@ public class ProcessStats {
                 if (DEBUG) Slog.v("Load", "Stats added " + st.name + " pid=" + st.pid
                         + " utime=" + st.base_utime + " stime=" + st.base_stime
                         + " minfaults=" + st.base_minfaults + " majfaults=" + st.base_majfaults);
-                
+
                 st.rel_utime = 0;
                 st.rel_stime = 0;
                 st.rel_minfaults = 0;
@@ -482,7 +488,7 @@ public class ProcessStats {
                 }
                 continue;
             }
-                
+
             // This process has gone away!
             st.rel_utime = 0;
             st.rel_stime = 0;
@@ -514,7 +520,7 @@ public class ProcessStats {
             NS--;
             if (localLOGV) Slog.v(TAG, "Removed pid " + st.pid + ": " + st);
         }
-        
+
         return pids;
     }
 
@@ -557,9 +563,26 @@ public class ProcessStats {
         long[] tempTimes = out;
         long[] tempSpeeds = mCpuSpeeds;
         final int MAX_SPEEDS = 60;
-        if (out == null) {
+
+        Date currentModified = null;
+
+        try {
+            File file = new File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies");
+            if (file.exists()) {
+                currentModified = new Date(file.lastModified());
+            }
+        } catch (Exception e) {
+            Slog.i(TAG, "Exception = " + e);
+            }
+        if (mLastModified == null) {
+            mLastModified = currentModified;
+        }
+        if (out == null || out.length == 0 || mLastModified != currentModified) {
             tempTimes = new long[MAX_SPEEDS]; // Hopefully no more than that
             tempSpeeds = new long[MAX_SPEEDS];
+            mLastModified = currentModified;
+            // We need to clean up previous scaling frequency since they need to be updated
+            out = null;
         }
         int speed = 0;
         String file = readFile("/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state", '\0');
@@ -580,11 +603,15 @@ public class ProcessStats {
                         Slog.v(TAG, "First time : Speed/Time = " + tempSpeeds[speed - 1]
                               + "\t" + tempTimes[speed - 1]);
                     }
-                } catch (NumberFormatException nfe) {
-                    Slog.i(TAG, "Unable to parse time_in_state");
-                } catch (java.util.NoSuchElementException nsee) {
-                    Slog.i(TAG, "time_in_state changed size halfway?");
-                    break;
+               } catch (Exception e) {
+                    if (e instanceof NumberFormatException) {
+                        Slog.i(TAG, "Unable to parse time_in_state");
+                    } else if (e instanceof ArrayIndexOutOfBoundsException) {
+                        Slog.i(TAG, "Scaling frequency changed while accessing" +
+                            " the time_in_state, It will be handled when the function is called again");
+                    } else if (e instanceof java.util.NoSuchElementException) {
+                        Slog.i(TAG, "time_in_state changed size halfway?");
+                    }
                 }
             }
         }
@@ -600,27 +627,27 @@ public class ProcessStats {
     final public int getLastUserTime() {
         return mRelUserTime;
     }
-    
+
     final public int getLastSystemTime() {
         return mRelSystemTime;
     }
-    
+
     final public int getLastIoWaitTime() {
         return mRelIoWaitTime;
     }
-    
+
     final public int getLastIrqTime() {
         return mRelIrqTime;
     }
-    
+
     final public int getLastSoftIrqTime() {
         return mRelSoftIrqTime;
     }
-    
+
     final public int getLastIdleTime() {
         return mRelIdleTime;
     }
-    
+
     final public float getTotalCpuPercent() {
         int denom = mRelUserTime+mRelSystemTime+mRelIrqTime+mRelIdleTime;
         if (denom <= 0) {
@@ -628,7 +655,7 @@ public class ProcessStats {
         }
         return ((float)(mRelUserTime+mRelSystemTime+mRelIrqTime)*100) / denom;
     }
-    
+
     final void buildWorkingProcs() {
         if (!mWorkingProcsSorted) {
             mWorkingProcs.clear();
@@ -671,7 +698,7 @@ public class ProcessStats {
     final public Stats getWorkingStats(int index) {
         return mWorkingProcs.get(index);
     }
-    
+
     final public String printCurrentLoad() {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -686,10 +713,10 @@ public class ProcessStats {
 
     final public String printCurrentState(long now) {
         buildWorkingProcs();
-        
+
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        
+
         pw.print("CPU usage from ");
         if (now > mLastSampleTime) {
             pw.print(now-mLastSampleTime);
@@ -714,10 +741,10 @@ public class ProcessStats {
             pw.print("% awake");
         }
         pw.println(":");
-        
+
         final int totalTime = mRelUserTime + mRelSystemTime + mRelIoWaitTime
                 + mRelIrqTime + mRelSoftIrqTime + mRelIdleTime;
-        
+
         if (DEBUG) Slog.i(TAG, "totalTime " + totalTime + " over sample time "
                 + (mCurrentSampleTime-mLastSampleTime));
 
@@ -738,13 +765,13 @@ public class ProcessStats {
                 }
             }
         }
-        
+
         printProcessCPU(pw, "", -1, "TOTAL", totalTime, mRelUserTime, mRelSystemTime,
                 mRelIoWaitTime, mRelIrqTime, mRelSoftIrqTime, 0, 0);
-        
+
         return sw.toString();
     }
-    
+
     private void printRatio(PrintWriter pw, long numerator, long denominator) {
         long thousands = (numerator*1000)/denominator;
         long hundreds = thousands/10;
@@ -805,7 +832,7 @@ public class ProcessStats {
         }
         pw.println();
     }
-    
+
     private String readFile(String file, char endChar) {
         // Permit disk reads here, as /proc/meminfo isn't really "on
         // disk" and should be fast.  TODO: make BlockGuard ignore
