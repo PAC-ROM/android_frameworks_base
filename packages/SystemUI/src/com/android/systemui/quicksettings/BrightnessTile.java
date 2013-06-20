@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -40,7 +39,6 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
         super(context, inflater, container, qsc);
 
         mHandler = handler;
-
         mBrightnessDialogLongTimeout = mContext.getResources().getInteger(R.integer.quick_settings_brightness_dialog_long_timeout);
 
         mOnClick = new OnClickListener() {
@@ -155,4 +153,3 @@ public class BrightnessTile extends QuickSettingsTile implements BrightnessState
         updateTileResources();
     }
 }
- 
