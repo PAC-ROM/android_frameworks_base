@@ -32,8 +32,8 @@ public class QuickSettingsTileView extends FrameLayout {
     private int mColSpan;
     private final int mRowSpan;
 
-    private static final DEFAULT_TILES_BG_COLOR = 0xff161616;
-    private static final DEFAULT_TILES_BG_PRESSED_COLOR = 0xff212121;
+    private static final int DEFAULT_QUICK_TILES_BG_COLOR = 0xff161616;
+    private static final int DEFAULT_QUICK_TILES_BG_PRESSED_COLOR = 0xff212121;
 
     public QuickSettingsTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
