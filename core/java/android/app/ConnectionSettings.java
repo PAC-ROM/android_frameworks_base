@@ -140,10 +140,12 @@ public final class ConnectionSettings implements Parcelable {
                 context.sendBroadcast(intent);
                 break;
             case PROFILE_CONNECTION_BLUETOOTH:
-                currentState = bta.isEnabled();
-                if (forcedState && !currentState) {
+                int btstate = bta.getState();
+                if (forcedState && (btstate == BluetoothAdapter.STATE_OFF
+                        || btstate == BluetoothAdapter.STATE_TURNING_OFF)) {
                     bta.enable();
-                } else if (!forcedState && currentState) {
+                } else if (!forcedState && (btstate == BluetoothAdapter.STATE_ON
+                        || btstate == BluetoothAdapter.STATE_TURNING_ON)) {
                     bta.disable();
                 }
                 break;
