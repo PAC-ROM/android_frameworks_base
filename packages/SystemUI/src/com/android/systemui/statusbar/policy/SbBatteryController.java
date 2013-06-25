@@ -78,14 +78,16 @@ public class SbBatteryController extends LinearLayout {
     public static final int STYLE_ICON_TEXT = 2;
     public static final int STYLE_ICON_CENTERED_TEXT = 3;
     public static final int STYLE_ICON_CIRCLE = 4;
-    public static final int STYLE_ICON_FULL_CIRCLE = 5;
-    public static final int STYLE_ICON_GAUGE = 6;
-    public static final int STYLE_ICON_HONEYCOMB = 7;
-    public static final int STYLE_ICON_DROID = 8;
-    public static final int STYLE_ICON_SPHERE = 9;
-    public static final int STYLE_ICON_NUMBERS = 10;
-    public static final int STYLE_ICON_DIGITAL_NUMBERS = 11;
-    public static final int STYLE_HIDE = 12;
+    public static final int BATTERY_STYLE_CIRCLE = 5;
+    public static final int BATTERY_STYLE_CIRCLE_PERCENT = 6;
+    public static final int BATTERY_STYLE_DOTTED_CIRCLE_PERCENT = 7;
+    public static final int STYLE_ICON_GAUGE = 8;
+    public static final int STYLE_ICON_HONEYCOMB = 9;
+    public static final int STYLE_ICON_DROID = 10;
+    public static final int STYLE_ICON_SPHERE = 11;
+    public static final int STYLE_ICON_NUMBERS = 12;
+    public static final int STYLE_ICON_DIGITAL_NUMBERS = 13;
+    public static final int STYLE_HIDE = 14;
 
     public SbBatteryController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -179,9 +181,6 @@ public class SbBatteryController extends LinearLayout {
         if (mBatteryStyle == STYLE_ICON_CIRCLE) {
             mIcon = mPlugged ? R.drawable.stat_sys_battery_charge_circle
                     : R.drawable.stat_sys_battery_circle;
-        } else if (mBatteryStyle == STYLE_ICON_FULL_CIRCLE) {
-            mIcon = mPlugged ? R.drawable.stat_sys_battery_full_circle_charge
-                    : R.drawable.stat_sys_battery_full_circle;
         } else if (mBatteryStyle == STYLE_ICON_GAUGE) {
             mIcon = mPlugged ? R.drawable.stat_sys_battery_gauge_charge
                     : R.drawable.stat_sys_battery_gauge;
@@ -324,10 +323,22 @@ public class SbBatteryController extends LinearLayout {
                 mBatteryIcon.setVisibility(View.VISIBLE);
                 setVisibility(View.VISIBLE);
                 break;
-            case STYLE_ICON_FULL_CIRCLE:
+            case BATTERY_STYLE_CIRCLE:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
-                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryIcon.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case BATTERY_STYLE_CIRCLE_PERCENT:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case BATTERY_STYLE_DOTTED_CIRCLE_PERCENT:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.GONE);
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_ICON_GAUGE:
