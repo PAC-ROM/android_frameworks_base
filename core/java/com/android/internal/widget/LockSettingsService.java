@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.server;
+package com.android.internal.widget;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.UserInfo;
-
-import static android.content.Context.USER_SERVICE;
-import static android.Manifest.permission.READ_PROFILE;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -37,14 +32,11 @@ import android.os.Environment;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
-import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.util.Slog;
 
-import com.android.internal.widget.ILockSettings;
 import com.android.internal.widget.LockPatternUtils;
 
 import java.io.File;
@@ -53,7 +45,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Keeps the lock pattern/password data and related settings for each user.
@@ -96,59 +87,23 @@ public class LockSettingsService extends ILockSettings.Stub {
 
     private void migrateOldData() {
         try {
-            // These Settings moved before multi-user was enabled, so we only have to do it for the
-            // root user.
-            if (getString("migrated", null, 0) == null) {
-                final ContentResolver cr = mContext.getContentResolver();
-                for (String validSetting : VALID_SETTINGS) {
-                    String value = Settings.Secure.getString(cr, validSetting);
-                    if (value != null) {
-                        setString(validSetting, value, 0);
-                    }
-                }
-                // No need to move the password / pattern files. They're already in the right place.
-                setString("migrated", "true", 0);
-                Slog.i(TAG, "Migrated lock settings to new location");
+            if (getString("migrated", null, 0) != null) {
+                // Already migrated
+                return;
             }
 
-            // These Settings changed after multi-user was enabled, hence need to be moved per user.
-            if (getString("migrated_user_specific", null, 0) == null) {
-                final UserManager um = (UserManager) mContext.getSystemService(USER_SERVICE);
-                final ContentResolver cr = mContext.getContentResolver();
-                List<UserInfo> users = um.getUsers();
-                for (int user = 0; user < users.size(); user++) {
-                    // Migrate owner info
-                    final int userId = users.get(user).id;
-                    final String OWNER_INFO = Secure.LOCK_SCREEN_OWNER_INFO;
-                    String ownerInfo = Settings.Secure.getStringForUser(cr, OWNER_INFO, userId);
-                    if (ownerInfo != null) {
-                        setString(OWNER_INFO, ownerInfo, userId);
-                        Settings.Secure.putStringForUser(cr, ownerInfo, "", userId);
-                    }
-
-                    // Migrate owner info enabled.  Note there was a bug where older platforms only
-                    // stored this value if the checkbox was toggled at least once. The code detects
-                    // this case by handling the exception.
-                    final String OWNER_INFO_ENABLED = Secure.LOCK_SCREEN_OWNER_INFO_ENABLED;
-                    boolean enabled;
-                    try {
-                        int ivalue = Settings.Secure.getIntForUser(cr, OWNER_INFO_ENABLED, userId);
-                        enabled = ivalue != 0;
-                        setLong(OWNER_INFO_ENABLED, enabled ? 1 : 0, userId);
-                    } catch (SettingNotFoundException e) {
-                        // Setting was never stored. Store it if the string is not empty.
-                        if (!TextUtils.isEmpty(ownerInfo)) {
-                            setLong(OWNER_INFO_ENABLED, 1, userId);
-                        }
-                    }
-                    Settings.Secure.putIntForUser(cr, OWNER_INFO_ENABLED, 0, userId);
+            final ContentResolver cr = mContext.getContentResolver();
+            for (String validSetting : VALID_SETTINGS) {
+                String value = Settings.Secure.getString(cr, validSetting);
+                if (value != null) {
+                    setString(validSetting, value, 0);
                 }
-                // No need to move the password / pattern files. They're already in the right place.
-                setString("migrated_user_specific", "true", 0);
-                Slog.i(TAG, "Migrated per-user lock settings to new location");
             }
+            // No need to move the password / pattern files. They're already in the right place.
+            setString("migrated", "true", 0);
+            Slog.i(TAG, "Migrated lock settings to new location");
         } catch (RemoteException re) {
-            Slog.e(TAG, "Unable to migrate old data", re);
+            Slog.e(TAG, "Unable to migrate old data");
         }
     }
 
@@ -168,16 +123,12 @@ public class LockSettingsService extends ILockSettings.Stub {
         }
     }
 
-    private final void checkReadPermission(String requestedKey, int userId) {
+    private static final void checkReadPermission(int userId) {
         final int callingUid = Binder.getCallingUid();
-        for (int i = 0; i < READ_PROFILE_PROTECTED_SETTINGS.length; i++) {
-            String key = READ_PROFILE_PROTECTED_SETTINGS[i];
-            if (key.equals(requestedKey) && mContext.checkCallingOrSelfPermission(READ_PROFILE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                throw new SecurityException("uid=" + callingUid
-                        + " needs permission " + READ_PROFILE + " to read "
-                        + requestedKey + " for user " + userId);
-            }
+        if (UserHandle.getAppId(callingUid) != android.os.Process.SYSTEM_UID
+                && UserHandle.getUserId(callingUid) != userId) {
+            throw new SecurityException("uid=" + callingUid
+                    + " not authorized to read settings of user " + userId);
         }
     }
 
@@ -204,7 +155,7 @@ public class LockSettingsService extends ILockSettings.Stub {
 
     @Override
     public boolean getBoolean(String key, boolean defaultValue, int userId) throws RemoteException {
-        checkReadPermission(key, userId);
+        //checkReadPermission(userId);
 
         String value = readFromDb(key, null, userId);
         return TextUtils.isEmpty(value) ?
@@ -213,7 +164,7 @@ public class LockSettingsService extends ILockSettings.Stub {
 
     @Override
     public long getLong(String key, long defaultValue, int userId) throws RemoteException {
-        checkReadPermission(key, userId);
+        //checkReadPermission(userId);
 
         String value = readFromDb(key, null, userId);
         return TextUtils.isEmpty(value) ? defaultValue : Long.parseLong(value);
@@ -221,7 +172,7 @@ public class LockSettingsService extends ILockSettings.Stub {
 
     @Override
     public String getString(String key, String defaultValue, int userId) throws RemoteException {
-        checkReadPermission(key, userId);
+        //checkReadPermission(userId);
 
         return readFromDb(key, defaultValue, userId);
     }
@@ -551,15 +502,6 @@ public class LockSettingsService extends ILockSettings.Stub {
         Secure.LOCK_PATTERN_ENABLED,
         Secure.LOCK_BIOMETRIC_WEAK_FLAGS,
         Secure.LOCK_PATTERN_VISIBLE,
-        Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED,
-        Secure.LOCK_SHOW_ERROR_PATH,
-        Secure.LOCK_DOTS_VISIBLE,
-        Secure.LOCK_SYNC_ENCRYPTION_PASSWORD
-    };
-
-    // These are protected with a read permission
-    private static final String[] READ_PROFILE_PROTECTED_SETTINGS = new String[] {
-        Secure.LOCK_SCREEN_OWNER_INFO_ENABLED,
-        Secure.LOCK_SCREEN_OWNER_INFO
-    };
+        Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED
+        };
 }
