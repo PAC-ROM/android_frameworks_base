@@ -70,6 +70,9 @@ public class MusicTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 sendMediaKeyEvent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 
