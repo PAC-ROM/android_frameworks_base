@@ -2511,6 +2511,13 @@ public final class Settings {
         public static final String LOCKSCREEN_TARGETS_USE_EIGHT = "lockscreen_targets_use_eight";
 
         /**
+         * Whether music controls should be shown on the lockscreen if a supporting
+         * music player is active.
+         * @hide
+         */
+        public static final String LOCKSCREEN_MUSIC_CONTROLS = "lockscreen_music_controls";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
