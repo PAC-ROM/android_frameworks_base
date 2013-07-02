@@ -1490,8 +1490,9 @@ public class NotificationManagerService extends INotificationManager.Stub
     }
 
     private boolean shouldConvertSoundToVibration() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION, 1) != 0;
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_CONVERT_SOUND_TO_VIBRATION,
+                1, UserHandle.USER_CURRENT_OR_SELF) != 0;
     }
 
     private boolean inQuietHours() {
