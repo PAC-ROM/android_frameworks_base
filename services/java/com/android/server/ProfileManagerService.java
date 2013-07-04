@@ -33,7 +33,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.XmlResourceParser;
-import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiSsid;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.RemoteException;
@@ -107,19 +108,14 @@ public class ProfileManagerService extends IProfileManager.Stub {
             } else if (action.equals(Intent.ACTION_SHUTDOWN)) {
                 persistIfDirty();
 
-            } else if (action.equals(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION)) {
-                SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+            } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+                String activeSSID = getActiveSSID();
                 int triggerState;
-                switch (state) {
-                    case COMPLETED:
-                        triggerState = Profile.TriggerState.ON_CONNECT;
-                        mLastConnectedSSID = getActiveSSID();
-                        break;
-                    case DISCONNECTED:
-                        triggerState = Profile.TriggerState.ON_DISCONNECT;
-                        break;
-                    default:
-                        return;
+                if (activeSSID != null) {
+                    triggerState = Profile.TriggerState.ON_CONNECT;
+                    mLastConnectedSSID = activeSSID;
+                } else {
+                    triggerState = Profile.TriggerState.ON_DISCONNECT;
                 }
                 checkTriggers(Profile.TriggerType.WIFI, mLastConnectedSSID, triggerState);
             } else if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED)
@@ -139,7 +135,9 @@ public class ProfileManagerService extends IProfileManager.Stub {
                 }
 
                 try {
-                    setActiveProfile(p, true);
+                    if (!mActiveProfile.getUuid().equals(p.getUuid())) {
+                        setActiveProfile(p, true);
+                    }
                 } catch (RemoteException e) {
                     Log.e(TAG, "Could not update profile on trigger", e);
                 }
@@ -162,7 +160,7 @@ public class ProfileManagerService extends IProfileManager.Stub {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         filter.addAction(Intent.ACTION_SHUTDOWN);
-        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         mContext.registerReceiver(mIntentReceiver, filter);
@@ -202,7 +200,15 @@ public class ProfileManagerService extends IProfileManager.Stub {
     }
 
     private String getActiveSSID() {
-        return mWifiManager.getConnectionInfo().getSSID().replace("\"", "");
+        WifiInfo wifiinfo = mWifiManager.getConnectionInfo();
+        if (wifiinfo == null) {
+            return null;
+        }
+        WifiSsid ssid = wifiinfo.getWifiSsid();
+        if (ssid == null) {
+            return null;
+        }
+        return ssid.toString();
     }
 
     @Override
