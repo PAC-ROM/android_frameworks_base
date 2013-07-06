@@ -1967,6 +1967,13 @@
         android:description="@string/permdesc_masterClear"
         android:protectionLevel="signature|system" />
 
+    <!-- Allows an application to cancel notifications from other apps -->
+    <permission android:name="android.permission.CANCEL_NOTIFICATIONS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signature|system"
+        android:label="@string/permlab_cancelNotifications"
+        android:description="@string/permdesc_cancelNotifications" />
+
     <!-- Allows an application to call any phone number, including emergency
          numbers, without going through the Dialer user interface for the user
          to confirm the call being placed. -->
