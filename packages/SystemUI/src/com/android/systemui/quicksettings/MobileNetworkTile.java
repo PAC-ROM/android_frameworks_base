@@ -25,6 +25,7 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
     private static final int NO_OVERLAY = 0;
     private static final int DISABLED_OVERLAY = -1;
 
+    private NetworkController mController;
     private boolean mEnabled;
     private String mDescription;
     private int mDataTypeIconId = NO_OVERLAY;
@@ -35,9 +36,10 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
     private ConnectivityManager mCm;
 
     public MobileNetworkTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc) {
+            QuickSettingsContainerView container, QuickSettingsController qsc, NetworkController controller) {
         super(context, inflater, container, qsc);
 
+        mController = controller;
         mTileLayout = R.layout.quick_settings_tile_rssi;
         mCm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -47,9 +49,15 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
                 if (!mCm.getMobileDataEnabled()) {
                     updateOverlayImage(NO_OVERLAY); // None, onMobileDataSignalChanged will set final overlay image
                     mCm.setMobileDataEnabled(true);
+                    if (isFlipTilesEnabled()) {
+                        flipTile(0);
+                    }
                 } else {
                     updateOverlayImage(DISABLED_OVERLAY);
                     mCm.setMobileDataEnabled(false);
+                    if (isFlipTilesEnabled()) {
+                        flipTile(0);
+                    }
                 }
             }
         };
@@ -69,8 +77,7 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
 
     @Override
     void onPostCreate() {
-        NetworkController controller = new NetworkController(mContext);
-        controller.addNetworkSignalChangedCallback(this);
+        mController.addNetworkSignalChangedCallback(this);
         updateTile();
         super.onPostCreate();
     }
@@ -170,5 +177,4 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
         }
         return string;
     }
-
 }

@@ -16,13 +16,9 @@
 
 package com.android.systemui.quicksettings;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.ContentObserver;
-import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -59,6 +55,7 @@ public class MobileNetworkTypeTile extends QuickSettingsTile implements NetworkS
     private static final int CM_MODE_3GONLY = 1;
     private static final int CM_MODE_BOTH = 2;
 
+    private NetworkController mController;
     private int mMode = NO_NETWORK_MODE_YET;
     private int mIntendedMode = NO_NETWORK_MODE_YET;
     private int mInternalState = STATE_INTERMEDIATE;
@@ -66,13 +63,18 @@ public class MobileNetworkTypeTile extends QuickSettingsTile implements NetworkS
 
     public MobileNetworkTypeTile(Context context,
             LayoutInflater inflater, QuickSettingsContainerView container,
-            QuickSettingsController qsc) {
+            QuickSettingsController qsc, NetworkController controller) {
         super(context, inflater, container, qsc);
+        
+        mController = controller;
 
         mOnClick = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 int currentMode = getCurrentCMMode();
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
 
                 Intent intent = new Intent(ACTION_MODIFY_NETWORK_MODE);
                 switch (mMode) {
@@ -139,8 +141,7 @@ public class MobileNetworkTypeTile extends QuickSettingsTile implements NetworkS
 
     @Override
     void onPostCreate() {
-        NetworkController controller = new NetworkController(mContext);
-        controller.addNetworkSignalChangedCallback(this);
+        mController.addNetworkSignalChangedCallback(this);
         updateTile();
         super.onPostCreate();
     }
@@ -241,6 +242,4 @@ public class MobileNetworkTypeTile extends QuickSettingsTile implements NetworkS
     @Override
     public void onAirplaneModeChanged(boolean enabled) {
     }
-
 }
-

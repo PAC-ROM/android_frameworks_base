@@ -206,11 +206,11 @@ public class QuickSettingsController {
             } else if (tile.equals(TILE_SCREENTIMEOUT)) {
                 qs = new ScreenTimeoutTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_MOBILEDATA) && mobileDataSupported) {
-                qs = new MobileNetworkTile(mContext, inflater, mContainerView, this);
+                qs = new MobileNetworkTile(mContext, inflater, mContainerView, this, mStatusBarService.mNetworkController);
             } else if (tile.equals(TILE_LOCKSCREEN)) {
                 qs = new ToggleLockscreenTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_NETWORKMODE) && mobileDataSupported) {
-                qs = new MobileNetworkTypeTile(mContext, inflater, mContainerView, this);
+                qs = new MobileNetworkTypeTile(mContext, inflater, mContainerView, this, mStatusBarService.mNetworkController);
             } else if (tile.equals(TILE_AUTOROTATE)) {
                 qs = new AutoRotateTile(mContext, inflater, mContainerView, this, mHandler);
             } else if (tile.equals(TILE_AIRPLANE)) {
