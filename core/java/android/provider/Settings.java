@@ -2499,6 +2499,12 @@ public final class Settings {
         public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
 
         /**
+         * Stores values for custom # of lockscreen targets
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS_USE_EIGHT = "lockscreen_targets_use_eight";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
