@@ -3,8 +3,8 @@ package com.android.internal.util.cm;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.hardware.Camera;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.WifiDisplayStatus;
 import android.net.ConnectivityManager;
@@ -51,4 +51,8 @@ public class QSUtils {
             final TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
             return (tm.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE) || tm.getLteOnGsmMode() != 0;
         }
+		
+		public static boolean deviceSupportsCamera() {
+		    return Camera.getNumberOfCameras() > 0;
+		}	
 }
