@@ -360,10 +360,6 @@ public class KeyguardHostView extends KeyguardViewBase {
             // Do nothing here
             }
         }
-        if (back != null) {
-            back.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.SRC_ATOP);
-            setBackground(back);
-        }
     }
 
     private boolean shouldEnableAddWidget() {
