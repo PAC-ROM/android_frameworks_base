@@ -85,6 +85,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
     final static boolean ANIMATE_HIDE_TRANSITION = false; // turned off because it introduces unsightly delay when videos goes to full screen
 
+    private OnClickListener mRecentsClickListener;
+    private OnTouchListener mRecentsPreloadListener;
+    private OnTouchListener mHomeSearchActionListener;
+
     protected IStatusBarService mBarService;
     final Display mDisplay;
     View mCurrentView = null;
@@ -249,6 +253,30 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         return mCurrentView.findViewById(R.id.home);
     }
 
+    protected void setListener(OnClickListener RecentsClickListener, OnTouchListener RecentsPreloadListener, OnTouchListener HomeSearchActionListener) {
+        mRecentsClickListener = RecentsClickListener;
+        mRecentsPreloadListener = RecentsPreloadListener;
+        mHomeSearchActionListener = HomeSearchActionListener;
+    }
+
+    protected void toggleButtonListener(boolean enable) {
+        View recentView = getRecentsButton();
+        if (recentView != null) {
+            recentView.setOnClickListener(enable ? mRecentsClickListener : null);
+            recentView.setOnTouchListener(enable ? mRecentsPreloadListener : null);
+        }
+        View homeView = getHomeButton();
+        // We cannot remove home button, so no need to null-check
+        homeView.setOnTouchListener(enable ? mHomeSearchActionListener : null);
+    }
+
+    private void setButtonWithTagVisibility(String string, int visibility) {
+        View findView = mCurrentView.findViewWithTag(string);
+        if (findView != null) {
+            findView.setVisibility(visibility);
+        }
+    }
+
     // for when home is disabled, but search isn't
     public View getSearchLight() {
         return mCurrentView.findViewById(R.id.search_light);
@@ -278,7 +306,11 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mVertical = false;
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
+        updateResources();
+    }
 
+    protected void updateResources() {
+        final Resources res = mContext.getResources();
         mBackIcon = NavBarHelpers.getIconImage(mContext, AwesomeConstant.ACTION_BACK.value());
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
@@ -603,7 +635,6 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, force);
     }
 
-
     @Override
     public void setNavigationIconHints(int button, int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
@@ -615,18 +646,35 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         }
 
         mNavigationIconHints = hints;
-        if (getBackButton() != null) {
-            getBackButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_NOP)) ? 0.5f : 1.0f);
-            ((ImageView)getBackButton()).setImageDrawable(
-                    (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT))
-                    ? (mVertical ? mBackAltLandIcon : mBackAltIcon)
-                    : (mVertical ? mBackLandIcon : mBackIcon));
-        }
+
         if (getHomeButton()!=null) {
             getHomeButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_HOME_NOP)) ? 0.5f : 1.0f);
         }
-        if (getRecentsButton()!=null) {
-            getRecentsButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
+
+        View back = getBackButton();
+        if(back != null) {
+            back.setAlpha(
+                (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_NOP)) ? 0.5f : 1.0f);
+        }
+
+        View recent = getRecentsButton();
+        if (recent != null) {
+            recent.setAlpha(
+                (0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
+        }
+
+        if (button == NavigationCallback.NAVBAR_BACK_HINT) {
+            ((ImageView)getBackButton()).setImageDrawable(
+                (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT))
+                    ? (mVertical ? mBackAltLandIcon : mBackAltIcon)
+                    : (mVertical ? mBackLandIcon : mBackIcon));
+        } else if (button == NavigationCallback.NAVBAR_RECENTS_HINT) {
+            if (recent != null) {
+                ((ImageView)recent).setImageDrawable(
+                    (0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_ALT))
+                        ? (mVertical ? mRecentsAltLandIcon : mRecentsAltIcon)
+                        : (mVertical ? mRecentsLandIcon : mRecentsIcon));
+            }
         }
         updateMenuArrowKeys();
     }
