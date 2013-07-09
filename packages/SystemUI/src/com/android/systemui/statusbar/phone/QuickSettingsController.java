@@ -22,7 +22,6 @@ import static com.android.internal.util.cm.QSConstants.TILE_AUTOROTATE;
 import static com.android.internal.util.cm.QSConstants.TILE_BATTERY;
 import static com.android.internal.util.cm.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.cm.QSConstants.TILE_BRIGHTNESS;
-import static com.android.internal.util.cm.QSConstants.TILE_CAMERA;
 import static com.android.internal.util.cm.QSConstants.TILE_DELIMITER;
 import static com.android.internal.util.cm.QSConstants.TILE_GPS;
 import static com.android.internal.util.cm.QSConstants.TILE_LOCKSCREEN;
@@ -67,7 +66,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 
 import com.android.systemui.statusbar.BaseStatusBar;
-import com.android.internal.util.cm.QSUtils;
 import com.android.systemui.quicksettings.AirplaneModeTile;
 import com.android.systemui.quicksettings.AlarmTile;
 import com.android.systemui.quicksettings.AutoRotateTile;
@@ -75,7 +73,6 @@ import com.android.systemui.quicksettings.BatteryTile;
 import com.android.systemui.quicksettings.BluetoothTile;
 import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
-import com.android.systemui.quicksettings.CameraTile;
 import com.android.systemui.quicksettings.GPSTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.LteTile;
@@ -150,7 +147,6 @@ public class QuickSettingsController {
         boolean bluetoothSupported = deviceSupportsBluetooth();
         boolean mobileDataSupported = deviceSupportsMobileData(mContext);
         boolean lteSupported = deviceSupportsLte(mContext);
-		boolean cameraSupported = QSUtils.deviceSupportsCamera();
 
         if (!bluetoothSupported) {
             TILES_DEFAULT.remove(TILE_BLUETOOTH);
@@ -192,11 +188,9 @@ public class QuickSettingsController {
             } else if (tile.equals(TILE_GPS)) {
                 qs = new GPSTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_BLUETOOTH) && bluetoothSupported) {
-                qs = new BluetoothTile(mContext, inflater, mContainerView, this);
+                    qs = new BluetoothTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_BRIGHTNESS)) {
                 qs = new BrightnessTile(mContext, inflater, mContainerView, this, mHandler);
-			} else if (tile.equals(TILE_CAMERA) && cameraSupported) {
-                qs = new CameraTile(mContext, inflater, mContainerView, this, mHandler);			
             } else if (tile.equals(TILE_RINGER)) {
                 qs = new RingerModeTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_SYNC)) {
