@@ -809,7 +809,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             return;
         }
         if (DEBUG) Log.v(TAG, "Jettison " + ad.getLabel());
-        mRecentTaskDescriptions.remove(ad);
+        if (mRecentTaskDescriptions != null) {
+        	mRecentTaskDescriptions.remove(ad);
+        }
         mRecentTasksLoader.remove(ad);
 
         // Handled by widget containers to enable LayoutTransitions properly
