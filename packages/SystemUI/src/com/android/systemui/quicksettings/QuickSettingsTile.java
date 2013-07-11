@@ -163,5 +163,4 @@ public class QuickSettingsTile implements OnClickListener {
             mQsc.mBar.collapseAllPanels(true);
         }
     }
-
 }
