@@ -484,6 +484,10 @@ public class ProfileManagerService extends IProfileManager.Stub {
     // Called by SystemBackupAgent after files are restored to disk.
     void settingsRestored() {
         initialize();
+        for (Profile p : mProfiles.values()) {
+            p.validateRingtones(mContext);
+        }
+        persistIfDirty();
     }
 
     private void loadFromFile() throws RemoteException, XmlPullParserException, IOException {
