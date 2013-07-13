@@ -8,6 +8,10 @@ import android.app.ActivityManagerNative;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.systemui.R;
+import java.util.Random;
 
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
@@ -44,7 +49,20 @@ public class QuickSettingsTile implements OnClickListener {
     protected int mTileTextSize; 
     protected int mTileTextColor;
 
+    private static final int DEFAULT_QUICK_TILES_BG_COLOR = 0xff161616;
+    private static final int DEFAULT_QUICK_TILES_BG_PRESSED_COLOR = 0xff212121;
+
     private Handler mHandler = new Handler();
+
+    private static int[] RandomColors = new int[] {
+        android.R.color.holo_blue_dark,
+        android.R.color.holo_red_dark,
+        android.R.color.holo_green_dark,
+        android.R.color.holo_orange_dark,
+        android.R.color.holo_purple,
+        android.R.color.holo_blue_bright,
+        android.R.color.holo_green_light
+    };
 
     public QuickSettingsTile(Context context, LayoutInflater inflater, QuickSettingsContainerView container, QuickSettingsController qsc) {
         mContext = context;
@@ -71,6 +89,8 @@ public class QuickSettingsTile implements OnClickListener {
         mTile = (QuickSettingsTileView) mInflater.inflate(R.layout.quick_settings_tile, mContainerView, false);
         mTile.setContent(mTileLayout, mInflater);
         mContainerView.addView(mTile);
+        setColor();
+        setRandomColor();
     }
 
     void onPostCreate(){}
@@ -102,6 +122,11 @@ public class QuickSettingsTile implements OnClickListener {
                 Settings.System.QUICK_SETTINGS_TILES_FLIP, 1) == 1);
     }
 
+    public boolean isRandom() {
+        return (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_BG_COLOR_RANDOM, 1) == 1);
+    }
+
     public void flipTile(int delay){
         final AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(
                 mContext, R.anim.flip_right);
@@ -110,14 +135,15 @@ public class QuickSettingsTile implements OnClickListener {
         anim.addListener(new AnimatorListener(){
 
             @Override
-            public void onAnimationEnd(Animator animation) {}
+            public void onAnimationEnd(Animator animation) {
+                setRandomColor();
+            }
             @Override
             public void onAnimationStart(Animator animation) {}
             @Override
             public void onAnimationCancel(Animator animation) {}
             @Override
             public void onAnimationRepeat(Animator animation) {}
-
         });
 
         Runnable doAnimation = new Runnable(){
@@ -161,6 +187,42 @@ public class QuickSettingsTile implements OnClickListener {
         boolean shouldCollapse = Settings.System.getInt(resolver, Settings.System.QS_COLLAPSE_PANEL, 0) == 1;
         if (shouldCollapse || this instanceof DesktopModeTile || this instanceof HybridTile) {
             mQsc.mBar.collapseAllPanels(true);
+        }
+        if (isRandom()) {
+            setRandomColor();
+        }
+    }
+
+    private void setColor() {
+
+        int bgColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_BG_COLOR, -2);
+        int presColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_BG_PRESSED_COLOR, -2);
+
+        if (bgColor != -2 || presColor != -2) {
+            if (bgColor == -2 && !isRandom()) {
+                bgColor = DEFAULT_QUICK_TILES_BG_COLOR;
+            }
+            if (presColor == -2) {
+                presColor = DEFAULT_QUICK_TILES_BG_PRESSED_COLOR;
+            }
+            ColorDrawable bgDrawable = new ColorDrawable(bgColor);
+            ColorDrawable presDrawable = new ColorDrawable(presColor);
+            StateListDrawable states = new StateListDrawable();
+            states.addState(new int[] {android.R.attr.state_pressed}, presDrawable);
+            states.addState(new int[] {}, bgDrawable);
+            mTile.setBackground(states);
+        }
+    }
+
+    public void setRandomColor() {
+        if(isRandom()) {
+            Random generator = new Random();
+            int color = mContext.getResources().getColor(RandomColors[generator.nextInt(RandomColors.length)]);
+            mTile.setBackgroundColor(color);
+        } else {
+            setColor();
         }
     }
 }
