@@ -542,8 +542,9 @@
 
     <string name="halo_dismiss">Dismiss notification</string>
     <string name="halo_hide">Hide HALO</string>
+    <string name="halo_clear_all">Clear all notifications</string>
+    <string name="halo_silence">Silence HALO until woken</string>
 
-    <!-- QuickSettings: strings for Music Tile -->
     <string name="quick_settings_music_play">Play</string>
     <string name="quick_settings_music_pause">Pause</string>
 
