@@ -458,6 +458,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         final float originalAlpha = mContext.getResources().getFraction(R.dimen.status_bar_icon_drawing_alpha, 1, 1);
         for (int i = 0; i < mNotificationData.size(); i++) {
             NotificationData.Entry entry = mNotificationData.get(i);
+            if (entry.notification.pkg.equals("com.paranoid.halo")) continue;
             entry.icon.setAlpha(originalAlpha);
         }
     }
@@ -466,6 +467,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         float originalAlpha = mContext.getResources().getFraction(R.dimen.status_bar_icon_drawing_alpha, 1, 1);
         for (int i = 0; i < mNotificationData.size(); i++) {
             NotificationData.Entry entry = mNotificationData.get(i);
+            if (entry.notification.pkg.equals("com.paranoid.halo")) continue;
             entry.icon.setAlpha(index == i ? 1f : originalAlpha);
         }
     }
