@@ -181,5 +181,13 @@
     <string name="permlab_cancelNotifications">cancel application notifications</string>
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_cancelNotifications">Allows the app to cancel notifications created by other apps.</string>
+    <!-- Title of policy access to start enforcing SELinux policy [CHAR LIMIT=30]-->
+    <string name="policylab_enforceSelinux">Enforce SELinux</string>
+    <!-- Description of policy access to start enforcing SELinux policy [CHAR LIMIT=110]-->
+    <string name="policydesc_enforceSelinux">Toggle SELinux policy enforcing or permissive mode.</string>
+    <!-- Title of policy access to start enforcing MMAC policy [CHAR LIMIT=30]-->
+    <string name="policylab_enforceMmac">Enforce MMAC</string>
+    <!-- Description of policy access to start enforcing MMAC policy [CHAR LIMIT=110]-->
+    <string name="policydesc_enforceMmac">Toggle MMAC policy enforcing or permissive mode.</string>
 
 </resources>
