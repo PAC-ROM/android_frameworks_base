@@ -124,7 +124,7 @@ public class QuickSettingsTile implements OnClickListener {
 
     public boolean isRandom() {
         return (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUICK_TILES_BG_COLOR_RANDOM, 1) == 1);
+                Settings.System.QUICK_TILES_BG_COLOR_RANDOM, 0) == 1);
     }
 
     public void flipTile(int delay){
