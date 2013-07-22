@@ -140,6 +140,12 @@ public class HaloProperties extends FrameLayout {
         mHaloTextViewR.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSpeechTextSize);
         mHaloTextViewL.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSpeechTextSize);
 
+        final int newBatchIconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_number_icon_size) * fraction);
+        RelativeLayout.LayoutParams layoutParams3 = new RelativeLayout.LayoutParams(newBatchIconSize, newBatchIconSize);
+        layoutParams3.addRule(RelativeLayout.CENTER_VERTICAL);
+        layoutParams3.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        mHaloNumberIcon.setLayoutParams(layoutParams3);
+
         updateResources();
     }
 
@@ -177,6 +183,7 @@ public class HaloProperties extends FrameLayout {
             float oldAlpha = mHaloNumberContainer.getAlpha();
 
             mHaloNumberContainer.setAlpha(1f);
+            mHaloNumber.setAlpha(1f);
             mHaloNumberIcon.setAlpha(0f);
             if (value < 1) {
                 mHaloNumber.setText("");
