@@ -690,7 +690,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         // Other icons
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
-        mBatteryController.addIconView((ImageView)mStatusBarView.findViewById(R.id.battery));
         mSbBatteryController = (SbBatteryController)mStatusBarView.findViewById(R.id.battery_cluster);
         mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
