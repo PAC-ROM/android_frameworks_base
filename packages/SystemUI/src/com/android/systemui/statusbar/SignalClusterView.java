@@ -111,8 +111,7 @@ public class SignalClusterView
         mAirplane       = (ImageView) findViewById(R.id.airplane);
 
         mHandler = new Handler();
-
-        mSettingsObserver.observe();
+        SettingsObserver settingsObserver = new SettingsObserver (mHandler);
 
         apply();
     }
@@ -130,8 +129,6 @@ public class SignalClusterView
         mWiFiText       = null;
         mSpacer         = null;
         mAirplane       = null;
-
-        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
 
         super.onDetachedFromWindow();
     }
@@ -309,8 +306,8 @@ public class SignalClusterView
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        showingSignalText = (Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_SIGNAL_TEXT,STYLE_HIDE) > 0);
+        showingSignalText = Settings.System.getInt(resolver, 
+                Settings.System.STATUSBAR_SIGNAL_TEXT, 0) != 0;
         showingWiFiText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0) != 0;
         boolean clustdefault = getResources().getBoolean(R.bool.statusbar_alt_signal_layout);

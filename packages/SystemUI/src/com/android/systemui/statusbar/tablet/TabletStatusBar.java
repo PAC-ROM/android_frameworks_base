@@ -645,12 +645,6 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         mNetworkController.addSignalCluster(mSignalCluster);
         mSignalCluster.setNetworkController(mNetworkController);
-
-        mSignalCluster =
-                (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
-
-        mNetworkController.addSignalCluster(mSignalCluster);
-        mSignalCluster.setNetworkController(mNetworkController);
         mBarView = (ViewGroup) mStatusBarView;
 
         mHasDockBattery = mContext.getResources().getBoolean(
