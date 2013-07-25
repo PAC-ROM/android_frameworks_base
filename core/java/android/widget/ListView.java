@@ -41,6 +41,7 @@ import android.view.ViewParent;
 import android.view.ViewRootImpl;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeProvider;
 import android.widget.RemoteViews.RemoteView;
 
 import java.util.ArrayList;
@@ -157,7 +158,7 @@ public class ListView extends AbsListView {
             // If a divider is specified use its intrinsic height for divider height
             setDivider(d);
         }
-        
+
         final Drawable osHeader = a.getDrawable(
                 com.android.internal.R.styleable.ListView_overScrollHeader);
         if (osHeader != null) {
@@ -433,7 +434,7 @@ public class ListView extends AbsListView {
      *        data backing this list and for producing a view to represent an
      *        item in that data set.
      *
-     * @see #getAdapter() 
+     * @see #getAdapter()
      */
     @Override
     public void setAdapter(ListAdapter adapter) {
@@ -1080,18 +1081,18 @@ public class ListView extends AbsListView {
     private class FocusSelector implements Runnable {
         private int mPosition;
         private int mPositionTop;
-        
+
         public FocusSelector setup(int position, int top) {
             mPosition = position;
             mPositionTop = top;
             return this;
         }
-        
+
         public void run() {
             setSelectionFromTop(mPosition, mPositionTop);
         }
     }
-    
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (getChildCount() > 0) {
@@ -1159,7 +1160,7 @@ public class ListView extends AbsListView {
         }
 
         setMeasuredDimension(widthSize , heightSize);
-        mWidthMeasureSpec = widthMeasureSpec;        
+        mWidthMeasureSpec = widthMeasureSpec;
     }
 
     private void measureScrapChild(View child, int position, int widthMeasureSpec) {
@@ -1452,7 +1453,7 @@ public class ListView extends AbsListView {
                         adjustViewsUpOrDown();
                     }
                 } else if (lastPosition == mItemCount - 1) {
-                    adjustViewsUpOrDown();                    
+                    adjustViewsUpOrDown();
                 }
             }
         }
@@ -1544,11 +1545,37 @@ public class ListView extends AbsListView {
                 throw new IllegalStateException("The content of the adapter has changed but "
                         + "ListView did not receive a notification. Make sure the content of "
                         + "your adapter is not modified from a background thread, but only "
-                        + "from the UI thread. [in ListView(" + getId() + ", " + getClass() 
+                        + "from the UI thread. [in ListView(" + getId() + ", " + getClass()
                         + ") with Adapter(" + mAdapter.getClass() + ")]");
             }
 
             setSelectedPositionInt(mNextSelectedPosition);
+
+            // Remember which child, if any, had accessibility focus. This must
+            // occur before recycling any views, since that will clear
+            // accessibility focus.
+            final ViewRootImpl viewRootImpl = getViewRootImpl();
+            if (viewRootImpl != null) {
+                final View accessFocusedView = viewRootImpl.getAccessibilityFocusedHost();
+                if (accessFocusedView != null) {
+                    final View accessFocusedChild = findAccessibilityFocusedChild(
+                            accessFocusedView);
+                    if (accessFocusedChild != null) {
+                        if (!dataChanged || isDirectChildHeaderOrFooter(accessFocusedChild)) {
+                            // If the views won't be changing, try to maintain
+                            // focus on the current view host and (if
+                            // applicable) its virtual view.
+                            accessibilityFocusLayoutRestoreView = accessFocusedView;
+                            accessibilityFocusLayoutRestoreNode = viewRootImpl
+                                    .getAccessibilityFocusedVirtualView();
+                        } else {
+                            // Otherwise, try to maintain focus at the same
+                            // position.
+                            accessibilityFocusPosition = getPositionForView(accessFocusedChild);
+                        }
+                    }
+                }
+            }
 
             // Pull all children into the RecycleBin.
             // These views will be reused if possible
@@ -1588,30 +1615,6 @@ public class ListView extends AbsListView {
                     }
                 }
                 requestFocus();
-            }
-
-            // Remember which child, if any, had accessibility focus.
-            final ViewRootImpl viewRootImpl = getViewRootImpl();
-            if (viewRootImpl != null) {
-                final View accessFocusedView = viewRootImpl.getAccessibilityFocusedHost();
-                if (accessFocusedView != null) {
-                    final View accessFocusedChild = findAccessibilityFocusedChild(
-                            accessFocusedView);
-                    if (accessFocusedChild != null) {
-                        if (!dataChanged || isDirectChildHeaderOrFooter(accessFocusedChild)) {
-                            // If the views won't be changing, try to maintain
-                            // focus on the current view host and (if
-                            // applicable) its virtual view.
-                            accessibilityFocusLayoutRestoreView = accessFocusedView;
-                            accessibilityFocusLayoutRestoreNode = viewRootImpl
-                                    .getAccessibilityFocusedVirtualView();
-                        } else {
-                            // Otherwise, try to maintain focus at the same
-                            // position.
-                            accessibilityFocusPosition = getPositionForView(accessFocusedChild);
-                        }
-                    }
-                }
             }
 
             // Clear out old views
@@ -1713,11 +1716,17 @@ public class ListView extends AbsListView {
             }
 
             // Attempt to restore accessibility focus.
-            if (accessibilityFocusLayoutRestoreNode != null) {
-                accessibilityFocusLayoutRestoreNode.performAction(
-                        AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
-            } else if (accessibilityFocusLayoutRestoreView != null) {
-                accessibilityFocusLayoutRestoreView.requestAccessibilityFocus();
+            if (accessibilityFocusLayoutRestoreView != null) {
+                final AccessibilityNodeProvider provider =
+                        accessibilityFocusLayoutRestoreView.getAccessibilityNodeProvider();
+                if ((accessibilityFocusLayoutRestoreNode != null) && (provider != null)) {
+                    final int virtualViewId = AccessibilityNodeInfo.getVirtualDescendantId(
+                            accessibilityFocusLayoutRestoreNode.getSourceNodeId());
+                    provider.performAction(virtualViewId,
+                            AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+                } else {
+                    accessibilityFocusLayoutRestoreView.requestAccessibilityFocus();
+                }
             } else if (accessibilityFocusPosition != INVALID_POSITION) {
                 // Bound the position within the visible children.
                 final int position = MathUtils.constrain(
@@ -1734,7 +1743,7 @@ public class ListView extends AbsListView {
                     && focusLayoutRestoreView.getWindowToken() != null) {
                 focusLayoutRestoreView.onFinishTemporaryDetach();
             }
-            
+
             mLayoutMode = LAYOUT_NORMAL;
             mDataChanged = false;
             if (mPositionScrollAfterLayout != null) {
@@ -1992,7 +2001,7 @@ public class ListView extends AbsListView {
 
     /**
      * Makes the item at the supplied position selected.
-     * 
+     *
      * @param position the position of the item to select
      */
     @Override
@@ -2415,6 +2424,34 @@ public class ListView extends AbsListView {
     }
 
     /**
+     * Used by {@link #arrowScrollImpl(int)} to help determine the next selected position
+     * to move to. This can return a position currently not represented by a view on screen
+     * but only in the direction given.
+     *
+     * @param selectedPos Current selected position to move from
+     * @param direction Direction to move in
+     * @return Desired selected position after moving in the given direction
+     */
+    private final int nextSelectedPositionForDirection(int selectedPos, int direction) {
+        int nextSelected;
+        if (direction == View.FOCUS_DOWN) {
+            nextSelected = selectedPos != INVALID_POSITION && selectedPos >= mFirstPosition ?
+                    selectedPos + 1 :
+                    mFirstPosition;
+        } else {
+            final int lastPos = mFirstPosition + getChildCount() - 1;
+            nextSelected = selectedPos != INVALID_POSITION && selectedPos <= lastPos ?
+                    selectedPos - 1 :
+                    lastPos;
+        }
+
+        if (nextSelected < 0 || nextSelected >= mAdapter.getCount()) {
+            return INVALID_POSITION;
+        }
+        return lookForSelectablePosition(nextSelected, direction == View.FOCUS_DOWN);
+    }
+
+    /**
      * Handle an arrow scroll going up or down.  Take into account whether items are selectable,
      * whether there are focusable items etc.
      *
@@ -2429,9 +2466,7 @@ public class ListView extends AbsListView {
         View selectedView = getSelectedView();
         int selectedPos = mSelectedPosition;
 
-        int nextSelectedPosition = (direction == View.FOCUS_DOWN) ?
-                lookForSelectablePosition(selectedPos + 1, true) :
-                lookForSelectablePosition(selectedPos - 1, false);
+        int nextSelectedPosition = nextSelectedPositionForDirection(selectedPos, direction);
         int amountToScroll = amountToScroll(direction, nextSelectedPosition);
 
         // if we are moving focus, we may OVERRIDE the default behavior
@@ -2765,7 +2800,7 @@ public class ListView extends AbsListView {
             if (startPos < firstPosition) {
                 startPos = firstPosition;
             }
-            
+
             final int lastVisiblePos = getLastVisiblePosition();
             final ListAdapter adapter = getAdapter();
             for (int pos = startPos; pos <= lastVisiblePos; pos++) {
@@ -2934,7 +2969,7 @@ public class ListView extends AbsListView {
     /**
      * Determine the distance to the nearest edge of a view in a particular
      * direction.
-     * 
+     *
      * @param descendant A descendant of this list.
      * @return The distance, or 0 if the nearest edge is already on screen.
      */
@@ -2993,11 +3028,9 @@ public class ListView extends AbsListView {
             while (first.getBottom() < listTop) {
                 AbsListView.LayoutParams layoutParams = (LayoutParams) first.getLayoutParams();
                 if (recycleBin.shouldRecycleViewType(layoutParams.viewType)) {
-                    detachViewFromParent(first);
                     recycleBin.addScrapView(first, mFirstPosition);
-                } else {
-                    removeViewInLayout(first);
                 }
+                detachViewFromParent(first);
                 first = getChildAt(0);
                 mFirstPosition++;
             }
@@ -3024,11 +3057,9 @@ public class ListView extends AbsListView {
             while (last.getTop() > listBottom) {
                 AbsListView.LayoutParams layoutParams = (LayoutParams) last.getLayoutParams();
                 if (recycleBin.shouldRecycleViewType(layoutParams.viewType)) {
-                    detachViewFromParent(last);
                     recycleBin.addScrapView(last, mFirstPosition+lastIndex);
-                } else {
-                    removeViewInLayout(last);
                 }
+                detachViewFromParent(last);
                 last = getChildAt(--lastIndex);
             }
         }
@@ -3192,7 +3223,7 @@ public class ListView extends AbsListView {
             final int listBottom = mBottom - mTop - effectivePaddingBottom + mScrollY;
             if (!mStackFromBottom) {
                 int bottom = 0;
-                
+
                 // Draw top divider or header for overscroll
                 final int scrollY = mScrollY;
                 if (count > 0 && scrollY < 0) {
@@ -3275,7 +3306,7 @@ public class ListView extends AbsListView {
                         }
                     }
                 }
-                
+
                 if (count > 0 && scrollY > 0) {
                     if (drawOverscrollFooter) {
                         final int absListBottom = mBottom;
@@ -3354,7 +3385,7 @@ public class ListView extends AbsListView {
     public int getDividerHeight() {
         return mDividerHeight;
     }
-    
+
     /**
      * Sets the height of the divider that will be drawn between each item in the list. Calling
      * this will override the intrinsic height as set by {@link #setDivider(Drawable)}
@@ -3392,7 +3423,7 @@ public class ListView extends AbsListView {
         mFooterDividersEnabled = footerDividersEnabled;
         invalidate();
     }
-    
+
     /**
      * Sets the drawable that will be drawn above all other list content.
      * This area can become visible when the user overscrolls the list.
@@ -3645,10 +3676,10 @@ public class ListView extends AbsListView {
     /**
      * Returns the set of checked items ids. The result is only valid if the
      * choice mode has not been set to {@link #CHOICE_MODE_NONE}.
-     * 
+     *
      * @return A new array which contains the id of each checked item in the
      *         list.
-     *         
+     *
      * @deprecated Use {@link #getCheckedItemIds()} instead.
      */
     @Deprecated

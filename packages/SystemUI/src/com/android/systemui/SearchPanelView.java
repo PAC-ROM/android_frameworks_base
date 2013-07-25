@@ -63,6 +63,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.ExtendedPropertiesUtils;
+import android.util.EventLog;
 import android.util.Slog;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -82,6 +83,8 @@ import com.android.internal.util.aokp.NavRingHelpers;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
+
+import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
 import com.android.systemui.recent.StatusBarTouchProxy;
 import com.android.systemui.statusbar.BaseStatusBar;
@@ -102,6 +105,7 @@ public class SearchPanelView extends FrameLayout implements
     static final String TAG = "SearchPanelView";
     static final boolean DEBUG = TabletStatusBar.DEBUG || PhoneStatusBar.DEBUG || false;
 
+    public static final boolean DEBUG_GESTURES = true;
     private final Context mContext;
     private BaseStatusBar mBar;
     private StatusBarTouchProxy mStatusBarTouchProxy;
@@ -553,6 +557,17 @@ public class SearchPanelView extends FrameLayout implements
 //                }
 //            });
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (DEBUG_GESTURES) {
+            if (event.getActionMasked() != MotionEvent.ACTION_MOVE) {
+                EventLog.writeEvent(EventLogTags.SYSUI_SEARCHPANEL_TOUCH,
+                        event.getActionMasked(), (int) event.getX(), (int) event.getY());
+            }
+        }
+        return super.onTouchEvent(event);
     }
 
     private LayoutTransition createLayoutTransitioner() {

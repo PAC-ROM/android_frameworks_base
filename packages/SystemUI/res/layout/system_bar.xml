@@ -131,6 +131,7 @@
             android:background="#FF000000"
             android:visibility="gone"
             >
+
         </RelativeLayout>
     </FrameLayout>
 </com.android.systemui.statusbar.tablet.TabletStatusBarView>

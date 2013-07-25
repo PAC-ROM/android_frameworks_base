@@ -183,6 +183,32 @@ public class SignalClusterView
         apply();
     }
 
+    @Override
+    public void onRtlPropertiesChanged(int layoutDirection) {
+        super.onRtlPropertiesChanged(layoutDirection);
+
+        if (mWifi != null) {
+            mWifi.setImageDrawable(null);
+        }
+        if (mWifiActivity != null) {
+            mWifiActivity.setImageDrawable(null);
+        }
+
+        if (mMobile != null) {
+            mMobile.setImageDrawable(null);
+        }
+        if (mMobileActivity != null) {
+            mMobileActivity.setImageDrawable(null);
+        }
+        if (mMobileType != null) {
+            mMobileType.setImageDrawable(null);
+        }
+
+        if(mAirplane != null) {
+            mAirplane.setImageDrawable(null);
+        }
+    }
+
     // Run after each indicator change.
     public void apply() {
         if (mWifiGroup == null) return;
@@ -197,6 +223,7 @@ public class SignalClusterView
             }
             mWifi.setImageDrawable(wifiBitmap);
             mWifiActivity.setImageResource(mWifiActivityId);
+
             mWifiGroup.setContentDescription(mWifiDescription);
             if (showingWiFiText){
                 mWifi.setVisibility(View.GONE);
@@ -230,6 +257,7 @@ public class SignalClusterView
             mMobile.setImageResource(mMobileStrengthId);
             mMobileActivity.setImageResource(mMobileActivityId);
             mMobileType.setImageResource(mMobileTypeId);
+
             mMobileGroup.setContentDescription(mMobileTypeDescription + " " + mMobileDescription);
             if (showingSignalText && !mIsAirplaneMode) {
                 mMobile.setVisibility(View.GONE);
@@ -254,6 +282,7 @@ public class SignalClusterView
                 mAirplane.setImageDrawable(AirplaneBitmap);
             }
             mAirplane.setImageResource(mAirplaneIconId);
+            mAirplane.setVisibility(View.VISIBLE);
         } else {
             mAirplane.setVisibility(View.GONE);
         }
@@ -306,7 +335,7 @@ public class SignalClusterView
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        showingSignalText = Settings.System.getInt(resolver, 
+        showingSignalText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_SIGNAL_TEXT, 0) != 0;
         showingWiFiText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0) != 0;

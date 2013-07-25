@@ -52,6 +52,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import com.android.internal.R;
+import libcore.icu.LocaleData;
 
 /**
  * Digital clock for the status bar.
@@ -77,7 +78,7 @@ public class Clock extends TextView {
     public static final int WEEKDAY_STYLE_NORMAL = 2;
 
     protected int mWeekdayStyle = WEEKDAY_STYLE_GONE;
-    
+
     public static final int CLOCK_MONTH_DISPLAY_GONE = 0;
     public static final int CLOCK_MONTH_DISPLAY_SMALL = 1;
     public static final int CLOCK_MONTH_DISPLAY_NORMAL = 2;
@@ -206,7 +207,7 @@ public class Clock extends TextView {
         ContentResolver resolver = mContext.getContentResolver();
 
         mAmPmStyle = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE, AM_PM_STYLE_GONE);   
+                Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE, AM_PM_STYLE_GONE);
         mClockStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_STYLE, STYLE_CLOCK_RIGHT);
         mWeekdayStyle = Settings.System.getInt(resolver,
@@ -233,20 +234,14 @@ public class Clock extends TextView {
 
     public final CharSequence getSmallTime() {
         Context context = getContext();
-        boolean b24 = DateFormat.is24HourFormat(context);
-        int res;
-
-        if (b24) {
-            res = R.string.twenty_four_hour_time_format;
-        } else {
-            res = R.string.twelve_hour_time_format;
-        }
+        boolean is24 = DateFormat.is24HourFormat(context);
+        LocaleData d = LocaleData.get(context.getResources().getConfiguration().locale);
 
         final char MAGIC1 = '\uEF00';
         final char MAGIC2 = '\uEF01';
 
         SimpleDateFormat sdf;
-        String format = context.getString(res);
+        String format = is24 ? d.timeFormat24 : d.timeFormat12;
         if (!format.equals(mClockFormatString)) {
             mClockFormat = sdf = new SimpleDateFormat(format);
             mClockFormatString = format;
@@ -256,13 +251,13 @@ public class Clock extends TextView {
 
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-        
+
         String todayIs = null;
         String monthString = null;
         String result = sdf.format(calendar.getTime());
-        
+
         if (mClockMonthDisplay != CLOCK_MONTH_DISPLAY_GONE) {
-        
+
             if (mClockMonthDisplay == CLOCK_MONTH_DISPLAY_SMALL) {
                 monthString = (new SimpleDateFormat("d")).format(mCalendar.getTime()) + " " + (new SimpleDateFormat("MMM")).format(mCalendar.getTime()) + " ";
             } else if (mClockMonthDisplay == CLOCK_MONTH_DISPLAY_NORMAL) {
@@ -270,7 +265,7 @@ public class Clock extends TextView {
             }
             result = monthString.toString() + result;
         }
-        
+
         if (mWeekdayStyle != WEEKDAY_STYLE_GONE) {
             todayIs = (new SimpleDateFormat("E")).format(mCalendar.getTime()) + " ";
             result = todayIs + result;
@@ -297,7 +292,7 @@ public class Clock extends TextView {
                 }
             }
         }
-        
+
         if (mWeekdayStyle != WEEKDAY_STYLE_NORMAL) {
             if (todayIs != null) {
                 if (mWeekdayStyle == WEEKDAY_STYLE_GONE) {
@@ -311,7 +306,7 @@ public class Clock extends TextView {
                 }
             }
         }
-        
+
         return formatted;
     }
 }

@@ -134,6 +134,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mRebootMenu;
     private boolean mShowRebootOnLock = true;
     private Profile mChosenProfile;
+    private final boolean mShowSilentToggle;
 
     /**
      * @param context everything needs a context :(
@@ -166,20 +167,23 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mAirplaneModeObserver);
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator != null && vibrator.hasVibrator();
-        
+
         mShowRebootOnLock = Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.POWER_DIALOG_SHOW_REBOOT_KEYGUARD, true);
+
+        mShowSilentToggle = SHOW_SILENT_TOGGLE && !mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_useFixedVolume);
     }
 
     /**
      * Show the global actions dialog (creating if necessary)
      * @param keyguardLocked True if keyguard is locked
      */
-     
+
     public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned) {
         showDialog(keyguardShowing, isDeviceProvisioned, false);
     }
-     
+
     public void showDialog(boolean keyguardLocked, boolean isDeviceProvisioned,
         boolean isRebootSubMenu) {
         mKeyguardLocked = keyguardLocked;
@@ -319,7 +323,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             new SinglePressAction(
                     com.android.internal.R.drawable.ic_lock_power_off,
                     R.string.global_action_power_off) {
-                
+
                 public boolean showDuringKeyguard() {
                     if (mShowRebootOnLock) {
                         return true;
@@ -436,8 +440,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: bug report, if enabled
-        if (Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.BUGREPORT_IN_POWER_MENU, 0) != 0) {
+        boolean showBugReport = Settings.Global.getIntForUser(cr,
+                Settings.Secure.BUGREPORT_IN_POWER_MENU, 0, UserHandle.USER_CURRENT) != 0;
+        if (showBugReport) {
             mItems.add(
                 new SinglePressAction(com.android.internal.R.drawable.stat_sys_adb,
                         R.string.global_action_bug_report) {
@@ -732,7 +737,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         mDialog.setTitle(R.string.global_actions);
 
-        if (SHOW_SILENT_TOGGLE) {
+        if (mShowSilentToggle) {
             IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
             mContext.registerReceiver(mRingerModeReceiver, filter);
         }
@@ -749,8 +754,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     /** {@inheritDoc} */
     public void onDismiss(DialogInterface dialog) {
-        if (SHOW_SILENT_TOGGLE) {
-            mContext.unregisterReceiver(mRingerModeReceiver);
+        if (mShowSilentToggle) {
+            try {
+                mContext.unregisterReceiver(mRingerModeReceiver);
+            } catch (IllegalArgumentException ie) {
+                // ignore this
+                Log.w(TAG, ie);
+            }
         }
     }
 

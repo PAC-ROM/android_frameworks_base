@@ -88,7 +88,7 @@ class TelephonyIcons {
     };
 
     static final int[][] DATA_SIGNAL_STRENGTH = TELEPHONY_SIGNAL_STRENGTH;
-    
+
     static final int[][] DATA_SIGNAL_STRENGTH_ALT = TELEPHONY_SIGNAL_STRENGTH_ALT;
 
     //***** Data connection icons

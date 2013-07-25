@@ -1349,6 +1349,12 @@ public final class MediaStore {
             }
 
             public static Uri getContentUriForPath(String path) {
+                for (String ep : EXTERNAL_PATHS) {
+                    if (path.startsWith(ep)) {
+                        return EXTERNAL_CONTENT_URI;
+                    }
+                }
+
                 return (path.startsWith(Environment.getExternalStorageDirectory().getPath()) ?
                         EXTERNAL_CONTENT_URI : INTERNAL_CONTENT_URI);
             }

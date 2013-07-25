@@ -25,7 +25,7 @@
         android:scaleType="centerCrop"
         />
     <TextView
-        style="@style/TextAppearance.QuickSettings.TileView"
+        style="@style/TextAppearance.QuickSettings.TileView.User"
         android:id="@+id/user_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
