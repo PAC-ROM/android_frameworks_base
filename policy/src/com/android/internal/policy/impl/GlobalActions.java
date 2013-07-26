@@ -31,6 +31,7 @@ import android.app.ProfileManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -316,6 +317,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
         onAirplaneModeChanged();
 
+        final ContentResolver cr = mContext.getContentResolver();
         mItems = new ArrayList<Action>();
 
         // first: power off
@@ -440,8 +442,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: bug report, if enabled
-        boolean showBugReport = Settings.Global.getIntForUser(cr,
-                Settings.Secure.BUGREPORT_IN_POWER_MENU, 0, UserHandle.USER_CURRENT) != 0;
+        boolean showBugReport = Settings.Global.getInt(cr,
+                Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0;
         if (showBugReport) {
             mItems.add(
                 new SinglePressAction(com.android.internal.R.drawable.stat_sys_adb,
@@ -722,7 +724,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 @Override
                 public void onServiceDisconnected(ComponentName name) {}
             };
-            if (mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE, UserHandle.USER_CURRENT)) {
+            if (mContext.bindServiceAsUser(intent, conn, Context.BIND_AUTO_CREATE, UserHandle.CURRENT)) {
                 mScreenshotConnection = conn;
                 mHandler.postDelayed(mScreenshotTimeout, 10000);
             }

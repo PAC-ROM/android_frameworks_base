@@ -46,12 +46,8 @@
                 android:layout_width="@dimen/navbar_search_panel_height"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-<<<<<<< HEAD
                 android:layout_gravity="center_vertical|right"
                 android:gravity="left|center_vertical"
-=======
-                android:gravity="start"
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
 
                 prvandroid:targetDrawables="@array/navbar_search_targets"
                 prvandroid:targetDescriptions="@array/navbar_search_target_descriptions"

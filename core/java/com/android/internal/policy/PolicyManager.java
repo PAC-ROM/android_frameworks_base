@@ -21,7 +21,6 @@ import android.view.FallbackEventHandler;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManagerPolicy;
-import com.android.internal.policy.IPolicy;
 
 import com.android.internal.os.IDeviceHandler;
 /**
@@ -63,8 +62,8 @@ public final class PolicyManager {
         return sPolicy.makeNewLayoutInflater(context);
     }
 
-    public static WindowManagerPolicy makeNewWindowManager() {
-        return sPolicy.makeNewWindowManager();
+    public static WindowManagerPolicy makeNewWindowManager(IDeviceHandler device) {
+        return sPolicy.makeNewWindowManager(device);
     }
 
     public static FallbackEventHandler makeNewFallbackEventHandler(Context context) {

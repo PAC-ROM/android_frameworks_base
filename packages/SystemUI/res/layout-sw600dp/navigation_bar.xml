@@ -130,7 +130,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-<<<<<<< HEAD
                 />
             <ImageView
                 android:layout_width="128dp" android:paddingLeft="25dp" android:paddingRight="25dp"
@@ -150,7 +149,6 @@
             <ImageView
                 android:layout_width="128dp" android:paddingLeft="25dp" android:paddingRight="25dp"
                 android:layout_marginRight="40dp"
-=======
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:layout_marginStart="40dp"
@@ -182,10 +180,9 @@
                     android:src="@drawable/ic_sysbar_lights_out_dot_large"
                     android:scaleType="center"
                     />
-            </LinearLayout>
+            </ImageView>
             <View
                 android:layout_width="0dp"
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_small"
                 android:scaleType="center"

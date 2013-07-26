@@ -17,6 +17,7 @@ package com.android.internal.policy.impl.keyguard;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import android.animation.ObjectAnimator;
 import android.app.ActivityManagerNative;
@@ -77,8 +78,6 @@ import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
 import com.android.internal.R;
-
-import java.util.ArrayList;
 
 public class KeyguardSelectorView extends LinearLayout implements KeyguardSecurityView {
     private static final boolean DEBUG = KeyguardHostView.DEBUG;

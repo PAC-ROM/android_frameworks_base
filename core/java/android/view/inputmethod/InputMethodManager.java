@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
- * the License.
+ * the License.if (mInstance == null) {
  */
 
 package android.view.inputmethod;
@@ -550,10 +550,6 @@ public final class InputMethodManager {
         mH = new H(looper);
         mIInputContext = new ControlledInputConnectionWrapper(looper,
                 mDummyInputConnection, this);
-
-        if (mInstance == null) {
-            mInstance = this;
-        }
     }
 
     /**
@@ -1600,8 +1596,10 @@ public final class InputMethodManager {
             FinishedInputEventCallback callback, Handler handler) {
         synchronized (mH) {
             if (mCurMethod != null) {
-                boolean symShowIME = context.getResources().getBoolean(
-                    com.android.internal.R.bool.config_symKeyShowsImePicker);
+                boolean symShowIME = mServedView != null ?  
+                    mServedView.getContext().getResources().getBoolean(
+                    com.android.internal.R.bool.config_symKeyShowsImePicker) :
+                    true;
                 if (event instanceof KeyEvent) {
                     KeyEvent keyEvent = (KeyEvent)event;
                     if (symShowIME && keyEvent.getAction() == KeyEvent.ACTION_DOWN

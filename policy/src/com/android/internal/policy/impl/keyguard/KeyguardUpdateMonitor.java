@@ -682,7 +682,7 @@ public class KeyguardUpdateMonitor {
      */
     private void handleBatteryUpdate(BatteryStatus status) {
         if (DEBUG) Log.d(TAG, "handleBatteryUpdate");
-        final boolean batteryUpdateInteresting = isBatteryUpdateInteresting(mBatteryStatus, status);
+        final boolean batteryUpdateInteresting = isBatteryUpdateInteresting(mBatteryStatus, status, mContext);
         mBatteryStatus = status;
         if (batteryUpdateInteresting) {
             for (int i = 0; i < mCallbacks.size(); i++) {

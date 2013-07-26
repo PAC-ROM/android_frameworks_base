@@ -64,6 +64,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
 import android.os.PowerManager;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -90,6 +91,7 @@ import com.android.internal.os.IDeviceHandler;
 import com.android.internal.util.cm.DevUtils;
 
 import android.service.dreams.DreamService;
+import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.ExtendedPropertiesUtils;
@@ -241,7 +243,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 KeyEvent.KEYCODE_CALCULATOR, Intent.CATEGORY_APP_CALCULATOR);
     }
 
-    private DeviceKeyHandler mDeviceKeyHandler;
+    private final DeviceKeyHandler mDeviceKeyHandler;
 
     /**
      * Lock protecting internal state.  Must not call out into window
@@ -354,6 +356,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mHasMenuKey;
     boolean mHasAssistKey;
     boolean mHasAppSwitchKey;
+    boolean mHasMenuKeyEnabled;
 
     // The last window we were told about in focusChanged.
     WindowState mFocusedWindow;
@@ -458,6 +461,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mForcingShowNavBar;
     int mForcingShowNavBarLayer;
 
+    int mExpandedDesktopStyle = -1;
+
     // States of keyguard dismiss.
     private static final int DISMISS_KEYGUARD_NONE = 0; // Keyguard not being dismissed.
     private static final int DISMISS_KEYGUARD_START = 1; // Keyguard needs to be dismissed.
@@ -471,6 +476,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mShowingLockscreen;
     boolean mShowingDream;
     boolean mDreamingLockscreen;
+    boolean mHomeLongPressed;
     boolean mHomePressed;
     boolean mAppSwitchLongPressed;
     boolean mHomeConsumed;
@@ -697,6 +703,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
     MyOrientationListener mOrientationListener;
+
+    public PhoneWindowManager(IDeviceHandler device) {
+        mDeviceKeyHandler = (device != null) ? device.getDeviceKeyHandler() : null;
+    }
 
     IStatusBarService getStatusBarService() {
         synchronized (mServiceAquireLock) {
@@ -1321,30 +1331,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             screenTurningOn(null);
         } else {
             screenTurnedOff(WindowManagerPolicy.OFF_BECAUSE_OF_USER);
-        }
-
-        String deviceKeyHandlerLib = mContext.getResources().getString(
-                com.android.internal.R.string.config_deviceKeyHandlerLib);
-
-        String deviceKeyHandlerClass = mContext.getResources().getString(
-                com.android.internal.R.string.config_deviceKeyHandlerClass);
-
-        if (!deviceKeyHandlerLib.isEmpty() && !deviceKeyHandlerClass.isEmpty()) {
-            DexClassLoader loader =  new DexClassLoader(deviceKeyHandlerLib,
-                    new ContextWrapper(mContext).getCacheDir().getAbsolutePath(),
-                    null,
-                    ClassLoader.getSystemClassLoader());
-            try {
-                Class<?> klass = loader.loadClass(deviceKeyHandlerClass);
-                Constructor<?> constructor = klass.getConstructor(Context.class);
-                mDeviceKeyHandler = (DeviceKeyHandler) constructor.newInstance(
-                        mContext);
-                if(DEBUG) Slog.d(TAG, "Device key handler loaded");
-            } catch (Exception e) {
-                Slog.w(TAG, "Could not instantiate device key handler "
-                        + deviceKeyHandlerClass + " from class "
-                        + deviceKeyHandlerLib, e);
-            }
         }
     }
 
@@ -2534,8 +2520,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     } else {
                         Log.i(TAG, "Ignoring HOME; event canceled.");
                     }
-                } catch (RemoteException ex) {
-                    Log.w(TAG, "RemoteException from getPhoneInterface()", ex);
                 }
 
                 // Delay handling home if a double-tap is possible.
@@ -3267,6 +3251,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // For purposes of putting out fake window up to steal focus, we will
             // drive nav being hidden only by whether it is requested.
             boolean navVisible = (mLastSystemUiFlags&View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+            int navWidth = mNavigationBarWidthForRotation[displayRotation];
+            int navHeight = mNavigationBarHeightForRotation[displayRotation];
 
             // When the navigation bar isn't visible, we put up a fake
             // input window to catch all touch events.  This way we can
@@ -3287,9 +3273,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // For purposes of positioning and showing the nav bar, if we have
             // decided that it can't be hidden (because of the screen aspect ratio),
             // then take that into account.
-            navVisible |= !mCanHideNavigationBar;
-            navVisible &= (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
+            if (expandedDesktopHidesNavigationBar()
+                    && (mLastSystemUiFlags & View.SYSTEM_UI_FLAG_SHOW_NAVIGATION_IN_EXPANDED_DESKTOP) == 0) {
+                navVisible = false;
+                navWidth = 0;
+                navHeight = 0;
+            } else if (!mCanHideNavigationBar) {
+                navVisible = true;
+            }
 
             if (mNavigationBar != null) {
                 // Force the navigation bar to its appropriate place and
@@ -3835,6 +3826,30 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             setLastInputMethodWindowLw(null, null);
             offsetInputMethodWindowLw(win);
         }
+    }
+
+    private boolean expandedDesktopHidesStatusBar() {
+        return mExpandedDesktopStyle == 2;
+    }
+
+    private boolean expandedDesktopHidesNavigationBar() {
+        return mExpandedDesktopStyle != 0;
+    }
+
+    private boolean shouldHideNavigationBarLw(int systemUiVisibility) {
+        if (expandedDesktopHidesNavigationBar()) {
+            if ((systemUiVisibility & View.SYSTEM_UI_FLAG_SHOW_NAVIGATION_IN_EXPANDED_DESKTOP) == 0) {
+                return true;
+            }
+        }
+
+        if (mCanHideNavigationBar) {
+            if ((systemUiVisibility & View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION) != 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void offsetInputMethodWindowLw(WindowState win) {
