@@ -1472,6 +1472,10 @@ public class NotificationManagerService extends INotificationManager.Stub
             mCustomLedColors.clear();
             parseCustomLedValues(Settings.System.getString(resolver,
                     Settings.System.LED_CUSTOM_VALUES));
+
+            if (uri == null || ENABLED_NOTIFICATION_LISTENERS_URI.equals(uri)) {
+                rebindListenerServices();
+            }
         }
     }
 
