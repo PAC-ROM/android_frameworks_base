@@ -76,8 +76,9 @@ import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.SlidingDrawer.OnDrawerScrollListener;
 import android.widget.TextView;
 
+import android.service.notification.StatusBarNotification;
+
 import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.systemui.R;
 import com.android.systemui.recent.RecentsActivity;

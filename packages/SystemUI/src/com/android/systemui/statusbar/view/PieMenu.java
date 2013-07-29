@@ -71,7 +71,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
-import com.android.internal.statusbar.StatusBarNotification;
+import android.service.notification.StatusBarNotification;
 import com.android.internal.statusbar.StatusBarIcon;
 
 import com.android.systemui.R;
@@ -493,7 +493,7 @@ public class PieMenu extends FrameLayout {
 
         for( int i = 0; i < mClockText.length(); i++ ) {
             char character = mClockText.charAt(i);
-            float measure = mClockPaint.measureText("" + character); 
+            float measure = mClockPaint.measureText("" + character);
             mClockTextOffsets[i] = measure * (character == '1' || character == ':' ? 0.5f : 0.8f);
             mClockTextTotalOffset += measure * (character == '1' || character == ':' ? 0.6f : 0.9f);
         }
@@ -514,12 +514,12 @@ public class PieMenu extends FrameLayout {
                 NotificationData.Entry entry = notifData.get(i);
                 StatusBarNotification statusNotif = entry.notification;
                 if (statusNotif == null) continue;
-                boolean hide = statusNotif.pkg.equals("com.paranoid.halo");
+                boolean hide = statusNotif.getPackageName().equals("com.paranoid.halo");
                 if (hide) {
                     mHiddenNotification++;
                     continue;
                 }
-                Notification notif = statusNotif.notification;
+                Notification notif = statusNotif.getNotification();
                 if (notif == null) continue;
                 CharSequence tickerText = notif.tickerText;
                 if (tickerText == null) continue;
@@ -529,7 +529,7 @@ public class PieMenu extends FrameLayout {
                     StatusBarIcon icon = iconView.getStatusBarIcon();
                     Drawable drawable = entry.icon.getIcon(mContext, icon);
                     if (!(drawable instanceof BitmapDrawable)) continue;
-                    
+
                     mNotificationIcon[mNotificationCount] = ((BitmapDrawable)drawable).getBitmap();
 
                     String text = tickerText.toString();
@@ -575,7 +575,7 @@ public class PieMenu extends FrameLayout {
         mSnapBackground.setAntiAlias(true);
 
         mClockPaint = new Paint();
-        mClockPaint.setAntiAlias(true);     
+        mClockPaint.setAntiAlias(true);
         mClockPaint.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
 
         mAmPmPaint = new Paint();
@@ -671,7 +671,7 @@ public class PieMenu extends FrameLayout {
             }
         }
 
-        float adjustedSweep = lesserSweepCount > 0 ? (((1-0.65f) * lesserSweepCount) / (itemCount-lesserSweepCount)) : 0;    
+        float adjustedSweep = lesserSweepCount > 0 ? (((1-0.65f) * lesserSweepCount) / (itemCount-lesserSweepCount)) : 0;
         float sweep = 0;
         float angle = 0;
         float total = 0;
@@ -707,13 +707,13 @@ public class PieMenu extends FrameLayout {
                         y = y - h / 2;
                         x = mCenter.x - (int)(Math.PI/2-x) - w / 2;
                         break;
-                    case Gravity.BOTTOM: 
+                    case Gravity.BOTTOM:
                         y = mCenter.y - y - h / 2;
                         x = mCenter.x - x - w / 2;
                         break;
-                }                
+                }
                 view.layout(x, y, x + w, y + h);
-            }                    
+            }
             float itemstart = total + angle - sweep / 2;
             item.setGeometry(itemstart, sweep, inner, outer);
             total += sweep;
@@ -734,7 +734,7 @@ public class PieMenu extends FrameLayout {
         }
 
         @Override
-        public void onAnimationUpdate(ValueAnimator animation) {            
+        public void onAnimationUpdate(ValueAnimator animation) {
             mAnimators[mIndex].fraction = animation.getAnimatedFraction();
 
             // Special purpose animators go here
@@ -865,7 +865,7 @@ public class PieMenu extends FrameLayout {
 
                     // Device status information and date
                     mStatusPaint.setAlpha((int)(mAnimators[ANIMATOR_ACC_SPEED15].fraction * 0xaa));
-                    
+
                     state = canvas.save();
                     canvas.rotate(mPanel.getDegree() + 180 + (1-mAnimators[ANIMATOR_DEC_SPEED15].fraction) * 90, mCenter.x, mCenter.y);
                     if (mPolicy.supportsTelephony()) {
@@ -949,8 +949,8 @@ public class PieMenu extends FrameLayout {
         float distanceX = mCenter.x-mX;
         float distanceY = mCenter.y-mY;
         mCenterDistance = (float)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-        float shadeTreshold = mOuterChevronRadius; 
-        
+        float shadeTreshold = mOuterChevronRadius;
+
         int action = evt.getActionMasked();
         if (MotionEvent.ACTION_DOWN == action) {
             // Open panel
@@ -971,7 +971,7 @@ public class PieMenu extends FrameLayout {
                         mStatusPanel.showTilesPanel();
                     break;
                 }
-      
+
                 // Check for click actions
                 if (item != null && item.getView() != null && mCenterDistance < shadeTreshold) {
                     if(mHapticFeedback) mVibrator.vibrate(2);
@@ -987,7 +987,7 @@ public class PieMenu extends FrameLayout {
 
             boolean snapActive = false;
             for (int i = 0; i < 3; i++) {
-                SnapPoint snap = mSnapPoint[i];                
+                SnapPoint snap = mSnapPoint[i];
                 float snapDistanceX = snap.x-mX;
                 float snapDistanceY = snap.y-mY;
                 float snapDistance = (float)Math.sqrt(Math.pow(snapDistanceX, 2) + Math.pow(snapDistanceY, 2));
@@ -1032,14 +1032,14 @@ public class PieMenu extends FrameLayout {
                 }
 
                 if (!mNavbarZero && !mIsProtected) {
-                    if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
+                    if (state == PieStatusPanel.QUICK_SETTINGS_PANEL &&
                             mStatusPanel.getFlipViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL
                             && mStatusPanel.getCurrentViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL) {
                         mGlowOffsetRight = mPanelOrientation != Gravity.TOP ? 150 : 255;;
                         mGlowOffsetLeft = mPanelOrientation != Gravity.TOP ? 255 : 150;
                         mStatusPanel.setFlipViewState(PieStatusPanel.QUICK_SETTINGS_PANEL);
                         if (mHapticFeedback && !snapActive) mVibrator.vibrate(2);
-                    } else if (state == PieStatusPanel.NOTIFICATIONS_PANEL && 
+                    } else if (state == PieStatusPanel.NOTIFICATIONS_PANEL &&
                             mStatusPanel.getFlipViewState() != PieStatusPanel.NOTIFICATIONS_PANEL
                             && mStatusPanel.getCurrentViewState() != PieStatusPanel.NOTIFICATIONS_PANEL) {
                         mGlowOffsetRight = mPanelOrientation != Gravity.TOP ? 255 : 150;

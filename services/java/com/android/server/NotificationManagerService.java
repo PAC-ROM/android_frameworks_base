@@ -49,8 +49,8 @@ import android.content.pm.ServiceInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.provider.Settings;
 import android.graphics.Bitmap;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.IAudioService;
 import android.media.IRingtonePlayer;
@@ -81,8 +81,11 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.android.internal.util.FastXmlSerializer;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 
@@ -91,6 +94,7 @@ import com.android.internal.app.ThemeUtils;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
@@ -143,6 +147,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     private static final String ENABLED_NOTIFICATION_LISTENERS_SEPARATOR = ":";
 
+
     final Context mContext;
     Context mUiContext;
     final IActivityManager mAm;
@@ -179,7 +184,6 @@ public class NotificationManagerService extends INotificationManager.Stub
     private boolean mNotificationPulseEnabled;
     private HashMap<String, String> mCustomLedColors;
 
-    // used as a mutex for access to all active notifications & listeners
     private final ArrayList<NotificationRecord> mNotificationList =
             new ArrayList<NotificationRecord>();
 
@@ -233,11 +237,50 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final String TAG_PACKAGE = "package";
     private static final String ATTR_NAME = "name";
 
-<<<<<<< HEAD
     private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db) {
         return readPolicy(file, lookUpTag, db, null, 0);
     }
-=======
+
+    private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
+        int result = defaultResult;
+        FileInputStream infile = null;
+        try {
+            infile = file.openRead();
+            final XmlPullParser parser = Xml.newPullParser();
+            parser.setInput(infile, null);
+
+            int type;
+            String tag;
+            int version = DB_VERSION;
+            while ((type = parser.next()) != END_DOCUMENT) {
+                tag = parser.getName();
+                if (type == START_TAG) {
+                    if (TAG_BODY.equals(tag)) {
+                        version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
+                        if (resultTag != null) {
+                            String attribValue = parser.getAttributeValue(null, resultTag);
+                            result = Integer.parseInt((attribValue != null ? attribValue : "0"));
+                        }
+                    } else if (lookUpTag.equals(tag)) {
+                        while ((type = parser.next()) != END_DOCUMENT) {
+                            tag = parser.getName();
+                            if (TAG_PACKAGE.equals(tag)) {
+                                db.add(parser.getAttributeValue(null, ATTR_NAME));
+                            } else if (lookUpTag.equals(tag) && type == END_TAG) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Unable to read
+        } finally {
+            IoUtils.closeQuietly(infile);
+        }
+        return result;
+    }
+
     private class NotificationListenerInfo implements DeathRecipient {
         INotificationListener listener;
         ComponentName component;
@@ -416,56 +459,6 @@ public class NotificationManagerService extends INotificationManager.Stub
     private void loadBlockDb() {
         synchronized(mBlockedPackages) {
             if (mPolicyFile == null) {
-                File dir = new File("/data/system");
-                mPolicyFile = new AtomicFile(new File(dir, "notification_policy.xml"));
-
-                mBlockedPackages.clear();
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
-
-    private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
-        int result = defaultResult;
-        FileInputStream infile = null;
-        try {
-            infile = file.openRead();
-            final XmlPullParser parser = Xml.newPullParser();
-            parser.setInput(infile, null);
-
-            int type;
-            String tag;
-            int version = DB_VERSION;
-            while ((type = parser.next()) != END_DOCUMENT) {
-                tag = parser.getName();
-                if (type == START_TAG) {
-                    if (TAG_BODY.equals(tag)) {
-                        version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
-                        if (resultTag != null) {
-                            String attribValue = parser.getAttributeValue(null, resultTag);
-                            result = Integer.parseInt((attribValue != null ? attribValue : "0"));
-                        }
-                    } else if (lookUpTag.equals(tag)) {
-                        while ((type = parser.next()) != END_DOCUMENT) {
-                            tag = parser.getName();
-                            if (TAG_PACKAGE.equals(tag)) {
-                                db.add(parser.getAttributeValue(null, ATTR_NAME));
-                            } else if (lookUpTag.equals(tag) && type == END_TAG) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // Unable to read
-        } finally {
-            IoUtils.closeQuietly(infile);
-        }
-        return result;
-    }
-
-<<<<<<< HEAD
-    private void loadBlockDb() {
-        synchronized(mBlockedPackages) {
-            if (mPolicyFile == null) {
                 mPolicyFile = new AtomicFile(new File("/data/system", "notification_policy.xml"));
                 mBlockedPackages.clear();
                 readPolicy(mPolicyFile, TAG_BLOCKED_PKGS, mBlockedPackages);
@@ -482,44 +475,39 @@ public class NotificationManagerService extends INotificationManager.Stub
             readPolicy(mHaloPolicyFile, TAG_ALLOWED_PKGS, mHaloWhitelist);
         }
     }
+    /**
+     * Use this when you just want to know if notifications are OK for this package.
+     */
+    public boolean areNotificationsEnabledForPackage(String pkg, int uid) {
+        checkCallerIsSystem();
+        return (mAppOps.checkOpNoThrow(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg)
+                == AppOpsManager.MODE_ALLOWED);
+    }
 
-    private void writeBlockDb() {
-        synchronized (mBlockedPackages) {
-            FileOutputStream outfile = null;
-            try {
-                outfile = mPolicyFile.startWrite();
+    /** Use this when you actually want to post a notification or toast.
+     *
+     * Unchecked. Not exposed via Binder, but can be called in the course of enqueue*().
+     */
+    private boolean noteNotificationOp(String pkg, int uid) {
+        if (mAppOps.noteOpNoThrow(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg)
+                != AppOpsManager.MODE_ALLOWED) {
+            Slog.v(TAG, "notifications are disabled by AppOps for " + pkg);
+            return false;
+        }
+        return true;
+    }
 
-                XmlSerializer out = new FastXmlSerializer();
-                out.setOutput(outfile, "utf-8");
+    public void setNotificationsEnabledForPackage(String pkg, int uid, boolean enabled) {
+        checkCallerIsSystem();
 
-                out.startDocument(null, true);
+        Slog.v(TAG, (enabled?"en":"dis") + "abling notifications for " + pkg);
 
-                out.startTag(null, TAG_BODY);
-                {
-                    out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
-                    out.startTag(null, TAG_BLOCKED_PKGS);
-                    {
-                        // write all known network policies
-                        for (String pkg : mBlockedPackages) {
-                            out.startTag(null, TAG_PACKAGE);
-                            {
-                                out.attribute(null, ATTR_NAME, pkg);
-                            }
-                            out.endTag(null, TAG_PACKAGE);
-                        }
-                    }
-                    out.endTag(null, TAG_BLOCKED_PKGS);
-                }
-                out.endTag(null, TAG_BODY);
+        mAppOps.setMode(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg,
+                enabled ? AppOpsManager.MODE_ALLOWED : AppOpsManager.MODE_IGNORED);
 
-                out.endDocument();
-
-                mPolicyFile.finishWrite(outfile);
-            } catch (IOException e) {
-                if (outfile != null) {
-                    mPolicyFile.failWrite(outfile);
-                }
-            }
+        // Now, cancel any outstanding notifications that are part of a just-disabled app
+        if (ENABLE_BLOCKED_NOTIFICATIONS && !enabled) {
+            cancelAllNotificationsInt(pkg, 0, 0, true, UserHandle.getUserId(uid));
         }
     }
 
@@ -607,80 +595,6 @@ public class NotificationManagerService extends INotificationManager.Stub
             return mHaloWhitelist.contains(pkg);
         }
     }
-
-    public boolean areNotificationsEnabledForPackage(String pkg) {
-=======
-    /**
-     * Use this when you just want to know if notifications are OK for this package.
-     */
-    public boolean areNotificationsEnabledForPackage(String pkg, int uid) {
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
-        checkCallerIsSystem();
-        return (mAppOps.checkOpNoThrow(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg)
-                == AppOpsManager.MODE_ALLOWED);
-    }
-
-<<<<<<< HEAD
-    // Unchecked. Not exposed via Binder, but can be called in the course of
-    // enqueue*().
-    private boolean areNotificationsEnabledForPackageInt(String pkg) {
-        final boolean enabled = !mBlockedPackages.contains(pkg);
-        if (DBG) {
-            Slog.v(TAG, "notifications are " + (enabled ? "en" : "dis") + "abled for " + pkg);
-=======
-    /** Use this when you actually want to post a notification or toast.
-     *
-     * Unchecked. Not exposed via Binder, but can be called in the course of enqueue*().
-     */
-    private boolean noteNotificationOp(String pkg, int uid) {
-        if (mAppOps.noteOpNoThrow(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg)
-                != AppOpsManager.MODE_ALLOWED) {
-            Slog.v(TAG, "notifications are disabled by AppOps for " + pkg);
-            return false;
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
-        }
-        return true;
-    }
-
-    public void setNotificationsEnabledForPackage(String pkg, int uid, boolean enabled) {
-        checkCallerIsSystem();
-<<<<<<< HEAD
-        if (DBG) {
-            Slog.v(TAG, (enabled ? "en" : "dis") + "abling notifications for " + pkg);
-        }
-        if (enabled) {
-            mBlockedPackages.remove(pkg);
-        } else {
-            mBlockedPackages.add(pkg);
-
-            // Now, cancel any outstanding notifications that are part of a
-            // just-disabled app
-            if (ENABLE_BLOCKED_NOTIFICATIONS) {
-                synchronized (mNotificationList) {
-                    final int N = mNotificationList.size();
-                    for (int i = 0; i < N; i++) {
-                        final NotificationRecord r = mNotificationList.get(i);
-                        if (r.pkg.equals(pkg)) {
-                            cancelNotificationLocked(r, false);
-                        }
-                    }
-                }
-            }
-            // Don't bother canceling toasts, they'll go away soon enough.
-=======
-
-        Slog.v(TAG, (enabled?"en":"dis") + "abling notifications for " + pkg);
-
-        mAppOps.setMode(AppOpsManager.OP_POST_NOTIFICATION, uid, pkg,
-                enabled ? AppOpsManager.MODE_ALLOWED : AppOpsManager.MODE_IGNORED);
-
-        // Now, cancel any outstanding notifications that are part of a just-disabled app
-        if (ENABLE_BLOCKED_NOTIFICATIONS && !enabled) {
-            cancelAllNotificationsInt(pkg, 0, 0, true, UserHandle.getUserId(uid));
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
-        }
-    }
-
 
     private HashMap<String, Long> mAnnoyingNotifications = new HashMap<String, Long>();
     private long mAnnoyingNotificationThreshold = -1;
@@ -1146,6 +1060,8 @@ public class NotificationManagerService extends INotificationManager.Stub
         public Notification getNotification() { return sbn.getNotification(); }
         public int getFlags() { return sbn.getNotification().flags; }
         public int getUserId() { return sbn.getUserId(); }
+        public String getPkg() { return sbn.getPackageName(); }
+        public int getId() { return sbn.getId(); }
 
         void dump(PrintWriter pw, String prefix, Context baseContext) {
             final Notification notification = sbn.getNotification();
@@ -1208,24 +1124,12 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
 
         @Override
-<<<<<<< HEAD
-        public final String toString()
-        {
-            return "NotificationRecord{"
-                    + Integer.toHexString(System.identityHashCode(this))
-                    + " pkg=" + pkg
-                    + " id=" + Integer.toHexString(id)
-                    + " tag=" + tag
-                    + " score=" + score
-                    + "}";
-=======
         public final String toString() {
             return String.format(
                     "NotificationRecord(0x%08x: pkg=%s user=%s id=%d tag=%s score=%d: %s)",
                     System.identityHashCode(this),
                     this.sbn.getPackageName(), this.sbn.getUser(), this.sbn.getId(), this.sbn.getTag(),
                     this.sbn.getScore(), this.sbn.getNotification());
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
         }
     }
 
@@ -1378,24 +1282,20 @@ public class NotificationManagerService extends INotificationManager.Stub
             boolean queryRestart = false;
             boolean queryRemove = false;
             boolean packageChanged = false;
-<<<<<<< HEAD
-
+            boolean cancelNotifications = true;
             boolean ledScreenOn = Settings.Secure.getInt(
                     mContext.getContentResolver(), Settings.Secure.LED_SCREEN_ON, 0) == 1;
 
-            if (action.equals(Intent.ACTION_PACKAGE_REMOVED)
-=======
-            boolean cancelNotifications = true;
+
 
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)
                     || (queryRemove=action.equals(Intent.ACTION_PACKAGE_REMOVED))
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                     || action.equals(Intent.ACTION_PACKAGE_RESTARTED)
                     || (packageChanged = action.equals(Intent.ACTION_PACKAGE_CHANGED))
                     || (queryRestart = action.equals(Intent.ACTION_QUERY_PACKAGE_RESTART))
                     || action.equals(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE)) {
                 String pkgList[] = null;
-                boolean queryReplace = queryRemove &&
+            boolean queryReplace = queryRemove &&
                         intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 if (DBG) Slog.i(TAG, "queryReplace=" + queryReplace);
                 if (action.equals(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE)) {
@@ -1418,18 +1318,17 @@ public class NotificationManagerService extends INotificationManager.Stub
                                 .getApplicationEnabledSetting(pkgName);
                         if (enabled == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
                                 || enabled == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT) {
-                            cancelNotifications = false;
+                        cancelNotifications = false;
                         }
                     }
                     pkgList = new String[] {
                             pkgName
                     };
                 }
-
                 boolean anyListenersInvolved = false;
                 if (pkgList != null && (pkgList.length > 0)) {
                     for (String pkgName : pkgList) {
-                        if (cancelNotifications) {
+                    if (cancelNotifications) {
                             cancelAllNotificationsInt(pkgName, 0, 0, !queryRestart,
                                     UserHandle.USER_ALL);
                         }
@@ -1438,7 +1337,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                         }
                     }
                 }
-
                 if (anyListenersInvolved) {
                     // if we're not replacing a package, clean up orphaned bits
                     if (!queryReplace) {
@@ -1486,62 +1384,30 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     };
 
-<<<<<<< HEAD
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
-=======
-    class LEDSettingsObserver extends ContentObserver {
-        LEDSettingsObserver(Handler handler) {
-        private final Uri NOTIFICATION_LIGHT_PULSE_URI
-                = Settings.System.getUriFor(Settings.System.NOTIFICATION_LIGHT_PULSE);
-
-        private final Uri ENABLED_NOTIFICATION_LISTENERS_URI
-                = Settings.Secure.getUriFor(Settings.Secure.ENABLED_NOTIFICATION_LISTENERS);
-
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
             super(handler);
         }
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(
-                    NOTIFICATION_LIGHT_PULSE_URI, false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(
-                    ENABLED_NOTIFICATION_LISTENERS_URI, false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-<<<<<<< HEAD
-                    Settings.System.NOTIFICATION_LIGHT_PULSE), false, this);
+                    Settings.System.NOTIFICATION_LIGHT_PULSE), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_OFF), false, this);
+                    Settings.System.NOTIFICATION_LIGHT_OFF), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_ON), false, this);
+                    Settings.System.NOTIFICATION_LIGHT_ON), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_COLOR), false, this);
+                    Settings.System.NOTIFICATION_LIGHT_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LED_CUSTOM_VALUES), false, this);
-            update();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            update();
-            updateNotificationPulse();
-=======
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_COLOR), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_ON), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_OFF), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_ENABLE), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_VALUES), false, this, UserHandle.USER_ALL);
+                    Settings.System.LED_CUSTOM_VALUES), false, this, UserHandle.USER_ALL);
             update(null);
         }
 
-        @Override public void onChange(boolean selfChange, Uri uri) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
             update(uri);
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
+            updateNotificationPulse();
         }
 
         public void update(Uri uri) {
@@ -1639,24 +1505,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
-<<<<<<< HEAD
-=======
-    private SettingsObserver mSettingsObserver;
-
-    static long[] getLongArray(Resources r, int resid, int maxlen, long[] def) {
-        int[] ar = r.getIntArray(resid);
-        if (ar == null) {
-            return def;
-        }
-        final int len = ar.length > maxlen ? maxlen : ar.length;
-        long[] out = new long[len];
-        for (int i=0; i<len; i++) {
-            out[i] = ar[i];
-        }
-        return out;
-    }
-
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
     NotificationManagerService(Context context, StatusBarManagerService statusBar,
             LightsService lights)
     {
@@ -1667,15 +1515,12 @@ public class NotificationManagerService extends INotificationManager.Stub
         mUserManager = (UserManager)context.getSystemService(Context.USER_SERVICE);
         mToastQueue = new ArrayList<ToastRecord>();
         mHandler = new WorkerHandler();
-
-<<<<<<< HEAD
-        loadBlockDb();
-        loadHaloBlockDb();
-=======
         mAppOps = (AppOpsManager)context.getSystemService(Context.APP_OPS_SERVICE);
 
         importOldBlockDb();
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
+
+        loadBlockDb();
+        loadHaloBlockDb();
 
         mStatusBar = statusBar;
         statusBar.setNotificationCallbacks(mNotificationCallbacks);
@@ -1734,20 +1579,12 @@ public class NotificationManagerService extends INotificationManager.Stub
         IntentFilter sdFilter = new IntentFilter(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         mContext.registerReceiver(mIntentReceiver, sdFilter);
 
-<<<<<<< HEAD
         mSettingsObserver = new SettingsObserver(mHandler);
         mSettingsObserver.observe();
         mQuietHoursSettingsObserver= new QuietHoursSettingsObserver(mHandler);
         mQuietHoursSettingsObserver.observe();
 
         ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
-=======
-        LEDSettingsObserver ledObserver = new LEDSettingsObserver(mHandler);
-        ledObserver.observe();
-        QuietHoursSettingsObserver qhObserver = new QuietHoursSettingsObserver(mHandler);
-        qhObserver.observe();
-        mSettingsObserver = new SettingsObserver(mHandler);
-        mSettingsObserver.observe();
     }
 
     /**
@@ -1770,7 +1607,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         if (mPolicyFile != null) {
             mPolicyFile.delete();
         }
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
     }
 
     void systemReady() {
@@ -2020,7 +1856,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                     + notification);
         }
         checkCallerIsSystemOrSameApp(pkg);
-        final boolean isSystemNotification = isCallerSystem() || ("android".equals(pkg));
+                final boolean isSystemNotification = isCallerSystem() || ("android".equals(pkg));
 
         userId = ActivityManager.handleIncomingUser(callingPid,
                 callingUid, userId, true, false, "enqueueNotification", pkg);
@@ -2088,18 +1924,11 @@ public class NotificationManagerService extends INotificationManager.Stub
         // 3. Apply local rules
 
         // blocked apps
-<<<<<<< HEAD
-        if (ENABLE_BLOCKED_NOTIFICATIONS && !isSystemNotification
-                && !areNotificationsEnabledForPackageInt(pkg)) {
-            score = JUNK_SCORE;
-            Slog.e(TAG, "Suppressing notification from package " + pkg + " by user request.");
-=======
         if (ENABLE_BLOCKED_NOTIFICATIONS && !noteNotificationOp(pkg, callingUid)) {
             if (!isSystemNotification) {
                 score = JUNK_SCORE;
                 Slog.e(TAG, "Suppressing notification from package " + pkg + " by user request.");
             }
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
         }
 
         if (DBG) {
@@ -2131,11 +1960,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 // Make sure we don't lose the foreground service state.
                 if (old != null) {
                     notification.flags |=
-<<<<<<< HEAD
-                            old.notification.flags & Notification.FLAG_FOREGROUND_SERVICE;
-=======
-                        old.getNotification().flags&Notification.FLAG_FOREGROUND_SERVICE;
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
+                            old.getNotification().flags&Notification.FLAG_FOREGROUND_SERVICE;
                 }
             }
 
@@ -2179,8 +2004,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 if (currentUser == userId) {
                     sendAccessibilityEvent(notification, pkg);
                 }
-
-                notifyPostedLocked(r);
+            notifyPostedLocked(r);
             } else {
                 Slog.e(TAG, "Not posting notification with icon==0: " + notification);
                 if (old != null && old.statusBarKey != null) {
@@ -2190,7 +2014,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                     } finally {
                         Binder.restoreCallingIdentity(identity);
                     }
-
                     notifyRemovedLocked(r);
                 }
                 // ATTENTION: in a future release we will bail out here
@@ -2210,23 +2033,13 @@ public class NotificationManagerService extends INotificationManager.Stub
                 Log.e(TAG, "An error occurred profiling the notification.", th);
             }
 
-<<<<<<< HEAD
-=======
-            final boolean alertsDisabled =
-                    (mDisabledNotifications & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0;
-            boolean readyForAlerts = canInterrupt && mSystemReady &&
-                    (r.getUserId() == UserHandle.USER_ALL || r.getUserId() == userId && r.getUserId() == currentUser) &&
-                    (old == null || (notification.flags & Notification.FLAG_ONLY_ALERT_ONCE) == 0);
-            boolean hasValidSound = false;
-
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
             // If we're not supposed to beep, vibrate, etc. then don't.
             if (((mDisabledNotifications & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) == 0)
                     && (!(old != null
                         && (notification.flags & Notification.FLAG_ONLY_ALERT_ONCE) != 0 ))
                     && !notificationIsAnnoying(pkg)
-                    && (r.userId == UserHandle.USER_ALL ||
-                        (r.userId == userId && r.userId == currentUser))
+                    && (r.getUserId() == UserHandle.USER_ALL ||
+                        (r.getUserId() == userId && r.getUserId() == currentUser))
                     && canInterrupt
                     && mSystemReady) {
 
@@ -2307,27 +2120,21 @@ public class NotificationManagerService extends INotificationManager.Stub
                         // does not have the VIBRATE permission.
                         long identity = Binder.clearCallingIdentity();
                         try {
-<<<<<<< HEAD
                             mVibrator.vibrate(useDefaultVibrate ? mDefaultVibrationPattern
                                                                 : mFallbackVibrationPattern,
                                 ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
-=======
-                            mVibrator.vibrate(r.sbn.getUid(), r.sbn.getBasePkg(), pattern, repeat);
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                         } finally {
                             Binder.restoreCallingIdentity(identity);
                         }
                     } else if (notification.vibrate.length > 1) {
                         // If you want your own vibration pattern, you need the VIBRATE permission
-<<<<<<< HEAD
                         mVibrator.vibrate(notification.vibrate,
                             ((notification.flags & Notification.FLAG_INSISTENT) != 0) ? 0: -1);
-=======
-                        mVibrator.vibrate(r.sbn.getUid(), r.sbn.getBasePkg(), notification.vibrate, repeat);
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                     }
                 }
             }
+
+            // this option doesn't shut off the lights
 
             // light
             // the most recent thing gets the light
@@ -2420,13 +2227,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                     r.getNotification().deleteIntent.send();
                 } catch (PendingIntent.CanceledException ex) {
                     // do nothing - there's no relevant way to recover, and
-<<<<<<< HEAD
                     // no reason to let this propagate
-                    Slog.w(TAG, "canceled PendingIntent for " + r.pkg, ex);
-=======
-                    //     no reason to let this propagate
                     Slog.w(TAG, "canceled PendingIntent for " + r.sbn.getPackageName(), ex);
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                 }
             }
         }
@@ -2637,13 +2439,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                     continue;
                 }
 
-<<<<<<< HEAD
-                if ((r.notification.flags & (Notification.FLAG_ONGOING_EVENT
-                | Notification.FLAG_NO_CLEAR)) == 0) {
-=======
                 if ((r.getFlags() & (Notification.FLAG_ONGOING_EVENT
-                                | Notification.FLAG_NO_CLEAR)) == 0) {
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
+                | Notification.FLAG_NO_CLEAR)) == 0) {
                     mNotificationList.remove(i);
                     cancelNotificationLocked(r, true);
                 }
@@ -2665,7 +2462,7 @@ public class NotificationManagerService extends INotificationManager.Stub
             // use most recent light with highest score
             for (int i = mLights.size(); i > 0; i--) {
                 NotificationRecord r = mLights.get(i - 1);
-                if (mLedNotification == null || r.score > mLedNotification.score) {
+                if (mLedNotification == null || r.sbn.getScore() > mLedNotification.sbn.getScore()) {
                     mLedNotification = r;
                 }
             }
@@ -2687,10 +2484,10 @@ public class NotificationManagerService extends INotificationManager.Stub
                 ledOnMS = mDefaultNotificationLedOn;
                 ledOffMS = mDefaultNotificationLedOff;
             } else {
-                ledARGB = mLedNotification.notification.ledARGB;
-                ledOnMS = mLedNotification.notification.ledOnMS;
-                ledOffMS = mLedNotification.notification.ledOffMS;
-                if ((mLedNotification.notification.defaults & Notification.DEFAULT_LIGHTS) != 0) {
+                ledARGB = mLedNotification.sbn.getNotification().ledARGB;
+                ledOnMS = mLedNotification.sbn.getNotification().ledOnMS;
+                ledOffMS = mLedNotification.sbn.getNotification().ledOffMS;
+                if ((mLedNotification.sbn.getNotification().defaults & Notification.DEFAULT_LIGHTS) != 0) {
                     ledARGB = mDefaultNotificationColor;
                     ledOnMS = mDefaultNotificationLedOn;
                     ledOffMS = mDefaultNotificationLedOff;
@@ -2726,12 +2523,12 @@ public class NotificationManagerService extends INotificationManager.Stub
         String notiPackage = null;
         String talk = "com.google.android.gsf";
         String phone = "com.android.phone";
-        if ((ledNotification.pkg).equals(talk)) {
+        if ((ledNotification.getPkg()).equals(talk)) {
             notiPackage = "com.google.android.talk";
-        } else if ((ledNotification.pkg).equals(phone)) {
+        } else if ((ledNotification.getPkg()).equals(phone)) {
             notiPackage = "com.android.contacts";
         } else {
-            notiPackage = ledNotification.pkg;
+            notiPackage = ledNotification.getPkg();
         }
         return mCustomLedColors.get(notiPackage);
     }
@@ -2828,13 +2625,8 @@ public class NotificationManagerService extends INotificationManager.Stub
             N = mLights.size();
             if (N > 0) {
                 pw.println("  Lights List:");
-<<<<<<< HEAD
                 for (int i = 0; i < N; i++) {
-                    mLights.get(i).dump(pw, "    ", mContext);
-=======
-                for (int i=0; i<N; i++) {
                     pw.println("    " + mLights.get(i));
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
                 }
                 pw.println("  ");
             }
@@ -2854,8 +2646,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                     break;
                 }
             }
-
         }
     }
 }
-

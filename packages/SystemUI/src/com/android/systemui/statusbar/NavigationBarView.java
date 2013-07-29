@@ -109,7 +109,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             mRecentsIcon, mRecentsLandIcon, mRecentsAltIcon, mRecentsAltLandIcon;
     private boolean mMenuArrowKeys;
     private boolean mColorAllIcons;
-    
+
     public DelegateViewHelper mDelegateHelper;
     private BaseStatusBar mBar;
     private SettingsObserver mSettingsObserver;
@@ -334,7 +334,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             mNewCanvas.drawColor(0xFF000000);
             BitmapDrawable newBitmapDrawable = new BitmapDrawable(newBitmap);
 
-            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});        
+            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});
             setBackground(mTransition);
 
             mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
@@ -589,7 +589,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         return padding;
     }
 
-    
+
     private LayoutParams getLayoutParams(boolean landscape, float dp) {
         float px = dp * getResources().getDisplayMetrics().density;
         return landscape ?
@@ -1097,7 +1097,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     @Override
     protected void onLayout (boolean changed, int left, int top, int right, int bottom) {
         if (DEBUG) Slog.d(TAG, String.format(
-                    "onLayout: %s (%d,%d,%d,%d)", 
+                    "onLayout: %s (%d,%d,%d,%d)",
                     changed?"changed":"notchanged", left, top, right, bottom));
         super.onLayout(changed, left, top, right, bottom);
     }

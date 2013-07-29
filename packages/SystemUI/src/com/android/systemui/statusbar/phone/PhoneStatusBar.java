@@ -99,9 +99,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import android.service.notification.StatusBarNotification;
+
 import com.android.systemui.recent.RecentsActivity;
 import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.statusbar.StatusBarNotification;
 
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.EventLogTags;
@@ -700,21 +701,17 @@ public class PhoneStatusBar extends BaseStatusBar {
             mDockBatteryController.addIconView((ImageView)mStatusBarView.findViewById(R.id.dock_battery));
         }
 
-        final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
-        if (isAPhone) {
-            mEmergencyCallLabel = (TextView)mStatusBarWindow.findViewById(R.id.emergency_calls_only);
-            if (mEmergencyCallLabel != null) {
-                mNetworkController.addEmergencyLabelView(mEmergencyCallLabel);
-                mEmergencyCallLabel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) { }});
-                mEmergencyCallLabel.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                        @Override
-                        public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        updateCarrierLabelVisibility(false);
-                        }});
-            }
+        mEmergencyCallLabel = (TextView)mStatusBarWindow.findViewById(R.id.emergency_calls_only);
+        if (mEmergencyCallLabel != null) {
+            mNetworkController.addEmergencyLabelView(mEmergencyCallLabel);
+            mEmergencyCallLabel.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) { }});
+            mEmergencyCallLabel.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    updateCarrierAndWifiLabelVisibility(false);
+                }});
         }
 
         mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -909,18 +906,13 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     @Override
     protected WindowManager.LayoutParams getRecentsLayoutParams(LayoutParams layoutParams) {
+        boolean opaque = false;
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 layoutParams.width,
                 layoutParams.height,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-<<<<<<< HEAD
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
-=======
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 (opaque ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT));
         if (ActivityManager.isHighEndGfx()) {
@@ -930,7 +922,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             lp.dimAmount = 0.75f;
         }
         lp.gravity = Gravity.BOTTOM | Gravity.START;
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
         lp.setTitle("RecentsPanel");
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
@@ -940,25 +931,19 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     @Override
     protected WindowManager.LayoutParams getSearchLayoutParams(LayoutParams layoutParams) {
+        boolean opaque = false;
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-<<<<<<< HEAD
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
-=======
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 (opaque ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT));
         if (ActivityManager.isHighEndGfx()) {
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
         }
         lp.gravity = Gravity.BOTTOM | Gravity.START;
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
         lp.setTitle("SearchPanel");
         // TODO: Define custom animation for Search panel
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
@@ -1024,16 +1009,12 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private View.OnClickListener mRecentsClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-<<<<<<< HEAD
             if(isRecentAppsVisible() && hasRecentApps()) {
                 clearRecentApps();
             } else {
+                awakenDreams();
                 toggleRecentApps();
             }
-=======
-            awakenDreams();
-            toggleRecentApps();
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
         }
     };
 
@@ -1273,8 +1254,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mWindowManager.addView(mIntruderAlertView, lp);
     }
 
-<<<<<<< HEAD
-=======
     public void refreshAllStatusBarIcons() {
         refreshAllIconsForLayout(mStatusIcons);
         refreshAllIconsForLayout(mNotificationIcons);
@@ -1291,7 +1270,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     @Override
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
         if (SPEW) Slog.d(TAG, "addIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " icon=" + icon);
@@ -1532,13 +1510,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         // If the device hasn't been through Setup, we only show system notifications
         for (int i=0; i<N; i++) {
             Entry ent = mNotificationData.get(N-i-1);
-<<<<<<< HEAD
-            if (!((provisioned && ent.notification.score >= HIDE_ICONS_BELOW_SCORE)
-                    || showNotificationEvenIfUnprovisioned(ent.notification) || mHaloTaskerActive)) continue;
-=======
             if (!((provisioned && ent.notification.getScore() >= HIDE_ICONS_BELOW_SCORE)
-                    || showNotificationEvenIfUnprovisioned(ent.notification))) continue;
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
+                    || showNotificationEvenIfUnprovisioned(ent.notification) || mHaloTaskerActive)) continue;
             if (!notificationIsForCurrentUser(ent.notification)) continue;
             toShow.add(ent.icon);
         }
@@ -2569,12 +2542,12 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mInitialTouchX = x;
                 mInitialTouchY = y;
                 mHandler.removeCallbacks(mLongPressBrightnessChange);
-                if ((y + mViewDelta) < mNotificationHeaderHeight) {
+                if ((y) < mNotificationHeaderHeight) {
                     mHandler.postDelayed(mLongPressBrightnessChange,
                             BRIGHTNESS_CONTROL_LONG_PRESS_TIMEOUT);
                 }
             } else if (action == MotionEvent.ACTION_MOVE) {
-                if ((y + mViewDelta) < mNotificationHeaderHeight) {
+                if ((y) < mNotificationHeaderHeight) {
                     mVelocityTracker.computeCurrentVelocity(1000);
                     float yVel = mVelocityTracker.getYVelocity();
                     yVel = Math.abs(yVel);
@@ -2870,96 +2843,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         return anim;
     }
 
-    public static String viewInfo(View v) {
-        return "[(" + v.getLeft() + "," + v.getTop() + ")(" + v.getRight() + "," + v.getBottom()
-                + ") " + v.getWidth() + "x" + v.getHeight() + "]";
-    }
-
     @Override
-<<<<<<< HEAD
-=======
-    public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        synchronized (mQueueLock) {
-            pw.println("Current Status Bar state:");
-            pw.println("  mExpandedVisible=" + mExpandedVisible
-                    + ", mTrackingPosition=" + mTrackingPosition);
-            pw.println("  mTicking=" + mTicking);
-            pw.println("  mTracking=" + mTracking);
-            pw.println("  mDisplayMetrics=" + mDisplayMetrics);
-            pw.println("  mPile: " + viewInfo(mPile));
-            pw.println("  mTickerView: " + viewInfo(mTickerView));
-            pw.println("  mScrollView: " + viewInfo(mScrollView)
-                    + " scroll " + mScrollView.getScrollX() + "," + mScrollView.getScrollY());
-        }
-
-        pw.print("  mNavigationBarView=");
-        if (mNavigationBarView == null) {
-            pw.println("null");
-        } else {
-            mNavigationBarView.dump(fd, pw, args);
-        }
-
-        pw.println("  Panels: ");
-        if (mNotificationPanel != null) {
-            pw.println("    mNotificationPanel=" +
-                mNotificationPanel + " params=" + mNotificationPanel.getLayoutParams().debug(""));
-            pw.print  ("      ");
-            mNotificationPanel.dump(fd, pw, args);
-        }
-        if (mSettingsPanel != null) {
-            pw.println("    mSettingsPanel=" +
-                mSettingsPanel + " params=" + mSettingsPanel.getLayoutParams().debug(""));
-            pw.print  ("      ");
-            mSettingsPanel.dump(fd, pw, args);
-        }
-
-        if (DUMPTRUCK) {
-            synchronized (mNotificationData) {
-                int N = mNotificationData.size();
-                pw.println("  notification icons: " + N);
-                for (int i=0; i<N; i++) {
-                    NotificationData.Entry e = mNotificationData.get(i);
-                    pw.println("    [" + i + "] key=" + e.key + " icon=" + e.icon);
-                    StatusBarNotification n = e.notification;
-                    pw.println("         pkg=" + n.getPackageName() + " id=" + n.getId() + " score=" + n.getScore());
-                    pw.println("         notification=" + n.getNotification());
-                    pw.println("         tickerText=\"" + n.getNotification().tickerText + "\"");
-                }
-            }
-
-            int N = mStatusIcons.getChildCount();
-            pw.println("  system icons: " + N);
-            for (int i=0; i<N; i++) {
-                StatusBarIconView ic = (StatusBarIconView) mStatusIcons.getChildAt(i);
-                pw.println("    [" + i + "] icon=" + ic);
-            }
-
-            if (false) {
-                pw.println("see the logcat for a dump of the views we have created.");
-                // must happen on ui thread
-                mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mStatusBarView.getLocationOnScreen(mAbsPos);
-                            Slog.d(TAG, "mStatusBarView: ----- (" + mAbsPos[0] + "," + mAbsPos[1]
-                                    + ") " + mStatusBarView.getWidth() + "x"
-                                    + getStatusBarHeight());
-                            mStatusBarView.debug();
-                        }
-                    });
-            }
-        }
-
-        if (DEBUG_GESTURES) {
-            pw.print("  status bar gestures: ");
-            mGestureRec.dump(fd, pw, args);
-        }
-
-        mNetworkController.dump(fd, pw, args);
-    }
-
-    @Override
->>>>>>> f2ed337... Merge tag 'android-4.3_r2.1' into HEAD
     public void createAndAddWindows() {
         addStatusBarWindow();
     }
@@ -3740,7 +3624,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             if(ent != null
                     && ent.notification != null
                     && notificationIsForCurrentUser(ent.notification)) {
-                switch(ent.notification.id) {
+                switch(ent.notification.getId()) {
                     // ignore adb icon
                     case com.android.internal.R.drawable.stat_sys_adb:
                         continue;
@@ -3750,7 +3634,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
         if(thisUsersNotifications == 0)
             return true;
-
         return false;
     }
 }

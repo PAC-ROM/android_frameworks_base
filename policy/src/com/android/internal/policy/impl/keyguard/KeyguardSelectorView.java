@@ -138,7 +138,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             mCallback.dismiss(false);
             Intent assistIntent =
                 ((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
-                .getAssistIntent(mContext, UserHandle.USER_CURRENT);
+                .getAssistIntent(mContext, true, UserHandle.USER_CURRENT);
                 if (assistIntent != null) {
                     mActivityLauncher.launchActivity(assistIntent, false, true, null, null);
                 } else {
@@ -182,7 +182,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 mContext.unregisterReceiver(receiver);
                 mReceiverRegistered = false;
             }
-            
+
             if (mStoredTargets == null) {
                 final int resId = mGlowPadView.getResourceIdForTarget(target);
                 switch (resId) {
@@ -344,7 +344,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
         mBouncerFrame = bouncerFrameView.getBackground();
-    
+
         final int unsecureUnlockMethod = Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.LOCKSCREEN_UNSECURE_USED, 1);
         final int lockBeforeUnlock = Settings.Secure.getInt(mContext.getContentResolver(),

@@ -737,23 +737,23 @@ final class ElectronBeam {
                 DisplayInfo displayInfo = mDisplayManager.getDisplayInfo(Display.DEFAULT_DISPLAY);
                 switch (displayInfo.rotation) {
                     case Surface.ROTATION_0:
-                        mSurface.setPosition(0, 0);
-                        mSurface.setMatrix(1, 0, 0, 1);
+                        mSurfaceControl.setPosition(0, 0);
+                        mSurfaceControl.setMatrix(1, 0, 0, 1);
                         mIsLandscape = false;
                         break;
                     case Surface.ROTATION_90:
-                        mSurface.setPosition(0, displayInfo.logicalHeight);
-                        mSurface.setMatrix(0, -1, 1, 0);
+                        mSurfaceControl.setPosition(0, displayInfo.logicalHeight);
+                        mSurfaceControl.setMatrix(0, -1, 1, 0);
                         mIsLandscape = true;
                         break;
                     case Surface.ROTATION_180:
-                        mSurface.setPosition(displayInfo.logicalWidth, displayInfo.logicalHeight);
-                        mSurface.setMatrix(-1, 0, 0, -1);
+                        mSurfaceControl.setPosition(displayInfo.logicalWidth, displayInfo.logicalHeight);
+                        mSurfaceControl.setMatrix(-1, 0, 0, -1);
                         mIsLandscape = false;
                         break;
                     case Surface.ROTATION_270:
-                        mSurface.setPosition(displayInfo.logicalWidth, 0);
-                        mSurface.setMatrix(0, 1, -1, 0);
+                        mSurfaceControl.setPosition(displayInfo.logicalWidth, 0);
+                        mSurfaceControl.setMatrix(0, 1, -1, 0);
                         mIsLandscape = true;
                         break;
                 }

@@ -78,10 +78,10 @@ import java.util.ArrayList;
 /**
  *
  */
-
-class QuickSettings {
-    static final boolean DEBUG_GONE_TILES = false;
+public class QuickSettings {
     private static final String TAG = "QuickSettings";
+
+    static final boolean DEBUG_GONE_TILES = false;
     public static final boolean SHOW_IME_TILE = false;
 
     public static final boolean LONG_PRESS_TOGGLES = true;
@@ -275,7 +275,7 @@ class QuickSettings {
     }
 
     private void collapsePanels() {
-        getService().animateCollapsePanels();
+        getService().collapse();
     }
 
     private void startSettingsActivity(Intent intent, boolean onlyProvisioned) {
@@ -333,6 +333,7 @@ class QuickSettings {
         mDynamicSpannedTiles.add(userTile);
 
         // Brightness
+        // Brightness
         final QuickSettingsBasicTile brightnessTile
                 = new QuickSettingsBasicTile(mContext);
         brightnessTile.setImageResource(R.drawable.ic_qs_brightness_auto_off);
@@ -343,19 +344,8 @@ class QuickSettings {
                 showBrightnessDialog();
             }
         });
-        mModel.addBrightnessTile(brightnessTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView view, State state) {
-                TextView tv = (TextView) view.findViewById(R.id.brightness_textview);
-                tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
-                tv.setText(state.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-                dismissBrightnessDialog(mBrightnessDialogShortTimeout);
-            }
-        });
+        mModel.addBrightnessTile(brightnessTile,
+                new QuickSettingsModel.BasicRefreshCallback(brightnessTile));
         parent.addView(brightnessTile);
         mDynamicSpannedTiles.add(brightnessTile);
 
@@ -388,17 +378,8 @@ class QuickSettings {
                 startSettingsActivity(android.provider.Settings.ACTION_SETTINGS);
             }
         });
-        mModel.addSettingsTile(settingsTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView view, State state) {
-                TextView tv = (TextView) view.findViewById(R.id.settings_tileview);
-                tv.setText(state.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-            }
-        });
+        mModel.addSettingsTile(settingsTile,
+                new QuickSettingsModel.BasicRefreshCallback(settingsTile));
         parent.addView(settingsTile);
         mDynamicSpannedTiles.add(settingsTile);
     }
@@ -444,19 +425,13 @@ class QuickSettings {
                 wifiTile.setImageResource(wifiState.iconId);
                 wifiTile.setText(wifiState.label);
                 wifiTile.setContentDescription(mContext.getString(
-                TextView tv = (TextView) view.findViewById(R.id.wifi_textview);
-                tv.setCompoundDrawablesWithIntrinsicBounds(0, wifiState.iconId, 0, 0);
-                tv.setText(wifiState.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-                view.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_wifi,
                         wifiState.signalContentDescription,
                         (wifiState.connected) ? wifiState.label : ""));
             }
         });
+
+
         parent.addView(wifiTile);
 
         if (mModel.deviceHasMobileData()) {
@@ -516,18 +491,8 @@ class QuickSettings {
                     RotationPolicy.setRotationLock(mContext, !locked);
                 }
             });
-            mModel.addRotationLockTile(rotationLockTile, new QuickSettingsModel.RefreshCallback() {
-                @Override
-                public void refreshView(QuickSettingsTileView view, State state) {
-                    TextView tv = (TextView) view.findViewById(R.id.rotation_lock_textview);
-                    tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
-                    tv.setText(state.label);
-                    tv.setTextSize(1, mTileTextSize);
-                    if (mTileTextColor != -2) {
-                        tv.setTextColor(mTileTextColor);
-                    }
-                }
-            });
+            mModel.addRotationLockTile(rotationLockTile,
+                    new QuickSettingsModel.BasicRefreshCallback(rotationLockTile));
             parent.addView(rotationLockTile);
         }
 
@@ -557,18 +522,10 @@ class QuickSettings {
                         : mContext.getString(R.string.status_bar_settings_battery_meter_format,
                                 batteryState.batteryLevel);
                 }
-                iv.setImageDrawable(d);
-                iv.setImageLevel(batteryState.batteryLevel);
-                tv.setText(t);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
                 batteryTile.setImageDrawable(d);
                 batteryTile.getImageView().setImageLevel(batteryState.batteryLevel);
                 batteryTile.setText(t);
                 batteryTile.setContentDescription(
-                view.setContentDescription(
                         mContext.getString(R.string.accessibility_quick_settings_battery, t));
             }
         });
@@ -587,11 +544,7 @@ class QuickSettings {
                                 : R.string.accessibility_desc_off);
                 airplaneTile.setContentDescription(
                         mContext.getString(R.string.accessibility_quick_settings_airplane, airplaneState));
-                tv.setText(state.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
+                airplaneTile.setText(state.label);
             }
         });
         parent.addView(airplaneTile);
@@ -643,11 +596,7 @@ class QuickSettings {
                     bluetoothTile.setContentDescription(mContext.getString(
                             R.string.accessibility_quick_settings_bluetooth,
                             bluetoothState.stateContentDescription));
-                    tv.setText(label);
-                    tv.setTextSize(1, mTileTextSize);
-                    if (mTileTextColor != -2) {
-                        tv.setTextColor(mTileTextColor);
-                    }
+                    bluetoothTile.setText(state.label);
                 }
             });
             parent.addView(bluetoothTile);
@@ -673,15 +622,10 @@ class QuickSettings {
         });
         mModel.addAlarmTile(alarmTile, new QuickSettingsModel.RefreshCallback() {
             @Override
-            public void refreshView(QuickSettingsTileView view, State alarmState) {
-                TextView tv = (TextView) view.findViewById(R.id.alarm_textview);
-                tv.setText(alarmState.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-                view.setVisibility(alarmState.enabled ? View.VISIBLE : View.GONE);
-                view.setContentDescription(mContext.getString(
+            public void refreshView(QuickSettingsTileView unused, State alarmState) {
+                alarmTile.setText(alarmState.label);
+                alarmTile.setVisibility(alarmState.enabled ? View.VISIBLE : View.GONE);
+                alarmTile.setContentDescription(mContext.getString(
                         R.string.accessibility_quick_settings_alarm, alarmState.label));
             }
         });
@@ -698,18 +642,9 @@ class QuickSettings {
                 startSettingsActivity(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             }
         });
-        mModel.addLocationTile(locationTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView view, State state) {
-                TextView tv = (TextView) view.findViewById(R.id.location_textview);
-                tv.setText(state.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-                view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
-            }
-        });
+        mModel.addLocationTile(locationTile,
+                new QuickSettingsModel.BasicRefreshCallback(locationTile)
+                        .setShowWhenEnabled(true));
         parent.addView(locationTile);
 
         // Wifi Display
@@ -722,19 +657,9 @@ class QuickSettings {
                 startSettingsActivity(android.provider.Settings.ACTION_WIFI_DISPLAY_SETTINGS);
             }
         });
-        mModel.addWifiDisplayTile(wifiDisplayTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView view, State state) {
-                TextView tv = (TextView) view.findViewById(R.id.wifi_display_textview);
-                tv.setText(state.label);
-                tv.setTextSize(1, mTileTextSize);
-                if (mTileTextColor != -2) {
-                    tv.setTextColor(mTileTextColor);
-                }
-                tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
-                view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
-            }
-        });
+        mModel.addWifiDisplayTile(wifiDisplayTile,
+                new QuickSettingsModel.BasicRefreshCallback(wifiDisplayTile)
+                        .setShowWhenEnabled(true));
         parent.addView(wifiDisplayTile);
 
         if (SHOW_IME_TILE || DEBUG_GONE_TILES) {
@@ -753,20 +678,9 @@ class QuickSettings {
                     } catch (Exception e) {}
                 }
             });
-            mModel.addImeTile(imeTile, new QuickSettingsModel.RefreshCallback() {
-                @Override
-                public void refreshView(QuickSettingsTileView view, State state) {
-                    TextView tv = (TextView) view.findViewById(R.id.ime_textview);
-                    if (state.label != null) {
-                        tv.setText(state.label);
-                        tv.setTextSize(1, mTileTextSize);
-                        if (mTileTextColor != -2) {
-                            tv.setTextColor(mTileTextColor);
-                        }
-                    }
-                    view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
-                }
-            });
+            mModel.addImeTile(imeTile,
+                    new QuickSettingsModel.BasicRefreshCallback(imeTile)
+                            .setShowWhenEnabled(true));
             parent.addView(imeTile);
         }
 

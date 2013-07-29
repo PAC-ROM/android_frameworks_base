@@ -156,7 +156,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         mUserId = mLockPatternUtils.getCurrentUser();
         mAppWidgetHost = new AppWidgetHost(
                 context, APPWIDGET_HOST_ID, mOnClickHandler, Looper.myLooper());
-        mAppWidgetHost.setUserId(mUserId);
+        // mAppWidgetHost.setUserId(mUserId);
         cleanupAppWidgetIds();
 
         if (DEBUG) Log.e(TAG, "KeyguardHostView()");
@@ -167,7 +167,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         // user switches, since mUserId will be used for the entire session.
         // Once created, keyguard should *never* re-use this instance with another user.
         // In other words, mUserId should never change - hence it's marked final.
-        mUserId = mLockPatternUtils.getCurrentUser();
+        // mUserId = mLockPatternUtils.getCurrentUser();
 
         DevicePolicyManager dpm =
                 (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);

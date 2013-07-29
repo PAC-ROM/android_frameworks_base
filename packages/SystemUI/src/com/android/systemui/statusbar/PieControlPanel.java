@@ -66,7 +66,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
     private WindowManager mWindowManager;
     private Display mDisplay;
     private KeyguardManager mKeyguardManger;
-    
+
     ViewGroup mContentFrame;
     Rect mContentArea = new Rect();
 
@@ -134,7 +134,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
     }
 
     static private int[] gravityArray = {Gravity.BOTTOM, Gravity.LEFT, Gravity.TOP, Gravity.RIGHT, Gravity.BOTTOM, Gravity.LEFT};
-    static public int findGravityOffset(int gravity) {    
+    static public int findGravityOffset(int gravity) {
         for (int gravityIndex = 1; gravityIndex < gravityArray.length - 2; gravityIndex++) {
             if (gravity == gravityArray[gravityIndex])
                 return gravityIndex;
@@ -150,7 +150,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             int gravityIndex = findGravityOffset(convertPieGravitytoGravity(
                     Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.PIE_GRAVITY, 3)));
-            
+
             // Orient Pie to that place
             reorient(gravityArray[gravityIndex], false);
 
@@ -268,7 +268,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             case Gravity.RIGHT:
                 mPieControl.setCenter(mWidth, (verticalPos != -1 ? verticalPos : mHeight / 2));
                 break;
-            case Gravity.BOTTOM: 
+            case Gravity.BOTTOM:
                 mPieControl.setCenter((verticalPos != -1 ? verticalPos : mWidth / 2), mHeight);
                 break;
         }
@@ -302,7 +302,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
 
     private Intent getAssistIntent() {
         Intent intent = ((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
-                .getAssistIntent(mContext, UserHandle.USER_CURRENT);
+                    .getAssistIntent(mContext, true, UserHandle.USER_CURRENT);
         return intent;
     }
 

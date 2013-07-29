@@ -1941,8 +1941,6 @@
   <java-symbol type="bool" name="config_hasRemovableLid" />
   <java-symbol type="bool" name="config_hasDockBattery" />
   <java-symbol type="bool" name="config_noDelayInATwoDP" />
-  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
-  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
 
   <!-- Lockscreen -->
   <java-symbol type="drawable" name="ic_lockscreen_empty" />
@@ -2001,6 +1999,11 @@
   <!-- Wifi -->
   <java-symbol type="bool" name="config_wifiApStartInterface" />
   <java-symbol type="bool" name="config_wifiApFirmwareReload" />
+
+  <!-- Device specific handlers -->
+  <java-symbol type="string" name="config_deviceHandlersLib" />
+  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
+  <java-symbol type="string" name="config_deviceDockBatteryHandlerClass" />
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />

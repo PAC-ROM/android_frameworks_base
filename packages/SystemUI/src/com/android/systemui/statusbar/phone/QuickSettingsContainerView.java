@@ -83,7 +83,7 @@ public class QuickSettingsContainerView extends FrameLayout {
         float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);
 
         // Update each of the children's widths accordingly to the cell width
-        final int N = getChildCount();
+        int N = getChildCount();
         int cellHeight = 0;
         int cursor = 0;
         for (int i = 0; i < N; ++i) {
@@ -121,11 +121,8 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        final int N = getChildCount();
-        final boolean isLayoutRtl = isLayoutRtl();
-        final int width = getWidth();
-
-        int x = getPaddingStart();
+        int N = getChildCount();
+        int x = getPaddingLeft();
         int y = getPaddingTop();
         int cursor = 0;
 
@@ -150,14 +147,8 @@ public class QuickSettingsContainerView extends FrameLayout {
                     row++;
                 }
 
-                final int childLeft = (isLayoutRtl) ? width - x - childWidth : x;
-                final int childRight = childLeft + childWidth;
-
-                final int childTop = y;
-                final int childBottom = childTop + childHeight;
-
                 // Layout the container
-                child.layout(childLeft, childTop, childRight, childBottom);
+                v.layout(x, y, x + lp.width, y + lp.height);
 
                 // Offset the position by the cell gap or reset the position and cursor when we
                 // reach the end of the row
@@ -165,8 +156,8 @@ public class QuickSettingsContainerView extends FrameLayout {
                 if (cursor < (((row + 1) * mNumFinalColumns))) {
                     x += lp.width + mCellGap;
                 } else {
-                    x = getPaddingStart();
-                    y += childHeight + mCellGap;
+                    x = getPaddingLeft();
+                    y += lp.height + mCellGap;
                 }
             }
         }

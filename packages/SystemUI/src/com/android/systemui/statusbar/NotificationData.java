@@ -19,13 +19,13 @@ package com.android.systemui.statusbar;
 
 import android.app.Notification;
 import android.graphics.Bitmap;
-import android.service.notification.StatusBarNotification;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageView;
 
+import android.service.notification.StatusBarNotification;
+
 import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
-import com.android.internal.statusbar.StatusBarNotification;
 import com.android.systemui.R;
 
 import java.util.Comparator;

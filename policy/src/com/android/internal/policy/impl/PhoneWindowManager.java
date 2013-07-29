@@ -535,9 +535,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mOverscanRight = 0;
     int mOverscanBottom = 0;
 
-    // What we do when the user long presses on home
-    private int mLongPressOnHomeBehavior;
-
     // What we do when the user double-taps on home
     private int mDoubleTapOnHomeBehavior;
 
@@ -1340,7 +1337,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
      * eg. Disable long press on home goes to recents on sw600dp.
      */
     private void readConfigurationDependentBehaviors() {
-        /* TEMP DISABLE: This conflicts with CM's own multi-behavior code 
+        /* TEMP DISABLE: This conflicts with CM's own multi-behavior code
         mLongPressOnHomeBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_longPressOnHomeBehavior);
         if (mLongPressOnHomeBehavior < LONG_PRESS_HOME_NOTHING ||
@@ -2524,7 +2521,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 }
 
-                /* TEMP DISABLE: This conflicts with CM's own multi-behavior code 
+                /* TEMP DISABLE: This conflicts with CM's own multi-behavior code
                 // Delay handling home if a double-tap is possible.
                 if (mDoubleTapOnHomeBehavior != DOUBLE_TAP_HOME_NOTHING) {
                     mHandler.removeCallbacks(mHomeDoubleTapTimeoutRunnable); // just in case
@@ -2964,36 +2961,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return mSearchManager;
     }
 
-    private void preloadRecentApps() {
-        mPreloadedRecentApps = true;
-        try {
-            IStatusBarService statusbar = getStatusBarService();
-            if (statusbar != null) {
-                statusbar.preloadRecentApps();
-            }
-        } catch (RemoteException e) {
-            Slog.e(TAG, "RemoteException when preloading recent apps", e);
-            // re-acquire status bar service next time it is needed.
-            mStatusBarService = null;
-        }
-    }
-
-    private void cancelPreloadRecentApps() {
-        if (mPreloadedRecentApps) {
-            mPreloadedRecentApps = false;
-            try {
-                IStatusBarService statusbar = getStatusBarService();
-                if (statusbar != null) {
-                    statusbar.cancelPreloadRecentApps();
-                }
-            } catch (RemoteException e) {
-                Slog.e(TAG, "RemoteException when showing recent apps", e);
-                // re-acquire status bar service next time it is needed.
-                mStatusBarService = null;
-            }
-        }
-    }
-
     private void toggleRecentApps() {
         mPreloadedRecentApps = false; // preloading no longer needs to be canceled
         sendCloseSystemWindows(SYSTEM_DIALOG_REASON_RECENT_APPS);
@@ -3277,14 +3244,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // For purposes of positioning and showing the nav bar, if we have
             // decided that it can't be hidden (because of the screen aspect ratio),
             // then take that into account.
-            if (expandedDesktopHidesNavigationBar()
-                    && (mLastSystemUiFlags & View.SYSTEM_UI_FLAG_SHOW_NAVIGATION_IN_EXPANDED_DESKTOP) == 0) {
-                navVisible = false;
-                navWidth = 0;
-                navHeight = 0;
-            } else if (!mCanHideNavigationBar) {
-                navVisible = true;
-            }
+            navVisible |= !mCanHideNavigationBar;
+            navVisible &= (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
 
             if (mNavigationBar != null) {
                 // Force the navigation bar to its appropriate place and
@@ -3841,10 +3803,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private boolean shouldHideNavigationBarLw(int systemUiVisibility) {
+        boolean expDesktop = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         if (expandedDesktopHidesNavigationBar()) {
-            if ((systemUiVisibility & View.SYSTEM_UI_FLAG_SHOW_NAVIGATION_IN_EXPANDED_DESKTOP) == 0) {
-                return true;
-            }
+            return true;
         }
 
         if (mCanHideNavigationBar) {

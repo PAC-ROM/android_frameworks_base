@@ -31,6 +31,7 @@ import android.os.SystemProperties;
 import android.renderscript.Matrix4f;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
@@ -40,6 +41,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+import javax.microedition.khronos.opengles.GL;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -91,7 +93,6 @@ public class ImageWallpaper extends WallpaperService {
         return "1".equals(SystemProperties.get(PROPERTY_KERNEL_QEMU, "0"));
     }
 
-    @Override
     public Engine onCreateEngine() {
         mEngine = new DrawableEngine();
         return mEngine;
@@ -100,6 +101,8 @@ public class ImageWallpaper extends WallpaperService {
     class DrawableEngine extends Engine {
         static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         static final int EGL_OPENGL_ES2_BIT = 4;
+
+        private final Object mLock = new Object[0];
 
         // TODO: Not currently used, keeping around until we know we don't need it
         @SuppressWarnings({"UnusedDeclaration"})
@@ -122,6 +125,7 @@ public class ImageWallpaper extends WallpaperService {
         private EGLConfig mEglConfig;
         private EGLContext mEglContext;
         private EGLSurface mEglSurface;
+        private GL mGL;
 
         private static final String sSimpleVS =
                 "attribute vec4 position;\n" +
@@ -146,16 +150,17 @@ public class ImageWallpaper extends WallpaperService {
         private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
 
         class WallpaperObserver extends BroadcastReceiver {
-            @Override
             public void onReceive(Context context, Intent intent) {
                 if (DEBUG) {
                     Log.d(TAG, "onReceive");
                 }
 
-                mLastSurfaceWidth = mLastSurfaceHeight = -1;
-                mBackground = null;
-                mRedrawNeeded = true;
-                drawFrame();
+                synchronized (mLock) {
+                    mLastSurfaceWidth = mLastSurfaceHeight = -1;
+                    mBackground = null;
+                    mRedrawNeeded = true;
+                    drawFrameLocked();
+                }
             }
         }
 
@@ -229,12 +234,14 @@ public class ImageWallpaper extends WallpaperService {
                 Log.d(TAG, "onVisibilityChanged: mVisible, visible=" + mVisible + ", " + visible);
             }
 
-            if (mVisible != visible) {
-                if (DEBUG) {
-                    Log.d(TAG, "Visibility changed to visible=" + visible);
+            synchronized (mLock) {
+                if (mVisible != visible) {
+                    if (DEBUG) {
+                        Log.d(TAG, "Visibility changed to visible=" + visible);
+                    }
+                    mVisible = visible;
+                    drawFrameLocked();
                 }
-                mVisible = visible;
-                drawFrame();
             }
         }
 
@@ -253,15 +260,15 @@ public class ImageWallpaper extends WallpaperService {
                         + ", xPixels=" + xPixels + ", yPixels=" + yPixels);
             }
 
-            if (mXOffset != xOffset || mYOffset != yOffset) {
-                if (DEBUG) {
-                    Log.d(TAG, "Offsets changed to (" + xOffset + "," + yOffset + ").");
+            synchronized (mLock) {
+                if (mXOffset != xOffset || mYOffset != yOffset) {
+                    if (DEBUG) {
+                        Log.d(TAG, "Offsets changed to (" + xOffset + "," + yOffset + ").");
+                    }
+                    mOffsetsChanged = true;
                 }
-                mXOffset = xOffset;
-                mYOffset = yOffset;
-                mOffsetsChanged = true;
+                drawFrameLocked();
             }
-            drawFrame();
         }
 
         @Override
@@ -272,7 +279,9 @@ public class ImageWallpaper extends WallpaperService {
 
             super.onSurfaceChanged(holder, format, width, height);
 
-            drawFrame();
+            synchronized (mLock) {
+                drawFrameLocked();
+            }
         }
 
         @Override
@@ -294,10 +303,12 @@ public class ImageWallpaper extends WallpaperService {
             }
             super.onSurfaceRedrawNeeded(holder);
 
-            drawFrame();
+            synchronized (mLock) {
+                drawFrameLocked();
+            }
         }
 
-        void drawFrame() {
+        void drawFrameLocked() {
             SurfaceHolder sh = getSurfaceHolder();
             final Rect frame = sh.getSurfaceFrame();
             final int dw = frame.width();
@@ -388,6 +399,7 @@ public class ImageWallpaper extends WallpaperService {
         private void updateWallpaperLocked() {
             Throwable exception = null;
             try {
+                mWallpaperManager.forgetLoadedWallpaper(); // force reload
                 mBackground = null;
                 mBackground = mWallpaperManager.getBitmap();
             } catch (RuntimeException e) {
@@ -485,12 +497,14 @@ public class ImageWallpaper extends WallpaperService {
 
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-            boolean status = mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
+            if (!mEgl.eglSwapBuffers(mEglDisplay, mEglSurface)) {
+                throw new RuntimeException("Cannot swap buffers");
+            }
             checkEglError();
 
             finishGL();
 
-            return status;
+            return true;
         }
 
         private FloatBuffer createMesh(int left, int top, float right, float bottom) {
@@ -602,7 +616,6 @@ public class ImageWallpaper extends WallpaperService {
             mEgl.eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
             mEgl.eglDestroySurface(mEglDisplay, mEglSurface);
             mEgl.eglDestroyContext(mEglDisplay, mEglContext);
-            mEgl.eglTerminate(mEglDisplay);
         }
 
         private boolean initGL(SurfaceHolder surfaceHolder) {
@@ -627,26 +640,9 @@ public class ImageWallpaper extends WallpaperService {
 
             mEglContext = createContext(mEgl, mEglDisplay, mEglConfig);
 
-            if (mEglContext == EGL_NO_CONTEXT) {
-                throw new RuntimeException("createContext failed " +
-                        GLUtils.getEGLErrorString(mEgl.eglGetError()));
-            }
-
-            int attribs[] = {
-                EGL_WIDTH, 1,
-                EGL_HEIGHT, 1,
-                EGL_NONE
-            };
-            EGLSurface tmpSurface = mEgl.eglCreatePbufferSurface(mEglDisplay, mEglConfig, attribs);
-            mEgl.eglMakeCurrent(mEglDisplay, tmpSurface, tmpSurface, mEglContext);
-
             int[] maxSize = new int[1];
             Rect frame = surfaceHolder.getSurfaceFrame();
             glGetIntegerv(GL_MAX_TEXTURE_SIZE, maxSize, 0);
-
-            mEgl.eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-            mEgl.eglDestroySurface(mEglDisplay, tmpSurface);
-
             if(frame.width() > maxSize[0] || frame.height() > maxSize[0]) {
                 mEgl.eglDestroyContext(mEglDisplay, mEglContext);
                 mEgl.eglTerminate(mEglDisplay);
@@ -657,6 +653,7 @@ public class ImageWallpaper extends WallpaperService {
             }
 
             mEglSurface = mEgl.eglCreateWindowSurface(mEglDisplay, mEglConfig, surfaceHolder, null);
+
             if (mEglSurface == null || mEglSurface == EGL_NO_SURFACE) {
                 int error = mEgl.eglGetError();
                 if (error == EGL_BAD_NATIVE_WINDOW || error == EGL_BAD_ALLOC) {
@@ -672,6 +669,8 @@ public class ImageWallpaper extends WallpaperService {
                 throw new RuntimeException("eglMakeCurrent failed " +
                         GLUtils.getEGLErrorString(mEgl.eglGetError()));
             }
+
+            mGL = mEglContext.getGL();
 
             return true;
         }
