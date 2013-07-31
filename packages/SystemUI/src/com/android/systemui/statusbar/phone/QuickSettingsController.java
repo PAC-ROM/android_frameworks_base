@@ -194,8 +194,8 @@ public class QuickSettingsController {
             } else if (tile.equals(TILE_BLUETOOTH) && bluetoothSupported) {
                 qs = new BluetoothTile(mContext, inflater, mContainerView, this);
             } else if (tile.equals(TILE_BRIGHTNESS)) {
-                qs = new BrightnessTile(mContext, inflater, mContainerView, this, mHandler);
-			} else if (tile.equals(TILE_CAMERA) && cameraSupported) {
+                qs = new BrightnessTile(mContext, inflater, mContainerView, this);
+	    } else if (tile.equals(TILE_CAMERA) && cameraSupported) {
                 qs = new CameraTile(mContext, inflater, mContainerView, this, mHandler);			
             } else if (tile.equals(TILE_RINGER)) {
                 qs = new RingerModeTile(mContext, inflater, mContainerView, this);
