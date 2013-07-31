@@ -380,7 +380,8 @@ final class ActivityStack {
                         m = "pausing " + r;
                     }
                     if (pid > 0) {
-                        mService.logAppTooSlow(pid, pauseTime, m);
+                         mService.logAppTooSlow(r.app, r.launchTickTime,
+                                    "launching " + r);
                     }
 
                     activityPaused(r != null ? r.appToken : null, true);
@@ -414,7 +415,8 @@ final class ActivityStack {
                         }
                     }
                     if (pid > 0) {
-                        mService.logAppTooSlow(pid, launchTickTime, m);
+                         mService.logAppTooSlow(r.app, r.launchTickTime,
+                                    "launching " + r);
                     }
                 } break;
                 case DESTROY_TIMEOUT_MSG: {

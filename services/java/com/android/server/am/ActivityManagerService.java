@@ -3350,7 +3350,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
         }
     }
 
-    final void logAppTooSlow(int pid, long startTime, String msg) {
+    final void logAppTooSlow(ProcessRecord app, long startTime, String msg) {
         if (true || IS_USER_BUILD) {
             return;
         }
@@ -3389,7 +3389,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 sb.append(msg);
                 fos = new FileOutputStream(tracesFile);
                 fos.write(sb.toString().getBytes());
-                if (pid <= 0) {
+                if (app == null) {
                     fos.write("\n*** No application process!".getBytes());
                 }
             } catch (IOException e) {
@@ -3406,9 +3406,9 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 }
             }
 
-            if (pid > 0) {
+            if (app != null) {
                 ArrayList<Integer> firstPids = new ArrayList<Integer>();
-                firstPids.add(pid);
+                firstPids.add(app.pid);
                 dumpStackTraces(tracesPath, firstPids, null, null, null);
             }
 
@@ -6685,7 +6685,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     // pending on the process even though we managed to update its
                     // adj level.  Not sure what to do about this, but at least
                     // the race is now smaller.
-                    if (!success || !Process.isAlive(cpr.proc.pid)) {
+                    if (!success) {
                         // Uh oh...  it looks like the provider's process
                         // has been killed on us.  We need to wait for a new
                         // process to be started, and make sure its death
@@ -6694,9 +6694,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                                 "Existing provider " + cpr.name.flattenToShortString()
                                 + " is crashing; detaching " + r);
                         boolean lastRef = decProviderCountLocked(conn, cpr, token, stable);
-                        if (!success) {
-                            appDiedLocked(cpr.proc, cpr.proc.pid, cpr.proc.thread);
-                        }
+                        appDiedLocked(cpr.proc, cpr.proc.pid, cpr.proc.thread);
                         if (!lastRef) {
                             // This wasn't the last ref our process had on
                             // the provider...  we have now been killed, bail.

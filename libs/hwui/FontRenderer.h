@@ -137,7 +137,6 @@ private:
 
     void removeFont(const Font* font);
 
-    void updateDrawParams();
     void checkTextureUpdate();
 
     void setTextureDirty() {

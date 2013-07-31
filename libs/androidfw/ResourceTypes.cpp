@@ -569,7 +569,7 @@ decodeLength(const uint8_t** str)
     return len;
 }
 
-const char16_t* ResStringPool::stringAt(size_t idx, size_t* u16len) const
+const uint16_t* ResStringPool::stringAt(size_t idx, size_t* u16len) const
 {
     if (mError == NO_ERROR && idx < mHeader->stringCount) {
         const bool isUTF8 = (mHeader->flags&ResStringPool_header::UTF8_FLAG) != 0;
@@ -814,7 +814,7 @@ int32_t ResXMLParser::getCommentID() const
 const uint16_t* ResXMLParser::getComment(size_t* outLen) const
 {
     int32_t id = getCommentID();
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 uint32_t ResXMLParser::getLineNumber() const
@@ -833,7 +833,7 @@ int32_t ResXMLParser::getTextID() const
 const uint16_t* ResXMLParser::getText(size_t* outLen) const
 {
     int32_t id = getTextID();
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 ssize_t ResXMLParser::getTextValue(Res_value* outValue) const
@@ -857,7 +857,7 @@ const uint16_t* ResXMLParser::getNamespacePrefix(size_t* outLen) const
 {
     int32_t id = getNamespacePrefixID();
     //printf("prefix=%d  event=%p\n", id, mEventCode);
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 int32_t ResXMLParser::getNamespaceUriID() const
@@ -872,7 +872,7 @@ const uint16_t* ResXMLParser::getNamespaceUri(size_t* outLen) const
 {
     int32_t id = getNamespaceUriID();
     //printf("uri=%d  event=%p\n", id, mEventCode);
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 int32_t ResXMLParser::getElementNamespaceID() const
@@ -889,7 +889,7 @@ int32_t ResXMLParser::getElementNamespaceID() const
 const uint16_t* ResXMLParser::getElementNamespace(size_t* outLen) const
 {
     int32_t id = getElementNamespaceID();
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 int32_t ResXMLParser::getElementNameID() const
@@ -906,7 +906,7 @@ int32_t ResXMLParser::getElementNameID() const
 const uint16_t* ResXMLParser::getElementName(size_t* outLen) const
 {
     int32_t id = getElementNameID();
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 size_t ResXMLParser::getAttributeCount() const
@@ -937,7 +937,7 @@ const uint16_t* ResXMLParser::getAttributeNamespace(size_t idx, size_t* outLen) 
     int32_t id = getAttributeNamespaceID(idx);
     //printf("attribute namespace=%d  idx=%d  event=%p\n", id, idx, mEventCode);
     //XML_NOISY(printf("getAttributeNamespace 0x%x=0x%x\n", idx, id));
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 int32_t ResXMLParser::getAttributeNameID(size_t idx) const
@@ -960,7 +960,7 @@ const uint16_t* ResXMLParser::getAttributeName(size_t idx, size_t* outLen) const
     int32_t id = getAttributeNameID(idx);
     //printf("attribute name=%d  idx=%d  event=%p\n", id, idx, mEventCode);
     //XML_NOISY(printf("getAttributeName 0x%x=0x%x\n", idx, id));
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 uint32_t ResXMLParser::getAttributeNameResID(size_t idx) const
@@ -991,7 +991,7 @@ const uint16_t* ResXMLParser::getAttributeStringValue(size_t idx, size_t* outLen
 {
     int32_t id = getAttributeValueStringID(idx);
     //XML_NOISY(printf("getAttributeValue 0x%x=0x%x\n", idx, id));
-    return id >= 0 ? (const uint16_t*)mTree.mStrings.stringAt(id, outLen) : NULL;
+    return id >= 0 ? mTree.mStrings.stringAt(id, outLen) : NULL;
 }
 
 int32_t ResXMLParser::getAttributeDataType(size_t idx) const
@@ -1055,8 +1055,8 @@ ssize_t ResXMLParser::indexOfAttribute(const char16_t* ns, size_t nsLen,
         const size_t N = getAttributeCount();
         for (size_t i=0; i<N; i++) {
             size_t curNsLen, curAttrLen;
-            const char16_t* curNs = (const char16_t*)getAttributeNamespace(i, &curNsLen);
-            const char16_t* curAttr = (const char16_t*)getAttributeName(i, &curAttrLen);
+            const char16_t* curNs = getAttributeNamespace(i, &curNsLen);
+            const char16_t* curAttr = getAttributeName(i, &curAttrLen);
             //printf("%d: ns=%p attr=%p curNs=%p curAttr=%p\n",
             //       i, ns, attr, curNs, curAttr);
             //printf(" --> attr=%s, curAttr=%s\n",
@@ -1113,7 +1113,7 @@ ResXMLParser::event_code_t ResXMLParser::nextNode()
         const ResXMLTree_node* next = (const ResXMLTree_node*)
             (((const uint8_t*)mCurNode) + dtohl(mCurNode->header.size));
         //ALOGW("Next node: prev=%p, next=%p\n", mCurNode, next);
-        
+
         if (((const uint8_t*)next) >= mTree.mDataEnd) {
             mCurNode = NULL;
             return (mEventCode=END_DOCUMENT);
@@ -1150,7 +1150,7 @@ ResXMLParser::event_code_t ResXMLParser::nextNode()
                      (int)(((const uint8_t*)next)-((const uint8_t*)mTree.mHeader)));
                 continue;
         }
-        
+
         if ((totalSize-headerSize) < minExtSize) {
             ALOGW("Bad XML block: header type 0x%x in node at 0x%x has size %d, need %d\n",
                  (int)dtohs(next->header.type),
@@ -1158,10 +1158,10 @@ ResXMLParser::event_code_t ResXMLParser::nextNode()
                  (int)(totalSize-headerSize), (int)minExtSize);
             return (mEventCode=BAD_DOCUMENT);
         }
-        
+
         //printf("CurNode=%p, CurExt=%p, headerSize=%d, minExtSize=%d\n",
         //       mCurNode, mCurExt, headerSize, minExtSize);
-        
+
         return eventCode;
     } while (true);
 }
@@ -2393,7 +2393,7 @@ struct ResTable::Package
             delete types[i];
         }
     }
-    
+
     ResTable* const                 owner;
     const Header* const             header;
     const ResTable_package* const   package;
@@ -2401,7 +2401,7 @@ struct ResTable::Package
 
     ResStringPool                   typeStrings;
     ResStringPool                   keyStrings;
-    
+
     const Type* getType(size_t idx) const {
         return idx < types.size() ? types[idx] : NULL;
     }
@@ -2451,18 +2451,18 @@ struct ResTable::PackageGroup
             bags = NULL;
         }
     }
-    
+
     ResTable* const                 owner;
     String16 const                  name;
     uint32_t const                  id;
     Vector<Package*>                packages;
-    
+
     // This is for finding typeStrings and other common package stuff.
     Package*                        basePackage;
 
     // For quick access.
     size_t                          typeCount;
-    
+
     // Computed attribute bags, first indexed by the type and second
     // by the entry in that type.
     bag_set***                      bags;
@@ -2618,7 +2618,7 @@ status_t ResTable::Theme::applyStyle(uint32_t resID, bool force)
 
     //ALOGI("Applying style 0x%08x (force=%d)  theme %p...\n", resID, force, this);
     //dumpToLog();
-    
+
     return NO_ERROR;
 }
 
@@ -2627,7 +2627,7 @@ status_t ResTable::Theme::setTo(const Theme& other)
     //ALOGI("Setting theme %p from theme %p...\n", this, &other);
     //dumpToLog();
     //other.dumpToLog();
-    
+
     if (&mTable == &other.mTable) {
         for (size_t i=0; i<Res_MAXPACKAGE; i++) {
             if (mPackages[i] != NULL) {
@@ -2657,7 +2657,7 @@ status_t ResTable::Theme::setTo(const Theme& other)
 
     //ALOGI("Final theme:");
     //dumpToLog();
-    
+
     return NO_ERROR;
 }
 
@@ -2667,7 +2667,7 @@ ssize_t ResTable::Theme::getAttribute(uint32_t resID, Res_value* outValue,
     int cnt = 20;
 
     if (outTypeSpecFlags != NULL) *outTypeSpecFlags = 0;
-    
+
     do {
         const ssize_t p = mTable.getResourcePackageIndex(resID);
         const uint32_t t = Res_GETTYPE(resID);
@@ -2741,12 +2741,12 @@ void ResTable::Theme::dumpToLog() const
     for (size_t i=0; i<Res_MAXPACKAGE; i++) {
         package_info* pi = mPackages[i];
         if (pi == NULL) continue;
-        
+
         ALOGI("  Package #0x%02x:\n", (int)(i+1));
         for (size_t j=0; j<pi->numTypes; j++) {
             type_info& ti = pi->types[j];
             if (ti.numEntries == 0) continue;
-            
+
             ALOGI("    Type #0x%02x:\n", (int)(j+1));
             for (size_t k=0; k<ti.numEntries; k++) {
                 theme_entry& te = ti.entries[k];
@@ -2808,11 +2808,11 @@ status_t ResTable::add(Asset* asset, void* cookie, bool copyData, const void* id
 status_t ResTable::add(ResTable* src)
 {
     mError = src->mError;
-    
+
     for (size_t i=0; i<src->mHeaders.size(); i++) {
         mHeaders.add(src->mHeaders[i]);
     }
-    
+
     for (size_t i=0; i<src->mPackageGroups.size(); i++) {
         PackageGroup* srcPg = src->mPackageGroups[i];
         PackageGroup* pg = new PackageGroup(this, srcPg->name, srcPg->id);
@@ -2823,9 +2823,9 @@ status_t ResTable::add(ResTable* src)
         pg->typeCount = srcPg->typeCount;
         mPackageGroups.add(pg);
     }
-    
+
     memcpy(mPackageMap, src->mPackageMap, sizeof(mPackageMap));
-    
+
     return mError;
 }
 
@@ -2854,7 +2854,7 @@ status_t ResTable::add(const void* data, size_t size, void* cookie,
     LOAD_TABLE_NOISY(
         ALOGV("Adding resources to ResTable: data=%p, size=0x%x, cookie=%p, asset=%p, copy=%d "
              "idmap=%p\n", data, size, cookie, asset, copyData, idmap));
-    
+
     if (copyData || notDeviceEndian) {
         header->ownedData = malloc(size);
         if (header->ownedData == NULL) {
@@ -3173,7 +3173,7 @@ ssize_t ResTable::getResource(uint32_t resID, Res_value* outValue, bool mayBeBag
             // are identical (diff == 0), or overlay packages will not take effect.
             continue;
         }
-        
+
         bestItem = thisConfig;
         bestValue = item;
         bestPackage = package;
@@ -3385,7 +3385,7 @@ ssize_t ResTable::getBagLocked(uint32_t resID, const bag_entry** outBag,
     bag_set* set = NULL;
 
     TABLE_NOISY(ALOGI("Building bag: %p\n", (void*)resID));
-    
+
     ResTable_config bestConfig;
     memset(&bestConfig, 0, sizeof(bestConfig));
 
@@ -3451,7 +3451,7 @@ ssize_t ResTable::getBagLocked(uint32_t resID, const bag_entry** outBag,
             ? dtohl(((const ResTable_map_entry*)entry)->parent.ident) : 0;
         const uint32_t count = entrySize >= sizeof(ResTable_map_entry)
             ? dtohl(((const ResTable_map_entry*)entry)->count) : 0;
-        
+
         size_t N = count;
 
         TABLE_NOISY(ALOGI("Found map: size=%p parent=%p count=%d\n",
@@ -3507,7 +3507,7 @@ ssize_t ResTable::getBagLocked(uint32_t resID, const bag_entry** outBag,
         } else {
             set->typeSpecFlags = -1;
         }
-        
+
         // Now merge in the new attributes...
         ssize_t curOff = offset;
         const ResTable_map* map;
@@ -3770,7 +3770,7 @@ nope:
             TABLE_NOISY(printf("Expected type structure not found in package %s for idnex %d\n",
                                String8(group->name).string(), ti));
         }
-        
+
         size_t NTC = typeConfigs->configs.size();
         for (size_t tci=0; tci<NTC; tci++) {
             const ResTable_type* const ty = typeConfigs->configs[tci];
@@ -3786,9 +3786,9 @@ nope:
                 if (offset == ResTable_type::NO_ENTRY) {
                     continue;
                 }
-                
+
                 offset += typeOffset;
-                
+
                 if (offset > (dtohl(ty->header.size)-sizeof(ResTable_entry))) {
                     ALOGW("ResTable_entry at %d is beyond type chunk data %d",
                          offset, dtohl(ty->header.size));
@@ -3802,7 +3802,7 @@ nope:
                          String8(name, nameLen).string());
                     return 0;
                 }
-                
+
                 const ResTable_entry* const entry = (const ResTable_entry*)
                     (((const uint8_t*)ty) + offset);
                 if (dtohs(entry->size) < sizeof(*entry)) {
@@ -3839,7 +3839,7 @@ bool ResTable::expandResourceRef(const uint16_t* refStr, size_t refLen,
 {
     const char16_t* packageEnd = NULL;
     const char16_t* typeEnd = NULL;
-    const char16_t* p = (const char16_t*)refStr;
+    const char16_t* p = refStr;
     const char16_t* const end = p + refLen;
     while (p < end) {
         if (*p == ':') packageEnd = p;
@@ -3849,7 +3849,7 @@ bool ResTable::expandResourceRef(const uint16_t* refStr, size_t refLen,
         }
         p++;
     }
-    p = (char16_t*)refStr;
+    p = refStr;
     if (*p == '@') p++;
 
     if (outPublicOnly != NULL) {
@@ -3959,7 +3959,7 @@ static bool parse_unit(const char* str, Res_value* outValue,
     if (*realEnd != 0) {
         return false;
     }
-    
+
     const unit_entry* cur = unitNames;
     while (cur->name) {
         if (len == cur->len && strncmp(cur->name, str, len) == 0) {
@@ -4110,7 +4110,7 @@ bool ResTable::stringToFloat(const char16_t* s, size_t len, Res_value* outValue)
             if (neg) {
                 mantissa = (-mantissa) & Res_value::COMPLEX_MANTISSA_MASK;
             }
-            outValue->data |= 
+            outValue->data |=
                 (radix<<Res_value::COMPLEX_RADIX_SHIFT)
                 | (mantissa<<Res_value::COMPLEX_MANTISSA_SHIFT);
             //printf("Input value: %f 0x%016Lx, mult: %f, radix: %d, shift: %d, final: 0x%08x\n",
@@ -4128,7 +4128,7 @@ bool ResTable::stringToFloat(const char16_t* s, size_t len, Res_value* outValue)
     if (*end == 0) {
         if (outValue) {
             outValue->dataType = outValue->TYPE_FLOAT;
-            memcpy(&outValue->data, &f, sizeof(float)); // *(float*)(&outValue->data) = f;
+            *(float*)(&outValue->data) = f;
             return true;
         }
     }
@@ -4223,7 +4223,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
         // Note: we don't check attrType here because the reference can
         // be to any other type; we just need to count on the client making
         // sure the referenced type is correct.
-        
+
         //printf("Looking up ref: %s\n", String8(s, len).string());
 
         // It's a reference!
@@ -4248,7 +4248,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
                 resourceNameLen = len - 1;
             }
             String16 package, type, name;
-            if (!expandResourceRef((const uint16_t*)resourceRefName,resourceNameLen, &package, &type, &name,
+            if (!expandResourceRef(resourceRefName,resourceNameLen, &package, &type, &name,
                                    defType, defPackage, &errorMsg)) {
                 if (accessor != NULL) {
                     accessor->reportError(accessorCookie, errorMsg);
@@ -4310,7 +4310,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
             }
         }
     }
-    
+
     if (*s == '#') {
         // It's a color!  Convert to an integer of the form 0xaarrggbb.
         uint32_t color = 0;
@@ -4398,7 +4398,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
 
         static const String16 attr16("attr");
         String16 package, type, name;
-        if (!expandResourceRef((const uint16_t*)s+1, len-1, &package, &type, &name,
+        if (!expandResourceRef(s+1, len-1, &package, &type, &name,
                                &attr16, defPackage, &errorMsg)) {
             if (accessor != NULL) {
                 accessor->reportError(accessorCookie, errorMsg);
@@ -4410,7 +4410,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
         //       String8(package).string(), String8(type).string(),
         //       String8(name).string());
         uint32_t specFlags = 0;
-        uint32_t rid = 
+        uint32_t rid =
             identifierForName(name.string(), name.size(),
                               type.string(), type.size(),
                               package.string(), package.size(), &specFlags);
@@ -4575,7 +4575,7 @@ bool ResTable::stringToValue(Res_value* outValue, String16* outString,
                             return true;
                         }
                     }
-    
+
                 }
                 bag++;
                 cnt--;
@@ -4937,43 +4937,43 @@ ssize_t ResTable::getEntry(
             entryIndex, (int)allTypes->entryCount);
         return BAD_TYPE;
     }
-        
+
     const ResTable_type* type = NULL;
     uint32_t offset = ResTable_type::NO_ENTRY;
     ResTable_config bestConfig;
     memset(&bestConfig, 0, sizeof(bestConfig)); // make the compiler shut up
-    
+
     const size_t NT = allTypes->configs.size();
     for (size_t i=0; i<NT; i++) {
         const ResTable_type* const thisType = allTypes->configs[i];
         if (thisType == NULL) continue;
-        
+
         ResTable_config thisConfig;
         thisConfig.copyFromDtoH(thisType->config);
 
         TABLE_GETENTRY(ALOGI("Match entry 0x%x in type 0x%x (sz 0x%x): %s\n",
                            entryIndex, typeIndex+1, dtohl(thisType->config.size),
                            thisConfig.toString().string()));
-        
+
         // Check to make sure this one is valid for the current parameters.
         if (config && !thisConfig.match(*config)) {
             TABLE_GETENTRY(ALOGI("Does not match config!\n"));
             continue;
         }
-        
+
         // Check if there is the desired entry in this type.
-        
+
         const uint8_t* const end = ((const uint8_t*)thisType)
             + dtohl(thisType->header.size);
         const uint32_t* const eindex = (const uint32_t*)
             (((const uint8_t*)thisType) + dtohs(thisType->header.headerSize));
-        
+
         uint32_t thisOffset = dtohl(eindex[entryIndex]);
         if (thisOffset == ResTable_type::NO_ENTRY) {
             TABLE_GETENTRY(ALOGI("Skipping because it is not defined!\n"));
             continue;
         }
-        
+
         if (type != NULL) {
             // Check if this one is less specific than the last found.  If so,
             // we will skip it.  We check starting with things we most care
@@ -4983,19 +4983,19 @@ ssize_t ResTable::getEntry(
                 continue;
             }
         }
-        
+
         type = thisType;
         offset = thisOffset;
         bestConfig = thisConfig;
         TABLE_GETENTRY(ALOGI("Best entry so far -- using it!\n"));
         if (!config) break;
     }
-    
+
     if (type == NULL) {
         TABLE_GETENTRY(ALOGI("No value found for requested entry!\n"));
         return BAD_INDEX;
     }
-    
+
     offset += dtohl(type->entriesStart);
     TABLE_NOISY(aout << "Looking in resource table " << package->header->header
           << ", typeOff="
@@ -5060,7 +5060,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
              (void*)dtohl(pkg->keyStrings));
         return (mError=BAD_TYPE);
     }
-    
+
     Package* package = NULL;
     PackageGroup* group = NULL;
     uint32_t id = idmap_id != 0 ? idmap_id : dtohl(pkg->id);
@@ -5069,18 +5069,18 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
     // always loaded alongside their idmaps, but during idmap creation
     // the package is temporarily loaded by itself.
     if (id < 256) {
-    
+
         package = new Package(this, header, pkg);
         if (package == NULL) {
             return (mError=NO_MEMORY);
         }
-        
+
         size_t idx = mPackageMap[id];
         if (idx == 0) {
             idx = mPackageGroups.size()+1;
 
             char16_t tmpName[sizeof(pkg->name)/sizeof(char16_t)];
-            strcpy16_dtoh((uint16_t*)tmpName, (const uint16_t*)pkg->name, sizeof(pkg->name)/sizeof(char16_t));
+            strcpy16_dtoh(tmpName, pkg->name, sizeof(pkg->name)/sizeof(char16_t));
             group = new PackageGroup(this, String16(tmpName), id);
             if (group == NULL) {
                 delete package;
@@ -5108,7 +5108,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
                 return (mError=err);
             }
             group->basePackage = package;
-            
+
             mPackageMap[id] = (uint8_t)idx;
         } else {
             group = mPackageGroups.itemAt(idx-1);
@@ -5125,10 +5125,10 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
         return NO_ERROR;
     }
 
-    
+
     // Iterate through all chunks.
     size_t curPackage = 0;
-    
+
     const ResChunk_header* chunk =
         (const ResChunk_header*)(((const uint8_t*)pkg)
                                  + dtohs(pkg->header.headerSize));
@@ -5147,9 +5147,9 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
             if (err != NO_ERROR) {
                 return (mError=err);
             }
-            
+
             const size_t typeSpecSize = dtohl(typeSpec->header.size);
-            
+
             LOAD_TABLE_NOISY(printf("TypeSpec off %p: type=0x%x, headerSize=0x%x, size=%p\n",
                                     (void*)(base-(const uint8_t*)chunk),
                                     dtohs(typeSpec->header.type),
@@ -5165,12 +5165,12 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
                      (void*)typeSpecSize);
                 return (mError=BAD_TYPE);
             }
-            
+
             if (typeSpec->id == 0) {
                 ALOGW("ResTable_type has an id of 0.");
                 return (mError=BAD_TYPE);
             }
-            
+
             while (package->types.size() < typeSpec->id) {
                 package->types.add(NULL);
             }
@@ -5186,7 +5186,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
             t->typeSpecFlags = (const uint32_t*)(
                     ((const uint8_t*)typeSpec) + dtohs(typeSpec->header.headerSize));
             t->typeSpec = typeSpec;
-            
+
         } else if (ctype == RES_TABLE_TYPE_TYPE) {
             const ResTable_type* type = (const ResTable_type*)(chunk);
             err = validate_chunk(&type->header, sizeof(*type)-sizeof(ResTable_config)+4,
@@ -5194,9 +5194,9 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
             if (err != NO_ERROR) {
                 return (mError=err);
             }
-            
+
             const size_t typeSize = dtohl(type->header.size);
-            
+
             LOAD_TABLE_NOISY(printf("Type off %p: type=0x%x, headerSize=0x%x, size=%p\n",
                                     (void*)(base-(const uint8_t*)chunk),
                                     dtohs(type->header.type),
@@ -5220,7 +5220,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
                 ALOGW("ResTable_type has an id of 0.");
                 return (mError=BAD_TYPE);
             }
-            
+
             while (package->types.size() < type->id) {
                 package->types.add(NULL);
             }
@@ -5233,7 +5233,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
                     (int)dtohl(type->entryCount), (int)t->entryCount);
                 return (mError=BAD_TYPE);
             }
-            
+
             TABLE_GETENTRY(
                 ResTable_config thisConfig;
                 thisConfig.copyFromDtoH(type->config);
@@ -5254,7 +5254,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
     if (group->typeCount == 0) {
         group->typeCount = package->types.size();
     }
-    
+
     return NO_ERROR;
 }
 
@@ -5491,7 +5491,7 @@ void print_complex(uint32_t complex, bool isFraction)
             * RADIX_MULTS[(complex>>Res_value::COMPLEX_RADIX_SHIFT)
                             & Res_value::COMPLEX_RADIX_MASK];
     printf("%f", value);
-    
+
     if (!isFraction) {
         switch ((complex>>Res_value::COMPLEX_UNIT_SHIFT)&Res_value::COMPLEX_UNIT_MASK) {
             case Res_value::COMPLEX_UNIT_PX: printf("px"); break;
@@ -5566,11 +5566,9 @@ void ResTable::print_value(const Package* pkg, const Res_value& value) const
             } else {
                 printf("(string) null\n");
             }
-        } 
+        }
     } else if (value.dataType == Res_value::TYPE_FLOAT) {
-        float f;
-        memcpy(&f, &value.data, sizeof(float));
-        printf("(float) %g\n", f);
+        printf("(float) %g\n", *(const float*)&value.data);
     } else if (value.dataType == Res_value::TYPE_DIMENSION) {
         printf("(dimension) ");
         print_complex(value.data, false);
@@ -5611,7 +5609,7 @@ void ResTable::print(bool inclValues) const
         printf("Package Group %d id=%d packageCount=%d name=%s\n",
                 (int)pgIndex, pg->id, (int)pg->packages.size(),
                 String8(pg->name).string());
-        
+
         size_t pkgCount = pg->packages.size();
         for (size_t pkgIndex=0; pkgIndex<pkgCount; pkgIndex++) {
             const Package* pkg = pg->packages[pkgIndex];
@@ -5667,17 +5665,17 @@ void ResTable::print(bool inclValues) const
                         continue;
                     }
                     for (size_t entryIndex=0; entryIndex<entryCount; entryIndex++) {
-                        
+
                         const uint8_t* const end = ((const uint8_t*)type)
                             + dtohl(type->header.size);
                         const uint32_t* const eindex = (const uint32_t*)
                             (((const uint8_t*)type) + dtohs(type->header.headerSize));
-                        
+
                         uint32_t thisOffset = dtohl(eindex[entryIndex]);
                         if (thisOffset == ResTable_type::NO_ENTRY) {
                             continue;
                         }
-                        
+
                         uint32_t resID = (0xff000000 & ((pkg->package->id)<<24))
                                     | (0x00ff0000 & ((typeIndex+1)<<16))
                                     | (0x0000ffff & (entryIndex));
@@ -5700,7 +5698,7 @@ void ResTable::print(bool inclValues) const
                                    (void*)typeSize);
                             continue;
                         }
-                        
+
                         const ResTable_entry* ent = (const ResTable_entry*)
                             (((const uint8_t*)type) + entriesStart + thisOffset);
                         if (((entriesStart + thisOffset)&0x3) != 0) {
@@ -5708,7 +5706,7 @@ void ResTable::print(bool inclValues) const
                                  (void*)(entriesStart + thisOffset));
                             continue;
                         }
-                        
+
                         uint16_t esize = dtohs(ent->size);
                         if ((esize&0x3) != 0) {
                             printf("NON-INTEGER ResTable_entry SIZE: %p\n", (void*)esize);
@@ -5720,7 +5718,7 @@ void ResTable::print(bool inclValues) const
                                    (void*)esize, (void*)typeSize);
                             continue;
                         }
-                            
+
                         const Res_value* valuePtr = NULL;
                         const ResTable_map_entry* bagPtr = NULL;
                         Res_value value;
@@ -5735,12 +5733,12 @@ void ResTable::print(bool inclValues) const
                                    (int)value.dataType, (int)value.data,
                                    (int)value.size, (int)value.res0);
                         }
-                        
+
                         if ((dtohs(ent->flags)&ResTable_entry::FLAG_PUBLIC) != 0) {
                             printf(" (PUBLIC)");
                         }
                         printf("\n");
-                        
+
                         if (inclValues) {
                             if (valuePtr != NULL) {
                                 printf("          ");
