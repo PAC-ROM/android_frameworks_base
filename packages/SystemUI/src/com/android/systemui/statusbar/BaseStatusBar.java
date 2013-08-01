@@ -173,6 +173,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     // Pie controls
     public PieControlPanel mPieControlPanel;
+    protected boolean mPieEnabled;
     public View mPieControlsTrigger;
     public PieExpandPanel mContainer;
     public View[] mPieDummyTrigger = new View[4];
@@ -427,6 +428,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HALO_ACTIVE, 0) == 1;
 
+        mPieEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_ENABLED, 1) == 1;
+
         createAndAddWindows();
         // create WidgetView
         mWidgetView = new WidgetView(mContext,null);
@@ -553,6 +557,17 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         attachPie();
 
+        // Listen for PIE Enabled
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.PIE_ENABLED), false, new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_ENABLED, 1) == 0) {
+                    updatePieControls();
+                }
+            }});
+
         // Listen for PIE gravity
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.PIE_GRAVITY), false, new ContentObserver(new Handler()) {
@@ -653,12 +668,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     private boolean showPie() {
-        boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
-        boolean navbarZero = Integer.parseInt(ExtendedPropertiesUtils
-                .getProperty("com.android.systemui.navbar.dpi", "100")) == 0;
-
-        return (expanded || navbarZero);
+        boolean pieswitch = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_ENABLED, 1) == 1;
+        return (pieswitch);
     }
 
     public void updatePieControls() {
