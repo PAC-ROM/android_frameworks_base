@@ -27,17 +27,17 @@ import android.util.EventLog;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
-import android.view.accessibility.AccessibilityEvent;
 
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.GestureRecorder;
 
 public class NotificationPanelView extends PanelView {
-    public static final boolean DEBUG_GESTURES = true;
+    public static final boolean DEBUG_GESTURES = false;
 
     private static final float STATUS_BAR_SETTINGS_LEFT_PERCENTAGE = 0.8f;
     private static final float STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE = 0.2f;
@@ -82,9 +82,7 @@ public class NotificationPanelView extends PanelView {
         Resources resources = getContext().getResources();
         mHandleBar = resources.getDrawable(R.drawable.status_bar_close);
         mHandleBarHeight = resources.getDimensionPixelSize(R.dimen.close_handle_height);
-
-        setContentDescription(resources.getString(
-                R.string.accessibility_desc_notification_shade));
+        mHandleView = findViewById(R.id.handle);
 
         final ContentResolver resolver = getContext().getContentResolver();
         mEnableObserver = new ContentObserver(mHandler) {
@@ -148,7 +146,8 @@ public class NotificationPanelView extends PanelView {
         return super.dispatchPopulateAccessibilityEvent(event);
     }
 
-    // We draw the handle ourselves so that it's always glued to the bottom of the window.
+    // We draw the handle ourselves so that it's
+    // always glued to the bottom of the window.
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
