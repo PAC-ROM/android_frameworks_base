@@ -26,16 +26,15 @@ import android.app.NotificationGroup;
 import android.app.Profile;
 import android.app.ProfileGroup;
 import android.app.backup.BackupManager;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.XmlResourceParser;
+import android.net.wifi.WifiManager;
 import android.net.wifi.WifiSsid;
 import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -95,6 +94,7 @@ public class ProfileManagerService extends IProfileManager.Stub {
     private Context mContext;
     private boolean mDirty;
 
+    private BackupManager mBackupManager;
     private WifiManager mWifiManager;
     private String mLastConnectedSSID;
 
@@ -147,7 +147,8 @@ public class ProfileManagerService extends IProfileManager.Stub {
 
     public ProfileManagerService(Context context) {
         mContext = context;
-        mWifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
+        mBackupManager = new BackupManager(mContext);
+        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         mLastConnectedSSID = getActiveSSID();
 
         mWildcardGroup = new NotificationGroup(
@@ -630,8 +631,7 @@ public class ProfileManagerService extends IProfileManager.Stub {
                 mDirty = false;
 
                 long token = clearCallingIdentity();
-                BackupManager bm = new BackupManager(mContext);
-                bm.dataChanged();
+                mBackupManager.dataChanged();
                 restoreCallingIdentity(token);
             } catch (Throwable e) {
                 e.printStackTrace();

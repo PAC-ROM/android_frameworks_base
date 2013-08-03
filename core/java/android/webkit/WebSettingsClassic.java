@@ -390,6 +390,17 @@ public class WebSettingsClassic extends WebSettings {
      * @see WebViewFactoryProvider#getDefaultUserAgent(Context)
      * @see WebView#getDefaultUserAgent(Context)
      */
+    /**
+     * Returns the default User-Agent used by a WebView.
+     * An instance of WebView could use a different User-Agent if a call
+     * is made to {@link WebSettings#setUserAgent(int)} or
+     * {@link WebSettings#setUserAgentString(String)}.
+     *
+     * @param context a Context object used to access application assets
+     * @param locale The Locale to use in the User-Agent string.
+     * @see WebViewFactoryProvider#getDefaultUserAgent(Context)
+     * @see WebView#getDefaultUserAgent(Context)
+     */
     public static String getDefaultUserAgentForLocale(Context context, Locale locale) {
         StringBuffer buffer = new StringBuffer();
         // Add version
@@ -434,14 +445,21 @@ public class WebSettingsClassic extends WebSettings {
             buffer.append(" Build/");
             buffer.append(id);
         }
-        final String cmversion = SystemProperties.get("ro.cm.version");
-        if (cmversion != null && cmversion.length() > 0)
-            buffer.append("; CyanogenMod-" + cmversion.replaceAll("([0-9\\.]+?)-.*","$1"));
         String mobile = context.getResources().getText(
             com.android.internal.R.string.web_user_agent_target_content).toString();
         final String base = context.getResources().getText(
                 com.android.internal.R.string.web_user_agent).toString();
-        return String.format(base, buffer, mobile);
+
+        String cmtag = "";
+        final String cmversion = SystemProperties.get("ro.cm.version");
+        if (cmversion != null && cmversion.length() > 0) {
+            cmtag = " CyanogenMod/" + cmversion.replaceAll("([0-9\\.]+?)-.*","$1");
+            final String cmdevice = SystemProperties.get("ro.cm.device");
+            if (cmdevice != null && cmdevice.length() > 0)
+                cmtag = cmtag.concat("/" + cmdevice);
+        }
+
+        return String.format(base, buffer, mobile).concat(cmtag);
     }
 
     /**
@@ -1258,7 +1276,7 @@ public class WebSettingsClassic extends WebSettings {
     @Override
     public synchronized void setAppCachePath(String path) {
         // We test for a valid path and for repeated setting on the native
-        // side, but we can avoid syncing in some simple cases. 
+        // side, but we can avoid syncing in some simple cases.
         if (mAppCachePath == null && path != null && !path.isEmpty()) {
             mAppCachePath = path;
             postSync();

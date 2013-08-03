@@ -28,8 +28,8 @@ framework_res_source_path := APPS/framework-res_intermediates/src
 
 include $(CLEAR_VARS)
 
-ifdef WIFI_AP_DRIVER_MODULE_PATH	
-LOCAL_CFLAGS += -DWIFI_AP_HAS_OWN_DRIVER	
+ifdef WIFI_AP_DRIVER_MODULE_PATH
+LOCAL_CFLAGS += -DWIFI_AP_HAS_OWN_DRIVER
 endif
 
 # FRAMEWORKS_BASE_SUBDIRS comes from build/core/pathmap.mk

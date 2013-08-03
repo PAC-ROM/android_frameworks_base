@@ -956,6 +956,11 @@ public class ActionBarView extends AbsActionBarView {
         }
 
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        if (heightMode != MeasureSpec.AT_MOST) {
+            throw new IllegalStateException(getClass().getSimpleName() + " can only be used " +
+                    "with android:layout_height=\"wrap_content\"");
+        }
+
         int contentWidth = MeasureSpec.getSize(widthMeasureSpec);
         int maxHeight = mContentHeight >= 0 ?
                 mContentHeight : MeasureSpec.getSize(heightMeasureSpec);

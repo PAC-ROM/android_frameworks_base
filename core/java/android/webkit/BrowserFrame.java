@@ -230,7 +230,6 @@ class BrowserFrame extends Handler {
             if ((cacheSize < 0) || (cacheSize > (100 * 1024 * 1024))) {
                 cacheSize = defCacheSize;
             }
-
             // create CookieSyncManager with current Context
             CookieSyncManager.createInstance(appContext);
             // create PluginManager with current Context

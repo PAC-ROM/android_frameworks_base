@@ -1,6 +1,9 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+<<<<<<< HEAD
  * This code has been modified.  Portions copyright (C) 2012, ParanoidAndroid Project.
+=======
+>>>>>>> CM/cm-10.2
  * This code has been modified.  Portions copyright (C) 2010, T-Mobile USA, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,14 +62,14 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * resource qualifier.  0 if undefined.
      */
     public int mcc;
-    
+
     /**
      * IMSI MNC (Mobile Network Code), corresponding to
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#MccQualifier">mnc</a>
      * resource qualifier.  0 if undefined.
      */
     public int mnc;
-    
+
     /**
      * Current user preference for the locale, corresponding to
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#LocaleQualifier">locale</a>
@@ -165,7 +168,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * @hide
      */
     public static final int SCREENLAYOUT_COMPAT_NEEDED = 0x10000000;
-    
+
     /**
      * Bit mask of overall layout of the screen.  Currently there are two
      * fields:
@@ -173,11 +176,11 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * of the screen.  They may be one of
      * {@link #SCREENLAYOUT_SIZE_SMALL}, {@link #SCREENLAYOUT_SIZE_NORMAL},
      * {@link #SCREENLAYOUT_SIZE_LARGE}, or {@link #SCREENLAYOUT_SIZE_XLARGE}.
-     * 
+     *
      * <p>The {@link #SCREENLAYOUT_LONG_MASK} defines whether the screen
      * is wider/taller than normal.  They may be one of
      * {@link #SCREENLAYOUT_LONG_NO} or {@link #SCREENLAYOUT_LONG_YES}.
-     * 
+     *
      * <p>The {@link #SCREENLAYOUT_LAYOUTDIR_MASK} defines whether the screen layout
      * is either LTR or RTL.  They may be one of
      * {@link #SCREENLAYOUT_LAYOUTDIR_LTR} or {@link #SCREENLAYOUT_LAYOUTDIR_RTL}.
@@ -285,7 +288,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#TouchscreenQualifier">finger</a>
      * resource qualifier. */
     public static final int TOUCHSCREEN_FINGER = 3;
-    
+
     /**
      * The kind of touch screen attached to the device.
      * One of: {@link #TOUCHSCREEN_NOTOUCH}, {@link #TOUCHSCREEN_FINGER}.
@@ -306,7 +309,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#ImeQualifier">12key</a>
      * resource qualifier. */
     public static final int KEYBOARD_12KEY = 3;
-    
+
     /**
      * The kind of keyboard attached to the device.
      * One of: {@link #KEYBOARD_NOKEYS}, {@link #KEYBOARD_QWERTY},
@@ -326,7 +329,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     public static final int KEYBOARDHIDDEN_YES = 2;
     /** Constant matching actual resource implementation. {@hide} */
     public static final int KEYBOARDHIDDEN_SOFT = 3;
-    
+
     /**
      * A flag indicating whether any keyboard is available.  Unlike
      * {@link #hardKeyboardHidden}, this also takes into account a soft
@@ -335,7 +338,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * {@link #KEYBOARDHIDDEN_NO}, {@link #KEYBOARDHIDDEN_YES}.
      */
     public int keyboardHidden;
-    
+
     /** Constant for {@link #hardKeyboardHidden}: a value indicating that no value has been set. */
     public static final int HARDKEYBOARDHIDDEN_UNDEFINED = 0;
     /** Constant for {@link #hardKeyboardHidden}, value corresponding to the
@@ -344,7 +347,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     /** Constant for {@link #hardKeyboardHidden}, value corresponding to the
      * physical keyboard being hidden. */
     public static final int HARDKEYBOARDHIDDEN_YES = 2;
-    
+
     /**
      * A flag indicating whether the hard keyboard has been hidden.  This will
      * be set on a device with a mechanism to hide the keyboard from the
@@ -352,7 +355,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * {@link #HARDKEYBOARDHIDDEN_NO}, {@link #HARDKEYBOARDHIDDEN_YES}.
      */
     public int hardKeyboardHidden;
-    
+
     /** Constant for {@link #navigation}: a value indicating that no value has been set. */
     public static final int NAVIGATION_UNDEFINED = 0;
     /** Constant for {@link #navigation}, value corresponding to the
@@ -371,14 +374,14 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NavigationQualifier">wheel</a>
      * resource qualifier. */
     public static final int NAVIGATION_WHEEL = 4;
-    
+
     /**
      * The kind of navigation method available on the device.
      * One of: {@link #NAVIGATION_NONAV}, {@link #NAVIGATION_DPAD},
      * {@link #NAVIGATION_TRACKBALL}, {@link #NAVIGATION_WHEEL}.
      */
     public int navigation;
-    
+
     /** Constant for {@link #navigationHidden}: a value indicating that no value has been set. */
     public static final int NAVIGATIONHIDDEN_UNDEFINED = 0;
     /** Constant for {@link #navigationHidden}, value corresponding to the
@@ -389,7 +392,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NavAvailQualifier">navhidden</a>
      * resource qualifier. */
     public static final int NAVIGATIONHIDDEN_YES = 2;
-    
+
     /**
      * A flag indicating whether any 5-way or DPAD navigation available.
      * This will be set on a device with a mechanism to hide the navigation
@@ -397,7 +400,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * {@link #NAVIGATIONHIDDEN_NO}, {@link #NAVIGATIONHIDDEN_YES}.
      */
     public int navigationHidden;
-    
+
     /** Constant for {@link #orientation}: a value indicating that no value has been set. */
     public static final int ORIENTATION_UNDEFINED = 0;
     /** Constant for {@link #orientation}, value corresponding to the
@@ -426,7 +429,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * @hide
      */
     public static final String THEME_PACKAGE_NAME_PERSISTENCE_PROPERTY = "persist.sys.themePackageName";
-    
+
     /**
      * Overall orientation of the screen.  May be one of
      * {@link #ORIENTATION_LANDSCAPE}, {@link #ORIENTATION_PORTRAIT}.
@@ -608,7 +611,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     /**
      * Process layout changes for current hook
      */
-    public void paranoidHook() {        
+    public void paranoidHook() {
         if (active) {
 
             boolean isOrientationOk = true;
@@ -623,7 +626,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
                 float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
                 screenWidthDp = getLayout();
                 screenHeightDp = (int)(screenWidthDp * factor);
-                smallestScreenWidthDp = getLayout();           
+                smallestScreenWidthDp = getLayout();
                 if (getLarge()) {
                     screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
                 }
@@ -633,7 +636,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
             }
         }
     }
-    
+
     /**
      * Construct an invalid Configuration.  You must call {@link #setToDefaults}
      * for this object to be valid.  {@more}
@@ -680,7 +683,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
             customTheme = (CustomTheme) o.customTheme.clone();
         }
     }
-    
+
     public String toString() {
         StringBuilder sb = new StringBuilder(128);
         sb.append("{");
@@ -857,7 +860,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     @Deprecated public void makeDefault() {
         setToDefaults();
     }
-    
+
     /**
      * Copy the fields from delta into this Configuration object, keeping
      * track of which ones have changed.  Any undefined fields in
@@ -1117,12 +1120,12 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
     /**
      * Determine if a new resource needs to be loaded from the bit set of
      * configuration changes returned by {@link #updateFrom(Configuration)}.
-     * 
+     *
      * @param configChanges The mask of changes configurations as returned by
      * {@link #updateFrom(Configuration)}.
      * @param interestingChanges The configuration changes that the resource
      * can handled, as given in {@link android.util.TypedValue#changingConfigurations}.
-     * 
+     *
      * @return Return true if the resource needs to be loaded, else false.
      */
     public static boolean needNewResources(int configChanges, int interestingChanges) {
@@ -1130,7 +1133,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
                 ActivityInfo.CONFIG_FONT_SCALE |
                 ActivityInfo.CONFIG_THEME_RESOURCE)) != 0;
     }
-    
+
     /**
      * @hide Return true if the sequence of 'other' is better than this.  Assumes
      * that 'this' is your current sequence and 'other' is a new one you have
@@ -1159,7 +1162,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
         }
         return diff > 0;
     }
-    
+
     /**
      * Parcelable methods
      */
@@ -1246,7 +1249,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
             customTheme = new CustomTheme(themeId, themePackage);
         }
     }
-    
+
     public static final Parcelable.Creator<Configuration> CREATOR
             = new Parcelable.Creator<Configuration>() {
         public Configuration createFromParcel(Parcel source) {
@@ -1342,7 +1345,7 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
         }
         return false;
     }
-    
+
     public int hashCode() {
         int result = 17;
         result = 31 * result + Float.floatToIntBits(fontScale);

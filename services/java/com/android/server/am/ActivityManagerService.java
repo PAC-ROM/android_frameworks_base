@@ -7724,6 +7724,13 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 Slog.w(TAG, "getTopActivityExtras failed: crash calling " + activity);
                 return extras;
             }
+            if (pae.result != null) {
+                extras.putBundle(Intent.EXTRA_ASSIST_CONTEXT, pae.result);
+            }
+        }
+        synchronized (this) {
+            mPendingActivityExtras.remove(pae);
+            mHandler.removeCallbacks(pae);
         }
         synchronized (pae) {
             while (!pae.haveResult) {

@@ -56,12 +56,12 @@ public class ContextWrapper extends Context {
     public ContextWrapper(Context base) {
         mBase = base;
     }
-    
+
     /**
      * Set the base context for this ContextWrapper.  All calls will then be
      * delegated to the base context.  Throws
      * IllegalStateException if a base context has already been set.
-     * 
+     *
      * @param base The new base context for this wrapper.
      */
     protected void attachBaseContext(Context base) {
@@ -103,12 +103,12 @@ public class ContextWrapper extends Context {
     public Looper getMainLooper() {
         return mBase.getMainLooper();
     }
-    
+
     @Override
     public Context getApplicationContext() {
         return mBase.getApplicationContext();
     }
-    
+
     @Override
     public void setTheme(int resid) {
         mBase.setTheme(resid);
@@ -145,7 +145,7 @@ public class ContextWrapper extends Context {
     public ApplicationInfo getApplicationInfo() {
         return mBase.getApplicationInfo();
     }
-    
+
     @Override
     public String getPackageResourcePath() {
         return mBase.getPackageResourcePath();
@@ -198,17 +198,17 @@ public class ContextWrapper extends Context {
     public File getFilesDir() {
         return mBase.getFilesDir();
     }
-    
+
     @Override
     public File getExternalFilesDir(String type) {
         return mBase.getExternalFilesDir(type);
     }
-    
+
     @Override
     public File getObbDir() {
         return mBase.getObbDir();
     }
-    
+
     @Override
     public File getCacheDir() {
         return mBase.getCacheDir();
@@ -338,7 +338,7 @@ public class ContextWrapper extends Context {
         mBase.startIntentSender(intent, fillInIntent, flagsMask,
                 flagsValues, extraFlags, options);
     }
-    
+
     @Override
     public void sendBroadcast(Intent intent) {
         mBase.sendBroadcast(intent);
@@ -519,6 +519,7 @@ public class ContextWrapper extends Context {
         return mBase.getSystemService(name);
     }
 
+    /** @hide */
     @Override
     public boolean isPrivacyGuardEnabled() {
         return mBase.isPrivacyGuardEnabled();
