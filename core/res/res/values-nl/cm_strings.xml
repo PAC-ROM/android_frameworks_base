@@ -54,4 +54,18 @@
     <string name="permlab_fm_radio_transmitter">FM-zender beheren</string>
     <string name="permdesc_fm_radio_transmitter">Hiermee kan de app de FM-zender beheren.</string>
     <string name="stylus_app_not_installed">%s is niet geïnstalleerd</string>
+    <string name="permlab_changePrivacyGuardState">Privacybescherming in- of uitschakelen</string>
+    <string name="permdesc_changePrivacyGuardState">Hiermee kan de app bepalen of een andere app start met Privacybescherming. Als een app start met Privacybescherming, zal het geen toegang hebben tot persoonsgegevens zoals contacten, berichten of gespreksstatistieken.</string>
+    <string name="privacy_guard_notification">Privacybescherming actief</string>
+    <string name="privacy_guard_notification_detail"><xliff:g id="app">%1$s</xliff:g> zal geen toegang hebben tot persoonsgegevens</string>
+    <string name="profile_picker_title">Profielen</string>
+    <string name="profile_none">Geen</string>
+    <string name="permlab_cancelNotifications">app-meldingen sluiten</string>
+    <string name="permdesc_cancelNotifications">Hiermee kan de app meldingen gecreeërd door andere apps sluiten.</string>
+    <string name="permlab_interceptSmsSent">uitgaand sms-bericht onderscheppen</string>
+    <string name="permdesc_interceptSmsSent">Hiermee kan de app een uitgaand sms-bericht onderscheppen. Schadelijke apps kunnen dit gebruiken om uitgaande sms-berichten te blokkeren.</string>
+    <string name="policylab_enforceSelinux">SELinux afdwingen</string>
+    <string name="policydesc_enforceSelinux">Wisselen tussen SELinux-beleid afdwingen of tolerante stand.</string>
+    <string name="policylab_enforceMmac">MMAC afdwingen</string>
+    <string name="policydesc_enforceMmac">Wisselen tussen MMAC-beleid afdwingen of tolerante stand.</string>
 </resources>
