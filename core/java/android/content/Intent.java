@@ -2346,7 +2346,7 @@ public class Intent implements Parcelable, Cloneable {
      * sentIntents - ArrayList<PendingIntent> to send on send
      * deliveryIntents - ArrayList<PendingIntent> to send on delivery
      *
-     * Once the broadcast is finished, resultData is used as the actual	2306
+     * Once the broadcast is finished, resultData is used as the actual
      * number to text.
      *
      * @hide
