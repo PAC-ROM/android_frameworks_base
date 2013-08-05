@@ -318,7 +318,7 @@ public class CallLog {
 
                 // We should prefer normalized one (probably coming from
                 // Phone.NORMALIZED_NUMBER column) first. If it isn't available try others.
-		        if (ci.normalizedNumber != null) {
+                if (ci.normalizedNumber != null) {
                     final String normalizedPhoneNumber = ci.normalizedNumber;
                     cursor = resolver.query(Phone.CONTENT_URI,
                         new String[] { Phone._ID },
@@ -335,9 +335,9 @@ public class CallLog {
                         new String[] { String.valueOf(ci.person_id) },
                         null);
                 }
-                
+
                 if (cursor != null) {
-					try {
+                    try {
                         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
                             final Uri feedbackUri = DataUsageFeedback.FEEDBACK_URI.buildUpon()
                                     .appendPath(cursor.getString(0))
@@ -347,8 +347,9 @@ public class CallLog {
                             resolver.update(feedbackUri, new ContentValues(), null, null);
                         }
                     } finally {
-                        cursor.close();
-
+                        if (cursor != null) {
+                            cursor.close();
+                        }
                     }
                 }
             }

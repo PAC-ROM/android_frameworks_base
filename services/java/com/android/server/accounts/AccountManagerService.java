@@ -319,7 +319,9 @@ public class AccountManagerService
                             new String[]{Integer.toString(uid)});
                 }
             } finally {
-                cursor.close();
+				if (cursor != null) {
+                    cursor.close();
+			    }
             }
         }
     }
