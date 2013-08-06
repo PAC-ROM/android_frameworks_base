@@ -10,12 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.LayoutInflator;
+import android.view.LayoutInflater;
 
 import com.android.systemui.R;
+import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.settings.BrightnessController.BrightnessStateChangeCallback;
-import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 
 public class BrightnessTile extends QuickSettingsTile implements BrightnessStateChangeCallback {
 

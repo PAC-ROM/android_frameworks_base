@@ -333,7 +333,6 @@ public class QuickSettings {
         mDynamicSpannedTiles.add(userTile);
 
         // Brightness
-        // Brightness
         final QuickSettingsBasicTile brightnessTile
                 = new QuickSettingsBasicTile(mContext);
         brightnessTile.setImageResource(R.drawable.ic_qs_brightness_auto_off);
@@ -430,8 +429,6 @@ public class QuickSettings {
                         (wifiState.connected) ? wifiState.label : ""));
             }
         });
-
-
         parent.addView(wifiTile);
 
         if (mModel.deviceHasMobileData()) {
