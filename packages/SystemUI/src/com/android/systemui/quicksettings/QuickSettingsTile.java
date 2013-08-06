@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.android.systemui.R;
 import java.util.Random;
@@ -106,10 +107,11 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.tile_textview);
+        TextView tv = (TextView) mTile.findViewById(R.id.text);
         if (tv != null) {
-            tv.setCompoundDrawablesWithIntrinsicBounds(0, mDrawable, 0, 0);
+            ImageView iv = (ImageView) mTile.findViewById(R.id.image);
             tv.setText(mLabel);
+            iv.setImageDrawable(mContext.getResources().getDrawable(mDrawable));
             tv.setTextSize(1, mTileTextSize);
             if (mTileTextColor != -2) {
                 tv.setTextColor(mTileTextColor);
