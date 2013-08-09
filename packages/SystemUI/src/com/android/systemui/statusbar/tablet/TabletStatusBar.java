@@ -653,11 +653,15 @@ public class TabletStatusBar extends BaseStatusBar implements
         mBluetoothController.addIconView((ImageView)sb.findViewById(R.id.bluetooth));
 
         mNetworkController = new NetworkController(mContext);
-        mSignalCluster =
-                (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
 
+        mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
         mNetworkController.addSignalCluster(mSignalCluster);
         mSignalCluster.setNetworkController(mNetworkController);
+
+        mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+        mNetworkController.addSignalCluster(mSignalCluster);
+        mSignalCluster.setNetworkController(mNetworkController);
+
         mBarView = (ViewGroup) mStatusBarView;
 
         mHasDockBattery = mContext.getResources().getBoolean(
