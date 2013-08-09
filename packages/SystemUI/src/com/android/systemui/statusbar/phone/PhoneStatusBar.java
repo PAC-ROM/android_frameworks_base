@@ -197,6 +197,8 @@ public class PhoneStatusBar extends BaseStatusBar {
     private AokpSwipeRibbon mAokpSwipeRibbonRight;
     private AokpSwipeRibbon mAokpSwipeRibbonBottom;
 
+    private boolean showingAltCluster = false;
+
     // These are no longer handled by the policy, because we need custom strategies for them
     BluetoothController mBluetoothController;
     DockBatteryController mDockBatteryController;
@@ -705,11 +707,16 @@ public class PhoneStatusBar extends BaseStatusBar {
         mSbBatteryController = (SbBatteryController)mStatusBarView.findViewById(R.id.battery_cluster);
         mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
-        mSignalCluster =
-                (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
 
-        mNetworkController.addSignalCluster(mSignalCluster);
-        mSignalCluster.setNetworkController(mNetworkController);
+        if (!showingAltCluster) {
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
+        } else {
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
+        }
 
         mHasDockBattery = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasDockBattery);
@@ -3446,6 +3453,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_SIGNAL_CLUSTER_ALT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
@@ -3552,6 +3561,11 @@ public class PhoneStatusBar extends BaseStatusBar {
                 Settings.System.CURRENT_UI_MODE, 0);
 
         mCurrentUIMode = Settings.System.getInt(cr,Settings.System.CURRENT_UI_MODE, 0);
+
+        boolean clustdefault = mContext.getResources().getBoolean(R.bool.statusbar_alt_signal_layout);
+        showingAltCluster = Settings.System.getBoolean(cr,
+                Settings.System.STATUSBAR_SIGNAL_CLUSTER_ALT, clustdefault);
+
         updateRibbonTargets();
     }
 
