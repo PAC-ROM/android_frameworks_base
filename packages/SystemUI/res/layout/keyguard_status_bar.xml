@@ -76,4 +76,10 @@
         android:textColor="#ffffff"
         android:singleLine="true" />
 
+    <com.android.systemui.statusbar.policy.BatteryBar
+        android:id="@+id/battery_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/battery_bar_height"
+        android:visibility="gone" />
+
 </com.android.systemui.statusbar.phone.KeyguardStatusBarView>

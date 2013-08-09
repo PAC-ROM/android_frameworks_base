@@ -326,6 +326,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     LinearLayout mStatusIcons;
     LinearLayout mStatusIconsKeyguard;
 
+    // battery bar
+    LinearLayout mBatteryBarLayout;
+
     // the icons themselves
     IconMerger mNotificationIcons;
     View mNotificationIconArea;
@@ -1031,6 +1034,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mMoreIcon = mStatusBarView.findViewById(R.id.moreIcon);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
         mStatusBarContents = (LinearLayout)mStatusBarView.findViewById(R.id.status_bar_contents);
+        mBatteryBarLayout = (LinearLayout)mStatusBarView.findViewById(R.id.battery_bar_layout);
 
         mClockView = (TextView) mStatusBarView.findViewById(R.id.clock);
         mClockLocation = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -2480,16 +2484,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if ((diff & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) {
             mSystemIconArea.animate().cancel();
             mClockView.animate().cancel();
+            mBatteryBarLayout.animate().cancel();
             if ((state & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) {
                 if (mClockLocation != Clock.STYLE_HIDE_CLOCK) {
                     animateStatusBarHide(mClockView, animate);
                 }
                 animateStatusBarHide(mSystemIconArea, animate);
+                animateStatusBarHide(mBatteryBarLayout, animate);
             } else {
                 if (mClockLocation != Clock.STYLE_HIDE_CLOCK) {
                     animateStatusBarShow(mClockView, animate);
                 }
                 animateStatusBarShow(mSystemIconArea, animate);
+                animateStatusBarShow(mBatteryBarLayout, animate);
             }
         }
 
@@ -3433,6 +3440,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
             mClockView.setVisibility(View.GONE);
             mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            mBatteryBarLayout.setVisibility(View.GONE);
+            mBatteryBarLayout.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
         }
 
         @Override
@@ -3446,6 +3455,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mTickingDoneListener));
             mClockView.setVisibility(View.VISIBLE);
             mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            mBatteryBarLayout.setVisibility(View.VISIBLE);
+            mBatteryBarLayout.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
         }
 
         public void tickerHalting() {
@@ -3456,6 +3467,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         .startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
                 mClockView.setVisibility(View.VISIBLE);
                 mClockView.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+                mBatteryBarLayout.setVisibility(View.VISIBLE);
+                mBatteryBarLayout.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             }
             mTickerView.setVisibility(View.GONE);
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)

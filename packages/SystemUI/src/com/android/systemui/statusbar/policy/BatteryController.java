@@ -42,6 +42,7 @@ public class BatteryController extends BroadcastReceiver {
     public static final int STYLE_GONE = 4;
     public static final int STYLE_ICON_LANDSCAPE = 5;
     public static final int STYLE_TEXT = 6;
+    public static final int STYLE_BAR = 7;
 
     public static final int PERCENTAGE_MODE_OFF = 0;
     public static final int PERCENTAGE_MODE_INSIDE = 1;

@@ -315,6 +315,7 @@ public class BatteryMeterView extends View implements DemoMode,
                 meterMode = BatteryMeterMode.BATTERY_METER_CIRCLE;
                 break;
             case BatteryController.STYLE_GONE:
+            case BatteryController.STYLE_BAR:
                 meterMode = BatteryMeterMode.BATTERY_METER_GONE;
                 showInsidePercent = false;
                 break;

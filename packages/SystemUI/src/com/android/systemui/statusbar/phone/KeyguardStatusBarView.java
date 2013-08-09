@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.policy.BatteryBar;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.UserInfoController;
@@ -49,6 +50,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
     private MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
     private BatteryLevelTextView mBatteryLevel;
+    private BatteryBar mBatteryBar;
 
     private BatteryController mBatteryController;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
@@ -67,6 +69,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
         mMultiUserSwitch = (MultiUserSwitch) findViewById(R.id.multi_user_switch);
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mBatteryLevel = (BatteryLevelTextView) findViewById(R.id.battery_level_text);
+        mBatteryBar = (BatteryBar) findViewById(R.id.battery_bar);
         loadDimens();
         mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in);
@@ -89,6 +92,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
             removeView(mMultiUserSwitch);
         }
         mBatteryLevel.setVisibility(View.VISIBLE);
+        mBatteryBar.setVisibility(View.VISIBLE);
     }
 
     private void updateSystemIconsLayoutParams() {
