@@ -36,6 +36,7 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ColorUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -77,6 +78,9 @@ public class CircleBattery extends ImageView {
     private Paint   mPaintSystem;
     private Paint   mPaintRed;
 
+    public ColorUtils.ColorSettingInfo mLastIconColor;
+    private SettingsObserver mObserver;
+
     private int batteryStyle;
 
     // runnable to invalidate view via mHandler.postDelayed() call
@@ -99,6 +103,10 @@ public class CircleBattery extends ImageView {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_BATTERY_ICON), false, this);
             onChange(true);
+        }
+
+        public void unobserve() {
+            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         @Override
@@ -186,8 +194,7 @@ public class CircleBattery extends ImageView {
         batteryStyle = (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_BATTERY_ICON, 0));
 
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
+        mObserver = new SettingsObserver(mHandler);
         mBatteryReceiver = new BatteryReceiver(mContext);
 
         // initialize and setup all paint variables
@@ -213,6 +220,44 @@ public class CircleBattery extends ImageView {
         // font needs some extra settings
         mPaintFont.setTextAlign(Align.CENTER);
         mPaintFont.setFakeBoldText(true);
+
+        // Only watch for per app color changes when the setting is in check
+        if (ColorUtils.getPerAppColorState(mContext)) {
+            mLastIconColor = ColorUtils.getColorSettingInfo(mContext, 
+                    Settings.System.STATUS_ICON_COLOR);
+            mLastIconColor.lastColorString = "";
+            updateIconColor();
+
+            // Listen for status bar icon color changes
+            mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, 
+                    new ContentObserver(new Handler()) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        updateIconColor();
+                    }});
+        }
+    }
+
+    private void updateIconColor() {
+        Resources res = getResources();
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                Settings.System.STATUS_ICON_COLOR);
+        if (!colorInfo.lastColorString.equals(mLastIconColor.lastColorString)) {
+            if (colorInfo.isLastColorNull) {
+                mPaintFont.setColor(res.getColor(R.color.holo_blue_dark));
+                mPaintSystem.setColor(res.getColor(R.color.holo_blue_dark));
+                mPaintGray.setColor(res.getColor(R.color.darker_gray));
+                mPaintRed.setColor(res.getColor(R.color.holo_red_light));
+            } else {
+                mPaintFont.setColor(colorInfo.lastColor);
+                mPaintSystem.setColor(colorInfo.lastColor);
+                mPaintGray.setColor(colorInfo.lastColor);
+                mPaintRed.setColor(colorInfo.lastColor);
+            }
+            mLastIconColor = colorInfo;
+        }
+        invalidate();
     }
 
     @Override
@@ -222,6 +267,7 @@ public class CircleBattery extends ImageView {
             mAttached = true;
             mBatteryReceiver.updateRegistration();
             mHandler.postDelayed(mInvalidate, 250);
+            mObserver.observe();
         }
     }
 
@@ -232,9 +278,9 @@ public class CircleBattery extends ImageView {
             mAttached = false;
             mBatteryReceiver.updateRegistration();
             mCircleRect = null; // makes sure, size based variables get
-                                // recalculated on next attach
-            mCircleSize = 0;    // makes sure, mCircleSize is reread from icons on
-                                // next attach
+                                // recalculated on next attach, makes sure
+            mCircleSize = 0;    //  mCircleSize is reread from icons on next attach
+            mObserver.unobserve();
         }
     }
 
@@ -356,7 +402,7 @@ public class CircleBattery extends ImageView {
      */
     private void initSizeMeasureIconHeight() {
         final Bitmap measure = BitmapFactory.decodeResource(getResources(),
-                com.android.systemui.R.drawable.stat_sys_wifi_signal_4_fully);
+                com.android.systemui.R.drawable.stat_sys_battery_100);
         final int x = measure.getWidth() / 2;
 
         mCircleSize = measure.getHeight();
