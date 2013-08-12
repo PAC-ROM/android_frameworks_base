@@ -838,8 +838,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             mAokpSwipeRibbonRight.setControllers(mBluetoothController, mNetworkController, mBatteryController,
                     mLocationController, null);
 
-            android.util.Log.d("PARANOID", "mSettingsContainer="+mSettingsContainer);
-
             // wherever you find it, Quick Settings needs a container to survive
             mSettingsContainer = (QuickSettingsContainerView)
                     mStatusBarWindow.findViewById(R.id.quick_settings_container);
