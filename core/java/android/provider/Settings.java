@@ -2940,6 +2940,12 @@ public final class Settings {
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
 
         /**
+         * Network speed indicator
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
+
+        /**
          * Display style of AM/PM next to clock in status bar
          * 0: Normal display (Eclair stock)
          * 1: Small display (Froyo stock)
