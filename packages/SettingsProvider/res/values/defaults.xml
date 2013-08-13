@@ -173,7 +173,7 @@
     <!-- Default for Settings.Secure.USER_SETUP_COMPLETE -->
     <bool name="def_user_setup_complete">false</bool>
 
-    <!-- Default for Settings.System.STATUS_BAR_BATTERY.
+    <!-- Default for Settings.System.STATUSBAR_BATTERY_ICON.
     0. Icon
     1. Text only
     2. Icon with text

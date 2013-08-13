@@ -56,10 +56,10 @@ public class BatteryController extends BroadcastReceiver {
     public BatteryController(Context context) {
         mContext = context;
 
-        mColorInfo = ColorUtils.getColorSettingInfo(context, Settings.System.STATUS_ICON_COLOR);
+        mColorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        context.registerReceiver(this, filter);
+        mContext.registerReceiver(this, filter);
     }
 
     public void addIconView(ImageView v) {
