@@ -55,4 +55,18 @@
     <string name="permlab_fm_radio_transmitter">controllo del trasmettitore FM</string>
     <string name="permdesc_fm_radio_transmitter">Consente all\'applicazione di controllare il trasmettitore FM.</string>
     <string name="stylus_app_not_installed">%s non è installato</string>
+    <string name="permlab_changePrivacyGuardState">abilita o disabilita Privacy Guard</string>
+    <string name="permdesc_changePrivacyGuardState">Consente all\'applicazione di decidere se un\'altra applicazione viene eseguita con Privacy Guard. Quando un\'applicazione viene eseguita con Privacy Guard, non ha accesso a dati personali come contatti, lista chiamate o messaggi.</string>
+    <string name="privacy_guard_notification">Privacy Guard attiva</string>
+    <string name="privacy_guard_notification_detail"><xliff:g id="app">%1$s</xliff:g> non sarà in grado di accedere ai dati personali</string>
+    <string name="profile_picker_title">Profili</string>
+    <string name="profile_none">Nessuno</string>
+    <string name="permlab_cancelNotifications">cancella le notifiche delle applicazioni</string>
+    <string name="permdesc_cancelNotifications">Consente all\'applicazione di cancellare le notifiche create da altre applicazioni.</string>
+    <string name="permlab_interceptSmsSent">intercetta SMS in uscita</string>
+    <string name="permdesc_interceptSmsSent">Consente all\'applicazione di intercettare un SMS in uscita. Le applicazioni maligne potrebbero usarlo per impedire la spedizione di SMS.</string>
+    <string name="policylab_enforceSelinux">Forza SELinux</string>
+    <string name="policydesc_enforceSelinux">Alterna tra regole restrittive o permissive di SELinux.</string>
+    <string name="policylab_enforceMmac">Forza MMAC</string>
+    <string name="policydesc_enforceMmac">Alterna tra regole restrittive o permissive di MMAC.</string>
 </resources>
