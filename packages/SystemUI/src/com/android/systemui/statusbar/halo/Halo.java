@@ -52,6 +52,7 @@ import android.graphics.Rect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
@@ -99,6 +100,7 @@ import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.ImageButton;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
@@ -384,8 +386,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             // Halo dock position
             mTickerLeft = msavePositionX == 0 ? true : false;
             updateTriggerPosition(msavePositionX, msavePositionY);
-            mEffect.mHaloTextViewL.setVisibility(mTickerLeft ? View.VISIBLE : View.GONE);
-            mEffect.mHaloTextViewR.setVisibility(mTickerLeft ? View.GONE : View.VISIBLE);
+            mEffect.updateResources(mTickerLeft);
             mEffect.setHaloY(msavePositionY);
 
             if (mState == State.FIRST_RUN) {
@@ -394,13 +395,13 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         mEffect.wake();
-                        tick(mLastNotificationEntry, mContext.getResources().getString(R.string.halo_tutorial1), 0, 3000, true);
+                        mEffect.ticker(mContext.getResources().getString(R.string.halo_tutorial1), 0, 3000);
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                tick(mLastNotificationEntry, mContext.getResources().getString(R.string.halo_tutorial2), 0, 3000, true);
+                                mEffect.ticker(mContext.getResources().getString(R.string.halo_tutorial2), 0, 3000);
                                 mHandler.postDelayed(new Runnable() {
                                     public void run() {
-                                        tick(mLastNotificationEntry, mContext.getResources().getString(R.string.halo_tutorial3), 0, 3000, true);
+                                        mEffect.ticker(mContext.getResources().getString(R.string.halo_tutorial3), 0, 3000);
                                         mHandler.postDelayed(new Runnable() {
                                             public void run() {
                                                 mState = State.IDLE;
@@ -422,6 +423,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
     private boolean isLandscapeMod() {
         return mScreenWidth < mScreenHeight;
+    }
+
+    public void update() {
+        if (mEffect != null) mEffect.invalidate();
     }
 
     private void updateTriggerPosition(int x, int y) {
@@ -461,7 +466,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                 mNotificationText = mLastNotificationEntry.notification.getNotification().tickerText.toString();
             }
 
-            tick(mLastNotificationEntry, "", 0, 0, false);
+            tick(mLastNotificationEntry, 0, 0, false, false);
         } else {
             clearTicker();
         }
@@ -469,10 +474,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
     public void setStatusBar(BaseStatusBar bar) {
         mBar = bar;
-        mHaloComponent = new ComponentName("HaloComponent","Halo.java");
+        mHaloComponent = new ComponentName("HaloComponent", "Halo.java");
         mHaloListener = new HaloReceiver();
         try {
-            mNotificationManager.registerListener(mHaloListener,mHaloComponent,0);
+            mNotificationManager.registerListener(mHaloListener, mHaloComponent, 0);
         } catch (android.os.RemoteException ex) {
             // failed to register listener
         }
@@ -569,6 +574,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        mEffect.onTouchEvent(event);
 
         // Prevent any kind of interaction while HALO explains itself
         if (mState == State.FIRST_RUN) return true;
@@ -752,26 +759,25 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                         boolean oldTickerPos = mTickerLeft;
                         mTickerLeft = (posX + mIconHalfSize < mScreenWidth / 2);
                         if (oldTickerPos != mTickerLeft) {
-                            mEffect.updateResources();
-                            mEffect.mHaloTextViewL.setVisibility(mTickerLeft ? View.VISIBLE : View.GONE);
-                            mEffect.mHaloTextViewR.setVisibility(mTickerLeft ? View.GONE : View.VISIBLE);
+                            mEffect.updateResources(mTickerLeft);
                         }
                     }
                 } else {
                     // We have three basic gestures, one horizontal for switching through tasks and
                     // two vertical for dismissing tasks or making HALO fall asleep
-
                     int deltaX = (int)(mTickerLeft ? event.getRawX() : mScreenWidth - event.getRawX());
                     int deltaY = (int)(mEffect.getHaloY() - event.getRawY() + mIconSize);
                     int horizontalThreshold = (int)(mIconSize * 1.5f);
                     int verticalThreshold = (int)(mIconSize * 0.25f);
                     int verticalSteps = (int)(mIconSize * 0.7f);
                     String gestureText = mNotificationText;
+                    Gesture oldGesture = Gesture.NONE;
 
                     // Switch icons
                     if (deltaX > horizontalThreshold) {
                         if (mGesture != Gesture.TASK) mEffect.setHaloOverlay(HaloProperties.Overlay.NONE, 0f);
 
+                        oldGesture = mGesture;
                         mGesture = Gesture.TASK;
 
                         deltaX -= horizontalThreshold;
@@ -793,7 +799,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                         }
 
                     // Up & down gestures
-                    } else if (Math.abs(deltaY) > verticalThreshold) {
+                    } else if (Math.abs(deltaY) > verticalThreshold * 2) {
                         mMarkerIndex = -1;
 
                         boolean gestureChanged = false;
@@ -804,28 +810,32 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                             gestureChanged = true;
                             mEffect.setHaloOverlay(HaloProperties.Overlay.NONE, 0f);
                             if (verticalGesture()) gestureText = "";
+                            oldGesture = mGesture;
                             mGesture = Gesture.NONE;
                         } else if (deltaY > 0) {
                             if (deltaIndex == 1 && mGesture != Gesture.UP1) {
+                                oldGesture = mGesture;
                                 mGesture = Gesture.UP1;
                                 gestureChanged = true;
                                 mEffect.setHaloOverlay(HaloProperties.Overlay.DISMISS, 1f);
                                 gestureText = mContext.getResources().getString(R.string.halo_dismiss);
                             } else if (deltaIndex > 1 && mGesture != Gesture.UP2) {
+                                oldGesture = mGesture;
                                 mGesture = Gesture.UP2;
                                 gestureChanged = true;
                                 mEffect.setHaloOverlay(HaloProperties.Overlay.CLEAR_ALL, 1f);
                                 gestureText = mContext.getResources().getString(R.string.halo_clear_all);
                             }
-
                         } else {
                             if (deltaIndex == 1 && mGesture != Gesture.DOWN1) {
+                                oldGesture = mGesture;
                                 mGesture = Gesture.DOWN1;
                                 gestureChanged = true;
                                 mEffect.setHaloOverlay(mTickerLeft ? HaloProperties.Overlay.BACK_LEFT
                                         : HaloProperties.Overlay.BACK_RIGHT, 1f);
                                 gestureText = mContext.getResources().getString(R.string.halo_hide);
                             } else if (deltaIndex > 1 && mGesture != Gesture.DOWN2) {
+                                oldGesture = mGesture;
                                 mGesture = Gesture.DOWN2;
                                 gestureChanged = true;
                                 mEffect.setHaloOverlay(mTickerLeft ? HaloProperties.Overlay.SILENCE_LEFT
@@ -836,22 +846,19 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
                         if (gestureChanged) {
                             mMarkerIndex = -1;
-
-                            // Tasking hasn't changed, we can tick the message here
-                            if (mMarkerIndex == oldIconIndex) {
-                                mEffect.ticker(gestureText, 0, 250);
-                                mEffect.updateResources();
-                                mEffect.invalidate();
-                            }
+                            mEffect.ticker(gestureText, 0, 250);
                             if (mHapticFeedback) mVibrator.vibrate(10);
+                            gestureChanged = false;
                         }
 
                     } else {
                         mMarkerIndex = -1;
+
                         if (mGesture != Gesture.NONE) {
                             mEffect.setHaloOverlay(HaloProperties.Overlay.NONE, 0f);
                             if (verticalGesture()) mEffect.killTicker();
                         }
+                        oldGesture = mGesture;
                         mGesture = Gesture.NONE;
                     }
 
@@ -860,31 +867,19 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                         oldIconIndex = mMarkerIndex;
 
                         // Make a tiny pop if not so many icons are present
-                        if (mHapticFeedback && getHaloMsgCount() < 10) mVibrator.vibrate(1);
+                        if (mHapticFeedback && getHaloMsgCount() < 10) mVibrator.vibrate(10);
 
                         int iconIndex = getHaloMsgIndex(mMarkerIndex, false);
-
                         try {
-                            if (iconIndex == -1) {
+                            // Tick the first item only if we were tasking before
+                            if (iconIndex == -1 && !verticalGesture() && oldGesture == Gesture.TASK) {
                                 mTaskIntent = null;
                                 resetIcons();
-                                tick(mLastNotificationEntry, gestureText, 0, 250, false);
+                                tick(mLastNotificationEntry, 0, -1, false, true);
                             } else {
                                 setIcon(iconIndex);
                                 NotificationData.Entry entry = mNotificationData.get(iconIndex);
-
-                                ApplicationInfo ai;
-                                try {
-                                    ai = mPm.getApplicationInfo( entry.notification.getPackageName(), 0);
-                                } catch (final NameNotFoundException e) {
-                                    ai = null;
-                                }
-                                String text = (String) (ai != null ? mPm.getApplicationLabel(ai) : "...");
-
-                                if (entry.notification.getNotification().tickerText != null) {
-                                    text = entry.notification.getNotification().tickerText.toString();
-                                }
-                                tick(entry, text, 0, 250, false);
+                                tick(entry, 0, -1, false, true);
                                 mTaskIntent = entry.getFloatingIntent();
                             }
                         } catch (Exception e) {
@@ -972,13 +967,79 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                         (int)(mMarkerB.getHeight() * mHaloSize), true);
             }
 
-
             mMarkerPaint.setAntiAlias(true);
             mMarkerPaint.setAlpha(0);
             xPaint.setAntiAlias(true);
             xPaint.setAlpha(0);
 
-            updateResources();
+            updateResources(mTickerLeft);
+        }
+
+        void getRawPoint(MotionEvent ev, int index, PointF point){
+            final int location[] = { 0, 0 };
+            mRoot.getLocationOnScreen(location);
+
+            float x=ev.getX(index);
+            float y=ev.getY(index);
+
+            double angle=Math.toDegrees(Math.atan2(y, x));
+            angle+=mRoot.getRotation();
+
+            final float length=PointF.length(x,y);
+
+            x=(float)(length*Math.cos(Math.toRadians(angle)))+location[0];
+            y=(float)(length*Math.sin(Math.toRadians(angle)))+location[1];
+
+            point.set((int)x,(int)y);
+        }
+
+        boolean browseView(PointF loc, Rect parent, View v) {
+            int posX = (int)loc.x;
+            int posY = (int)loc.y - mIconHalfSize / 2;
+
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup)v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View sv = vg.getChildAt(i);
+                    if (browseView(loc, parent, sv)) return true;
+                }
+            } else {
+                if (v.isClickable()) {
+                    Rect r = new Rect();
+                    v.getHitRect(r);
+
+                    int left = tickerX + parent.left + r.left;
+                    int top = tickerY + parent.top + r.top;
+                    int right = tickerX + parent.left + r.right;
+                    int bottom = tickerY + parent.top + r.bottom;
+
+                    if (posX > left && posX < right && posY > top && posY < bottom) {
+                        v.performClick();
+                        playSoundEffect(SoundEffectConstants.CLICK);
+                        if (mHapticFeedback) mVibrator.vibrate(25);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+
+            if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP
+                    && event.getActionIndex() == 1 ) {
+
+                if (mCurrentNotficationEntry != null && mCurrentNotficationEntry.haloContent != null) {
+                    Rect rootRect = new Rect();
+                    mHaloTickerContent.getHitRect(rootRect);
+
+                    PointF point = new PointF();
+                    getRawPoint(event, 1, point);
+                    browseView(point, rootRect, mCurrentNotficationEntry.haloContent);
+                }
+            }
+            return false;
         }
 
         @Override
@@ -991,7 +1052,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             // This will reset the initialization flag
             mInitialized = false;
             // Generate a new content bubble
-            updateResources();
+            updateResources(mTickerLeft);
         }
 
         @Override
@@ -1007,39 +1068,49 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         }
 
         public void ticker(String tickerText, int delay, int startDuration) {
-            if (tickerText == null || tickerText.isEmpty()) {
+            if (tickerText == null || tickerText.equals("")) {
                 killTicker();
                 return;
             }
 
-            DisplayMetrics dpm = mContext.getResources().getDisplayMetrics();
-
-            int shrt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short), dpm);
-            int wide = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide), dpm);
-            int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top), dpm);
-            int bttm = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom), dpm);
-
-            mHaloTextViewR.setText(tickerText);
-            mHaloTextViewR.setPadding(shrt, top, wide, bttm);
-            mHaloTextViewR.setGravity(Gravity.LEFT);
-            mHaloTextViewR.setMaxLines(2);
-            mHaloTextViewL.setText(tickerText);
-            mHaloTextViewL.setPadding(wide, top, shrt, bttm);
-            mHaloTextViewL.setGravity(Gravity.LEFT);
-            mHaloTextViewL.setMaxLines(2);
+            setHaloContentHeight((int)(mContext.getResources().getDimensionPixelSize(R.dimen.notification_min_height) * 0.7f));
+            mHaloTickerContent.setVisibility(View.GONE);
+            mHaloTextView.setVisibility(View.VISIBLE);
+            mHaloTextView.setText(tickerText);
+            updateResources(mTickerLeft);
 
             float total = TICKER_HIDE_TIME + startDuration + 1000;
             PropertyValuesHolder tickerUpFrames = PropertyValuesHolder.ofKeyframe("haloContentAlpha",
-                    Keyframe.ofFloat(0f, mHaloTextViewL.getAlpha()),
+                    Keyframe.ofFloat(0f, mHaloTextView.getAlpha()),
                     Keyframe.ofFloat(0.1f, 1f),
                     Keyframe.ofFloat(0.95f, 1f),
                     Keyframe.ofFloat(1f, 0f));
             tickerAnimator.animate(ObjectAnimator.ofPropertyValuesHolder(this, tickerUpFrames).setDuration((int)total),
                     new DecelerateInterpolator(), null, delay, null);
+        }
+
+        public void ticker(int delay, int startDuration) {
+
+            setHaloContentHeight(mContext.getResources().getDimensionPixelSize(R.dimen.notification_min_height));
+            mHaloTickerContent.setVisibility(View.VISIBLE);
+            mHaloTextView.setVisibility(View.GONE);
+            updateResources(mTickerLeft);
+
+            if (startDuration != -1) {
+                // Finite tiker
+                float total = TICKER_HIDE_TIME + startDuration + 1000;
+                PropertyValuesHolder tickerUpFrames = PropertyValuesHolder.ofKeyframe("haloContentAlpha",
+                        Keyframe.ofFloat(0f, mHaloTextView.getAlpha()),
+                        Keyframe.ofFloat(0.1f, 1f),
+                        Keyframe.ofFloat(0.95f, 1f),
+                        Keyframe.ofFloat(1f, 0f));
+                tickerAnimator.animate(ObjectAnimator.ofPropertyValuesHolder(this, tickerUpFrames).setDuration((int)total),
+                        new DecelerateInterpolator(), null, delay, null);
+            } else {
+                // Infinite ticker (until killTicker() is called)
+                tickerAnimator.animate(ObjectAnimator.ofFloat(this, "haloContentAlpha", 1f).setDuration(250),
+                    new DecelerateInterpolator(), null, delay, null);
+            }
         }
 
         public void ping(final Paint paint, final long delay) {
@@ -1111,8 +1182,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                         }});
             mHandler.postDelayed(new Runnable() {
                 public void run() {
-                    final int c = getHaloMsgCount()-getHidden() < 0 ? 0 : getHaloMsgCount()-getHidden();
-                    mEffect.animateHaloBatch(0, c, false, 3000, HaloProperties.MessageType.MESSAGE);
+                    if (mState != State.GESTURES && mState != State.DRAG) {
+                        final int c = getHaloMsgCount()-getHidden() < 0 ? 0 : getHaloMsgCount()-getHidden();
+                        mEffect.animateHaloBatch(0, c, false, 3000, HaloProperties.MessageType.MESSAGE);
+                    }
                 }
             }, 2000);
         }
@@ -1134,11 +1207,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
         CustomObjectAnimator contentYAnimator = new CustomObjectAnimator(this);
 
+        int tickerX, tickerY;
+
         @Override
         protected void onDraw(Canvas canvas) {
             int state;
-
-            // android.util.Log.d("PARANOID", "DRAW");
 
             // Ping
             if (mPingPaint != null) {
@@ -1147,36 +1220,22 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
             // Content
             state = canvas.save();
-            int ch = mGesture == Gesture.TASK ? 0 : mHaloTickerContent.getMeasuredHeight() / 2;
-            int cw = mHaloTickerContent.getMeasuredWidth();
+            final int tickerHeight = mHaloTickerWrapper.getMeasuredHeight();
+            int ch = mGesture == Gesture.TASK ? 0 : tickerHeight / 2;
+            int cw = mHaloTickerWrapper.getMeasuredWidth();
             int y = mHaloY + mIconHalfSize - ch;
+
             if (mGesture == Gesture.TASK) {
                 if (mHaloY < mIconHalfSize) {
-                    y = y + (int)(mIconSize * 0.85f);
+                    y = y + (int)(mIconSize * 0.20f);
                 } else {
-                    y = y - (int)(mIconSize * 0.85f);
+                    y = y - mIconSize;
                 }
             }
 
             int x = mHaloX + mIconSize + (int)(mIconSize * 0.1f);
             if (!mTickerLeft) {
                 x = mHaloX - cw - (int)(mIconSize * 0.1f);
-            }
-
-            if (mState == State.DRAG) {
-                setHaloContentY(y);
-            } else {
-                if (y != getHaloContentY() && !contentYAnimator.isRunning()) {
-                    contentYAnimator.animate(ObjectAnimator.ofInt(this, "HaloContentY", y).setDuration(300),
-                            new DecelerateInterpolator(), null);
-                }
-            }
-
-            if (getHaloContentAlpha() > 0.0f) {
-                state = canvas.save();
-                canvas.translate(x, getHaloContentY());
-                mHaloContentView.draw(canvas);
-                canvas.restoreToCount(state);
             }
 
             // X
@@ -1194,8 +1253,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                     indexLength = indexLength > 120 ? 120 : indexLength;
 
                     for (int i = 0; i < items; i++) {
-                        float pulseX = mTickerLeft ? (mIconSize * 1.25f + indexLength * i)
-                                : (mScreenWidth - mIconSize * 1.25f - indexLength * i - mMarker.getWidth());
+                        float pulseX = mTickerLeft ? (mIconSize * 1.3f + indexLength * i)
+                                : (mScreenWidth - mIconSize * 1.3f - indexLength * i - mMarker.getWidth());
                         boolean markerState = mTickerLeft ? mMarkerIndex >= 0 && i < items-mMarkerIndex : i <= mMarkerIndex;
                         mMarkerPaint.setAlpha(markerState ? 255 : 100);
                         canvas.drawBitmap(mMarker, pulseX, pulseY, mMarkerPaint);
@@ -1222,6 +1281,26 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                 mMarkerPaint.setAlpha(mGesture == Gesture.DOWN2 ? 255 : 100);
                 yButtom = yButtom + (int)(mIconSize * 0.7f);
                 canvas.drawBitmap(mMarkerB, xPos, yButtom, mMarkerPaint);
+            }
+
+            if (mState == State.DRAG) {
+                setHaloContentY(y);
+            } else {
+                if (y != getHaloContentY() && !contentYAnimator.isRunning()) {
+                    setHaloContentBackground(mTickerLeft, mGesture == Gesture.TASK && mHaloY > mIconHalfSize
+                            ? HaloProperties.ContentStyle.CONTENT_DOWN : HaloProperties.ContentStyle.CONTENT_UP);
+                    contentYAnimator.animate(ObjectAnimator.ofInt(this, "HaloContentY", y).setDuration(300),
+                            new DecelerateInterpolator(), null);
+                }
+            }
+
+            if (getHaloContentAlpha() > 0.0f) {
+                state = canvas.save();
+                tickerX = x;
+                tickerY = getHaloContentY();
+                canvas.translate(x, getHaloContentY());
+                mHaloContentView.draw(canvas);
+                canvas.restoreToCount(state);
             }
 
             // Bubble
@@ -1268,11 +1347,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         mContentIntent = null;
         mCurrentNotficationEntry = null;
         mEffect.killTicker();
-        mEffect.updateResources();
+        mEffect.updateResources(mTickerLeft);
         mEffect.invalidate();
     }
 
-    void tick(NotificationData.Entry entry, String text, int delay, int duration, boolean alwaysFlip) {
+    void tick(NotificationData.Entry entry, int delay, int duration, boolean alwaysFlip, boolean showContent) {
         if (entry == null) {
             clearTicker();
             return;
@@ -1288,10 +1367,26 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         // set the avatar
         mEffect.mHaloIcon.setImageDrawable(new BitmapDrawable(mContext.getResources(), entry.getRoundIcon()));
 
-        // Set text
-        if (mState != State.SILENT) mEffect.ticker(text, delay, duration);
+        if (showContent && mState != State.SILENT) {
+            if (entry.haloContent != null) {
+                try {
+                    ((ViewGroup)mEffect.mHaloTickerContent).removeAllViews();
+                    ((ViewGroup)mEffect.mHaloTickerContent).addView(entry.haloContent);
+                    mEffect.ticker(delay, duration);
+                } catch(Exception e) {
+                    // haloContent had a view already? Let's give it one last chance ...
+                    try {
+                        mBar.prepareHaloNotification(entry, notification, false);
+                        if (entry.haloContent != null) ((ViewGroup)mEffect.mHaloTickerContent).addView(entry.haloContent);
+                        mEffect.ticker(delay, duration);
+                    } catch(Exception ex) {
+                        // Screw it, we're going with a simple text
+                        mEffect.ticker(mNotificationText, delay, duration);
+                    }
+                }
+            }
+        }
 
-        mEffect.updateResources();
         mEffect.invalidate();
 
         // Set Number
@@ -1347,7 +1442,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                                 if (mHideTicker) mEffect.sleep(HaloEffect.SLEEP_DELAY + HaloEffect.WAKE_TIME * 2, HaloEffect.SLEEP_TIME, false);
                             }
 
-                            tick(entry, text, HaloEffect.WAKE_TIME * 2, 1000, true);
+                            tick(entry, HaloEffect.WAKE_TIME * 2, 1000, true, true);
 
                             // Pop while not tasking, only if notification is certified fresh
                             if (mEnableColor) {
@@ -1458,7 +1553,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                     if (entry == null && getHaloMsgCount() > 0) {
                         loadLastNotification(false);
                     } else {
-                        tick(entry, "", 0, 0, false);
+                        tick(entry, 0, 0, false, false);
                     }
                     final int c = getHaloMsgCount()-getHidden() < 0 ? 0 : getHaloMsgCount()-getHidden();
                     mEffect.setHaloMessageNumber(c);
@@ -1490,26 +1585,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                             int lastMsg = getHaloMsgCount() - getHidden();
                             if (lastMsg > 0) {
                                 NotificationData.Entry entry = mNotificationData.get(getHaloMsgIndex(lastMsg - 1, true));
-                                ApplicationInfo ai;
-                                try {
-                                    ai = mPm.getApplicationInfo( entry.notification.getPackageName(), 0);
-                                } catch (final NameNotFoundException e) {
-                                    ai = null;
-                                }
-                                String text = (String) (ai != null ? mPm.getApplicationLabel(ai) : "...");
-                        // Pop while not tasking, only if notification is certified fresh
-                        //if (mEnableColor) {
-                        //    if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME);
-                        //} else {
-                        //    if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
-                        //}
-                                if (entry.notification.getNotification().tickerText != null) {
-                                    text = entry.notification.getNotification().tickerText.toString();
-                                }
                                 mEffect.wake();
                                 mEffect.nap(HaloEffect.NAP_DELAY + HaloEffect.WAKE_TIME * 2);
                                 if (mHideTicker) mEffect.sleep(HaloEffect.SLEEP_DELAY + HaloEffect.WAKE_TIME * 2, HaloEffect.SLEEP_TIME, false);
-                                tick(entry, text, HaloEffect.WAKE_TIME * 2, 1000, false);
+                                tick(entry, HaloEffect.WAKE_TIME * 2, 1000, false, true);
                                  if (mEnableColor) {
                                      mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME * 2);
                                  } else {

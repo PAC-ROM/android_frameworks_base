@@ -77,6 +77,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -312,6 +313,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     private RemoteViews.OnClickHandler mOnClickHandler = new RemoteViews.OnClickHandler() {
         @Override
         public boolean onClickHandler(View view, PendingIntent pendingIntent, Intent fillInIntent) {
+
+            android.util.Log.d("PARANOID", "Notification click handler invoked for intent: " + pendingIntent);
+
             if (DEBUG) {
                 Slog.v(TAG, "Notification click handler invoked for intent: " + pendingIntent);
             }
@@ -1568,8 +1572,31 @@ public abstract class BaseStatusBar extends SystemUI implements
         return entry.notification;
     }
 
-    private Bitmap createRoundIcon(StatusBarNotification notification) {
+    public void prepareHaloNotification(NotificationData.Entry entry, StatusBarNotification notification, boolean update) {
+
         Notification notif = notification.getNotification();
+
+        // Get the remote view
+        try {
+
+            if (!update) {
+                ViewGroup mainView = (ViewGroup)notif.contentView.apply(mContext, null, mOnClickHandler);
+
+                if (mainView instanceof FrameLayout) {
+                    entry.haloContent = mainView.getChildAt(1);
+                    mainView.removeViewAt(1);
+                } else {
+                    entry.haloContent = mainView;
+                }
+            } else {
+                notif.contentView.reapply(mContext, entry.haloContent, mOnClickHandler);
+            }
+
+        } catch (Exception e) {
+            // Non uniform content?
+            android.util.Log.d("PARANOID", "   Non uniform content?");
+        }
+
         // Construct the round icon
         final float haloSize = Settings.System.getFloat(mContext.getContentResolver(),
                 Settings.System.HALO_SIZE, 1.0f);
@@ -1609,7 +1636,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 // NameNotFoundException
             }
         }
-        return roundIcon;
+        entry.roundIcon = roundIcon;
     }
 
     protected StatusBarIconView addNotificationViews(IBinder key,
@@ -1634,8 +1661,8 @@ public abstract class BaseStatusBar extends SystemUI implements
             return null;
         }
 
-        NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView,
-                createRoundIcon(notification));
+        NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView);
+        prepareHaloNotification(entry, notification, false);
         entry.hide = entry.notification.getPackageName().equals("com.paranoid.halo");
 
         final PendingIntent contentIntent = notification.getNotification().contentIntent;
@@ -1799,7 +1826,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                     oldEntry.floatingIntent = null;
                 }
                 // Update the roundIcon
-                oldEntry.roundIcon = createRoundIcon(notification);
+                prepareHaloNotification(oldEntry, notification, true);
 
                 // Update the icon.
                 final StatusBarIcon ic = new StatusBarIcon(notification.getPackageName(),
@@ -1862,6 +1889,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                 mHandler.sendEmptyMessage(MSG_HIDE_INTRUDER);
             }
         }
+
+        // Update halo
+        if (mHalo != null) mHalo.update();
     }
 
     // Q: What kinds of notifications should show during setup?
