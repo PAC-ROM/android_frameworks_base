@@ -1097,7 +1097,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         protected void onDraw(Canvas canvas) {
             int state;
 
-            android.util.Log.d("PARANOID", "DRAW");
+            // android.util.Log.d("PARANOID", "DRAW");
 
             // Ping
             if (mPingPaint != null) {
