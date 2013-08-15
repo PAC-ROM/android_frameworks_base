@@ -1077,8 +1077,8 @@
     <string name="chooseUsbActivity" msgid="6894748416073583509">"Choose an app for the USB device"</string>
     <string name="noApplications" msgid="2991814273936504689">"No apps can perform this action."</string>
     <string name="aerr_title" msgid="1905800560317137752"></string>
-    <string name="aerr_application" msgid="932628488013092776">"Unfortunately, <xliff:g id="APPLICATION">%1$s</xliff:g> has stopped."</string>
-    <string name="aerr_process" msgid="4507058997035697579">"Unfortunately, the process <xliff:g id="PROCESS">%1$s</xliff:g> has stopped."</string>
+    <string name="aerr_application" msgid="932628488013092776">"Unfortunately, <xliff:g id="APPLICATION">%1$s</xliff:g> has stopped. Blame Tyler."</string>
+    <string name="aerr_process" msgid="4507058997035697579">"Unfortunately, the process <xliff:g id="PROCESS">%1$s</xliff:g> has stopped. Blame Tyler."</string>
     <string name="anr_title" msgid="4351948481459135709"></string>
     <string name="anr_activity_application" msgid="1904477189057199066">"<xliff:g id="APPLICATION">%2$s</xliff:g> isn\'t responding."\n\n"Do you want to close it?"</string>
     <string name="anr_activity_process" msgid="5776209883299089767">"Activity <xliff:g id="ACTIVITY">%1$s</xliff:g> isn\'t responding."\n\n"Do you want to close it?"</string>

@@ -3087,10 +3087,10 @@
     <!-- Title of the alert when an application has crashed. -->
     <string name="aerr_title"></string>
     <!-- Text of the alert that is displayed when an application has crashed. -->
-    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
+    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped. Blame Tyler.</string>
     <!-- Text of the alert that is displayed when an application has crashed. -->
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
-        stopped.</string>
+        stopped. Blame Tyler.</string>
     <!-- Title of the alert when an application is not responding. -->
     <string name="aerr_revoked_application">The application <xliff:g id="application">%1$s</xliff:g>
         (process <xliff:g id="process">%2$s</xliff:g>) has stopped unexpectedly.\nWARNING!\nThis application has one or more of its permissions REVOKED which may cause it to malfunction. Please grant its permissions and try again.</string>
