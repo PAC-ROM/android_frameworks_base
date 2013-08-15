@@ -2836,6 +2836,12 @@ public final class Settings {
         public static final String QS_DISABLE_PANEL = "qs_disable_panel";
 
         /**
+         * HALO enabled, should default to 0 (HALO is disabled)
+         * @hide
+         */
+        public static final String HALO_ENABLED = "halo_enabled";
+
+        /*
          * HALO, should default to 0 (no, do not show)
          * @hide
          */
@@ -2852,6 +2858,42 @@ public final class Settings {
          * @hide
          */
         public static final String HALO_HIDE = "halo_hide";
+
+        /**
+         * HALO colors
+         * @hide
+         */
+        public static final String HALO_COLORS = "halo_colors";
+
+        /**
+         * HALO effect color
+         * @hide
+         */
+        public static final String HALO_EFFECT_COLOR = "halo_effect_color";
+
+        /**
+         * HALO circle bg color
+         * @hide
+         */
+        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
+
+        /**
+         * HALO speech bubble color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
+
+        /**
+         * HALO speech bubble text color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
+
+        /**
+         * HALO size fraction, default is 1.0f (normal)
+         * @hide
+         */
+        public static final String HALO_SIZE = "halo_size";
 
         /**
          * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
@@ -3739,12 +3781,6 @@ public final class Settings {
          * @hide
          */
         public static final String LED_BRIGHTNESS = "led_brightness";
-
-        /**
-         * HALO size fraction, default is 1.0f (normal)
-         * @hide
-         */
-        public static final String HALO_SIZE = "halo_size";
 
         /**
          * Whether to enable quiet hours.
