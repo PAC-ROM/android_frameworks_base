@@ -66,6 +66,7 @@ import android.provider.Settings;
 import android.service.notification.INotificationListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -107,8 +108,9 @@ import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.phone.Ticker;
+import com.android.systemui.statusbar.tablet.TabletTicker;
 
-public class Halo extends FrameLayout implements Ticker.TickerCallback {
+public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTicker.TabletTickerCallback {
 
     public static final String TAG = "HaloLauncher";
 
@@ -474,7 +476,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         } catch (android.os.RemoteException ex) {
             // failed to register listener
         }
-        if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
+        if(ExtendedPropertiesUtils.isTablet()) {
+            if (mBar.getTabletTicker() != null) mBar.getTabletTicker().setUpdateEvent(this);
+        } else {
+            if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
+        }
         mNotificationData = mBar.getNotificationData();
         loadLastNotification(true);
     }
@@ -897,7 +903,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mEffect.unscheduleSleep();
         mHandler.removeCallbacksAndMessages(null);
         // Kill callback
-        mBar.getTicker().setUpdateEvent(null);
+        if(ExtendedPropertiesUtils.isTablet()) {
+            if (mBar.getTabletTicker() != null) mBar.getTabletTicker().setUpdateEvent(null);
+        } else {
+             mBar.getTicker().setUpdateEvent(null);
+        }
         // Flag tasker
         mBar.setHaloTaskerActive(false, false);
         // Kill the effect layer
@@ -1294,6 +1304,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
             msgType = HaloProperties.MessageType.MESSAGE;
         }
         mEffect.animateHaloBatch(n.number, -1, alwaysFlip, delay, msgType);
+    }
+
+    public void updateTicker(StatusBarNotification notification) {
+        loadLastNotification(true);
     }
 
     // This is the android ticker callback
