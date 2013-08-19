@@ -350,6 +350,12 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         mScreenWidth = mEffect.getWidth();
         mScreenHeight = mEffect.getHeight();
 
+        mKillX = mScreenWidth / 2;
+        mKillY = mIconHalfSize;
+
+        // In the unlikely event the user still holds on to HALO just let it be
+        if (mState != State.IDLE) return;
+        
         // Halo dock position
         preferences = mContext.getSharedPreferences("Halo", 0);
         int msavePositionX = preferences.getInt(KEY_HALO_POSITION_X, 0);
@@ -359,9 +365,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             mState = State.FIRST_RUN;
             preferences.edit().putBoolean(KEY_HALO_FIRST_RUN, false).apply();
         }
-
-        mKillX = mScreenWidth / 2;
-        mKillY = mIconHalfSize;
 
         if (!mFirstStart) {
             if (msavePositionY < 0) mEffect.setHaloY(0);
@@ -575,11 +578,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        mEffect.onTouchEvent(event);
-
         // Prevent any kind of interaction while HALO explains itself
         if (mState == State.FIRST_RUN) return true;
 
+        mEffect.onTouchEvent(event);
         mGestureDetector.onTouchEvent(event);
 
         final int action = event.getAction();
@@ -979,6 +981,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             final int location[] = { 0, 0 };
             mRoot.getLocationOnScreen(location);
 
+            final int location_effect[] = { 0, 0 };
+            getLocationOnScreen(location_effect);
+
             float x=ev.getX(index);
             float y=ev.getY(index);
 
@@ -990,12 +995,12 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             x=(float)(length*Math.cos(Math.toRadians(angle)))+location[0];
             y=(float)(length*Math.sin(Math.toRadians(angle)))+location[1];
 
-            point.set((int)x,(int)y);
+            point.set((int)x,(int)y - location_effect[1]);
         }
 
         boolean browseView(PointF loc, Rect parent, View v) {
             int posX = (int)loc.x;
-            int posY = (int)loc.y - mIconHalfSize / 2;
+            int posY = (int)loc.y; // - mIconHalfSize / 2;
 
             if (v instanceof ViewGroup) {
                 ViewGroup vg = (ViewGroup)v;
