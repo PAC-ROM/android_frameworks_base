@@ -53,4 +53,9 @@
     <string name="permdesc_changePrivacyGuardState">Приложение может выбрать, будет ли другое приложение работать в режиме инкогнито. Когда приложение запущено в режиме инкогнито, оно не получает доступ к персональным данным, таким как контакты, сообщения или журнал звонков.</string>
     <string name="privacy_guard_notification">Режим инкогнито активен</string>
     <string name="privacy_guard_notification_detail"><xliff:g id="app">%1$s</xliff:g> не сможет получать доступ к персональным данным</string>
+
+    <string name="policylab_enforceSelinux">Переключение режимов SELinux</string>
+    <string name="policydesc_enforceSelinux">Переключать принудительный и разрешающий режимы политики SELinux.</string>
+    <string name="policylab_enforceMmac">Переключение режимов MMAC</string>
+    <string name="policydesc_enforceMmac">Переключать принудительный и разрешающий режимы политики MMAC.</string>
 </resources>
