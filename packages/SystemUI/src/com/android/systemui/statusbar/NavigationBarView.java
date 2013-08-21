@@ -634,13 +634,37 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
     };
 
     public void setNavigationIconHints(int hints) {
-        setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, false);
+        setNavigationIconHints(hints, false);
     }
 
     public void setNavigationIconHints(int hints, boolean force) {
-        setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, force);
-    }
+        if (!force && hints == mNavigationIconHints) return;
+  
+        if (DEBUG) {
+            android.widget.Toast.makeText(mContext,
+                "Navigation icon hints = " + hints,
+                500).show();
+        }
 
+        mNavigationIconHints = hints;
+
+        // We can't guarantee users will set these buttons as targets
+        if (getBackButton() != null) {
+            getBackButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_NOP)) ? 0.5f : 1.0f);
+            ((ImageView)getBackButton()).setImageDrawable(
+                    (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT))
+                    ? (mBackAltIcon)
+                    : (mBackIcon));
+        }
+        if (getHomeButton()!=null) {
+            getHomeButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_HOME_NOP)) ? 0.5f : 1.0f);
+        }
+        if (getRecentsButton()!=null) {
+            getRecentsButton().setAlpha((0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
+        }
+        updateMenuArrowKeys();
+    }
+    
     @Override
     public void setNavigationIconHints(int button, int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
