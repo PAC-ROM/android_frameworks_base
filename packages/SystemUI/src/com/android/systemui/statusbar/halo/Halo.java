@@ -1414,7 +1414,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         if (entry.notification.getPackageName().equals("com.paranoid.halo")) {
             msgType = HaloProperties.MessageType.PINNED;
         } else if (!entry.notification.isClearable()) {
-            msgType = HaloProperties.MessageType.PINNED;
+            msgType = HaloProperties.MessageType.SYSTEM;
         } else {
             msgType = HaloProperties.MessageType.MESSAGE;
         }
