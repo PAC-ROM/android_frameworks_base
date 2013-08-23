@@ -58,6 +58,7 @@ import android.service.gesture.EdgeGestureManager;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SettingConfirmationHelper;
 import android.util.Slog;
 import android.view.Display;
 import android.view.IWindowManager;
@@ -579,6 +580,22 @@ public abstract class BaseStatusBar extends SystemUI implements
                 null, UserHandle.CURRENT);
     }
 
+    private void launchFloating(PendingIntent pIntent) {
+        Intent overlay = new Intent();
+        overlay.addFlags(Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        try {
+            ActivityManagerNative.getDefault().resumeAppSwitches();
+            ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+        } catch (RemoteException e) {
+        }
+        try {
+            pIntent.send(mContext, 0, overlay);
+        } catch (PendingIntent.CanceledException e) {
+            // the stack trace isn't very helpful here.  Just log the exception message.
+            Slog.w(TAG, "Sending contentIntent failed: " + e);
+        }
+    }
+
     protected View.OnLongClickListener getNotificationLongClicker() {
         return new View.OnLongClickListener() {
             @Override
@@ -586,8 +603,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                 final NotificationData.Entry entry = (Entry) v.getTag();
                 final StatusBarNotification sbNotification = entry.notification;
                 final String packageNameF = sbNotification.getPackageName();
+                final PendingIntent contentIntent = sbNotification.getNotification().contentIntent;
+
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;
+
                 mNotificationBlamePopup = new PopupMenu(mContext, v);
                 mNotificationBlamePopup.getMenuInflater().inflate(
                         R.menu.notification_popup_menu,
@@ -653,12 +673,23 @@ public abstract class BaseStatusBar extends SystemUI implements
                             removeNotification(entry.key);
                         } else if (item.getItemId() == MENU_HEADS_UP_ID) {
                             mPm.setHeadsUpSetting(packageNameF, !isHeadsUp);
+                        } else if (item.getItemId() == R.id.notification_floating_item) {
+                            launchFloating(contentIntent);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else {
                             return false;
                         }
                         return true;
                     }
                 });
+
+                mNotificationBlamePopup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                    @Override
+                    public void onDismiss(PopupMenu popupMenu) {
+                        mNotificationBlamePopup = null;
+                    }
+                });
+
                 mNotificationBlamePopup.show();
 
                 return true;
@@ -1177,6 +1208,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
 
         public void onClick(View v) {
+            if (mNotificationBlamePopup != null) return;
             try {
                 // The intent we are sending is for the application, which
                 // won't have permission to immediately start an activity after
