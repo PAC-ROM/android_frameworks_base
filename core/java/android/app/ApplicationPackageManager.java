@@ -1311,25 +1311,6 @@ final class ApplicationPackageManager extends PackageManager {
     }
 
     @Override
-    public String[] getRevokedPermissions(String packageName) {
-        try {
-            return mPM.getRevokedPermissions(packageName);
-        } catch (RemoteException e) {
-            // Should never happen!
-        }
-        return new String[0];
-    }
-
-    @Override
-    public void setRevokedPermissions(String packageName, String[] perms) {
-        try {
-            mPM.setRevokedPermissions(packageName, perms);
-        } catch (RemoteException e) {
-            // Should never happen!
-        }
-    }
-
-    @Override
     public void setPrivacyGuardSetting(String packageName, boolean enabled) {
         try {
             mPM.setPrivacyGuardSetting(packageName, enabled, mContext.getUserId());

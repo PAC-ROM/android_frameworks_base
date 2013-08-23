@@ -6709,8 +6709,6 @@ public final class Settings {
          */
         public static final String SCREENSAVER_ACTIVATE_ON_WIRELESS_CHARGE = "screensaver_activate_on_wireless_charger";
 
-        public static final String ENABLE_PERMISSIONS_MANAGEMENT = "enable_permissions_management";
-
         /**
          * Whether newly installed apps should run with privacy guard by default
          * @hide
