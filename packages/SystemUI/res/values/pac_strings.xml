@@ -48,4 +48,7 @@
     <string name="status_bar_recent_playstore_item_title">Play Store</string>
     <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
 
+    <!-- Title shown in notification popup for launching notification in floating mode -->
+    <string name="status_bar_notification_floating_item_title">Floating mode</string>
+
 </resources>
