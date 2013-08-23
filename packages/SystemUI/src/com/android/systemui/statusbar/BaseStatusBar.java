@@ -582,15 +582,34 @@ public abstract class BaseStatusBar extends SystemUI implements
                 null, UserHandle.CURRENT);
     }
 
+    private void launchFloating(PendingIntent pIntent) {
+        Intent overlay = new Intent();
+        overlay.addFlags(Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        try {
+            ActivityManagerNative.getDefault().resumeAppSwitches();
+            ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+        } catch (RemoteException e) {
+        }
+        try {
+            pIntent.send(mContext, 0, overlay);
+        } catch (PendingIntent.CanceledException e) {
+            // the stack trace isn't very helpful here.  Just log the exception message.
+            Slog.w(TAG, "Sending contentIntent failed: " + e);
+        }
+    }
+
     protected View.OnLongClickListener getNotificationLongClicker() {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                final NotificationData.Entry entry = (Entry) v.getTag();
-                final StatusBarNotification sbNotification = entry.notification;
-                final String packageNameF = sbNotification.getPackageName();
+                final NotificationData.Entry  entry = (NotificationData.Entry) v.getTag();
+                final StatusBarNotification sbn = entry.notification;
+                final String packageNameF = sbn.getPackageName();
+                final PendingIntent contentIntent = sbn.getNotification().contentIntent;
+
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;
+
                 mNotificationBlamePopup = new PopupMenu(mContext, v);
                 mNotificationBlamePopup.getMenuInflater().inflate(
                         R.menu.notification_popup_menu,
@@ -639,11 +658,14 @@ public abstract class BaseStatusBar extends SystemUI implements
                         } else if (item.getItemId() == R.id.notification_spam_item) {
                             ContentValues values = new ContentValues();
                             String message = SpamFilter.getNotificationContent(
-                                    sbNotification.getNotification());
+                                    sbn.getNotification());
                             values.put(NotificationTable.MESSAGE_TEXT, message);
                             values.put(PackageTable.PACKAGE_NAME, packageNameF);
                             mContext.getContentResolver().insert(SPAM_MESSAGE_URI, values);
                             removeNotification(entry.key);
+                        } else if (item.getItemId() == R.id.notification_floating_item) {
+                            launchFloating(contentIntent);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else {
                             return false;
                         }
