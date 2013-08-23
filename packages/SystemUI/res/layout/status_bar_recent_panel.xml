@@ -31,7 +31,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:visibility="invisible" />
-
     <FrameLayout
         android:id="@+id/recents_bg_protect"
         android:background="@drawable/status_bar_recents_background"
@@ -70,6 +69,14 @@
 
         </com.android.systemui.recent.RecentsVerticalScrollView>
 
+        <ImageView android:id="@+id/recents_kill_all_button"
+            android:clickable="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="center"
+            android:layout_gravity="bottom|left"
+            android:src="@drawable/ic_notify_clear" />
+
     </FrameLayout>
 
     <include layout="@layout/status_bar_no_recent_apps"
@@ -77,5 +84,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible" />
+
+   <RelativeLayout
+        android:id="@+id/recents_ram_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:layout_gravity="top">
+
+        <view class="com.android.systemui.recent.LinearColorBar"
+            android:id="@+id/ram_usage_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@*android:dimen/status_bar_height"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingTop="1dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:id="@+id/usedMemText"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:gravity="left|bottom"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="#000"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/ramText"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="#000"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/freeMemText"
+                android:layout_gravity="center_vertical|right"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:gravity="right|bottom"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="#000"
+                android:singleLine="true" />
+        </view>
+    </RelativeLayout>
 
 </com.android.systemui.recent.RecentsPanelView>
