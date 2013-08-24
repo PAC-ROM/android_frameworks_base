@@ -3584,6 +3584,40 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.NOTIFICATIONS]), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_COLORIZE[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SPACE[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_VIBRATE[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_RIBBON_TEXT[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SIZE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_SPACE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_VIBRATE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_ICON_COLORIZE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_WEATHER), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
