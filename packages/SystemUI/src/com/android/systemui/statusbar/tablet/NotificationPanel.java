@@ -270,7 +270,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     @Override
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        
+
         if (DEBUG) {
             Slog.d(TAG, String.format("PANEL: onSizeChanged: (%d -> %d, %d -> %d)",
                         oldw, w, oldh, h));
@@ -319,10 +319,10 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         });
         a.start();
     }
- 
+
     public void updateClearButton() {
         if (mBar != null) {
-            final boolean showX 
+            final boolean showX
                 = (isShowing()
                         && mHasClearableNotifications
                         && mNotificationScroller.getVisibility() == View.VISIBLE);
@@ -362,7 +362,8 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         mCallback.setStatusBar(mBar);
         // Add Quick Settings
         mSettingsContainer = (QuickSettingsContainerView)mSettingsView.findViewById(R.id.quick_settings_container);
-        mQS = new QuickSettingsController(mContext, mSettingsContainer, statusBar);
+        mQS = new QuickSettingsController(mContext, mSettingsContainer, statusBar,
+                        Settings.System.QUICK_SETTINGS_TILES);
         mQS.setService(statusBar);
         mQS.setBar(mCallback);
         mQS.setupQuickSettings();
@@ -397,7 +398,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
         void createAnimation(boolean appearing) {
             // mVisible: previous state; appearing: new state
-            
+
             float start, end;
 
             // 0: on-screen

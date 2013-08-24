@@ -246,6 +246,8 @@ public class CameraTile extends QuickSettingsTile {
 
     public CameraTile(Context context, QuickSettingsController qsc, Handler handler) {
         super(context, qsc, R.layout.quick_settings_tile_camera);
+        mHandler = handler;
+        mLabel = mContext.getString(R.string.quick_settings_camera_label);
 
         mQsc = qsc;
         mHandler = handler;
@@ -282,7 +284,7 @@ public class CameraTile extends QuickSettingsTile {
         };
 
         mIconContainer = mTile.findViewById(R.id.icon_container);
-        TextView mTextView = (TextView) mTile.findViewById(R.id.camera_text);
+        TextView mTextView = (TextView) mTile.findViewById(R.id.text);
         mTextView.setTextSize(1, mQsc.getTileTextSize());
         mTextView.setTextColor(mQsc.getTileTextColor());
         mSurfaceLayout = (FrameLayout) mTile.findViewById(R.id.camera_surface_holder);

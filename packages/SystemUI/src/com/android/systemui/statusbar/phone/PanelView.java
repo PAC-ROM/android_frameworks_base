@@ -24,25 +24,13 @@ import java.util.Iterator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.animation.TimeAnimator.TimeListener;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.ContentObserver;
-import android.graphics.Point;
-import android.os.Handler;
-import android.os.IPowerManager;
-import android.os.RemoteException;
-import android.os.ServiceManager;
-import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Slog;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.android.systemui.R;
 
@@ -407,7 +395,6 @@ public class PanelView extends FrameLayout {
                             mInitialTouchY = y;
                             mVelocityTracker = FlingTracker.obtain();
                             trackMovement(event);
-
                             mTimeAnimator.cancel(); // end any outstanding animations
                             mBar.onTrackingStarted(PanelView.this);
                             mTouchOffset = (rawY - mAbsPos[1]) - PanelView.this.getExpandedHeight();

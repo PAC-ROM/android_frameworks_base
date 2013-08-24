@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -45,8 +46,9 @@ public class QuickSettingsTile implements OnClickListener {
     protected String mLabel;
     protected BaseStatusBar mStatusbarService;
     protected QuickSettingsController mQsc;
-    protected int mTileTextSize; 
+    protected int mTileTextSize;
     protected int mTileTextColor;
+    protected SharedPreferences mPrefs;
 
     private static final int DEFAULT_QUICK_TILES_BG_COLOR = 0xff161616;
     private static final int DEFAULT_QUICK_TILES_BG_PRESSED_COLOR = 0xff212121;
@@ -75,11 +77,14 @@ public class QuickSettingsTile implements OnClickListener {
         mQsc = qsc;
         mTileLayout = layout;
         setTextSize(mQsc.getTileTextSize());
-        setTextColor(mQsc.getTileTextColor()); 
+        setTextColor(mQsc.getTileTextColor());
+        mPrefs = mContext.getSharedPreferences("quicksettings", Context.MODE_PRIVATE);
     }
 
-    public void setupQuickSettingsTile(LayoutInflater inflater, QuickSettingsContainerView container) {
-        mTile = (QuickSettingsTileView) inflater.inflate(R.layout.quick_settings_tile, container, false);
+    public void setupQuickSettingsTile(LayoutInflater inflater,
+            QuickSettingsContainerView container) {
+        mTile = (QuickSettingsTileView) inflater.inflate(
+                R.layout.quick_settings_tile, container, false);
         mTile.setContent(mTileLayout, inflater);
         mContainer = container;
         mContainer.addView(mTile);
@@ -99,7 +104,18 @@ public class QuickSettingsTile implements OnClickListener {
         mTileTextColor = color;
     }
 
-    void onPostCreate(){}
+    public void setLabelVisibility(boolean visible) {
+        TextView tv = (TextView) mTile.findViewById(R.id.text);
+        if (tv != null) {
+            tv.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+        View sepPadding = mTile.findViewById(R.id.separator_padding);
+        if (sepPadding != null) {
+            sepPadding.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    void onPostCreate() {}
 
     public void onDestroy() {}
 
