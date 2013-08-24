@@ -44,30 +44,30 @@ public class Traffic extends TextView {
     public Traffic(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
-        mHandler = new Handler();
+
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         mTrafficStats = new TrafficStats();
-        mSettingsObserver = new SettingsObserver(mHandler);
-        mSettingsObserver.observe();
+        settingsObserver.observe();
+
         // Only watch for per app color changes when the setting is in check
         if (ColorUtils.getPerAppColorState(mContext)) {
-            mLastTextColor = ColorUtils.getColorSettingInfo(mContext,
-                    Settings.System.STATUS_ICON_COLOR);
+
+            mLastTextColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
+
             updateTextColor();
 
-        mContext.getContentResolver().registerContentObserver(
-        Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, 
-                new ContentObserver(mHandler) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateTextColor();
-                    }
-                });
+            mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateTextColor();
+                }});
         }
     }
 
     private void updateTextColor() {
         ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                Settings.System.STATUS_ICON_COLOR);
+            Settings.System.STATUS_ICON_COLOR);
         if (!colorInfo.lastColorString.equals(mLastTextColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
                 setTextColor(mTrafficColor);
@@ -81,8 +81,12 @@ public class Traffic extends TextView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
         if (!mAttached) {
             mAttached = true;
+            mTrafficColor = getTextColors().getDefaultColor();
+            mHandler = new Handler();
+            mSettingsObserver = new SettingsObserver(mHandler);
             mSettingsObserver.observe();
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -97,8 +101,8 @@ public class Traffic extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             getContext().unregisterReceiver(mIntentReceiver);
-            mAttached = false;
             mSettingsObserver.unobserve();
+            mAttached = false;
         }
     }
 
@@ -159,11 +163,13 @@ public class Traffic extends TextView {
     }
 
     private boolean getConnectAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
         try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivityManager.getActiveNetworkInfo().isConnected()) {
                 return true;
+            } else {
+                return false;
             }
         } catch (Exception ex) {
         }
@@ -172,7 +178,7 @@ public class Traffic extends TextView {
 
     public void update() {
         mTrafficHandler.removeCallbacks(mRunnable);
-        mTrafficHandler.postDelayed(mRunnable, 3000);
+        mTrafficHandler.postDelayed(mRunnable, 2000);
     }
 
     Runnable mRunnable = new Runnable() {
@@ -186,6 +192,9 @@ public class Traffic extends TextView {
         ContentResolver resolver = mContext.getContentResolver();
         showTraffic = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC, 0) == 1);
+
+        setTextColor(mTrafficColor);
+
         if (showTraffic && getConnectAvailable()) {
             if (mAttached) {
                 updateTraffic();
