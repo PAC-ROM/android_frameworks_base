@@ -17,7 +17,6 @@
 package android.webkit;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -349,7 +348,7 @@ public final class URLUtil {
                 }
             }
             if (extension == null) {
-                if (mimeType != null && mimeType.toLowerCase(Locale.ROOT).startsWith("text/")) {
+                if (mimeType != null && mimeType.toLowerCase().startsWith("text/")) {
                     if (mimeType.equalsIgnoreCase("text/html")) {
                         extension = ".html";
                     } else {

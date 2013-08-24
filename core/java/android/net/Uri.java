@@ -1717,7 +1717,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         if (flag == null) {
             return defaultValue;
         }
-        flag = flag.toLowerCase(Locale.ROOT);
+        flag = flag.toLowerCase();
         return (!"false".equals(flag) && !"0".equals(flag));
     }
 
@@ -1745,7 +1745,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
     public Uri normalizeScheme() {
         String scheme = getScheme();
         if (scheme == null) return this;  // give up
-        String lowerScheme = scheme.toLowerCase(Locale.ROOT);
+        String lowerScheme = scheme.toLowerCase(Locale.US);
         if (scheme.equals(lowerScheme)) return this;  // no change
 
         return buildUpon().scheme(lowerScheme).build();

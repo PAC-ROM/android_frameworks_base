@@ -16,8 +16,6 @@
 
 package android.net.http;
 
-import java.util.Locale;
-
 /**
  * HttpAuthHeader: a class to store HTTP authentication-header parameters.
  * For more information, see: RFC 2617: HTTP Authentication.
@@ -382,12 +380,12 @@ public class HttpAuthHeader {
             }
 
             if (token.equalsIgnoreCase(QOP_TOKEN)) {
-                mQop = value.toLowerCase(Locale.ROOT);
+                mQop = value.toLowerCase();
                 return;
             }
 
             if (token.equalsIgnoreCase(ALGORITHM_TOKEN)) {
-                mAlgorithm = value.toLowerCase(Locale.ROOT);
+                mAlgorithm = value.toLowerCase();
                 return;
             }
         }

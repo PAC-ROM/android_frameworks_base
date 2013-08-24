@@ -99,7 +99,7 @@ public final class DefaultDatabaseErrorHandler implements DatabaseErrorHandler {
         }
         Log.e(TAG, "deleting the database file: " + fileName);
         try {
-            SQLiteDatabase.deleteDatabase(new File(fileName));
+            new File(fileName).delete();
         } catch (Exception e) {
             /* print warning and ignore exception */
             Log.w(TAG, "delete failed: " + e.getMessage());

@@ -29,7 +29,6 @@ import android.mtp.MtpConstants;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * MediaScanner helper class.
@@ -298,10 +297,10 @@ public class MediaFile {
     }
 
     public static MediaFileType getFileType(String path) {
-        int lastDot = path.lastIndexOf('.');
+        int lastDot = path.lastIndexOf(".");
         if (lastDot < 0)
             return null;
-        return sFileTypeMap.get(path.substring(lastDot + 1).toUpperCase(Locale.ROOT));
+        return sFileTypeMap.get(path.substring(lastDot + 1).toUpperCase());
     }
 
     public static boolean isMimeTypeMedia(String mimeType) {
@@ -347,7 +346,7 @@ public class MediaFile {
         }
         int lastDot = fileName.lastIndexOf('.');
         if (lastDot > 0) {
-            String extension = fileName.substring(lastDot + 1).toUpperCase(Locale.ROOT);
+            String extension = fileName.substring(lastDot + 1).toUpperCase();
             Integer value = sFileTypeToFormatMap.get(extension);
             if (value != null) {
                 return value.intValue();

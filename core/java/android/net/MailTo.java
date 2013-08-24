@@ -17,7 +17,6 @@
 package android.net;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,7 +84,7 @@ public class MailTo {
                 }
                 // insert the headers with the name in lowercase so that
                 // we can easily find common headers
-                m.mHeaders.put(Uri.decode(nameval[0]).toLowerCase(Locale.ROOT),
+                m.mHeaders.put(Uri.decode(nameval[0]).toLowerCase(), 
                         nameval.length > 1 ? Uri.decode(nameval[1]) : null);
             }
         }
