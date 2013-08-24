@@ -615,4 +615,6 @@
     <!--  Weather -->
     <string name="weatherpanel_slash">/</string>
 
+    <string name="trash">Trash</string>
+
 </resources>
