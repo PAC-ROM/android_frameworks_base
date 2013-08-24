@@ -48,6 +48,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import java.util.Calendar;
@@ -108,6 +109,7 @@ import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.Prefs;
+import com.android.systemui.statusbar.policy.WeatherPanel;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -202,6 +204,12 @@ public class TabletStatusBar extends BaseStatusBar implements
     LocationController mLocationController;
     DoNotDisturb mDoNotDisturb;
 
+    // AOKP - weatherpanel
+    boolean mWeatherPanelEnabled;
+    WeatherPanel mWeatherPanel;
+    private String mShortClickWeather;
+    private String mLongClickWeather;
+
     ViewGroup mBarContents;
 
     // hide system chrome ("lights out") support
@@ -249,6 +257,14 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.MAX_NOTIFICATION_ICONS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_BUTTONS_QTY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_WEATHER), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
         }
 
         @Override
@@ -316,6 +332,11 @@ public class TabletStatusBar extends BaseStatusBar implements
             mHaloButtonVisible = true;
             updateHaloButton();
         }
+
+        // Weather
+        mWeatherPanel = (WeatherPanel) mNotificationPanel.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);
 
         // Add QuickSettings
         mNotificationPanel.setupQuickSettings(this, mNetworkController, mBluetoothController,
@@ -1394,6 +1415,32 @@ public class TabletStatusBar extends BaseStatusBar implements
         }
     };
 
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            vibrate();
+            animateCollapsePanels();
+            AwesomeAction.launchAction(mContext, mShortClickWeather);
+        }
+    };
+
+    private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            animateCollapsePanels();
+            AwesomeAction.launchAction(mContext, mLongClickWeather);
+            return true;
+        }
+    };
+
+    void vibrate() {
+        if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.HAPTIC_FEEDBACK_ENABLED, 1, UserHandle.USER_CURRENT) != 0) {
+            android.os.Vibrator vib = (android.os.Vibrator)mContext.getSystemService(
+                    Context.VIBRATOR_SERVICE);
+            vib.vibrate(50);
+        }
+    }
+
     public void onClickInputMethodSwitchButton() {
         if (DEBUG) Slog.d(TAG, "clicked input methods panel; disabled=" + mDisabled);
         int msg = (mInputMethodsPanel.getVisibility() == View.GONE) ?
@@ -1802,6 +1849,28 @@ public class TabletStatusBar extends BaseStatusBar implements
        onBarHeightChanged(getStatusBarHeight());
        mNumberOfButtons = Settings.System.getInt(cr, Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);
        UpdateWeights(isLandscape());
+
+        mWeatherPanelEnabled = (Settings.System.getInt(cr,
+                Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
+                && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
+
+        mShortClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_SHORTCLICK);
+
+        mLongClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_LONGCLICK);
+
+        if (mShortClickWeather == null || mShortClickWeather.equals("")) {
+            mShortClickWeather = "**null**";
+        }
+
+        if (mLongClickWeather == null || mLongClickWeather.equals("")) {
+            mLongClickWeather = "**null**";
+        }
+
+        if (mWeatherPanel != null) {
+            mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+        }
     }
 }
 
