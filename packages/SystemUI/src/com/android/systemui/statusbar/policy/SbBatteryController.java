@@ -18,7 +18,6 @@ package com.android.systemui.statusbar.policy;
 
 import java.util.ArrayList;
 
-import android.bluetooth.BluetoothAdapter.BluetoothStateChangeCallback;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -93,7 +92,7 @@ public class SbBatteryController extends LinearLayout {
         super(context, attrs);
         mContext = context;
 
-        mColorInfo = ColorUtils.getColorSettingInfo(context, Settings.System.STATUS_ICON_COLOR);
+        mColorInfo = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
     }
 
     @Override
@@ -130,6 +129,10 @@ public class SbBatteryController extends LinearLayout {
 
     public void addStateChangedCallback(BatteryStateChangeCallback cb) {
         mChangeCallbacks.add(cb);
+    }
+
+    public void removeStateChangedCallback(BatteryStateChangeCallback cb) {
+        mChangeCallbacks.remove(cb);
     }
 
     public void setColor(ColorUtils.ColorSettingInfo colorInfo) {

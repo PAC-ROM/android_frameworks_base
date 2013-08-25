@@ -162,8 +162,6 @@ public class ExternalStorageFormatter extends Service
         stopSelf();
     }
 
-
-
     void updateProgressState() {
         String status = null;
         String extStoragePath = null;
