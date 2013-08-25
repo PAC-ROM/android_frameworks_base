@@ -1329,6 +1329,23 @@ final class ApplicationPackageManager extends PackageManager {
         return false;
     }
 
+    @Override
+    public void setHwuiSetting(String packageName, boolean enabled) {
+        try {
+            mPM.setHwuiSetting(packageName, enabled, mContext.getUserId());
+        } catch (RemoteException e) {
+        }
+    }
+
+    @Override
+    public boolean getHwuiSetting(String packageName) {
+        try {
+            return mPM.getHwuiSetting(packageName, mContext.getUserId());
+        } catch (RemoteException e) {
+        }
+        return false;
+    }
+
     /**
      * @hide
      */

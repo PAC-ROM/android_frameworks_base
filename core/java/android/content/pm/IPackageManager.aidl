@@ -230,6 +230,10 @@ interface IPackageManager {
 
     void setPrivacyGuardSetting(in String packageName, boolean enabled, int userId);
 
+    boolean getHwuiSetting(in String packageName, int userId);
+
+    void setHwuiSetting(in String packageName, boolean enabled, int userId);
+
     /**
      * As per {@link android.content.pm.PackageManager#setComponentEnabledSetting}.
      */

@@ -108,6 +108,7 @@ final class Settings {
     private static final String ATTR_STOPPED = "stopped";
     private static final String ATTR_INSTALLED = "inst";
     private static final String ATTR_PRIVACY_GUARD = "privacy-guard";
+    private static final String ATTR_HWUI = "hwui";
 
     private final File mSettingsFilename;
     private final File mBackupSettingsFilename;
@@ -157,13 +158,13 @@ final class Settings {
     // Packages that have been uninstalled and still need their external
     // storage data deleted.
     final ArrayList<PackageCleanItem> mPackagesToBeCleaned = new ArrayList<PackageCleanItem>();
-    
+
     // Packages that have been renamed since they were first installed.
     // Keys are the new names of the packages, values are the original
     // names.  The packages appear everwhere else under their original
     // names.
     final HashMap<String, String> mRenamedPackages = new HashMap<String, String>();
-    
+
     final StringBuilder mReadMessages = new StringBuilder();
 
     /**
@@ -463,6 +464,7 @@ final class Settings {
                                     true, // stopped,
                                     true, // notLaunched
                                     privacyGuard,
+                                    false, // Hwui disabled
                                     null, null, null);
                             writePackageRestrictionsLPr(user.id);
                         }
@@ -861,6 +863,7 @@ final class Settings {
                                 false,  // stopped
                                 false,  // notLaunched
                                 false,  // privacy guard
+                                false,  // hwui disabled
                                 null, null, null);
                     }
                     return;
@@ -920,6 +923,9 @@ final class Settings {
                     final String privacyGuardStr = parser.getAttributeValue(null, ATTR_PRIVACY_GUARD);
                     final boolean privacyGuard = privacyGuardStr == null
                             ? false : Boolean.parseBoolean(privacyGuardStr);
+                    final String hwuiStr = parser.getAttributeValue(null, ATTR_HWUI);
+                    final boolean hwui = hwuiStr == null
+                            ? false : Boolean.parseBoolean(hwuiStr);
 
                     HashSet<String> enabledComponents = null;
                     HashSet<String> disabledComponents = null;
@@ -941,7 +947,7 @@ final class Settings {
                     }
 
                     ps.setUserState(userId, enabled, installed, stopped, notLaunched, privacyGuard,
-                            enabledCaller, enabledComponents, disabledComponents);
+                            hwui, enabledCaller, enabledComponents, disabledComponents);
                 } else if (tagName.equals("preferred-activities")) {
                     readPreferredActivitiesLPw(parser, userId);
                 } else {
@@ -1047,7 +1053,7 @@ final class Settings {
             for (final PackageSetting pkg : mPackages.values()) {
                 PackageUserState ustate = pkg.readUserState(userId);
                 if (ustate.stopped || ustate.notLaunched || !ustate.installed || ustate.privacyGuard
-                        || ustate.enabled != COMPONENT_ENABLED_STATE_DEFAULT
+                        || ustate.hwui || ustate.enabled != COMPONENT_ENABLED_STATE_DEFAULT
                         || (ustate.enabledComponents != null
                                 && ustate.enabledComponents.size() > 0)
                         || (ustate.disabledComponents != null
@@ -1075,6 +1081,9 @@ final class Settings {
                     }
                     if (ustate.privacyGuard) {
                         serializer.attribute(null, ATTR_PRIVACY_GUARD, "true");
+                    }
+                    if (ustate.hwui) {
+                        serializer.attribute(null, ATTR_HWUI, "true");
                     }
                     if (ustate.enabledComponents != null
                             && ustate.enabledComponents.size() > 0) {
@@ -1337,7 +1346,7 @@ final class Settings {
                     serializer.endTag(null, "cleaning-package");
                 }
             }
-            
+
             if (mRenamedPackages.size() > 0) {
                 for (Map.Entry<String, String> e : mRenamedPackages.entrySet()) {
                     serializer.startTag(null, "renamed-package");
@@ -1346,7 +1355,7 @@ final class Settings {
                     serializer.endTag(null, "renamed-package");
                 }
             }
-            
+
             serializer.endTag(null, "packages");
 
             serializer.endDocument();
@@ -2299,7 +2308,7 @@ final class Settings {
                 }
 
                 String tagName = parser.getName();
-                // Legacy 
+                // Legacy
                 if (tagName.equals(TAG_DISABLED_COMPONENTS)) {
                     readDisabledComponentsLPw(packageSetting, parser, 0);
                 } else if (tagName.equals(TAG_ENABLED_COMPONENTS)) {
@@ -2532,7 +2541,7 @@ final class Settings {
     private String compToString(HashSet<String> cmp) {
         return cmp != null ? Arrays.toString(cmp.toArray()) : "[]";
     }
- 
+
     boolean isEnabledLPr(ComponentInfo componentInfo, int flags, int userId) {
         if ((flags&PackageManager.GET_DISABLED_COMPONENTS) != 0) {
             return true;
@@ -2588,6 +2597,14 @@ final class Settings {
             throw new IllegalArgumentException("Unknown package: " + packageName);
         }
         return pkg.isPrivacyGuard(userId);
+    }
+
+    boolean getHwuiSettingLPr(String packageName, int userId) {
+        final PackageSetting pkg = mPackages.get(packageName);
+        if (pkg == null) {
+            throw new IllegalArgumentException("Unknown package: " + packageName);
+        }
+        return pkg.isHwui(userId);
     }
 
     int getApplicationEnabledSettingLPr(String packageName, int userId) {

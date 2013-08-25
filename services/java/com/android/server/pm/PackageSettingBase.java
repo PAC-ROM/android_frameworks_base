@@ -207,6 +207,14 @@ class PackageSettingBase extends GrantedPermissions {
         return readUserState(userId).privacyGuard;
     }
 
+    void setHwui(boolean enabled, int userId) {
+        modifyUserState(userId).hwui = enabled;
+    }
+
+    boolean isHwui(int userId) {
+        return readUserState(userId).hwui;
+    }
+
     String getLastDisabledAppCaller(int userId) {
         return readUserState(userId).lastDisableAppCaller;
     }
@@ -263,7 +271,7 @@ class PackageSettingBase extends GrantedPermissions {
     }
 
     void setUserState(int userId, int enabled, boolean installed, boolean stopped,
-            boolean notLaunched, boolean privacyGuard, String lastDisableAppCaller, HashSet<String> enabledComponents,
+            boolean notLaunched, boolean privacyGuard, boolean hwui, String lastDisableAppCaller, HashSet<String> enabledComponents,
             HashSet<String> disabledComponents) {
         PackageUserState state = modifyUserState(userId);
         state.enabled = enabled;
@@ -271,6 +279,7 @@ class PackageSettingBase extends GrantedPermissions {
         state.stopped = stopped;
         state.notLaunched = notLaunched;
         state.privacyGuard = privacyGuard;
+        state.hwui = hwui;
         state.lastDisableAppCaller = lastDisableAppCaller;
         state.enabledComponents = enabledComponents;
         state.disabledComponents = disabledComponents;

@@ -1936,6 +1936,12 @@
         android:description="@string/permdesc_changePrivacyGuardState"
         android:protectionLevel="signature" />
 
+    <!-- Allows an application to change hwui state -->
+    <permission android:name="android.permission.CHANGE_HWUI_STATE"
+        android:label="@string/permlab_changeHwuiState"
+        android:description="@string/permdesc_changeHwuiState"
+        android:protectionLevel="signature" />
+
     <!-- Allows an application to change whether an application component (other than its own) is
          enabled or not.
          <p>Not for use by third-party applications. -->

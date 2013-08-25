@@ -7773,6 +7773,23 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 Intents.SMS_CB_RECEIVED_ACTION.equals(intent);
     }
 
+    public boolean isHwuiDisabledForProcess(int pid) {
+        ProcessRecord proc;
+        synchronized (mPidsSelfLocked) {
+            proc = mPidsSelfLocked.get(pid);
+        }
+        if (proc == null) {
+            return false;
+        }
+        try {
+            return AppGlobals.getPackageManager().getHwuiSetting(
+                    proc.info.packageName, proc.userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return false;
+    }
+
     public void registerProcessObserver(IProcessObserver observer) {
         enforceCallingPermission(android.Manifest.permission.SET_ACTIVITY_WATCHER,
                 "registerProcessObserver()");

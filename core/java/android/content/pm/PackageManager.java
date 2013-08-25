@@ -3135,6 +3135,22 @@ public abstract class PackageManager {
     public abstract void setPrivacyGuardSetting(String packageName, boolean enabled);
 
     /**
+     * @param packageName
+     * @return
+     *
+     * @hide
+     */
+    public abstract boolean getHwuiSetting(String packageName);
+
+    /**
+     * @param packageName
+     * @param enabled
+     *
+     * @hide
+     */
+    public abstract void setHwuiSetting(String packageName, boolean enabled);
+
+    /**
      * Return whether the device has been booted into safe mode.
      */
     public abstract boolean isSafeMode();
@@ -3161,7 +3177,7 @@ public abstract class PackageManager {
     /**
      * Returns the device identity that verifiers can use to associate their scheme to a particular
      * device. This should not be used by anything other than a package verifier.
-     * 
+     *
      * @return identity that uniquely identifies current device
      * @hide
      */

@@ -197,4 +197,8 @@
     <!-- Description of policy access to start enforcing MMAC policy [CHAR LIMIT=110]-->
     <string name="policydesc_enforceMmac">Toggle MMAC policy enforcing or permissive mode.</string>
 
+    <!-- HWUI -->
+    <string name="permlab_changeHwuiState">enable or disable hardware acceleration</string>
+    <string name="permdesc_changeHwuiState">Allows the application to change whether another application runs with hardware acceleration</string>
+
 </resources>

@@ -1604,6 +1604,16 @@ class ContextImpl extends Context {
     }
 
     @Override
+    public boolean isHwuiDisabled() {
+        try {
+            return ActivityManagerNative.getDefault().isHwuiDisabledForProcess(Binder.getCallingPid());
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
     public int checkPermission(String permission, int pid, int uid) {
         if (permission == null) {
             throw new IllegalArgumentException("permission is null");

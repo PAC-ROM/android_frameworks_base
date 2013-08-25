@@ -25,6 +25,9 @@ import com.android.internal.os.SamplingProfilerIntegration;
 
 import org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl;
 
+import android.app.ActivityManager;
+import android.app.ActivityManagerNative;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.backup.BackupAgent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
@@ -78,7 +81,6 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.os.SystemProperties;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -233,6 +235,8 @@ public final class ActivityThread {
     final ArrayList<ActivityClientRecord> mRelaunchingActivities
             = new ArrayList<ActivityClientRecord>();
     Configuration mPendingConfiguration = null;
+
+    private String mHwuiForbidden;
 
     private static final class ProviderKey {
         final String authority;
@@ -4361,6 +4365,17 @@ public final class ActivityThread {
         }
     }
 
+    private boolean isHwuiDisabled(int pid) {
+        try {
+            if (ActivityManagerNative.getDefault().isHwuiDisabledForProcess(pid)) {
+                Slog.i(TAG, "HWUI is disabled for process pid=" + pid);
+                return true;
+            }
+        } catch (RemoteException e) {
+        }
+        return false;
+    }
+
     private void handleBindApplication(AppBindData data) {
         mBoundApplication = data;
         mConfiguration = new Configuration(data.config);
@@ -4415,6 +4430,8 @@ public final class ActivityThread {
             if (!ActivityManager.isHighEndGfx()) {
                 HardwareRenderer.disable(false);
             }
+        } else if (isHwuiDisabled(Binder.getCallingPid())) {
+            HardwareRenderer.disable(false);
         }
 
         if (mProfiler.profileFd != null) {

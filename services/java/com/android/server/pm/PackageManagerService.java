@@ -9172,6 +9172,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         true,  //stopped
                         true,  //notLaunched
                         privacyGuard,
+                        false, // hwui disabled
                         null, null, null);
                 if (!isSystemApp(ps)) {
                     if (ps.isAnyInstalled(sUserManager.getUserIds())) {
@@ -9831,6 +9832,57 @@ public class PackageManagerService extends IPackageManager.Stub {
             ActivityManagerNative.getDefault().forceStopPackage(packageName, userId);
         } catch (RemoteException e) {
             //nothing
+        }
+    }
+
+    @Override
+    public void setHwuiSetting(String appPackageName,
+            boolean enabled, int userId) {
+        if (!sUserManager.exists(userId)) return;
+        setHwui(appPackageName, enabled, userId);
+    }
+
+    @Override
+    public boolean getHwuiSetting(String packageName, int userId) {
+        if (!sUserManager.exists(userId)) return false;
+        int uid = Binder.getCallingUid();
+        enforceCrossUserPermission(uid, userId, false, "get hwui state");
+        // reader
+        synchronized (mPackages) {
+            return mSettings.getHwuiSettingLPr(packageName, userId);
+        }
+    }
+
+    private void setHwui(final String packageName,
+            final boolean enabled, final int userId) {
+        PackageSetting pkgSetting;
+        final int uid = Binder.getCallingUid();
+        final int permission = mContext.checkCallingPermission(
+                android.Manifest.permission.CHANGE_HWUI_STATE);
+        final boolean allowedByPermission = (permission == PackageManager.PERMISSION_GRANTED);
+        enforceCrossUserPermission(uid, userId, false, "set hwui disabled");
+
+        synchronized (mPackages) {
+            pkgSetting = mSettings.mPackages.get(packageName);
+            if (pkgSetting == null) {
+                throw new IllegalArgumentException(
+                        "Unknown package: " + packageName);
+            }
+            if (!allowedByPermission && !UserHandle.isSameApp(uid, pkgSetting.appId)) {
+                throw new SecurityException(
+                        "Permission Denial: attempt to disable hwui from pid="
+                        + Binder.getCallingPid()
+                        + ", uid=" + uid + ", package uid=" + pkgSetting.appId);
+            }
+            if (pkgSetting.isHwui(userId) == enabled) {
+                return;
+            }
+            pkgSetting.setHwui(enabled, userId);
+            mSettings.writePackageRestrictionsLPr(userId);
+        }
+        try {
+            ActivityManagerNative.getDefault().forceStopPackage(packageName, userId);
+        } catch (RemoteException e) {
         }
     }
 

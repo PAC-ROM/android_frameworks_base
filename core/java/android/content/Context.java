@@ -1650,7 +1650,7 @@ public abstract class Context {
      * @hide like {@link #stopService(Intent)} but for a specific user.
      */
     public abstract boolean stopServiceAsUser(Intent service, UserHandle user);
-    
+
     /**
      * Connect to an application service, creating it if needed.  This defines
      * a dependency between your application and the service.  The given
@@ -2319,6 +2319,14 @@ public abstract class Context {
      * @hide
      */
     public abstract boolean isPrivacyGuardEnabled();
+
+    /**
+     * Determine whether the application or calling application has
+     * hwui disabled.
+     *
+     * @hide
+     */
+    public abstract boolean isHwuiDisabled();
 
     /**
      * Determine whether the given permission is allowed for a particular
