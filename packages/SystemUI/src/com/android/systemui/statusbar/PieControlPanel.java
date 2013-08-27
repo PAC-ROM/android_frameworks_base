@@ -297,6 +297,8 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             mStatusBar.clearRecentApps();
         } else if (buttonName.equals(PieControl.SEARCH_BUTTON)) {
             launchAssistAction();
+        } else if (buttonName.equals(PieControl.POWER_BUTTON)) {
+            injectKeyDelayed(KeyEvent.KEYCODE_POWER);
         }
     }
 
