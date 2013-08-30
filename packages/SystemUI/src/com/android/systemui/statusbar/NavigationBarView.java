@@ -338,6 +338,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             mTransition = new TransitionDrawable(new Drawable[]{mCurrentBitmapDrawable, mNewBitmapDrawable});        
             setBackground(mTransition);
 
+            if (mSystemUiLayout >= 1000) {
+                mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            }
+
             mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
             updateColor();
 
@@ -361,11 +365,14 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
             if (firstLayerFront) {
                 mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                mNewCanvas.drawColor(colorInfo.lastColor);
-
+                if (mSystemUiLayout < 1000) {
+                    mNewCanvas.drawColor(colorInfo.lastColor);
+                }
             } else {
                 mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                mCurrentCanvas.drawColor(colorInfo.lastColor);
+                if (mSystemUiLayout < 1000) {
+                    mCurrentCanvas.drawColor(colorInfo.lastColor);
+                }
             }
 
             mTransition.reverseTransition(colorInfo.speed);
@@ -463,6 +470,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
                 lightsOut.addView(spacer3);
             }
         }
+        updateResources();
     }
 
     private void addLightsOutButton(LinearLayout root, View v, boolean landscape, boolean empty) {
@@ -766,8 +774,11 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
             }
         }
-     // if Home is to be shown, then we hide the Searchlight.
-        getSearchLight().setVisibility((isKeyguardEnabled()&& disableHome) ? View.VISIBLE : View.GONE);
+        if (mSystemUiLayout >= 1000) { // hide the Searchlight in Tabletmode.
+            getSearchLight().setVisibility(View.GONE);
+        } else { // if Home is to be shown, then we hide the Searchlight.
+            getSearchLight().setVisibility((isKeyguardEnabled() && disableHome) ? View.VISIBLE : View.GONE);
+        }
         if (mNavBarAutoHide && !isRotating) {
             if (isKeyguardEnabled())
                 mBar.setSearchLightOn(true);
