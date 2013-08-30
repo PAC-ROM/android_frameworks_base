@@ -77,18 +77,9 @@ import android.os.Vibrator;
 import android.provider.Settings;
 
 import com.android.internal.app.ThemeUtils;
-import com.android.internal.os.DeviceKeyHandler;
-import com.android.internal.policy.PolicyManager;
-import com.android.internal.policy.impl.keyguard.KeyguardViewManager;
-import com.android.internal.policy.impl.keyguard.KeyguardViewMediator;
-import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.telephony.ITelephony;
-import com.android.internal.widget.PointerLocationView;
 
 import dalvik.system.DexClassLoader;
 
-import android.service.dreams.IDreamManager;
-import android.util.ExtendedPropertiesUtils;
 import com.android.internal.os.IDeviceHandler;
 import com.android.internal.util.cm.DevUtils;
 
@@ -133,6 +124,7 @@ import android.media.AudioService;
 import android.media.AudioManager;
 
 import com.android.internal.R;
+import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.policy.PolicyManager;
 import com.android.internal.policy.impl.keyguard.KeyguardViewManager;
 import com.android.internal.policy.impl.keyguard.KeyguardViewMediator;
