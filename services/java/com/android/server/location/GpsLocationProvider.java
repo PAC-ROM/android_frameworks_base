@@ -499,7 +499,7 @@ public class GpsLocationProvider implements LocationProviderInterface {
                 LocationManager locManager =
                         (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
                 locManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,
-                        0, 0, new NetworkLocationListener(), mHandler.getLooper());
+                        0, 0, new NetworkLocationListener(), mHandler.getLooper());                
             }
         });
     }
@@ -1707,15 +1707,20 @@ public class GpsLocationProvider implements LocationProviderInterface {
         Uri uri = Uri.parse("content://telephony/carriers/preferapn");
         String apn = null;
 
-        Cursor cursor = mContext.getContentResolver().query(uri, new String[] {"apn"},
+		Cursor cursor = null; 
+		
+		try {
+		    cursor = mContext.getContentResolver().query(uri, new String[] {"apn"},
                     null, null, Carriers.DEFAULT_SORT_ORDER);
 
-        try {
-            if (cursor.moveToFirst()) {
-                apn = cursor.getString(0);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    apn = cursor.getString(0);
+                }
             }
+
         } finally {
-            if (cursor !=null) {
+			if (cursor !=null) {
                 cursor.close();
             }
         }

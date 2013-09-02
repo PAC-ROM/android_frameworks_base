@@ -136,6 +136,23 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
         }
     }
 
+    private final class SettingsChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            Slog.e(TAG, "Recieved a Settings Changed Action " + action);
+            if (action.equals("com.cyanogenmod.settings.SamsungDock")) {
+                String data = intent.getStringExtra("data");
+                Slog.e(TAG, "Recieved a Dock Audio change " + data);
+                if (data != null && data.equals("1")) {
+                    dockAudioEnabled = true;
+                } else {
+                    dockAudioEnabled = false;
+                }
+            }
+        }
+    }
+
     private void bootCompleted() {
         if (mUseDevInputEventForAudioJack) {
             int switchValues = 0;

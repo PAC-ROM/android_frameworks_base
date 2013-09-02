@@ -324,6 +324,9 @@ public class Toast {
             }
         };
 
+        private final WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+        final Handler mHandler = new Handler();
+
         int mGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         int mX, mY;
         float mHorizontalMargin;
