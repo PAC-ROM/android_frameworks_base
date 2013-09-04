@@ -192,8 +192,6 @@ public interface IActivityManager extends IInterface {
     public void setProcessForeground(IBinder token, int pid,
             boolean isForeground) throws RemoteException;
 
-    public boolean isPrivacyGuardEnabledForProcess(int pid) throws RemoteException;
-
     public boolean isHwuiDisabledForProcess(int pid) throws RemoteException;
 
     public int checkPermission(String permission, int pid, int uid)
@@ -646,7 +644,6 @@ public interface IActivityManager extends IInterface {
     int KILL_UID_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+164;
     int SET_USER_IS_MONKEY_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+165;
     int HANG_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+166;
-    int IS_PRIVACY_GUARD_ENABLED_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+167;
     int GET_CALLING_PACKAGE_FOR_BROADCAST_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+168;
     int IS_HWUI_DISABLED_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+169;
 }

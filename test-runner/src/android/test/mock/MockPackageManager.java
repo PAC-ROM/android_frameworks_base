@@ -506,16 +506,6 @@ public class MockPackageManager extends PackageManager {
     }
 
     @Override
-    public void setPrivacyGuardSetting(String packageName, boolean enabled) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean getPrivacyGuardSetting(String packageName) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void setHwuiSetting(String packageName, boolean enabled) {
         throw new UnsupportedOperationException();
     }

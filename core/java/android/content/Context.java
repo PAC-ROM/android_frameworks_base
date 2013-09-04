@@ -2313,16 +2313,6 @@ public abstract class Context {
 
     /**
      * Determine whether the application or calling application has
-     * privacy guard. This is a privacy feature intended to permit the user
-     * to control access to personal data. Applications and content providers
-     * can check this value if they wish to honor privacy guard.
-     *
-     * @hide
-     */
-    public abstract boolean isPrivacyGuardEnabled();
-
-    /**
-     * Determine whether the application or calling application has
      * hwui disabled.
      *
      * @hide

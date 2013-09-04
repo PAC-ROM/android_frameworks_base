@@ -888,12 +888,6 @@ public final class BridgeContext extends Context {
     }
 
     @Override
-    public boolean isPrivacyGuardEnabled() {
-        // pass
-        return false;
-    }
-
-    @Override
     public boolean isHwuiDisabled() {
         // pass
         return false;

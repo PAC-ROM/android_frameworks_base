@@ -3124,22 +3124,6 @@ public abstract class PackageManager {
      *
      * @hide
      */
-    public abstract boolean getPrivacyGuardSetting(String packageName);
-
-    /**
-     * @param packageName
-     * @param enabled
-     *
-     * @hide
-     */
-    public abstract void setPrivacyGuardSetting(String packageName, boolean enabled);
-
-    /**
-     * @param packageName
-     * @return
-     *
-     * @hide
-     */
     public abstract boolean getHwuiSetting(String packageName);
 
     /**

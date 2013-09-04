@@ -2176,11 +2176,6 @@
   <!-- IME Picker showing upon pressing Sym Key -->
   <java-symbol type="bool" name="config_symKeyShowsImePicker" />
 
-  <!-- Privacy Guard -->
-  <java-symbol type="string" name="privacy_guard_notification" />
-  <java-symbol type="string" name="privacy_guard_notification_detail" />
-  <java-symbol type="drawable" name="stat_notify_privacy_guard" />
-
   <!-- PAC dialog -->
   <java-symbol type="drawable" name="busy_dlg_animation" />
   <java-symbol type="drawable" name="busy_dlg_animation_0" />
@@ -2203,5 +2198,4 @@
 
   <!-- Package Manager -->
   <java-symbol type="array" name="config_disabledComponents" />
-
 </resources>

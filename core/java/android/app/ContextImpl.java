@@ -1594,16 +1594,6 @@ class ContextImpl extends Context {
     }
 
     @Override
-    public boolean isPrivacyGuardEnabled() {
-        try {
-            return ActivityManagerNative.getDefault().isPrivacyGuardEnabledForProcess(Binder.getCallingPid());
-        } catch (RemoteException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-        return false;
-    }
-
-    @Override
     public boolean isHwuiDisabled() {
         try {
             return ActivityManagerNative.getDefault().isHwuiDisabledForProcess(Binder.getCallingPid());
