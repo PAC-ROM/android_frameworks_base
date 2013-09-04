@@ -227,6 +227,7 @@ public class PieMenu extends FrameLayout {
     private boolean mUseMenuAlways;
     private boolean mUseSearch;
     private boolean mUsePower;
+    private boolean mUseLastApp;
     private boolean mHapticFeedback;
     private boolean mIsProtected;
 
@@ -288,6 +289,8 @@ public class PieMenu extends FrameLayout {
         mUseSearch = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_SEARCH, 1) == 1;
         mUsePower = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_POWER, 0) == 1;
+        mUseLastApp = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_LAST_APP, 0) == 1;
         mNavbarZero = Integer.parseInt(ExtendedPropertiesUtils.getProperty(
                 "com.android.systemui.navbar.dpi", "100")) == 0 && !expanded;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
@@ -652,7 +655,8 @@ public class PieMenu extends FrameLayout {
     private boolean canItemDisplay(PieItem item) {
         return !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
                !(item.getName().equals(PieControl.SEARCH_BUTTON) && !mUseSearch) &&
-               !(item.getName().equals(PieControl.POWER_BUTTON) && !mUsePower);
+               !(item.getName().equals(PieControl.POWER_BUTTON) && !mUsePower) &&
+               !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp);
     }
 
     private void layoutPie() {
