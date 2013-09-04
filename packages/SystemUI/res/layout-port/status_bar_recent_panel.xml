@@ -25,6 +25,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     systemui:recentItemLayout="@layout/status_bar_recent_item"
+    android:fitsSystemWindows="true"
     >
     <View
         android:id="@+id/recents_transition_background"
@@ -209,16 +210,17 @@
 
         <view class="com.android.systemui.recent.LinearColorBar"
             android:id="@+id/ram_usage_bar"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:orientation="horizontal"
-            android:layout_marginTop="@*android:dimen/status_bar_height"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingTop="1dp"
+            android:paddingTop="10dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:paddingBottom="1dp">
+            android:layout_marginLeft="@*android:dimen/preference_fragment_padding_side"
+            android:layout_marginRight="@*android:dimen/preference_fragment_padding_side">
 
             <TextView
                 android:id="@+id/usedMemText"
