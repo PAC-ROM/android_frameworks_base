@@ -110,6 +110,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.Prefs;
 import com.android.systemui.statusbar.policy.WeatherPanel;
+import com.android.systemui.statusbar.AppSidebar;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -209,6 +210,10 @@ public class TabletStatusBar extends BaseStatusBar implements
     WeatherPanel mWeatherPanel;
     private String mShortClickWeather;
     private String mLongClickWeather;
+
+    //Appbar
+    private AppSidebar mAppSidebar;
+    private int mSidebarPosition;
 
     ViewGroup mBarContents;
 
@@ -606,6 +611,13 @@ public class TabletStatusBar extends BaseStatusBar implements
         mHasDockBattery = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasDockBattery);
 
+        if (mRecreating) {
+            if (mAppSidebar != null)
+                mWindowManager.removeView(mAppSidebar);
+        }
+        mAppSidebar = (AppSidebar)View.inflate(context, R.layout.app_sidebar, null);
+        mWindowManager.addView(mAppSidebar, getAppSidebarLayoutParams(mSidebarPosition));
+
         if (mHasDockBattery) {
             mDockBatteryController = new DockBatteryController(mContext);
             mDockBatteryController.addIconView((ImageView)sb.findViewById(R.id.dock_battery));
@@ -735,6 +747,27 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         return lp;
     }
+
+
+    private WindowManager.LayoutParams getAppSidebarLayoutParams(int position) {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
+                0
+                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.TRANSLUCENT);
+        lp.gravity = Gravity.TOP;// | Gravity.FILL_VERTICAL;
+        lp.gravity |= position == AppSidebar.SIDEBAR_POSITION_LEFT ? Gravity.LEFT : Gravity.RIGHT;
+        lp.setTitle("AppSidebar");
+
+        return lp;
+    }
+
 
     @Override
     protected WindowManager.LayoutParams getSearchLayoutParams(LayoutParams layoutParams) {
@@ -1840,6 +1873,8 @@ public class TabletStatusBar extends BaseStatusBar implements
                     Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.APP_SIDEBAR_POSITION), false, this);
         }
 
         @Override
@@ -1872,6 +1907,13 @@ public class TabletStatusBar extends BaseStatusBar implements
         if (mWeatherPanel != null) {
             mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
         }
+
+        int sidebarPosition = Settings.System.getInt(
+            cr, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
+        if (sidebarPosition != mSidebarPosition) {
+            mSidebarPosition = sidebarPosition;
+            mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
+            }
 
         onBarHeightChanged(getStatusBarHeight());
         mNumberOfButtons = Settings.System.getInt(cr, Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);
