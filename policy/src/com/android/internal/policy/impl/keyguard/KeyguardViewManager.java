@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Vibrator;
@@ -357,6 +358,9 @@ public class KeyguardViewManager {
         } else if ("SOUND".equals(uri)) {
             toggleSilentMode(context);
             return true;
+        } else if ("SLEEP".equals(uri)) {
+            sendToSleep(context);
+            return true;
         }
 
         return false;
@@ -407,6 +411,12 @@ public class KeyguardViewManager {
         }
 
         return pattern;
+    }
+
+    private static void sendToSleep(Context context) {
+        final PowerManager pm;
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        pm.goToSleep(SystemClock.uptimeMillis());
     }
 
     SparseArray<Parcelable> mStateContainer = new SparseArray<Parcelable>();
