@@ -11,6 +11,7 @@ public class QSConstants {
         public static final String TILE_BLUETOOTH = "toggleBluetooth";
         public static final String TILE_BRIGHTNESS = "toggleBrightness";
         public static final String TILE_RINGER = "toggleSound";
+        public static final String TILE_ROCKETLAUNCHER = "toggleRocketLauncher";
         public static final String TILE_SYNC = "toggleSync";
         public static final String TILE_WIFIAP = "toggleWifiAp";
         public static final String TILE_SCREENTIMEOUT = "toggleScreenTimeout";
@@ -30,7 +31,7 @@ public class QSConstants {
         public static final String TILE_VOLUME = "toggleVolume";
      	public static final String TILE_QUIETHOURS = "toggleQuietHours";
         public static final String TILE_HYBRID = "toggleHybrid";
-		public static final String TILE_CAMERA = "toggleCamera";
+        public static final String TILE_CAMERA = "toggleCamera";
         public static final String TILE_PIB = "togglePib";
         public static final String TILE_MUSIC = "toggleMusic";
 
