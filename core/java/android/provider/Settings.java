@@ -4724,6 +4724,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String GESTURE_SWIPE = "gesture_swipe";
+
+        /**
+         * @hide
+         */
         public static final String GESTURE_SWIPE_CAPTURE = "gesture_swipe_capture";
 
         /**

@@ -1889,6 +1889,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         private long mGestureFourTime;
 
         private boolean mShowGestures = false;
+        private boolean mEnableGestureSwipe = false;
 
         private StatusBarManager mSbm;
 
@@ -2028,6 +2029,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
             mShowGestures = Settings.System.getInt(resolver,
                     Settings.System.SHOW_GESTURES, 0) == 1;
+
+            mEnableGestureSwipe = Settings.System.getInt(resolver,
+                    Settings.System.GESTURE_SWIPE, 0) == 1;
 
             invalidate();
         }
@@ -2536,7 +2540,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
             if (mScreenWidth == -1 || mScreenHeight == -1) updateScreenSize();
 
-            boolean mainPanel = getWidth() == mScreenWidth || getWidth() == mScreenHeight;
+            boolean mainPanel = mEnableGestureSwipe && getWidth() == mScreenWidth || getWidth() == mScreenHeight;
 
             if (mainPanel && mFeatureId == -1 && !mBlacklisted &&
                     mGestureOne + mGestureTwo + mGestureThree + mGestureFour > 0) {
@@ -2841,7 +2845,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 mMenuBackground.draw(canvas);
             }
 
-            boolean mainPanel = getWidth() == mScreenWidth || getWidth() == mScreenHeight;
+            boolean mainPanel = mEnableGestureSwipe && getWidth() == mScreenWidth || getWidth() == mScreenHeight;
 
             if (mainPanel && mFeatureId == -1 && mShowGestures) {
                 Paint paint = new Paint();
