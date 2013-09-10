@@ -241,7 +241,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     LinearLayout mSystemIconArea;
 
     // layout for center clock
-    LinearLayout mCenterClockLayout;
+    private LinearLayout mCenterClockLayout;
     // the icons themselves
     IconMerger mNotificationIcons;
     // [+>
@@ -486,7 +486,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         lpScrollView.bottomMargin = mNotificationShortcutsToggle ? mShortcutsDrawerMargin : 0;
         mScrollView.setLayoutParams(lpScrollView);
 
-        if (!mShowCarrierInPanel) return;
+        if (!mShowCarrierInPanel || mCarrierAndWifiView == null) return;
         if (forceHide) {
             lpCarrierLabel.bottomMargin = mNotificationShortcutsToggle ? mShortcutsSpacingHeight : 0;
         } else {
@@ -498,7 +498,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     private void toggleCarrierAndWifiLabelVisibility() {
         mShowCarrierInPanel = !mNotificationShortcutsHideCarrier;
         updateCarrierMargin(mNotificationShortcutsHideCarrier);
-        mCarrierAndWifiView.setVisibility(mShowCarrierInPanel ? View.VISIBLE : View.INVISIBLE);
+        mCarrierAndWifiView.setVisibility(mShowCarrierInPanel ? View.VISIBLE : View.GONE);
     }
 
     private void cleanupRibbon() {
@@ -781,7 +781,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (DEBUG) Slog.v(TAG, "carrierlabel=" + mCarrierLabel + " show=" + mShowCarrierInPanel);
         if (mShowCarrierInPanel) {
             lpCarrierLabel = (FrameLayout.LayoutParams) mCarrierAndWifiView.getLayoutParams();
-            mCarrierLabel.setVisibility((mCarrierAndWifiViewVisible && !mNotificationShortcutsHideCarrier) ? View.VISIBLE : View.INVISIBLE);
+            mCarrierLabel.setVisibility((mCarrierAndWifiViewVisible && !mNotificationShortcutsHideCarrier) ? View.VISIBLE : View.GONE);
             if (mNotificationShortcutsHideCarrier)
                 mShowCarrierInPanel = false;
             // for mobile devices, we always show mobile connection info here (SPN/PLMN)
@@ -1661,7 +1661,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (force || mCarrierAndWifiViewVisible != makeVisible) {
             mCarrierAndWifiViewVisible = makeVisible;
             if (DEBUG) {
-                Slog.d(TAG, "making carrier label " + (makeVisible?"visible":"invisible"));
+                Slog.d(TAG, "making carrier label " + (makeVisible?"visible":"gone"));
             }
             mCarrierAndWifiView.animate().cancel();
             if (makeVisible) {
@@ -1676,14 +1676,14 @@ public class PhoneStatusBar extends BaseStatusBar {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (!mCarrierAndWifiViewVisible) { // race
-                            mCarrierAndWifiView.setVisibility(View.INVISIBLE);
                             mCarrierAndWifiView.setAlpha(0f);
+                            mCarrierAndWifiView.setVisibility(View.GONE);
                        }
                    }
                })
                .start();
-       }
-   }
+        }
+    }
     protected void updateNotificationShortcutsVisibility(boolean vis, boolean instant) {
         if ((!mNotificationShortcutsToggle && mNotificationShortcutsVisible == vis) ||
                 mStatusBarWindow.findViewById(R.id.custom_notification_scrollview) == null) {
