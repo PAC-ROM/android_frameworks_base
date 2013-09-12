@@ -1033,14 +1033,14 @@ public abstract class WallpaperService extends Service {
                     mEngine = engine;
                     synchronized (mActiveEngines) {
                         mActiveEngines.add(engine);
+                        engine.attach(this);
                     }
-                    engine.attach(this);
                     return;
                 }
                 case DO_DETACH: {
-                        mEngine.detach();
                     synchronized (mActiveEngines) {
                         mActiveEngines.remove(mEngine);
+                        mEngine.detach();
                     }
                     return;
                 }
@@ -1124,11 +1124,10 @@ public abstract class WallpaperService extends Service {
     public void onDestroy() {
         super.onDestroy();
         synchronized (mActiveEngines) {
-           for (int i=0; i<mActiveEngines.size(); i++) {
-                Engine engine = mActiveEngines.get(i);
-                engine.detach();
-           }
-           mActiveEngines.clear();
+            for (int i = 0; i < mActiveEngines.size(); i++) {
+                mActiveEngines.get(i).detach();
+            }
+            mActiveEngines.clear();
         }
     }
 

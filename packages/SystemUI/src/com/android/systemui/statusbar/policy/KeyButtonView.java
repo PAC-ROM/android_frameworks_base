@@ -403,5 +403,3 @@ public class KeyButtonView extends ImageView {
                 InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
     }
 }
-
-
