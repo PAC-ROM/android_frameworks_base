@@ -35,6 +35,7 @@ public class WidgetView extends LinearLayout {
 
     private Context mContext;
     private Handler mHandler;
+    private SettingsObserver mSettingsObserver;
     public FrameLayout mPopupView;
     public WindowManager mWindowManager;
     int originalHeight = 0;
@@ -68,9 +69,18 @@ public class WidgetView extends LinearLayout {
         filter.addAction(WidgetReceiver.ACTION_DELETE_WIDGETS);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         mContext.registerReceiver(new WidgetReceiver(), filter);
+
         mHandler = new Handler();
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        if (mSettingsObserver != null) {
+            mSettingsObserver.unobserve();
+            mHandler = null;
+        }
     }
 
     public void toggleWidgetView() {
@@ -132,9 +142,15 @@ public class WidgetView extends LinearLayout {
     }
 
     public void createWidgetView() {
+        if (mPopupView != null) {
+            mPopupView.removeAllViews();
+            mPopupView = null;
+        }
         mPopupView = new FrameLayout(mContext);
         widgetView = View.inflate(mContext, R.layout.navigation_bar_expanded, null);
         mPopupView.addView(widgetView);
+
+
         mWidgetLabel = (TextView) mPopupView.findViewById(R.id.widgetlabel);
         mWidgetPager = (ViewPager) widgetView.findViewById(R.id.pager);
         mWidgetPager.setAdapter(mAdapter = new WidgetPagerAdapter(mContext, widgetIds));
@@ -239,6 +255,9 @@ public class WidgetView extends LinearLayout {
                 false,
                 this);
             updateSettings();
+        }
+        void unobserve() {
+            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         @Override

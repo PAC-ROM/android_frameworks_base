@@ -102,6 +102,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.os.Debug;
 import android.os.DropBoxManager;
 import android.os.Environment;
@@ -701,6 +702,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
     boolean mProcessesReady = false;
     boolean mSystemReady = false;
     boolean mBooting = false;
+    ConditionVariable mBootingCondition = new ConditionVariable();
     boolean mWaitingUpdate = false;
     boolean mDidUpdate = false;
     boolean mOnBattery = false;
@@ -8332,6 +8334,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
 
             // Start up initial activity.
             mBooting = true;
+            mBootingCondition.open();
 
             try {
                 if (AppGlobals.getPackageManager().hasSystemUidErrors()) {
@@ -8507,7 +8510,8 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 // Also terminate any activities below it that aren't yet
                 // stopped, to avoid a situation where one will get
                 // re-start our crashing activity once it gets resumed again.
-                index--;
+                while (index >= mMainStack.mHistory.size())
+                    index--;
                 if (index >= 0) {
                     r = (ActivityRecord)mMainStack.mHistory.get(index);
                     if (r.state == ActivityState.RESUMED
@@ -11847,8 +11851,12 @@ public final class ActivityManagerService  extends ActivityManagerNative
                         "Receiver requested to register for user " + userId
                         + " was previously registered for user " + rl.userId);
             }
+
+            boolean isSystem = callerApp != null ?
+                    (callerApp.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0 : false;
+
             BroadcastFilter bf = new BroadcastFilter(filter, rl, callerPackage,
-                    permission, callingUid, userId, (callerApp.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+                    permission, callingUid, userId, isSystem);
             rl.add(bf);
             if (!bf.debugCheck()) {
                 Slog.w(TAG, "==> For Dynamic broadast");
