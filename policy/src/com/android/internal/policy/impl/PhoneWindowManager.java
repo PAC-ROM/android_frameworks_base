@@ -75,6 +75,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 
 import com.android.internal.app.ThemeUtils;
+import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.util.cm.DevUtils;
 
 import android.service.dreams.DreamService;
@@ -246,29 +247,29 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     Context mContext;
     Context mUiContext;
-    IWindowManager mWindowManager;
-    WindowManagerFuncs mWindowManagerFuncs;
-    PowerManager mPowerManager;
-    IStatusBarService mStatusBarService;
+    private IWindowManager mWindowManager;
+    private WindowManagerFuncs mWindowManagerFuncs;
+    private PowerManager mPowerManager;
+    private IStatusBarService mStatusBarService;
     boolean mPreloadedRecentApps;
-    final Object mServiceAquireLock = new Object();
-    Vibrator mVibrator; // Vibrator for giving feedback of orientation changes
-    SearchManager mSearchManager;
+    private final Object mServiceAquireLock = new Object();
+    private Vibrator mVibrator; // Vibrator for giving feedback of orientation changes
+    private SearchManager mSearchManager;
 
     // Vibrator pattern for haptic feedback of a long press.
-    long[] mLongPressVibePattern;
+    private long[] mLongPressVibePattern;
 
     // Vibrator pattern for haptic feedback of virtual key press.
-    long[] mVirtualKeyVibePattern;
+    private long[] mVirtualKeyVibePattern;
 
     // Vibrator pattern for a short vibration.
-    long[] mKeyboardTapVibePattern;
+    private long[] mKeyboardTapVibePattern;
 
     // Vibrator pattern for haptic feedback during boot when safe mode is disabled.
-    long[] mSafeModeDisabledVibePattern;
+    private long[] mSafeModeDisabledVibePattern;
 
     // Vibrator pattern for haptic feedback during boot when safe mode is enabled.
-    long[] mSafeModeEnabledVibePattern;
+    private long[] mSafeModeEnabledVibePattern;
 
     /** If true, hitting shift & menu will broadcast Intent.ACTION_BUG_REPORT */
     boolean mEnableShiftMenuBugReports = false;
@@ -289,7 +290,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     KeyguardServiceDelegate mKeyguardDelegate;
     GlobalActions mGlobalActions;
     volatile boolean mPowerKeyHandled; // accessed from input reader and handler thread
-    boolean mPendingPowerKeyUpCanceled;
+    private boolean mPendingPowerKeyUpCanceled;
     Handler mHandler;
     WindowState mLastInputMethodWindow = null;
     WindowState mLastInputMethodTargetWindow = null;
@@ -351,8 +352,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mCurrentUser = 0;
 
     // The last window we were told about in focusChanged.
-    WindowState mFocusedWindow;
-    IApplicationToken mFocusedApp;
+    private WindowState mFocusedWindow;
+    private IApplicationToken mFocusedApp;
 
     // Behavior of home wake
     boolean mHomeWakeScreen;
@@ -380,57 +381,57 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // The current size of the screen; really; extends into the overscan area of
     // the screen and doesn't account for any system elements like the status bar.
-    int mOverscanScreenLeft, mOverscanScreenTop;
-    int mOverscanScreenWidth, mOverscanScreenHeight;
+    private int mOverscanScreenLeft, mOverscanScreenTop;
+    private int mOverscanScreenWidth, mOverscanScreenHeight;
     // The current visible size of the screen; really; (ir)regardless of whether the status
     // bar can be hidden but not extending into the overscan area.
-    int mUnrestrictedScreenLeft, mUnrestrictedScreenTop;
-    int mUnrestrictedScreenWidth, mUnrestrictedScreenHeight;
+    private int mUnrestrictedScreenLeft, mUnrestrictedScreenTop;
+    private int mUnrestrictedScreenWidth, mUnrestrictedScreenHeight;
     // Like mOverscanScreen*, but allowed to move into the overscan region where appropriate.
-    int mRestrictedOverscanScreenLeft, mRestrictedOverscanScreenTop;
-    int mRestrictedOverscanScreenWidth, mRestrictedOverscanScreenHeight;
+    private int mRestrictedOverscanScreenLeft, mRestrictedOverscanScreenTop;
+    private int mRestrictedOverscanScreenWidth, mRestrictedOverscanScreenHeight;
     // The current size of the screen; these may be different than (0,0)-(dw,dh)
     // if the status bar can't be hidden; in that case it effectively carves out
     // that area of the display from all other windows.
-    int mRestrictedScreenLeft, mRestrictedScreenTop;
-    int mRestrictedScreenWidth, mRestrictedScreenHeight;
+    private int mRestrictedScreenLeft, mRestrictedScreenTop;
+    private int mRestrictedScreenWidth, mRestrictedScreenHeight;
     // During layout, the current screen borders accounting for any currently
     // visible system UI elements.
-    int mSystemLeft, mSystemTop, mSystemRight, mSystemBottom;
+    private int mSystemLeft, mSystemTop, mSystemRight, mSystemBottom;
     // For applications requesting stable content insets, these are them.
-    int mStableLeft, mStableTop, mStableRight, mStableBottom;
+    private int mStableLeft, mStableTop, mStableRight, mStableBottom;
     // For applications requesting stable content insets but have also set the
     // fullscreen window flag, these are the stable dimensions without the status bar.
-    int mStableFullscreenLeft, mStableFullscreenTop;
-    int mStableFullscreenRight, mStableFullscreenBottom;
+    private int mStableFullscreenLeft, mStableFullscreenTop;
+    private int mStableFullscreenRight, mStableFullscreenBottom;
     // During layout, the current screen borders with all outer decoration
     // (status bar, input method dock) accounted for.
-    int mCurLeft, mCurTop, mCurRight, mCurBottom;
+    private int mCurLeft, mCurTop, mCurRight, mCurBottom;
     // During layout, the frame in which content should be displayed
     // to the user, accounting for all screen decoration except for any
     // space they deem as available for other content.  This is usually
     // the same as mCur*, but may be larger if the screen decor has supplied
     // content insets.
-    int mContentLeft, mContentTop, mContentRight, mContentBottom;
+    private int mContentLeft, mContentTop, mContentRight, mContentBottom;
     // During layout, the current screen borders along which input method
     // windows are placed.
-    int mDockLeft, mDockTop, mDockRight, mDockBottom;
+    private int mDockLeft, mDockTop, mDockRight, mDockBottom;
     // During layout, the layer at which the doc window is placed.
-    int mDockLayer;
+    private int mDockLayer;
     // During layout, this is the layer of the status bar.
-    int mStatusBarLayer;
-    int mLastSystemUiFlags;
+    private int mStatusBarLayer;
+    private int mLastSystemUiFlags;
     // Bits that we are in the process of clearing, so we want to prevent
     // them from being set by applications until everything has been updated
     // to have them clear.
-    int mResettingSystemUiFlags = 0;
+    private int mResettingSystemUiFlags = 0;
     // Bits that we are currently always keeping cleared.
-    int mForceClearedSystemUiFlags = 0;
+    private int mForceClearedSystemUiFlags = 0;
     // What we last reported to system UI about whether the compatibility
     // menu needs to be displayed.
-    boolean mLastFocusNeedsMenu = false;
+    private boolean mLastFocusNeedsMenu = false;
 
-    FakeWindow mHideNavFakeWindow = null;
+    private FakeWindow mHideNavFakeWindow = null;
 
     static final Rect mTmpParentFrame = new Rect();
     static final Rect mTmpDisplayFrame = new Rect();
@@ -440,13 +441,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static final Rect mTmpDecorFrame = new Rect();
     static final Rect mTmpNavigationFrame = new Rect();
 
-    WindowState mTopFullscreenOpaqueWindowState;
-    boolean mTopIsFullscreen;
-    boolean mForceStatusBar;
-    boolean mForceStatusBarFromKeyguard;
-    boolean mHideLockScreen;
-    boolean mForcingShowNavBar;
-    int mForcingShowNavBarLayer;
+    private WindowState mTopFullscreenOpaqueWindowState;
+    private boolean mTopIsFullscreen;
+    private boolean mForceStatusBar;
+    private boolean mForceStatusBarFromKeyguard;
+    private boolean mHideLockScreen;
+    private boolean mForcingShowNavBar;
+    private int mForcingShowNavBarLayer;
 
     int mExpandedDesktopStyle = -1;
 
@@ -454,7 +455,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int DISMISS_KEYGUARD_NONE = 0; // Keyguard not being dismissed.
     private static final int DISMISS_KEYGUARD_START = 1; // Keyguard needs to be dismissed.
     private static final int DISMISS_KEYGUARD_CONTINUE = 2; // Keyguard has been dismissed.
-    int mDismissKeyguard = DISMISS_KEYGUARD_NONE;
+    private int mDismissKeyguard = DISMISS_KEYGUARD_NONE;
 
     /** The window that is currently dismissing the keyguard. Dismissing the keyguard must only
      * be done once per window. */
@@ -485,16 +486,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private int mLongPressOnAppSwitchBehavior = -1;
 
     // support for activating the lock screen while the screen is on
-    boolean mAllowLockscreenWhenOn;
-    int mLockScreenTimeout;
-    boolean mLockScreenTimerActive;
+    private boolean mAllowLockscreenWhenOn;
+    private int mLockScreenTimeout;
+    private boolean mLockScreenTimerActive;
 
     // Behavior of ENDCALL Button.  (See Settings.System.END_BUTTON_BEHAVIOR.)
-    int mEndcallBehavior;
+    private int mEndcallBehavior;
 
     // Behavior of POWER button while in-call and screen on.
     // (See Settings.Secure.INCALL_POWER_BUTTON_BEHAVIOR.)
-    int mIncallPowerBehavior;
+    private int mIncallPowerBehavior;
 
     Display mDisplay;
 
@@ -502,15 +503,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // (See Settings.Secure.RING_HOME_BUTTON_BEHAVIOR.)
     int mRingHomeBehavior;
 
-    int mLandscapeRotation = 0;  // default landscape rotation
-    int mSeascapeRotation = 0;   // "other" landscape rotation, 180 degrees from mLandscapeRotation
-    int mPortraitRotation = 0;   // default portrait rotation
-    int mUpsideDownRotation = 0; // "other" portrait rotation
+    private int mLandscapeRotation = 0;  // default landscape rotation
+    private int mSeascapeRotation = 0;   // "other" landscape rotation, 180 degrees from mLandscapeRotation
+    private int mPortraitRotation = 0;   // default portrait rotation
+    private int mUpsideDownRotation = 0; // "other" portrait rotation
 
-    int mOverscanLeft = 0;
-    int mOverscanTop = 0;
-    int mOverscanRight = 0;
-    int mOverscanBottom = 0;
+    private int mOverscanLeft = 0;
+    private int mOverscanTop = 0;
+    private int mOverscanRight = 0;
+    private int mOverscanBottom = 0;
 
     // What we do when the user double-taps on home
     private int mDoubleTapOnHomeBehavior;
@@ -534,10 +535,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /* The number of steps between min and max brightness */
     private static final int BRIGHTNESS_STEPS = 10;
 
-    SettingsObserver mSettingsObserver;
-    ShortcutManager mShortcutManager;
-    PowerManager.WakeLock mBroadcastWakeLock;
-    boolean mHavePendingMediaKeyRepeatWithWakeLock;
+    private SettingsObserver mSettingsObserver;
+    private ShortcutManager mShortcutManager;
+    private PowerManager.WakeLock mBroadcastWakeLock;
+    private boolean mHavePendingMediaKeyRepeatWithWakeLock;
 
     private int mCurrentUserId;
 
@@ -586,12 +587,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    class SettingsObserver extends ContentObserver {
+    private class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
-        void observe() {
+        protected void observe() {
             // Observe all users' changes
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2353,6 +2354,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
             mHandler.removeCallbacks(mBackLongPress);
+        }
+
+        // Specific device key handling
+        if (mDeviceKeyHandler != null) {
+            try {
+                // The device only should consume known keys.
+                if (mDeviceKeyHandler.handleKeyEvent(event)) {
+                    return -1;
+                }
+            } catch (Exception e) {
+                Slog.w(TAG, "Could not dispatch event to device key handler", e);
+            }
         }
 
         // First we always handle the home key here, so applications
