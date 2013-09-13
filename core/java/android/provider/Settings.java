@@ -3197,6 +3197,15 @@ public final class Settings {
          */
         public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
 
+        /**
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+
+        /**
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
 
          /**
          * Whether to control brightness from status bar
@@ -3482,6 +3491,26 @@ public final class Settings {
          * @hide
          */
         public static final String PIE_SIZE = "pie_size";
+
+        /**
+         * @hide
+         */
+        public static final String START_SCREEN_STATE_SERVICE = "start_screen_state_service";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_TWOG = "screen_state_twog";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_GPS = "screen_state_gps";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
 
         /**
          * User Interface State
