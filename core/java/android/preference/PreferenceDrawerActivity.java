@@ -682,6 +682,18 @@ public abstract class PreferenceDrawerActivity extends ListActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+     @Override
+     public void onBackPressed() {
+
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mDrawer)) {
+            super.onBackPressed();
+        } else {
+            mDrawerLayout.openDrawer(mDrawer);
+        }
+
+        return;
+     }
+
     private void loadDrawerDrawables() {
         TypedArray a = getTheme().obtainStyledAttributes(
                 new int[] {
