@@ -48,8 +48,17 @@ public class BatteryController extends BroadcastReceiver {
     private boolean mPlugged;
     private ColorUtils.ColorSettingInfo mColorInfo;
 
+    // For HALO Mods
+    private ArrayList<BatteryStateChangeCallbackHalo> mChangeCallbacksHalo =
+            new ArrayList<BatteryStateChangeCallbackHalo>();
+
     public interface BatteryStateChangeCallback {
         public void onBatteryLevelChanged(int level, boolean pluggedIn);
+    }
+
+    //For HALO Mods
+    public interface BatteryStateChangeCallbackHalo {
+        public void onBatteryLevelChangedHalo(int level, boolean pluggedIn);
     }
 
     public BatteryController(Context context) {
@@ -77,6 +86,16 @@ public class BatteryController extends BroadcastReceiver {
         mChangeCallbacks.remove(cb);
     }
 
+    // For Halo Mods
+    public void addStateChangedCallbackHalo(BatteryStateChangeCallbackHalo cb_Halo) {
+        mChangeCallbacksHalo.add(cb_Halo);
+    }
+
+    // For Halo Mods
+    public void removeStateChangedCallbackHalo(BatteryStateChangeCallbackHalo cb_Halo) {
+        mChangeCallbacksHalo.remove(cb_Halo);
+    }
+
     public void setColor(ColorUtils.ColorSettingInfo colorInfo) {
         mColorInfo = colorInfo;
         updateBatteryLevel();
@@ -88,6 +107,11 @@ public class BatteryController extends BroadcastReceiver {
             mLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
             mPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
             updateBatteryLevel();
+        }
+
+        // For HALO Mods
+        for (BatteryStateChangeCallbackHalo cb_Halo : mChangeCallbacksHalo) {
+            cb_Halo.onBatteryLevelChangedHalo(mLevel, mPlugged);
         }
     }
 

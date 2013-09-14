@@ -98,6 +98,20 @@
 
     <string name="status_bar_recent_hybrid_item_title">Hybrid properties</string>
 
+    <!-- HALO -->
+    <string name="halo_battery_plugged">CHARGING</string>
+    <string name="halo_battery_unplugged">REMAINING</string>
+    <string name="halo_battery_full">FULL</string>
+    <string name="halo_aeroplane1">AEROPLANE</string>
+    <string name="halo_aeroplane2">MODE</string>
+    <string name="halo_wifi_on">WI-FI ON</string>
+    <string name="halo_wifi_off">WI-FI OFF</string>
+    <string name="halo_signal_bars_4">FULL</string>
+    <string name="halo_signal_bars_3">THREE BARS</string>
+    <string name="halo_signal_bars_2">TWO BARS</string>
+    <string name="halo_signal_bars_1">ONE BAR</string>
+    <string name="halo_signal_bars_none">NO BARS</string>
+
     <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
     <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> free</string>
     <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
