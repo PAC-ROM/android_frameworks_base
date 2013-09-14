@@ -315,4 +315,31 @@
     <dimen name="folder_height">480dp</dimen>
     <dimen name="setup_sidebar_width">90dp</dimen>
 
+    <!-- Top margin for overflow notifications container shown in the active display view -->
+    <dimen name="glowpad_overflow_notifications_margin_top">64dp</dimen>
+
+    <!-- Top margin for overflow notifications container shown in the active display view -->
+    <dimen name="ad_clock_margin_bottom">60dp</dimen>
+
+    <!-- left/right margin for extra notifications in ActiveDisplayView -->
+    <dimen name="ad_notification_margin">4dp</dimen>
+
+    <!-- Active display overflow notification icon size -->
+    <dimen name="overflow_icon_size">32dp</dimen>
+
+    <!-- Active display Handle notification icon size -->
+    <dimen name="handle_icon_size">32dp</dimen>
+
+    <!-- Active display overflow notification padding -->
+    <dimen name="overflow_icon_padding">4dp</dimen>
+
+    <!-- Active display clock font size -->
+    <dimen name="ad_clock_font_size">75dp</dimen>
+
+    <!-- Active display date font size -->
+    <dimen name="ad_date_font_size">18dp</dimen>
+
+    <!-- AM/PM size in active display -->
+    <dimen name="ad_ampm_font_size">32dp</dimen>
+
 </resources>

@@ -23,4 +23,6 @@
     <!-- DO NOT TRANSLATE. ICU weekday format for display -->
     <string name="system_ui_weekday_pattern" translatable="false">eeee</string>
 
+    <string name="ad_date_pattern">eeeMMMd</string>
+
 </resources>
