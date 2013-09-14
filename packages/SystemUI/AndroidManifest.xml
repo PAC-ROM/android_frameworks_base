@@ -92,6 +92,9 @@
     <!-- Halo -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <!-- Active display -->
+    <uses-permission android:name="android.permission.SYSTEM_NOTIFICATION_LISTENER" />
+
     <application
         android:persistent="true"
         android:allowClearUserData="false"
@@ -317,6 +320,14 @@
             android:name=".statusbar.sidebar.SidebarContentProvider"
             android:authorities="org.chameleonos.sidebar.contentprovider" >
         </provider>
+
+        <activity android:name=".statusbar.policy.activedisplay.DummyActivity"
+                  android:label=""
+                  android:taskAffinity=""
+                  android:excludeFromRecents="true"
+                  android:exported="true"
+                  android:theme="@style/Theme.DummyActivity">
+        </activity>
 
         <provider android:name=".cm.SpamMessageProvider"
                   android:permission="android.permission.INTERACT_ACROSS_USERS_FULL"
