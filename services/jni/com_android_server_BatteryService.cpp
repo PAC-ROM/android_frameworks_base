@@ -83,6 +83,9 @@ struct BatteryManagerConstants {
 static BatteryManagerConstants gConstants;
 
 struct PowerSupplyPaths {
+    String8 acOnlinePath;
+    String8 usbOnlinePath;
+    String8 wirelessOnlinePath;
     String8 batteryStatusPath;
     String8 batteryHealthPath;
     String8 batteryPresentPath;
@@ -90,6 +93,11 @@ struct PowerSupplyPaths {
     String8 batteryVoltagePath;
     String8 batteryTemperaturePath;
     String8 batteryTechnologyPath;
+#ifdef HAS_DOCK_BATTERY
+    String8 dockbatteryStatusPath;
+    String8 dockbatteryCapacityPath;
+    String8 dockbatteryPresentPath;
+#endif
 };
 static PowerSupplyPaths gPaths;
 
