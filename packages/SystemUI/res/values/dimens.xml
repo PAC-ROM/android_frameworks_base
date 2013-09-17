@@ -261,9 +261,9 @@
     <!-- PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE PIE -->
 
     <!-- Notification Shortcuts -->
-    <dimen name="notification_shortcuts_close_handle_height">26dp</dimen>
+    <dimen name="notification_shortcuts_close_handle_height">28dp</dimen>
     <dimen name="notification_shortcuts_spacing_height">88dp</dimen>
-    <dimen name="notification_shortcuts_drawer_margin">88dp</dimen>
+    <dimen name="notification_shortcuts_drawer_margin">56dp</dimen>
 
     <!--  Amount of Margin to offset NavRing in Portrait Mode -->
     <dimen name="navring_left_margin_port">-600dp</dimen>
