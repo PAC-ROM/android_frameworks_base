@@ -16,7 +16,6 @@
 
 package com.android.systemui.statusbar;
 
-
 import android.app.Notification;
 import android.graphics.Bitmap;
 import android.os.IBinder;

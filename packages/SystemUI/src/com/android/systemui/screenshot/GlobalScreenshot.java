@@ -271,6 +271,11 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
             image.recycle();
         }
 
+        // Recycle the bitmap data
+        if (image != null) {
+            image.recycle();
+        }
+
         return params[0];
     }
 

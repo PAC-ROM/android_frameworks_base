@@ -3398,46 +3398,24 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 if (mSoundPool == null) {
                     return;
                 }
-                float volFloat;
-                // use default if volume is not specified by caller
-                if (volume < 0) {
-                    volFloat = (float)Math.pow(10, (float)sSoundEffectVolumeDb/20);
-                } else {
-                    volFloat = (float) volume / 1000.0f;
+
+                int[] poolId = new int[SOUND_EFFECT_FILES.size()];
+                for (int fileIdx = 0; fileIdx < SOUND_EFFECT_FILES.size(); fileIdx++) {
+                    poolId[fileIdx] = 0;
                 }
 
-                if (SOUND_EFFECT_FILES_MAP[effectType][1] > 0) {
-                    mSoundPool.play(SOUND_EFFECT_FILES_MAP[effectType][1],
-                                        volFloat, volFloat, 0, 0, 1.0f);
-                } else {
-                    MediaPlayer mediaPlayer = new MediaPlayer();
-                    try {
-                        String filePath = Environment.getRootDirectory() + SOUND_EFFECTS_PATH +
-                                    SOUND_EFFECT_FILES.get(SOUND_EFFECT_FILES_MAP[effectType][0]);
-                        mediaPlayer.setDataSource(filePath);
-                        mediaPlayer.setAudioStreamType(AudioSystem.STREAM_SYSTEM);
-                        mediaPlayer.prepare();
-                        mediaPlayer.setVolume(volFloat);
-                        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-                            public void onCompletion(MediaPlayer mp) {
-                                cleanupPlayer(mp);
-                            }
-                        });
-                        mediaPlayer.setOnErrorListener(new OnErrorListener() {
-                            public boolean onError(MediaPlayer mp, int what, int extra) {
-                                cleanupPlayer(mp);
-                                return true;
-                            }
-                        });
-                        mediaPlayer.start();
-                    } catch (IOException ex) {
-                        Log.w(TAG, "MediaPlayer IOException: "+ex);
-                    } catch (IllegalArgumentException ex) {
-                        Log.w(TAG, "MediaPlayer IllegalArgumentException: "+ex);
-                    } catch (IllegalStateException ex) {
-                        Log.w(TAG, "MediaPlayer IllegalStateException: "+ex);
+                for (int effect = 0; effect < AudioManager.NUM_SOUND_EFFECTS; effect++) {
+                    if (SOUND_EFFECT_FILES_MAP[effect][1] <= 0) {
+                        continue;
+                    }
+                    if (poolId[SOUND_EFFECT_FILES_MAP[effect][0]] == 0) {
+                        mSoundPool.unload(SOUND_EFFECT_FILES_MAP[effect][1]);
+                        SOUND_EFFECT_FILES_MAP[effect][1] = -1;
+                        poolId[SOUND_EFFECT_FILES_MAP[effect][0]] = -1;
                     }
                 }
+                mSoundPool.release();
+                mSoundPool = null;
             }
         }
 

@@ -355,12 +355,10 @@ public class AccountManagerService
         synchronized (accounts.cacheLock) {
             final SQLiteDatabase db = accounts.openHelper.getWritableDatabase();
             boolean accountDeleted = false;
-            Cursor cursor = null;
-            try {
-				cursor = db.query(TABLE_ACCOUNTS,
+            Cursor cursor = db.query(TABLE_ACCOUNTS,
                     new String[]{ACCOUNTS_ID, ACCOUNTS_TYPE, ACCOUNTS_NAME},
                     null, null, null, null, null);
-
+            try {
                 accounts.accountCache.clear();
                 final HashMap<String, ArrayList<String>> accountNamesByType =
                         new LinkedHashMap<String, ArrayList<String>>();
@@ -399,9 +397,7 @@ public class AccountManagerService
                     accounts.accountCache.put(accountType, accountsForType);
                 }
             } finally {
-				if (cursor != null) {
-                    cursor.close();
-				}
+                cursor.close();
                 if (accountDeleted) {
                     sendAccountsChangedBroadcast(accounts.userId);
                 }
@@ -491,18 +487,16 @@ public class AccountManagerService
 
         synchronized (accounts.cacheLock) {
             final SQLiteDatabase db = accounts.openHelper.getReadableDatabase();
-            Cursor cursor = null;
-            try {
-				cursor = db.query(TABLE_ACCOUNTS, new String[]{ACCOUNTS_PASSWORD},
+            Cursor cursor = db.query(TABLE_ACCOUNTS, new String[]{ACCOUNTS_PASSWORD},
                     ACCOUNTS_NAME + "=? AND " + ACCOUNTS_TYPE+ "=?",
                     new String[]{account.name, account.type}, null, null, null);
+            try {
                 if (cursor.moveToNext()) {
                     return cursor.getString(0);
                 }
                 return null;
             } finally {
-				if (cursor != null)
-                    cursor.close();
+                cursor.close();
             }
         }
     }
@@ -970,9 +964,7 @@ public class AccountManagerService
         if (authToken == null || accountType == null) {
             return;
         }
-        Cursor cursor = null;
-        try {
-			cursor = cursor = db.rawQuery(
+        Cursor cursor = db.rawQuery(
                 "SELECT " + TABLE_AUTHTOKENS + "." + AUTHTOKENS_ID
                         + ", " + TABLE_ACCOUNTS + "." + ACCOUNTS_NAME
                         + ", " + TABLE_AUTHTOKENS + "." + AUTHTOKENS_TYPE
@@ -983,7 +975,7 @@ public class AccountManagerService
                         + " WHERE " + AUTHTOKENS_AUTHTOKEN + " = ? AND "
                         + TABLE_ACCOUNTS + "." + ACCOUNTS_TYPE + " = ?",
                 new String[]{authToken, accountType});
-
+        try {
             while (cursor.moveToNext()) {
                 long authTokenId = cursor.getLong(0);
                 String accountName = cursor.getString(1);
@@ -993,9 +985,7 @@ public class AccountManagerService
                         authTokenType, null);
             }
         } finally {
-			if (cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
         }
     }
 
@@ -1938,35 +1928,29 @@ public class AccountManagerService
     }
 
     private long getAccountIdLocked(SQLiteDatabase db, Account account) {
-        Cursor cursor = null;
-        try {
-			cursor = db.query(TABLE_ACCOUNTS, new String[]{ACCOUNTS_ID},
+        Cursor cursor = db.query(TABLE_ACCOUNTS, new String[]{ACCOUNTS_ID},
                 "name=? AND type=?", new String[]{account.name, account.type}, null, null, null);
+        try {
             if (cursor.moveToNext()) {
                 return cursor.getLong(0);
             }
             return -1;
         } finally {
-			if (cursor != null) {
             cursor.close();
-		    }
         }
     }
 
     private long getExtrasIdLocked(SQLiteDatabase db, long accountId, String key) {
-        Cursor cursor = null;
-        try {
-			cursor = db.query(TABLE_EXTRAS, new String[]{EXTRAS_ID},
+        Cursor cursor = db.query(TABLE_EXTRAS, new String[]{EXTRAS_ID},
                 EXTRAS_ACCOUNTS_ID + "=" + accountId + " AND " + EXTRAS_KEY + "=?",
                 new String[]{key}, null, null, null);
+        try {
             if (cursor.moveToNext()) {
                 return cursor.getLong(0);
             }
             return -1;
         } finally {
-			if (cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
         }
     }
 
@@ -2442,10 +2426,9 @@ public class AccountManagerService
 
             if (isCheckinRequest) {
                 // This is a checkin request. *Only* upload the account types and the count of each.
-                Cursor cursor = null;
-                try {
-					cursor = db.query(TABLE_ACCOUNTS, ACCOUNT_TYPE_COUNT_PROJECTION,
+                Cursor cursor = db.query(TABLE_ACCOUNTS, ACCOUNT_TYPE_COUNT_PROJECTION,
                         null, null, ACCOUNTS_TYPE, null, null);
+                try {
                     while (cursor.moveToNext()) {
                         // print type,count
                         fout.println(cursor.getString(0) + "," + cursor.getString(1));
@@ -2953,22 +2936,19 @@ public class AccountManagerService
     protected HashMap<String, String> readUserDataForAccountFromDatabaseLocked(
             final SQLiteDatabase db, Account account) {
         HashMap<String, String> userDataForAccount = new HashMap<String, String>();
-        Cursor cursor = null;
-        try {
-			cursor = db.query(TABLE_EXTRAS,
+        Cursor cursor = db.query(TABLE_EXTRAS,
                 COLUMNS_EXTRAS_KEY_AND_VALUE,
                 SELECTION_USERDATA_BY_ACCOUNT,
                 new String[]{account.name, account.type},
                 null, null, null);
+        try {
             while (cursor.moveToNext()) {
                 final String tmpkey = cursor.getString(0);
                 final String value = cursor.getString(1);
                 userDataForAccount.put(tmpkey, value);
             }
         } finally {
-			if (cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
         }
         return userDataForAccount;
     }
@@ -2976,22 +2956,19 @@ public class AccountManagerService
     protected HashMap<String, String> readAuthTokensForAccountFromDatabaseLocked(
             final SQLiteDatabase db, Account account) {
         HashMap<String, String> authTokensForAccount = new HashMap<String, String>();
-        Cursor cursor = null;
-        try {
-			cursor = db.query(TABLE_AUTHTOKENS,
+        Cursor cursor = db.query(TABLE_AUTHTOKENS,
                 COLUMNS_AUTHTOKENS_TYPE_AND_AUTHTOKEN,
                 SELECTION_AUTHTOKENS_BY_ACCOUNT,
                 new String[]{account.name, account.type},
                 null, null, null);
+        try {
             while (cursor.moveToNext()) {
                 final String type = cursor.getString(0);
                 final String authToken = cursor.getString(1);
                 authTokensForAccount.put(type, authToken);
             }
         } finally {
-			if (cursor != null) {
-                cursor.close();
-		    }
+            cursor.close();
         }
         return authTokensForAccount;
     }

@@ -17,8 +17,10 @@
  */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <!-- DO NOT TRANSLATE. ICU date format for display.  -->
     <string name="system_ui_date_pattern" translatable="false">MMMMd</string>
     <!-- DO NOT TRANSLATE. ICU weekday format for display -->
     <string name="system_ui_weekday_pattern" translatable="false">eeee</string>
+
 </resources>

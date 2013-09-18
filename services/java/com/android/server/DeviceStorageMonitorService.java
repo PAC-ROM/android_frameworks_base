@@ -16,7 +16,6 @@
 
 package com.android.server;
 
-
 import com.android.internal.app.ThemeUtils;
 import android.app.Notification;
 import android.app.NotificationManager;

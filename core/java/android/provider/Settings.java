@@ -6930,7 +6930,6 @@ public final class Settings {
             LOCK_SCREEN_OWNER_INFO,
             LOCK_SCREEN_OWNER_INFO_ENABLED,
             PRIVACY_GUARD_DEFAULT
-
         };
 
         /**

@@ -415,6 +415,16 @@ public class BroadcastQueue {
                 skip = true;
             }
         }
+        if (r.appOp != AppOpsManager.OP_NONE) {
+            int mode = mService.mAppOpsService.checkOperation(r.appOp,
+                    filter.receiverList.uid, filter.packageName);
+            if (mode != AppOpsManager.MODE_ALLOWED) {
+                if (DEBUG_BROADCAST)  Slog.v(TAG,
+                        "App op " + r.appOp + " not allowed for broadcast to uid "
+                        + filter.receiverList.uid + " pkg " + filter.packageName);
+                skip = true;
+            }
+        }
 
         try {
             if (!skip && mService.isFilteredByPrivacyGuard(r.intent.getAction()) &&

@@ -305,4 +305,3 @@ private:
 
 } // namespace android
 #endif /* ANDROID_TEXT_LAYOUT_CACHE_H */
-

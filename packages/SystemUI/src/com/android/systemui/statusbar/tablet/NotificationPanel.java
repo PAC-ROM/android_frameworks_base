@@ -560,4 +560,3 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         mNotificationButton.setImageResource(R.drawable.ic_notifications);
     }
 }
-

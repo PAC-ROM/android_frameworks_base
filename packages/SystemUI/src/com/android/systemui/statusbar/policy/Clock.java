@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import libcore.icu.LocaleData;
+
 import com.android.internal.R;
 import libcore.icu.LocaleData;
 

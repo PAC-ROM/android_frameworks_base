@@ -335,7 +335,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
             mNewCanvas.drawColor(0xFF000000);
             mNewBitmapDrawable = new BitmapDrawable(mNewBitmap);
 
-            mTransition = new TransitionDrawable(new Drawable[]{mCurrentBitmapDrawable, mNewBitmapDrawable});        
+            mTransition = new TransitionDrawable(new Drawable[]{mCurrentBitmapDrawable, mNewBitmapDrawable});
             setBackground(mTransition);
 
             if (mSystemUiLayout >= 1000) {

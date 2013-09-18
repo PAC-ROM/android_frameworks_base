@@ -1689,7 +1689,6 @@ public final class InputMethodManager {
                 mH.removeMessages(MSG_TIMEOUT_INPUT_EVENT, p);
             }
         }
-
         invokeFinishedInputEventCallback(p, handled);
     }
 

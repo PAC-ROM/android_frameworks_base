@@ -409,7 +409,6 @@ int register_android_server_BatteryService(JNIEnv* env)
                         gPaths.batteryCapacityPath = path;
                 }
 
-
                 path.clear();
                 path.appendFormat("%s/%s/voltage_now", POWER_SUPPLY_PATH, name);
                 if (access(path, R_OK) == 0) {

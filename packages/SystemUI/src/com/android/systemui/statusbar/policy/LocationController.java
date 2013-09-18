@@ -33,7 +33,6 @@ import android.provider.Settings;
 import android.app.INotificationManager;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
 
 public class LocationController extends BroadcastReceiver {
     private static final String TAG = "StatusBar.LocationController";

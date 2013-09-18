@@ -218,12 +218,12 @@ android.app.backup.BackupHelperDispatcher$Header
 android.app.backup.FileBackupHelperBase
 android.app.backup.FullBackup
 android.appwidget.AppWidgetManager
+android.appwidget.AppWidgetProvider
 android.bluetooth.BluetoothSocket
 android.bluetooth.IBluetooth
 android.bluetooth.IBluetooth$Stub
 android.bluetooth.IBluetoothA2dp
 android.bluetooth.IBluetoothA2dp$Stub
-android.appwidget.AppWidgetProvider
 android.bluetooth.BluetoothUuid
 android.content.AbstractThreadedSyncAdapter
 android.content.AbstractThreadedSyncAdapter$ISyncAdapterImpl
@@ -828,11 +828,11 @@ android.provider.Settings$Secure
 android.provider.Settings$SettingNotFoundException
 android.provider.Settings$System
 android.renderscript.RenderScript
-android.telephony.PhoneNumberUtils
 android.security.AndroidKeyPairGenerator
 android.security.AndroidKeyStore
 android.security.AndroidKeyStoreProvider
 android.telephony.Rlog
+android.telephony.PhoneNumberUtils
 android.telephony.TelephonyManager
 android.text.AndroidBidi
 android.text.AndroidCharacter

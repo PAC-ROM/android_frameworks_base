@@ -444,7 +444,6 @@ public class LocationManagerService extends ILocationManager.Stub {
             mGeoFencer = null;
             mGeoFencerEnabled = false;
         }
-
     }
 
     /**

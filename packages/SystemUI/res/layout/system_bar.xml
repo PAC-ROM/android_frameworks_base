@@ -29,6 +29,7 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         >
+
         <!-- navigation controls -->
         <LinearLayout
                android:id="@+id/navigationArea"

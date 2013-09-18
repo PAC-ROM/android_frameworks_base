@@ -16,7 +16,6 @@
 
 package com.android.server.content;
 
-import com.android.internal.app.ThemeUtils;
 import android.accounts.Account;
 import android.accounts.AccountAndUser;
 import android.accounts.AccountManager;
@@ -159,7 +158,6 @@ public class SyncManager {
     private static final int MAX_SIMULTANEOUS_INITIALIZATION_SYNCS;
 
     private Context mContext;
-    private Context mUiContext;
 
     private static final AccountAndUser[] INITIAL_ACCOUNTS_ARRAY = new AccountAndUser[0];
 
@@ -215,12 +213,6 @@ public class SyncManager {
     private BroadcastReceiver mBootCompletedReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             mSyncHandler.onBootCompleted();
-        }
-    };
-
-    private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            mUiContext = null;
         }
     };
 
@@ -434,8 +426,6 @@ public class SyncManager {
         intentFilter.addAction(Intent.ACTION_USER_STOPPING);
         mContext.registerReceiverAsUser(
                 mUserIntentReceiver, UserHandle.ALL, intentFilter, null, null);
-
-        ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
 
         if (!factoryTest) {
             mNotificationMgr = (NotificationManager)
@@ -1014,13 +1004,6 @@ public class SyncManager {
         synchronized (mSyncQueue) {
             mSyncQueue.removeUser(userId);
         }
-    }
-
-    private Context getUiContext() {
-        if (mUiContext == null) {
-            mUiContext = ThemeUtils.createUiContext(mContext);
-        }
-        return mUiContext != null ? mUiContext : mContext;
     }
 
     /**
@@ -2710,7 +2693,7 @@ public class SyncManager {
                 new Notification(R.drawable.stat_notify_sync_error,
                         mContext.getString(R.string.contentServiceSync),
                         System.currentTimeMillis());
-            notification.setLatestEventInfo(getUiContext(),
+            notification.setLatestEventInfo(mContext,
                     mContext.getString(R.string.contentServiceSyncNotificationTitle),
                     String.format(tooManyDeletesDescFormat.toString(), authorityName),
                     pendingIntent);

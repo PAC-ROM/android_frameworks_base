@@ -149,17 +149,17 @@ public class PanelView extends FrameLayout {
                 i++;
             }
             if (j != 0) {
-            if (totalweight > 0) {
-                mVX /= totalweight;
-                mVY /= totalweight;
-            } else {
-                if (DEBUG_NAN) {
-                    Slog.v("FlingTracker", "computeCurrentVelocity warning: totalweight=0",
+                if (totalweight > 0) {
+                    mVX /= totalweight;
+                    mVY /= totalweight;
+                } else {
+                    if (DEBUG_NAN) {
+                        Slog.v("FlingTracker", "computeCurrentVelocity warning: totalweight=0",
                             new Throwable());
+                    }
+                    // so as not to contaminate the velocities with NaN
+                    mVX = mVY = 0;
                 }
-                // so as not to contaminate the velocities with NaN
-                mVX = mVY = 0;
-            }
             }
 
             if (FlingTracker.DEBUG) {

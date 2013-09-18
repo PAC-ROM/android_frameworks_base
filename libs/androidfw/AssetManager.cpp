@@ -661,6 +661,7 @@ const ResTable* AssetManager::getResTable(bool required) const
             const asset_path& ap = mAssetPaths.itemAt(i);
             updateResTableFromAssetPath(rt, ap, (void*)(i+1));
         }
+        MY_TRACE_END();
     }
 
     if (required && !rt) ALOGW("Unable to find resources file resources.arsc");

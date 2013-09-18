@@ -1825,6 +1825,13 @@ public class WifiStateMachine extends StateMachine {
         mWifiP2pChannel.sendMessage(msg);
     }
 
+    void stopDhcp() {
+        if (mDhcpStateMachine != null) {
+            /* In case we were in middle of DHCP operation restore back powermode */
+            handlePostDhcpSetup();
+            mDhcpStateMachine.sendMessage(DhcpStateMachine.CMD_STOP_DHCP);
+        }
+    }
 
     void startDhcp() {
         if (mDhcpStateMachine == null) {
@@ -1834,14 +1841,6 @@ public class WifiStateMachine extends StateMachine {
         }
         mDhcpStateMachine.registerForPreDhcpNotification();
         mDhcpStateMachine.sendMessage(DhcpStateMachine.CMD_START_DHCP);
-    }
-
-    void stopDhcp() {
-        if (mDhcpStateMachine != null) {
-            /* In case we were in middle of DHCP operation restore back powermode */
-            handlePostDhcpSetup();
-            mDhcpStateMachine.sendMessage(DhcpStateMachine.CMD_STOP_DHCP);
-        }
     }
 
     void handlePostDhcpSetup() {
@@ -3246,11 +3245,14 @@ public class WifiStateMachine extends StateMachine {
             switch (message.what) {
                 case WifiWatchdogStateMachine.POOR_LINK_DETECTED:
                     //stay here
+                    log(getName() + " POOR_LINK_DETECTED: no transition");
                     break;
                 case WifiWatchdogStateMachine.GOOD_LINK_DETECTED:
+                    log(getName() + " GOOD_LINK_DETECTED: transition to captive portal check");
                     transitionTo(mCaptivePortalCheckState);
                     break;
                 default:
+                    log(getName() + " what=" + message.what + " NOT_HANDLED");
                     return NOT_HANDLED;
             }
             return HANDLED;
@@ -3260,6 +3262,7 @@ public class WifiStateMachine extends StateMachine {
     class CaptivePortalCheckState extends State {
         @Override
         public void enter() {
+            log(getName() + " enter");
             setNetworkDetailedState(DetailedState.CAPTIVE_PORTAL_CHECK);
             mWifiConfigStore.updateStatus(mLastNetworkId, DetailedState.CAPTIVE_PORTAL_CHECK);
             sendNetworkStateChangeBroadcast(mLastBssid);
@@ -3268,6 +3271,7 @@ public class WifiStateMachine extends StateMachine {
         public boolean processMessage(Message message) {
             switch (message.what) {
                 case CMD_CAPTIVE_CHECK_COMPLETE:
+                    log(getName() + " CMD_CAPTIVE_CHECK_COMPLETE");
                     try {
                         mNwService.enableIpv6(mInterfaceName);
                     } catch (RemoteException re) {

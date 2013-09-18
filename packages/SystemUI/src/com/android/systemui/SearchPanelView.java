@@ -106,6 +106,7 @@ public class SearchPanelView extends FrameLayout implements
     static final boolean DEBUG = TabletStatusBar.DEBUG || PhoneStatusBar.DEBUG || false;
 
     public static final boolean DEBUG_GESTURES = true;
+
     private final Context mContext;
     private BaseStatusBar mBar;
     private StatusBarTouchProxy mStatusBarTouchProxy;
