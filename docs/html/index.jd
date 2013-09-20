@@ -36,39 +36,20 @@ page.metaDescription=The official site for Android developers. Provides the Andr
                     </div>
                 </li>
 
-
                 <li class="item carousel-home">
                     <div class="content-left col-9">
                         <a href="{@docRoot}about/versions/jelly-bean.html"><img src="{@docRoot}images/home/android-jellybean.png" ></a>
                     </div>
                     <div class="content-right col-6">
-                    <h1>More Jelly Beans!</h1>
+                    <h1>A Sweeter Jelly Bean!</h1>
                     <p>Android 4.3 is now available with a variety of performance improvements
-                    and new developer features. </p>
-                    <p>With this release, Android now supports Bluetooth Low Energy for battery
-                    savings with wireless peripherals, OpenGL ES 3.0 for the most advanced mobile 3D
-                    graphics, MPEG DASH support for high quality media streaming, and much more.</p>
+                    and new features. </p>
+                    <p>For developers, the new platform adds support for <span style="white-space:nowrap;">OpenGL ES 3.0</span>,
+                    connectivity with Bluetooth Smart devices and sensors, support for restricted profiles, a modular DRM framework,
+                    new profiling tools, and more.</p>
                     <p><a href="{@docRoot}about/versions/jelly-bean.html" class="button">Learn More</a></p>
                     </div>
                 </li>
-                <li class="item carousel-home">
-                    <div class="content-left col-11" style="padding-top:10px;">
-                        <a href="{@docRoot}channels/io2013.html">
-                          <img src="{@docRoot}images/home/io-videos-2013.png" style="margin:60px 0 0;
-                          box-shadow: 3px 10px 18px 1px #999;">
-                        </a>
-                    </div>
-                    <div class="content-right col-4">
-                    <h1>Watch the Android talks from Google I/O</h1>
-                    <p>If you weren't able to attend Google I/O in person or couldn't make it
-                    to all the talks, you can catch up on the action
-                    with all the recordings, brought to you by
-                    <a href="http://developers.google.com/live">Google Developers Live</a>.</p>
-                    <p><a href="{@docRoot}channels/io2013.html" class="button"
-                    >See the Android talks</a></p>
-                    </div>
-                </li>
-
 
 
                 <li class="item carousel-home">
@@ -81,13 +62,9 @@ page.metaDescription=The official site for Android developers. Provides the Andr
                         <script type="text/javascript">
                             var params = { allowScriptAccess: "always" };
                             var atts = { id: "ytapiplayer" };
-<<<<<<< HEAD
-                            swfobject.embedSWF("//www.youtube.com/v/O8i4HUw7JYA?enablejsapi=1&playerapiid=ytplayer&version=3&HD=1;rel=0;showinfo=0;modestbranding;origin=developer.android.com;autohide=1",
-                              "ytapiplayer", "600", "338", "8", null, null, params, atts);
-=======
                             swfobject.embedSWF("//www.youtube.com/v/CbpoZeQCNe4?enablejsapi=1&playerapiid=ytplayer&version=3&HD=1;rel=0;showinfo=0;modestbranding;origin=developer.android.com;autohide=1",
                               "ytapiplayer", "600", "336", "8", null, null, params, atts);
->>>>>>> refs/remotes/AOSP/jb-mr2.0.0-release
+                            swfobject.embedSWF("//www.youtube.com/v/CbpoZeQCNe4?
 
                             // Callback used to pause/resume carousel based on video state
                             function onytplayerStateChange(newState) {
@@ -115,10 +92,8 @@ page.metaDescription=The official site for Android developers. Provides the Andr
                       </div>
                     </div>
                     <div class="content-right col-4">
-<<<<<<< HEAD
                     <h1 style="white-space:nowrap;line-height:1.2em;">Developer Story: <br />redBus.in</h1>
                     <p>Bangalore-based developers redBus.in talk about how Android is helping them deliver a superior booking and travel experience to millions of daily bus riders in India.</p>
-=======
                     <h1 style="white-space:nowrap;line-height:1.2em;">Developer Story: <br />Colopl</h1>
                     <p>The creators of Kuma The Bear, Japan-based Colopl, talk about how Google Play and Android allowed them to grow their business to become one of the most profitable games publishers in APAC to date. </p>
                     </div>
@@ -140,10 +115,28 @@ page.metaDescription=The official site for Android developers. Provides the Andr
                     <a href="http://developers.google.com/live">Google Developers Live</a>.</p>
                     <p><a href="{@docRoot}channels/io2013.html" class="button"
                     >See the Android talks</a></p>
->>>>>>> refs/remotes/AOSP/jb-mr2.0.0-release
+                    <h1 style="white-space:nowrap;line-height:1.2em;">Developer Story: <br />Colopl</h1>
+                    <p>The creators of Kuma The Bear, Japan-based Colopl, talk about how Google Play and Android allowed them to grow their business to become one of the most profitable games publishers in APAC to date. </p>
                     </div>
                 </li>
 
+                <li class="item carousel-home">
+                    <div class="content-left col-11" style="padding-top:10px;">
+                        <a href="{@docRoot}channels/io2013.html">
+                          <img src="{@docRoot}images/home/io-videos-2013.png" style="margin:60px 0 0;
+                          box-shadow: 3px 10px 18px 1px #999;">
+                        </a>
+                    </div>
+                    <div class="content-right col-4">
+                    <h1>Watch the Android talks from Google I/O</h1>
+                    <p>If you weren't able to attend Google I/O in person or couldn't make it
+                    to all the talks, you can catch up on the action
+                    with all the recordings, brought to you by
+                    <a href="http://developers.google.com/live">Google Developers Live</a>.</p>
+                    <p><a href="{@docRoot}channels/io2013.html" class="button"
+                    >See the Android talks</a></p>
+                    </div>
+                </li>
 
                 <li class="item carousel-home">
                     <div class="content-left col-10">
@@ -156,11 +149,7 @@ that are beautiful and easy to use.</p>
                     <p><a href="{@docRoot}design/index.html" class="button">Learn More</a></p>
                     </div>
                 </li>
-<<<<<<< HEAD
-=======
 
-
->>>>>>> refs/remotes/AOSP/jb-mr2.0.0-release
                 <li class="item carousel-home">
                         <div class="content-left col-10">
                             <img src="{@docRoot}images/home/google-play.png"

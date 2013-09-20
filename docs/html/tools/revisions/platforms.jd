@@ -67,29 +67,6 @@ class="toggle-content-img" alt="" />Revision 1</a> <em>(July 2013)</em>
 
 <div class="toggle-content closed">
 
-<<<<<<< HEAD
-<div class="toggle-content opened">
-
-  <p><a href="#" onclick="return toggleContent(this)">
-    <img src="{@docRoot}assets/images/triangle-opened.png"
-class="toggle-content-img" alt="" />Revision 2</a> <em>(February 2013)</em>
-  </p>
-
-  <div class="toggle-content-toggleme">
-
-    <p>Maintenance update. The system version is 4.2.2.</p>
-    <dl>
-      <dt>Dependencies:</dt>
-      <dd>SDK Tools r21 or higher is required.</dd>
-    </dl>
-
-  </div>
-</div>
-
-<div class="toggle-content closed">
-
-  <p><a href="#" onclick="return toggleContent(this)">
-=======
   <p><a href="#" onclick="return toggleContent(this)">
     <img src="{@docRoot}assets/images/triangle-closed.png"
 class="toggle-content-img" alt="" />Revision 2</a> <em>(February 2013)</em>
@@ -109,7 +86,6 @@ class="toggle-content-img" alt="" />Revision 2</a> <em>(February 2013)</em>
 <div class="toggle-content closed">
 
   <p><a href="#" onclick="return toggleContent(this)">
->>>>>>> refs/remotes/AOSP/jb-mr2.0.0-release
     <img src="{@docRoot}assets/images/triangle-closed.png"
 class="toggle-content-img" alt="" />Revision 1</a> <em>(November 2012)</em>
   </p>

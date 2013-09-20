@@ -7,6 +7,7 @@ sdk.platform.apiLevel=18
 
 <div id="qv-wrapper">
 <div id="qv">
+
 <h2>In this document
     <a href="#" onclick="hideNestedItems('#toc43',this);return false;" class="header-toggle">
         <span class="more">show more</span>
@@ -61,7 +62,6 @@ sdk.platform.apiLevel=18
   </li>
   <li><a href="#UserInput">User Input</a>
     <ol>
-      <li><a href="#SignificantMotion">Detect significant motion</a></li>
       <li><a href="#Sensors">New sensor types</a></li>
     </ol>
   </li>

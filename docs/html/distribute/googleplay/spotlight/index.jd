@@ -22,8 +22,6 @@ header.hide=0
             margin-bottom:40px;
             margin-top:30px;">
    <div style="padding:0 0 0 29px;">
-<<<<<<< HEAD
-=======
         <h4>Developer Story: Colopl</h4>
           <img alt="" class="screenshot thumbnail" style="-webkit-border-radius: 5px;
             -moz-border-radius: 5px;
@@ -53,7 +51,6 @@ header.hide=0
             margin-bottom:40px;
             margin-top:30px;">
    <div style="padding:0 0 0 29px;">
->>>>>>> refs/remotes/AOSP/jb-mr2.0.0-release
         <h4>Developer Story: redBus.in</h4>
           <img alt="" class="screenshot thumbnail" style="-webkit-border-radius: 5px;
             -moz-border-radius: 5px;
