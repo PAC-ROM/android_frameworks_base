@@ -1896,7 +1896,7 @@ public final class Settings {
          */
         public static final String AUTO_BRIGHTNESS_BACKLIGHT = "auto_brightness_backlight";
 
-		/**
+        /**
          * Touch Key Light Duration
          *
          * @hide
@@ -1987,6 +1987,12 @@ public final class Settings {
         public static final int VOLUME_OVERLAY_EXPANDED = 2;
         /** @hide */
         public static final int VOLUME_OVERLAY_NONE = 3;
+
+        /**
+         * Lock Volume Keys, Whether to lock ringer volume changes in silent mode.
+         * @hide
+         */
+        public static final String LOCK_VOLUME_KEYS = "lock_volume_keys";
 
         /**
          * Volume Adjust Sounds Enable, This is the noise made when using volume hard buttons
