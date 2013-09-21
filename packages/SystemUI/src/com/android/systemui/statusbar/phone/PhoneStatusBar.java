@@ -2670,13 +2670,15 @@ public class PhoneStatusBar extends BaseStatusBar {
                             Math.abs(y - mInitialTouchY) > touchSlop) {
                     mHandler.removeCallbacks(mLongPressBrightnessChange);
                 }
+              } else {
+                  mHandler.removeCallbacks(mLongPressBrightnessChange);
+              }
             } else if (action == MotionEvent.ACTION_UP
                     || action == MotionEvent.ACTION_CANCEL) {
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
                 mHandler.removeCallbacks(mLongPressBrightnessChange);
                 mLinger = 0;
-            }
         }
     }
 
@@ -2705,7 +2707,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             mGestureRec.add(event);
         }
 
-        brightnessControl(event);
 
         // Cling (first-run help) handling.
         // The cling is supposed to show the first time you drag, or even tap, the status bar.
