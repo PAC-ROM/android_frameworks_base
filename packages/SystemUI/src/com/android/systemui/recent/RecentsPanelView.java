@@ -642,7 +642,7 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
     private boolean checkApkExist(Context context, String packageName) {
         try {
                 ApplicationInfo info = context.getPackageManager().getApplicationInfo(packageName,PackageManager.GET_UNINSTALLED_PACKAGES);
-                return true;
+                return info.enabled;
         } catch (NameNotFoundException e) {
                 return false;
         }
