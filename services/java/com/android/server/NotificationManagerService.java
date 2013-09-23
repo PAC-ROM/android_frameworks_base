@@ -1538,8 +1538,6 @@ public class NotificationManagerService extends INotificationManager.Stub
                     Settings.System.QUIET_HOURS_STILL, 0, UserHandle.USER_CURRENT_OR_SELF) != 0;
             mQuietHoursDim = Settings.System.getIntForUser(resolver,
                     Settings.System.QUIET_HOURS_DIM, 0, UserHandle.USER_CURRENT_OR_SELF) != 0;
-            mAnnoyingNotificationThreshold = Settings.System.getLong(resolver,
-                    Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0);
             mAnnoyingNotificationThreshold = Settings.System.getLongForUser(resolver,
                     Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0, UserHandle.USER_CURRENT_OR_SELF);
         }
