@@ -49,7 +49,7 @@ public class SlidingChallengeLayout extends ViewGroup implements ChallengeLayout
     private static final boolean DEBUG = false;
 
     // The drag handle is measured in dp above & below the top edge of the
-    // challenge view; these parameters change based on whether the challenge 
+    // challenge view; these parameters change based on whether the challenge
     // is open or closed.
     private static final int DRAG_HANDLE_CLOSED_ABOVE = 8; // dp
     private static final int DRAG_HANDLE_CLOSED_BELOW = 0; // dp

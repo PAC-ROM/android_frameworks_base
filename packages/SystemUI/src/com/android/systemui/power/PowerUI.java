@@ -466,7 +466,7 @@ public class PowerUI extends SystemUI {
 
         notificationManager.notify(0, powerNotify);
     }
-    
+
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("mLowBatteryAlertCloseLevel=");
         pw.println(mLowBatteryAlertCloseLevel);

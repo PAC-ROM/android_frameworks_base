@@ -28,13 +28,13 @@ import java.util.Vector;
 public class WebViewEventSender implements EventSender {
 
     private static final String LOGTAG = "WebViewEventSender";
-	
+
     WebViewEventSender(WebView webView) {
         mWebView = webView;
         mWebView.getSettings().setBuiltInZoomControls(true);
         mTouchPoints = new Vector<TouchPoint>();
     }
-	
+
 	public void resetMouse() {
 		mouseX = mouseY = 0;
 	}
@@ -66,7 +66,7 @@ public class WebViewEventSender implements EventSender {
         mWebView.onKeyDown(event.getKeyCode(), event);
 
     }
-	
+
 	public void keyDown(String character) {
         keyDown(character, null);
 	}
@@ -156,7 +156,7 @@ public class WebViewEventSender implements EventSender {
 
 		return c;
 	}
-	
+
 	static int modifierMapper(String modifier) {
 		if (modifier.equals("ctrlKey")) {
 			return KeyEvent.KEYCODE_ALT_LEFT;

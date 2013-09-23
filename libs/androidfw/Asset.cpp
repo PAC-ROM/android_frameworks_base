@@ -72,7 +72,7 @@ String8 Asset::getAssetAllocations()
         }
         cur = cur->mNext;
     }
-    
+
     return res;
 }
 
@@ -409,7 +409,7 @@ status_t _FileAsset::openChunk(const char* fileName, int fd, off64_t offset, siz
     }
 
     mFileName = fileName != NULL ? strdup(fileName) : NULL;
-    
+
     return NO_ERROR;
 }
 
@@ -538,7 +538,7 @@ void _FileAsset::close(void)
         free(mFileName);
         mFileName = NULL;
     }
-    
+
     if (mFp != NULL) {
         // can only be NULL when called from destructor
         // (otherwise we would never return this object)

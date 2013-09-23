@@ -61,7 +61,7 @@ final class DisplayPowerRequest {
     // extra unnecessary latency) but we do prevent content on screen from becoming
     // visible to the user.
     public boolean blockScreenOn;
-    
+
     // Multiplication factor for delays used in auto-brightness computations
     // Lower values mean faster reaction to changing light conditions, but
     // potentially higher CPU usage and flicker.

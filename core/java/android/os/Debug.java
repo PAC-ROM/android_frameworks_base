@@ -1397,7 +1397,7 @@ href="{@docRoot}guide/developing/tools/traceview.html">Traceview: A Graphical Lo
 
     /**
      * Return a String describing the calling method and location at a particular stack depth.
-     * @param callStack the Thread stack 
+     * @param callStack the Thread stack
      * @param depth the depth of stack to return information for.
      * @return the String describing the caller at that depth.
      */

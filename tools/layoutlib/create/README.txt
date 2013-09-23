@@ -116,7 +116,7 @@ The code of the methods is then kept as-is, except for native methods which are
 replaced by a stub. Methods that are to be overridden are also replaced by a stub.
 
 The transformed class is then fed through the DelegateClassAdapter to implement
-method delegates. 
+method delegates.
 
 Finally fields are also visited and changed from protected/private to public.
 

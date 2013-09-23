@@ -106,10 +106,10 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         unscheduleSelf(this);
         scheduleSelf(this, SystemClock.uptimeMillis() + mState.mFrameDuration);
     }
-    
+
     public void run() {
         // TODO: This should be computed in draw(Canvas), based on the amount
-        // of time since the last frame drawn 
+        // of time since the last frame drawn
         mCurrentDegrees += mIncrement;
         if (mCurrentDegrees > (360.0f - mIncrement)) {
             mCurrentDegrees = 0.0f;
@@ -117,7 +117,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         invalidateSelf();
         nextFrame();
     }
-    
+
     @Override
     public boolean setVisible(boolean visible, boolean restart) {
         mState.mDrawable.setVisible(visible, restart);
@@ -131,8 +131,8 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
             unscheduleSelf(this);
         }
         return changed;
-    }    
-    
+    }
+
     /**
      * Returns the drawable rotated by this RotateDrawable.
      */
@@ -146,7 +146,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
                 | mState.mChangingConfigurations
                 | mState.mDrawable.getChangingConfigurations();
     }
-    
+
     @Override
     public void setAlpha(int alpha) {
         mState.mDrawable.setAlpha(alpha);
@@ -187,7 +187,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
     public boolean getPadding(Rect padding) {
         return mState.mDrawable.getPadding(padding);
     }
-    
+
     @Override
     public boolean isStateful() {
         return mState.mDrawable.isStateful();
@@ -224,11 +224,11 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         final TypedArray a = r.obtainAttributes(attrs, R.styleable.AnimatedRotateDrawable);
 
         super.inflateWithAttributes(r, parser, a, R.styleable.AnimatedRotateDrawable_visible);
-        
+
         TypedValue tv = a.peekValue(R.styleable.AnimatedRotateDrawable_pivotX);
         final boolean pivotXRel = tv.type == TypedValue.TYPE_FRACTION;
         final float pivotX = pivotXRel ? tv.getFraction(1.0f, 1.0f) : tv.getFloat();
-        
+
         tv = a.peekValue(R.styleable.AnimatedRotateDrawable_pivotY);
         final boolean pivotYRel = tv.type == TypedValue.TYPE_FRACTION;
         final float pivotY = pivotYRel ? tv.getFraction(1.0f, 1.0f) : tv.getFloat();
@@ -243,7 +243,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         }
 
         a.recycle();
-        
+
         int outerDepth = parser.getDepth();
         int type;
         while ((type = parser.next()) != XmlPullParser.END_DOCUMENT &&
@@ -299,7 +299,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         Drawable mDrawable;
 
         int mChangingConfigurations;
-        
+
         boolean mPivotXRel;
         float mPivotX;
         boolean mPivotYRel;
@@ -308,7 +308,7 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         int mFramesCount;
 
         private boolean mCanConstantState;
-        private boolean mCheckedConstantState;        
+        private boolean mCheckedConstantState;
 
         public AnimatedRotateState(AnimatedRotateState source, AnimatedRotateDrawable owner,
                 Resources res) {
@@ -334,12 +334,12 @@ public class AnimatedRotateDrawable extends Drawable implements Drawable.Callbac
         public Drawable newDrawable() {
             return new AnimatedRotateDrawable(this, null);
         }
-        
+
         @Override
         public Drawable newDrawable(Resources res) {
             return new AnimatedRotateDrawable(this, res);
         }
-        
+
         @Override
         public int getChangingConfigurations() {
             return mChangingConfigurations;

@@ -37,7 +37,7 @@
         android:layout_weight="1"
         android:background="@drawable/system_bar_ticker_background"
         >
-        
+
         <ImageView android:id="@+id/left_icon"
             android:layout_width="64dp"
             android:layout_height="match_parent"

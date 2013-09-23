@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
  */
 public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvoker, MenuView {
     private static final String TAG = "ActionMenuView";
-    
+
     static final int MIN_CELL_SIZE = 56; // dips
     static final int GENERATED_ITEM_PADDING = 4; // dips
 
@@ -51,7 +51,7 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
     public ActionMenuView(Context context) {
         this(context, null);
     }
-    
+
     public ActionMenuView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setBaselineAligned(false);
@@ -500,7 +500,7 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
     public boolean isOverflowReserved() {
         return mReserveOverflow;
     }
-    
+
     public void setOverflowReserved(boolean reserveOverflow) {
         mReserveOverflow = reserveOverflow;
     }
@@ -512,7 +512,7 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         params.gravity = Gravity.CENTER_VERTICAL;
         return params;
     }
-    
+
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new LayoutParams(getContext(), attrs);

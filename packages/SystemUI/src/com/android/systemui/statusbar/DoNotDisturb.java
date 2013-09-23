@@ -61,7 +61,7 @@ public class DoNotDisturb {
     public DoNotDisturb(Context context) {
         mContext = context;
         mStatusBar = (StatusBarManager)context.getSystemService(Context.STATUS_BAR_SERVICE);
-        
+
         SettingsObserver obs = new SettingsObserver(new Handler());
         obs.observe();
 

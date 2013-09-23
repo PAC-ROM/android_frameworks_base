@@ -274,7 +274,7 @@ status_t BootAnimation::readyToRun() {
 
     mAndroidAnimation = true;
 
-    // If the device has encryption turned on or is in process 
+    // If the device has encryption turned on or is in process
     // of being encrypted we show the encrypted boot animation.
     char decrypt[PROPERTY_VALUE_MAX];
     property_get("vold.decrypt", decrypt, "");
@@ -598,7 +598,7 @@ bool BootAnimation::movie()
                 }
 
                 checkExit();
- 
+
                 if (noTextureCache)
                     glDeleteTextures(1, &frame.tid);
             }

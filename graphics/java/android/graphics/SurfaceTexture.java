@@ -143,9 +143,9 @@ public class SurfaceTexture {
      * android.view.Surface#lockCanvas} is called.  For OpenGL ES, the EGLSurface should be
      * destroyed (via eglDestroySurface), made not-current (via eglMakeCurrent), and then recreated
      * (via eglCreateWindowSurface) to ensure that the new default size has taken effect.
-     * 
+     *
      * The width and height parameters must be no greater than the minimum of
-     * GL_MAX_VIEWPORT_DIMS and GL_MAX_TEXTURE_SIZE (see 
+     * GL_MAX_VIEWPORT_DIMS and GL_MAX_TEXTURE_SIZE (see
      * {@link javax.microedition.khronos.opengles.GL10#glGetIntegerv glGetIntegerv}).
      * An error due to invalid dimensions might not be reported until
      * updateTexImage() is called.

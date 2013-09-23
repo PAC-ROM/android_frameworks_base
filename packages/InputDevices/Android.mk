@@ -19,7 +19,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
-LOCAL_JAVA_LIBRARIES := 
+LOCAL_JAVA_LIBRARIES :=
 
 LOCAL_PACKAGE_NAME := InputDevices
 LOCAL_CERTIFICATE := platform

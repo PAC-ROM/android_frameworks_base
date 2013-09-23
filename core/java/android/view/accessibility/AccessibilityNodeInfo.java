@@ -1876,7 +1876,7 @@ public class AccessibilityNodeInfo implements Parcelable {
         mMovementGranularities = other.mMovementGranularities;
         final int otherChildIdCount = other.mChildNodeIds.size();
         for (int i = 0; i < otherChildIdCount; i++) {
-            mChildNodeIds.put(i, other.mChildNodeIds.valueAt(i));    
+            mChildNodeIds.put(i, other.mChildNodeIds.valueAt(i));
         }
         mTextSelectionStart = other.mTextSelectionStart;
         mTextSelectionEnd = other.mTextSelectionEnd;

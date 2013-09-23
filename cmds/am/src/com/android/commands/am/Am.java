@@ -588,12 +588,12 @@ public class Am extends BaseCommand {
                 mAm.forceStopPackage(packageName, mUserId);
                 Thread.sleep(250);
             }
-    
+
             System.out.println("Starting: " + intent);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    
+
             ParcelFileDescriptor fd = null;
-    
+
             if (mProfileFile != null) {
                 try {
                     fd = ParcelFileDescriptor.open(
@@ -821,7 +821,7 @@ public class Am extends BaseCommand {
             SystemProperties.set("dalvik.vm.extra-opts", props);
         }
     }
-    
+
     private void runProfile() throws Exception {
         String profileFile = null;
         boolean start = false;

@@ -1,6 +1,6 @@
 ACTUAL_LOCAL_PATH := $(call my-dir)
 
-# this var will hold all the test apk module names later. 
+# this var will hold all the test apk module names later.
 FrameworkServicesTests_all_apks :=
 
 # We have to include the subdir makefiles first
@@ -28,13 +28,13 @@ LOCAL_PACKAGE_NAME := FrameworksServicesTests
 
 LOCAL_CERTIFICATE := platform
 
-# intermediate dir to include all the test apks as raw resource 
+# intermediate dir to include all the test apks as raw resource
 FrameworkServicesTests_intermediates := $(call intermediates-dir-for,APPS,$(LOCAL_PACKAGE_NAME))/test_apks/res
 LOCAL_RESOURCE_DIR := $(FrameworkServicesTests_intermediates) $(LOCAL_PATH)/res
 
 include $(BUILD_PACKAGE)
 
-# Rules to copy all the test apks to the intermediate raw resource directory 
+# Rules to copy all the test apks to the intermediate raw resource directory
 FrameworkServicesTests_all_apks_res := $(addprefix $(FrameworkServicesTests_intermediates)/raw/, \
     $(foreach a, $(FrameworkServicesTests_all_apks), $(patsubst FrameworkServicesTests_%,%,$(a))))
 

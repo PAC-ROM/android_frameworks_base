@@ -135,7 +135,7 @@ public class TabletTicker
 
         //if (isDisabled()) {
         //    mEvent.updateTicker(null);
-        //    return; 
+        //    return;
         //}
         if (mCurrentKey == key) {
             // Showing now

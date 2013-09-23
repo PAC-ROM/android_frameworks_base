@@ -67,7 +67,7 @@ static jint init_native(JNIEnv *env, jobject clazz)
     int err;
     hw_module_t* module;
     Devices* devices;
-    
+
     devices = (Devices*)malloc(sizeof(Devices));
 
     err = hw_get_module(LIGHTS_HARDWARE_MODULE_ID, (hw_module_t const**)&module);
@@ -91,7 +91,7 @@ static jint init_native(JNIEnv *env, jobject clazz)
         devices->lights[LIGHT_INDEX_CAPS]
                 = get_device(module, LIGHT_ID_CAPS);
         devices->lights[LIGHT_INDEX_FUNC]
-                = get_device(module, LIGHT_ID_FUNC); 
+                = get_device(module, LIGHT_ID_FUNC);
     } else {
         memset(devices, 0, sizeof(Devices));
     }

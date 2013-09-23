@@ -153,7 +153,7 @@ public class Input {
                     buff.setCharAt(i, ' ');
                     buff.deleteCharAt(--i);
                 }
-            } 
+            }
             if (buff.charAt(i) == '%') {
                 escapeFlag = true;
             }

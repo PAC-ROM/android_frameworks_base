@@ -211,7 +211,7 @@ public class SbBatteryController extends LinearLayout {
             ImageView v = mIconViews.get(i);
             Drawable batteryBitmap = mContext.getResources().getDrawable(mIcon);
             if (mColorInfo.isLastColorNull) {
-                batteryBitmap.clearColorFilter();                
+                batteryBitmap.clearColorFilter();
             } else {
                 batteryBitmap.setColorFilter(mColorInfo.lastColor, PorterDuff.Mode.SRC_IN);
             }

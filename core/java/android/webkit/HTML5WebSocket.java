@@ -396,7 +396,7 @@ public final class HTML5WebSocket extends Handler {
                     if (chunk != null) {
                         chunk.put(mReadBuffer.array(), 0, plainDataCount);
                     }
-                } 
+                }
 
                 putReadQueueData(chunk);
 

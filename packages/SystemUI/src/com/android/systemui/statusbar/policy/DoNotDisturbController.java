@@ -60,7 +60,7 @@ public class DoNotDisturbController implements CompoundButton.OnCheckedChangeLis
             editor.apply();
         }
     }
-    
+
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         final boolean val = prefs.getBoolean(Prefs.DO_NOT_DISTURB_PREF,
                 Prefs.DO_NOT_DISTURB_DEFAULT);

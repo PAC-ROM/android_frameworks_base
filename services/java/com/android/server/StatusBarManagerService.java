@@ -264,7 +264,7 @@ public class StatusBarManagerService extends IStatusBarService.Stub
         }
     }
 
-    /** 
+    /**
      * Hide or show the on-screen Menu key. Only call this from the window manager, typically in
      * response to a window with FLAG_NEEDS_MENU_KEY set.
      */
@@ -283,9 +283,9 @@ public class StatusBarManagerService extends IStatusBarService.Stub
                                 ActivityManager am = (ActivityManager) mContext.
                                         getSystemService(Context.ACTIVITY_SERVICE);
                                 // The first in the list of RunningTasks is always the foreground task.
-                                ActivityManager.RunningTaskInfo foregroundTaskInfo = 
+                                ActivityManager.RunningTaskInfo foregroundTaskInfo =
                                         am.getRunningTasks(1).get(0);
-                                String foregroundTaskPackageName = 
+                                String foregroundTaskPackageName =
                                         foregroundTaskInfo.topActivity.getPackageName();
                                 if (!foregroundTaskPackageName.equals(PARANOID_PREFERENCES_PKG)) {
                                     Settings.System.putString(mContext.getContentResolver(),

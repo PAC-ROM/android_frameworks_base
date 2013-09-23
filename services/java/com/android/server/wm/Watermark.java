@@ -148,7 +148,7 @@ class Watermark {
             }
             if (c != null) {
                 c.drawColor(0, PorterDuff.Mode.CLEAR);
-                
+
                 int deltaX = mDeltaX;
                 int deltaY = mDeltaY;
 

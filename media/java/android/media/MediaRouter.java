@@ -500,7 +500,7 @@ public class MediaRouter {
     public void selectRoute(int types, RouteInfo route) {
         selectRouteStatic(types, route);
     }
-    
+
     /**
      * @hide internal use
      */
@@ -761,7 +761,7 @@ public class MediaRouter {
     public RouteCategory createRouteCategory(CharSequence name, boolean isGroupable) {
         return new RouteCategory(name, ROUTE_TYPE_USER, isGroupable);
     }
-    
+
     /**
      * Create a new route category. Each route must belong to a category.
      *
@@ -1468,7 +1468,7 @@ public class MediaRouter {
             mName = name;
             routeUpdated();
         }
-        
+
         /**
          * Set the user-visible name of this route.
          * <p>
@@ -1975,17 +1975,17 @@ public class MediaRouter {
         public CharSequence getName() {
             return getName(sStatic.mResources);
         }
-        
+
         /**
          * Return the properly localized/configuration dependent name of this RouteCategory.
-         * 
+         *
          * @param context Context to resolve name resources
          * @return the name of this route category
          */
         public CharSequence getName(Context context) {
             return getName(context.getResources());
         }
-        
+
         CharSequence getName(Resources res) {
             if (mNameResId != 0) {
                 return res.getText(mNameResId);

@@ -4,7 +4,7 @@ varying vec2 varTex0;
 
 void main() {
     lowp vec4 color = texture2D(UNI_Tex0, varTex0);
-    
+
     vec2 powers = pow(abs((gl_FragCoord.xy / vec2(UNI_width, UNI_height)) - 0.5), vec2(2.0));
     float gradient = smoothstep(UNI_size - UNI_feather, UNI_size + UNI_feather,
             powers.x + powers.y);
@@ -23,7 +23,7 @@ void main() {
     int channel = int(floor(mod(gl_FragCoord.x, 3.0)));
     lowp vec4 crt = vec4(r[channel], g[channel], b[channel], 1.0);
     crt *= clamp(floor(mod(vShift, 4.0)), 0.0, 1.0);
-    
+
     color = (crt * color * 1.25) + 0.05;
 #endif
 

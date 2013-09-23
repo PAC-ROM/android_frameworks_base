@@ -43,14 +43,14 @@ public interface LayoutTestController {
 
     // invalidate and draw one line at a time of the web view.
     public void repaintSweepHorizontally();
-    
+
     // History testing functions
     public void keepWebHistory();
     public void clearBackForwardList();
     // navigate after page load has finished
     public void queueBackNavigation(int howfar);
     public void queueForwardNavigation(int howfar);
-    
+
     // Reload when the page load has finished
     public void queueReload();
     // Execute the provided script in current context when page load has finished.

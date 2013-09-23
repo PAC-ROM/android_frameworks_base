@@ -130,7 +130,7 @@ int main(int argc, char** argv)
             png = true;
         }
     }
-    
+
     if (fd == -1) {
         usage(pname);
         return 1;

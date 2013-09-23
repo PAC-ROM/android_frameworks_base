@@ -2763,7 +2763,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
      */
     private boolean syncSELinuxPolicyLocked(DevicePolicyData policy,
             boolean removeSELinuxPolicy, boolean removePropertyContexts,
-            boolean removeFileContexts, boolean removeSEappContexts, 
+            boolean removeFileContexts, boolean removeSEappContexts,
             boolean firstBoot) {
         if (!SELinux.isSELinuxEnabled() || policy.mUserHandle != UserHandle.USER_OWNER) {
             return false;
@@ -2773,7 +2773,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         if (selinuxAdmin == null) {
             return false;
         }
-        
+
         boolean systemState = SELinux.isSELinuxEnforced();
         boolean desiredState = selinuxAdmin.enforceSELinux;
         if (!firstBoot || !systemState) {
@@ -2788,7 +2788,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
                 }
             }
         }
-        
+
         Set<String> sebools = selinuxAdmin.sebools.keySet();
         for (String sebool : sebools) {
             systemState = SELinux.getBooleanValue(sebool);
@@ -2804,7 +2804,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
                 }
             }
         }
-        
+
         boolean ret = true;
         if (removeSELinuxPolicy || removePropertyContexts
             || removeFileContexts || removeSEappContexts) {

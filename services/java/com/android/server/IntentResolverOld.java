@@ -201,7 +201,7 @@ public abstract class IntentResolverOld<F extends IntentFilter, R extends Object
         return Collections.unmodifiableSet(mFilters);
     }
 
-    public List<R> queryIntentFromList(Intent intent, String resolvedType, 
+    public List<R> queryIntentFromList(Intent intent, String resolvedType,
             boolean defaultOnly, ArrayList<ArrayList<F>> listCut, int userId) {
         ArrayList<R> resultList = new ArrayList<R>();
 
@@ -341,7 +341,7 @@ public abstract class IntentResolverOld<F extends IntentFilter, R extends Object
      * specified a package name they are to be delivered to.
      */
     protected abstract boolean isPackageForFilter(String packageName, F filter);
-    
+
     @SuppressWarnings("unchecked")
     protected R newResult(F filter, int match, int userId) {
         return (R)filter;

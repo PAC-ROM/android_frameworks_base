@@ -52,7 +52,7 @@ import com.android.internal.widget.LockPatternUtils;
 public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback {
     private static final String TAG = "RemoteViewsAdapter";
 
-    // The max number of items in the cache 
+    // The max number of items in the cache
     private static final int sDefaultCacheSize = 40;
     // The delay (in millis) to wait until attempting to unbind from a service after a request.
     // This ensures that we don't stay continually bound to the service and that it can be destroyed
@@ -63,7 +63,7 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
     private static final int sDefaultLoadingViewHeight = 50;
 
     // Type defs for controlling different messages across the main and worker message queues
-    private static final int sDefaultMessageType = 0; 
+    private static final int sDefaultMessageType = 0;
     private static final int sUnbindServiceMessageType = 1;
 
     private final Context mContext;
@@ -90,7 +90,7 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
     private Handler mMainQueue;
 
     // We cache the FixedSizeRemoteViewsCaches across orientation. These are the related data
-    // structures; 
+    // structures;
     private static final HashMap<RemoteViewsCacheKey,
             FixedSizeRemoteViewsCache> sCachedRemoteViewsCaches
             = new HashMap<RemoteViewsCacheKey,
@@ -263,7 +263,7 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
             // Clear the main/worker queues
             final RemoteViewsAdapter adapter = mAdapter.get();
             if (adapter == null) return;
-            
+
             adapter.mMainQueue.post(new Runnable() {
                 @Override
                 public void run() {

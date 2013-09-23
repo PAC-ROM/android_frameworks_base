@@ -86,7 +86,7 @@ final class JWebCoreJavaBridge extends Handler {
     /**
      * Call native timer callbacks.
      */
-    private void fireSharedTimer() { 
+    private void fireSharedTimer() {
         // clear the flag so that sharedTimerFired() can set a new timer
         mHasInstantTimer = false;
         sharedTimerFired();
@@ -119,13 +119,13 @@ final class JWebCoreJavaBridge extends Handler {
                 break;
         }
     }
-    
+
     // called from JNI side
     private void signalServiceFuncPtrQueue() {
         Message msg = obtainMessage(FUNCPTR_MESSAGE);
         sendMessage(msg);
     }
-    
+
     private native void nativeServiceFuncPtrQueue();
 
     /**

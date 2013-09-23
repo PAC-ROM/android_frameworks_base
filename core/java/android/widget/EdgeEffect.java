@@ -120,7 +120,7 @@ public class EdgeEffect {
     private int mState = STATE_IDLE;
 
     private float mPullDistance;
-    
+
     private final Rect mBounds = new Rect();
 
     private final int mEdgeHeight;
@@ -163,7 +163,7 @@ public class EdgeEffect {
     /**
      * Set the position of this edge effect in pixels. This position is
      * only used by {@link #getBounds(boolean)}.
-     * 
+     *
      * @param x The position of the edge effect on the X axis
      * @param y The position of the edge effect on the Y axis
      */
@@ -366,7 +366,7 @@ public class EdgeEffect {
 
     /**
      * Returns the bounds of the edge effect.
-     * 
+     *
      * @hide
      */
     public Rect getBounds(boolean reverse) {

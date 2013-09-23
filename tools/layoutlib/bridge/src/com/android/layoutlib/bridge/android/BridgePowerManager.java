@@ -127,7 +127,7 @@ public class BridgePowerManager implements IPowerManager {
 
     @Override
     public void setKeyboardVisibility(boolean visible) {
-        
+
     }
 
     @Override

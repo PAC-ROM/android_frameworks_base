@@ -50,7 +50,7 @@ import java.util.UUID;
  * devices, and start a scan for Bluetooth LE devices.
  *
  * <p>To get a {@link BluetoothAdapter} representing the local Bluetooth
- * adapter, when running on JELLY_BEAN_MR1 and below, call the 
+ * adapter, when running on JELLY_BEAN_MR1 and below, call the
  * static {@link #getDefaultAdapter} method; when running on JELLY_BEAN_MR2 and
  * higher, retrieve it through
  * {@link android.content.Context#getSystemService} with

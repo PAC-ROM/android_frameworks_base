@@ -192,8 +192,8 @@ public class PanelBar extends FrameLayout {
 
         if (DEBUG) LOG("panelExpansionChanged: end state=%d [%s%s ]", mState,
                 (fullyOpenedPanel!=null)?" fullyOpened":"", fullyClosed?" fullyClosed":"");
-                
-                mFullyOpenedPanel = fullyOpenedPanel;                
+
+                mFullyOpenedPanel = fullyOpenedPanel;
     }
 
     public void collapseAllPanels(boolean animate) {
@@ -209,7 +209,7 @@ public class PanelBar extends FrameLayout {
         }
         if (DEBUG) LOG("collapseAllPanels: animate=%s waiting=%s", animate, waiting);
         if (!waiting && mState != STATE_CLOSED) {
-            // it's possible that nothing animated, so we replicate the termination 
+            // it's possible that nothing animated, so we replicate the termination
             // conditions of panelExpansionChanged here
             go(STATE_CLOSED);
             onAllPanelsCollapsed();

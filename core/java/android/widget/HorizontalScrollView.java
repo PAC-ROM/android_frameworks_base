@@ -741,7 +741,7 @@ public class HorizontalScrollView extends FrameLayout {
         } else {
             super.scrollTo(scrollX, scrollY);
         }
-        
+
         awakenScrollBars();
     }
 

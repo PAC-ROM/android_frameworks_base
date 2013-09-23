@@ -102,7 +102,7 @@ class ServiceRecord extends Binder {
     long nextRestartTime;   // time when restartDelay will expire.
 
     String stringName;      // caching of toString
-    
+
     private int lastStartId;    // identifier of most recent start request.
 
     static class StartItem {
@@ -197,7 +197,7 @@ class ServiceRecord extends Binder {
             }
         }
     }
-    
+
     void dump(PrintWriter pw, String prefix) {
         pw.print(prefix); pw.print("intent={");
                 pw.print(intent.getIntent().toShortString(false, true, false, true));
@@ -328,7 +328,7 @@ class ServiceRecord extends Binder {
         restartDelay = 0;
         restartTime = 0;
     }
-    
+
     public StartItem findDeliveredStart(int id, boolean remove) {
         final int N = deliveredStarts.size();
         for (int i=0; i<N; i++) {
@@ -338,10 +338,10 @@ class ServiceRecord extends Binder {
                 return si;
             }
         }
-        
+
         return null;
     }
-    
+
     public int getLastStartId() {
         return lastStartId;
     }
@@ -434,7 +434,7 @@ class ServiceRecord extends Binder {
             });
         }
     }
-    
+
     public void cancelNotification() {
         if (foregroundId != 0) {
             // Do asynchronous communication with notification manager to
@@ -459,7 +459,7 @@ class ServiceRecord extends Binder {
             });
         }
     }
-    
+
     public void clearDeliveredStartsLocked() {
         for (int i=deliveredStarts.size()-1; i>=0; i--) {
             deliveredStarts.get(i).removeUriPermissionsLocked();

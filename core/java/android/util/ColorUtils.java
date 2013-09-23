@@ -88,7 +88,7 @@ public class ColorUtils {
 
     public static void setColor(Context context, String settingName, String systemColor,
             String currentColor, int index, int speed) {
-        Settings.System.putString(context.getContentResolver(), settingName, 
+        Settings.System.putString(context.getContentResolver(), settingName,
                 systemColor + "|" + currentColor + "|" + index + "|" + speed);
     }
 
@@ -190,7 +190,7 @@ public class ColorUtils {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Math.round(((red * 299) + (green * 587)
-                +(blue * 114)) / 1000);  
+                +(blue * 114)) / 1000);
     }
 
     private static int getLuminanceDifference(int color1, int color2) {

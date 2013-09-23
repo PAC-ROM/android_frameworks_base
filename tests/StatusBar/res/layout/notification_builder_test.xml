@@ -212,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ten notifications"
                     />
-                    
+
         </LinearLayout>
 
         <LinearLayout
@@ -553,7 +553,7 @@
                         android:text="full screen"
                         />
             </RadioGroup>
-            
+
 
             <!-- setTicker -->
             <LinearLayout
@@ -656,7 +656,7 @@
                         android:text="none"
                         />
             </RadioGroup>
-            
+
 
             <!-- setVibrate -->
             <LinearLayout
@@ -696,7 +696,7 @@
 	                        android:text="...---..."
 	                        />
 	            </RadioGroup>
-			</LinearLayout>            
+			</LinearLayout>
 
             <!-- setLights -->
             <LinearLayout
@@ -793,7 +793,7 @@
 	                        android:text="MIN"
 	                        />
 	            </RadioGroup>
-			</LinearLayout>            
+			</LinearLayout>
 
             <!-- setLights -->
             <LinearLayout

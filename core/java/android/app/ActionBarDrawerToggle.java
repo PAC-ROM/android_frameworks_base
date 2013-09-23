@@ -313,7 +313,7 @@ public class ActionBarDrawerToggle implements DrawerLayout.DrawerListener {
      * {@link DrawerLayout.DrawerListener} callback method. If you do not use your
      * ActionBarDrawerToggle instance directly as your DrawerLayout's listener, you should call
      * through to this method from your own listener object.
-     * 
+     *
      * @param newState The new drawer motion state
      */
     @Override

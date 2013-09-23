@@ -319,7 +319,7 @@ void getStrokeVerticesFromUnclosedVertices(const PaintInfo& paintInfo,
 
 /**
  * Populates a vertexBuffer with AlphaVertices to create an anti-aliased fill shape tessellation
- * 
+ *
  * 1 - create the AA perimeter of unit width, by zig-zagging at each point around the perimeter of
  * the shape (using 2 * perimeter.size() vertices)
  *

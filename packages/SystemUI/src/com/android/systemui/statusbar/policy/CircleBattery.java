@@ -223,14 +223,14 @@ public class CircleBattery extends ImageView {
 
         // Only watch for per app color changes when the setting is in check
         if (ColorUtils.getPerAppColorState(mContext)) {
-            mLastIconColor = ColorUtils.getColorSettingInfo(mContext, 
+            mLastIconColor = ColorUtils.getColorSettingInfo(mContext,
                     Settings.System.STATUS_ICON_COLOR);
             mLastIconColor.lastColorString = "";
             updateIconColor();
 
             // Listen for status bar icon color changes
             mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, 
+                Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false,
                     new ContentObserver(new Handler()) {
                     @Override
                     public void onChange(boolean selfChange) {

@@ -352,7 +352,7 @@ not_valid_surface:
                 "Make sure the SurfaceTexture is valid");
         return 0;
     }
-    
+
     sp<GLConsumer> glConsumer(SurfaceTexture_getSurfaceTexture(_env, native_window));
 
     window = new Surface(glConsumer->getBufferQueue());

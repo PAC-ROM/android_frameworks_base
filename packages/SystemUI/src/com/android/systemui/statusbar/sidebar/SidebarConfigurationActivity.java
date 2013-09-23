@@ -91,7 +91,7 @@ public class SidebarConfigurationActivity extends Activity {
     private int mFolderWidth;
     private int mSidebarWidth;
     private PackageManager mPm;
-    
+
     private static LinearLayout.LayoutParams DUMMY_VIEW_PARAMS = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -102,7 +102,7 @@ public class SidebarConfigurationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.sidebar_configuration_layout);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setProgressBarIndeterminateVisibility(true);
@@ -265,9 +265,9 @@ public class SidebarConfigurationActivity extends Activity {
             return sCollator.compare(alabel, blabel);
         }
     }
-    
+
     private OnTouchListener mTouchOutsideListener = new OnTouchListener() {
-        
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -275,7 +275,7 @@ public class SidebarConfigurationActivity extends Activity {
             return false;
         }
     };
-    
+
     private void dismissFolderView() {
         if (mFolder != null) {
             mMainLayout.removeView(mFolder);
@@ -324,7 +324,7 @@ public class SidebarConfigurationActivity extends Activity {
         }
 
     }
-    
+
     private final class FolderClickListener implements OnClickListener {
 
         @Override
@@ -342,7 +342,7 @@ public class SidebarConfigurationActivity extends Activity {
             for (View item : items)
                 item.setOnLongClickListener(mLongClickListener);
             folder.setOnTouchListener(new OnTouchListener() {
-                
+
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -397,7 +397,7 @@ public class SidebarConfigurationActivity extends Activity {
                         mSideBar.scrollBy((int)x, 5);
                     if (mSidebarContents.indexOfChild(mDummyView) == mSidebarContents.getChildCount()-1)
                         mSideBar.scrollTo((int)x, mDummyView.getBottom());
-                }                
+                }
                 break;
             case DragEvent.ACTION_DRAG_EXITED:
                 if (v == mSideBar) {
@@ -431,13 +431,13 @@ public class SidebarConfigurationActivity extends Activity {
                         } else {
                             info = new FolderInfo();
                             info.title = getString(R.string.default_folder_text);
-                            icon = FolderIcon.fromXml(R.layout.folder_icon, 
+                            icon = FolderIcon.fromXml(R.layout.folder_icon,
                                     mSidebarContents, null, info, mContext, false);
                             info.add((AppItemInfo)addToView.getTag());
                             icon.setOnLongClickListener(mLongClickListener);
                             icon.setOnClickListener(new FolderClickListener());
                         }
-                        
+
                         info.add((AppItemInfo)tv.getTag());
                         int pos = mSidebarContents.indexOfChild(addToView);
                         mSidebarContents.removeView(addToView);
@@ -463,7 +463,7 @@ public class SidebarConfigurationActivity extends Activity {
             }
             return true;
         }
-        
+
         private View cloneItem(View original) {
             ItemInfo ai = (ItemInfo) original.getTag();
             View v;
@@ -481,16 +481,16 @@ public class SidebarConfigurationActivity extends Activity {
             } else {
                 v = original;
             }
-            
+
             return v;
         }
     }
-    
+
     private class IconShadowBuilder extends DragShadowBuilder {
         private Drawable shadow;
         private int mShadowWidth;
         private int mShadowHeight;
-        
+
         @SuppressWarnings("deprecation")
         public IconShadowBuilder(View v) {
             super(v);
@@ -537,7 +537,7 @@ public class SidebarConfigurationActivity extends Activity {
         lp.leftMargin = mSidebarWidth;
         return lp;
     }
-    
+
     private List<ItemInfo> getSidebarItems() {
         int id = 0;
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
@@ -554,10 +554,10 @@ public class SidebarConfigurationActivity extends Activity {
                 }
             }
         }
-        
+
         return items;
     }
-    
+
     private void populateSidebar() {
         String[] projection = {
                 SidebarTable.COLUMN_ITEM_ID,
@@ -567,7 +567,7 @@ public class SidebarConfigurationActivity extends Activity {
                 SidebarTable.COLUMN_COMPONENT
         };
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
-        Cursor cursor = getContentResolver().query(SidebarContentProvider.CONTENT_URI, 
+        Cursor cursor = getContentResolver().query(SidebarContentProvider.CONTENT_URI,
                 projection, null, null, null);
         while (cursor.moveToNext()) {
             ItemInfo item;
@@ -591,7 +591,7 @@ public class SidebarConfigurationActivity extends Activity {
                     mSidebarContents.addView(tv);
                     tv.setOnLongClickListener(mLongClickListener);
                 } else {
-                    FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, 
+                    FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon,
                             mSidebarContents, null, (FolderInfo)item, mContext, false);
                     icon.setOnLongClickListener(mLongClickListener);
                     icon.setOnClickListener(new FolderClickListener());
@@ -611,7 +611,7 @@ public class SidebarConfigurationActivity extends Activity {
             items.add(item);
         }
     }
-    
+
     private TextView createAppItem(AppItemInfo info) {
         TextView tv = new TextView(mContext);
         try {
@@ -627,7 +627,7 @@ public class SidebarConfigurationActivity extends Activity {
         tv.setEllipsize(TruncateAt.END);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mItemTextSize);
-        
+
         return tv;
     }
 }

@@ -79,7 +79,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
         int h = bounds.bottom - bounds.top;
 
         final RotateState st = mState;
-        
+
         float px = st.mPivotXRel ? (w * st.mPivotX) : st.mPivotX;
         float py = st.mPivotYRel ? (h * st.mPivotY) : st.mPivotY;
 
@@ -103,7 +103,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
                 | mState.mChangingConfigurations
                 | mState.mDrawable.getChangingConfigurations();
     }
-    
+
     public void setAlpha(int alpha) {
         mState.mDrawable.setAlpha(alpha);
     }
@@ -152,7 +152,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
     public boolean isStateful() {
         return mState.mDrawable.isStateful();
     }
-    
+
     @Override
     protected boolean onStateChange(int[] state) {
         boolean changed = mState.mDrawable.setState(state);
@@ -207,7 +207,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
 
         super.inflateWithAttributes(r, parser, a,
                 com.android.internal.R.styleable.RotateDrawable_visible);
-        
+
         TypedValue tv = a.peekValue(com.android.internal.R.styleable.RotateDrawable_pivotX);
         boolean pivotXRel;
         float pivotX;
@@ -218,7 +218,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
             pivotXRel = tv.type == TypedValue.TYPE_FRACTION;
             pivotX = pivotXRel ? tv.getFraction(1.0f, 1.0f) : tv.getFloat();
         }
-        
+
         tv = a.peekValue(com.android.internal.R.styleable.RotateDrawable_pivotY);
         boolean pivotYRel;
         float pivotY;
@@ -243,7 +243,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
         }
 
         a.recycle();
-        
+
         int outerDepth = parser.getDepth();
         int type;
         while ((type = parser.next()) != XmlPullParser.END_DOCUMENT &&
@@ -294,7 +294,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
         Drawable mDrawable;
 
         int mChangingConfigurations;
-        
+
         boolean mPivotXRel;
         float mPivotX;
         boolean mPivotYRel;
@@ -306,7 +306,7 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
         float mCurrentDegrees;
 
         private boolean mCanConstantState;
-        private boolean mCheckedConstantState;        
+        private boolean mCheckedConstantState;
 
         public RotateState(RotateState source, RotateDrawable owner, Resources res) {
             if (source != null) {
@@ -331,12 +331,12 @@ public class RotateDrawable extends Drawable implements Drawable.Callback {
         public Drawable newDrawable() {
             return new RotateDrawable(this, null);
         }
-        
+
         @Override
         public Drawable newDrawable(Resources res) {
             return new RotateDrawable(this, res);
         }
-        
+
         @Override
         public int getChangingConfigurations() {
             return mChangingConfigurations;

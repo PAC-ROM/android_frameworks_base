@@ -129,7 +129,7 @@ public final class Sensor {
      * due to distortions that arise from magnetized iron, steel or permanent magnets on the
      * device) is not considered in the given sensor values. However, such hard iron bias values
      * are returned to you separately in the result {@link android.hardware.SensorEvent#values}
-     * so you may use them for custom calibrations. 
+     * so you may use them for custom calibrations.
      * <p>Also, no periodic calibration is performed
      * (i.e. there are no discontinuities in the data stream while using this sensor) and
      * assumptions that the magnetic field is due to the Earth's poles is avoided, but

@@ -108,7 +108,7 @@ public final class CharsetUtils {
      * code is running on). This method merely calls through to
      * {@link #nameForVendor(String,String)}, passing the default vendor
      * as the second argument.
-     * 
+     *
      * @param charsetName the base character set name
      * @return the specialized character set name, or {@code charsetName} if
      * there is no specialized name
@@ -125,7 +125,7 @@ public final class CharsetUtils {
      * name. The vendor name is matched case-insensitively. This
      * method merely calls {@code Charset.forName()} on a name
      * transformed by a call to {@link #nameForVendor(String,String)}.
-     * 
+     *
      * @param charsetName the base character set name
      * @param vendor the vendor to specialize for
      * @return the specialized character set, or the one corresponding
@@ -141,15 +141,15 @@ public final class CharsetUtils {
         charsetName = nameForVendor(charsetName, vendor);
         return Charset.forName(charsetName);
     }
-    
+
     /**
      * Returns the vendor-specific character set corresponding to the
      * given original character set name and default vendor (that is,
-     * the targeted vendor of the device this code is running on). 
+     * the targeted vendor of the device this code is running on).
      * This method merely calls through to {@link
      * #charsetForVendor(String,String)}, passing the default vendor
      * as the second argument.
-     * 
+     *
      * @param charsetName the base character set name
      * @return the specialized character set, or the one corresponding
      * directly to {@code charsetName} if there is no specialized
@@ -167,7 +167,7 @@ public final class CharsetUtils {
     /**
      * Returns whether the given character set name indicates the Shift-JIS
      * encoding. Returns false if the name is null.
-     * 
+     *
      * @param charsetName the character set name
      * @return {@code true} if the name corresponds to Shift-JIS or
      * {@code false} if not
@@ -189,7 +189,7 @@ public final class CharsetUtils {
 
     /**
      * Gets the default vendor for this build.
-     * 
+     *
      * @return the default vendor name
      */
     private static String getDefaultVendor() {

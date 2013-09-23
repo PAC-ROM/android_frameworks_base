@@ -862,7 +862,7 @@ class ScreenRotationAnimation {
                     && (mMoreStartEnter || mMoreStartExit || mMoreFinishEnter || mMoreFinishExit))
                 || (USE_CUSTOM_BLACK_FRAME
                         && (mMoreStartFrame || mMoreRotateFrame || mMoreFinishFrame))
-                || mMoreRotateEnter || mMoreRotateExit 
+                || mMoreRotateEnter || mMoreRotateExit
                 || !mFinishAnimReady;
 
         mSnapshotFinalMatrix.setConcat(mExitTransformation.getMatrix(), mSnapshotInitialMatrix);

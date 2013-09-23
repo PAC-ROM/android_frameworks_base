@@ -91,7 +91,7 @@
                 android:singleLine="true"
                 android:layout_marginEnd="4dp"
                 android:gravity="left|center_vertical"/>
-    
+
             <LinearLayout
                 android:id="@+id/signal_battery_cluster"
                 android:layout_width="wrap_content"

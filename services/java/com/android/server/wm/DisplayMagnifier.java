@@ -644,7 +644,7 @@ final class DisplayMagnifier {
                     canvas.drawPath(path, mPaint);
 
                     mSurface.unlockCanvasAndPost(canvas);
-                    
+
                     if (mAlpha > 0) {
                         mSurfaceControl.show();
                     } else {

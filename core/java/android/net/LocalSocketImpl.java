@@ -112,7 +112,7 @@ class LocalSocketImpl
         public void write (byte[] b) throws IOException {
             write(b, 0, b.length);
         }
-        
+
         /** {@inheritDoc} */
         @Override
         public void write (byte[] b, int off, int len) throws IOException {
@@ -250,7 +250,7 @@ class LocalSocketImpl
     /** note timeout presently ignored */
     protected void connect(LocalSocketAddress address, int timeout)
                         throws IOException
-    {        
+    {
         if (fd == null) {
             throw new IOException("socket not created");
         }
@@ -327,7 +327,7 @@ class LocalSocketImpl
      * @throws IOException if socket has been closed or cannot be created.
      */
     protected OutputStream getOutputStream() throws IOException
-    { 
+    {
         if (fd == null) {
             throw new IOException("socket not created");
         }
@@ -404,7 +404,7 @@ class LocalSocketImpl
         if (optID == SocketOptions.SO_TIMEOUT) {
             return 0;
         }
-        
+
         int value = getOption_native(fd, optID);
         switch (optID)
         {

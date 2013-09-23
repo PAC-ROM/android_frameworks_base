@@ -20,7 +20,7 @@
     android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/halo_content"      
+            android:id="@+id/halo_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -38,14 +38,14 @@
             <ImageView
                 android:id="@+id/app_icon"
                 android:layout_width="@dimen/halo_bubble_size"
-                android:layout_height="@dimen/halo_bubble_size"                
+                android:layout_height="@dimen/halo_bubble_size"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
 
             <ImageView
                 android:id="@+id/halo_overlay"
                 android:layout_width="@dimen/halo_bubble_size"
-                android:layout_height="@dimen/halo_bubble_size"                
+                android:layout_height="@dimen/halo_bubble_size"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:alpha="0"/>

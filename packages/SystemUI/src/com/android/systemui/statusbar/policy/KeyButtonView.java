@@ -79,7 +79,7 @@ public class KeyButtonView extends ImageView {
 
     private ColorUtils.ColorSettingInfo mLastButtonColor;
     private ColorUtils.ColorSettingInfo mLastGlowColor;
-    
+
     private Handler mHandler = new Handler();
     private SettingsObserver mSettingsObserver;
     private boolean mAttached = false;
@@ -153,7 +153,7 @@ public class KeyButtonView extends ImageView {
                     }});
         }
     }
-    
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -450,7 +450,7 @@ public class KeyButtonView extends ImageView {
             sendEvent(action[0], action[1],
                 SystemClock.uptimeMillis());
         }
-    }   
+    }
 
     void sendEvent(int action, int flags) {
         sendEvent(action, flags, SystemClock.uptimeMillis());

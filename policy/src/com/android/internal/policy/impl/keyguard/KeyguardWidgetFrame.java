@@ -333,7 +333,7 @@ public class KeyguardWidgetFrame extends FrameLayout {
 
     /**
      * Depending on whether the security is up, the widget size needs to change
-     * 
+     *
      * @param height The height of the widget, -1 for full height
      */
     private void setWidgetHeight(int height) {

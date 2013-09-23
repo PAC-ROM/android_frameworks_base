@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ExtendedPropertiesUtils {
- 
+
     private static final String TAG = "ExtendedPropertiesUtils";
 
     /**
@@ -72,7 +72,7 @@ public class ExtendedPropertiesUtils {
     public static final String[] PARANOID_COLORS_SETTINGS = {Settings.System.NAV_BAR_COLOR,
         Settings.System.NAV_BUTTON_COLOR, Settings.System.NAV_GLOW_COLOR,
         Settings.System.STATUS_BAR_COLOR, Settings.System.STATUS_ICON_COLOR};
-    public static final int[] PARANOID_COLORCODES_DEFAULTS = 
+    public static final int[] PARANOID_COLORCODES_DEFAULTS =
         {0xFF000000, 0xB2FFFFFF, 0xFFFFFFFF, 0xFF000000, 0xFF33B5E5};
     public static final int PARANOID_COLORS_NAVBAR = 0;
     public static final int PARANOID_COLORS_NAVBUTTON = 1;
@@ -83,7 +83,7 @@ public class ExtendedPropertiesUtils {
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
     public static ActivityThread mMainThread;
     public static Context mContext;
-    public static PackageManager mPackageManager;    
+    public static PackageManager mPackageManager;
     public static Display mDisplay;
     public static List<PackageInfo> mPackageList;
 
@@ -96,7 +96,7 @@ public class ExtendedPropertiesUtils {
 
     // Native methods
     public static native String readFile(String s);
-    
+
     /**
      * Contains all the details for an application
      */
@@ -134,12 +134,12 @@ public class ExtendedPropertiesUtils {
      */
     public static void setAppConfiguration(ParanoidAppInfo info) {
         if(sIsHybridModeEnabled){
-            // Load default values to be used in case that property is 
+            // Load default values to be used in case that property is
             // missing from configuration.
             boolean isSystemApp = info.path.contains("system/app");
-            int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ?
                 "system_default_dpi" : (info.path.length() == 0 ? "0" : "user_default_dpi"))));
-            int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ?
                 "system_default_layout" : (info.path.length() == 0 ? "0" : "user_default_layout"))));
 
             // Layout fetching.
@@ -159,8 +159,8 @@ public class ExtendedPropertiesUtils {
                 info.scaledDensity = info.scaledDensity == 0 ? info.dpi / (float) DisplayMetrics.DENSITY_DEFAULT : info.scaledDensity;
             }
 
-            // Extra parameters. Force allows apps to penetrate their hosts, 
-            // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
+            // Extra parameters. Force allows apps to penetrate their hosts,
+            // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes
             // layout matching to assign bigger containers.
             info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
             info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
@@ -232,7 +232,7 @@ public class ExtendedPropertiesUtils {
             if (mLocalHook.info != null) {
                 mLocalHook.pid = android.os.Process.myPid();
                 mLocalHook.name = mLocalHook.info.packageName;
-                mLocalHook.path = mLocalHook.info.sourceDir.substring(0, 
+                mLocalHook.path = mLocalHook.info.sourceDir.substring(0,
                         mLocalHook.info.sourceDir.lastIndexOf("/"));
 
                 setAppConfiguration(mLocalHook);
@@ -241,7 +241,7 @@ public class ExtendedPropertiesUtils {
     }
 
     /**
-     * This methods are used to retrieve specific information for a hook. 
+     * This methods are used to retrieve specific information for a hook.
      */
     public static boolean isInitialized() {
         return (mContext != null);
@@ -270,7 +270,7 @@ public class ExtendedPropertiesUtils {
     public int getDpi() {
         return mLocalHook.active ? mLocalHook.dpi : mGlobalHook.dpi;
     }
-    public float getScaledDensity() { 
+    public float getScaledDensity() {
         return mLocalHook.active ? mLocalHook.scaledDensity : mGlobalHook.scaledDensity;
     }
     public boolean getForce() {
@@ -311,7 +311,7 @@ public class ExtendedPropertiesUtils {
         return layout >= 1000;
     }
 
-    
+
     /**
      * Returns an {@link ApplicationInfo}, with the given path.
      *
@@ -330,7 +330,7 @@ public class ExtendedPropertiesUtils {
         return null;
     }
 
-    
+
     /**
      * Returns an {@link ApplicationInfo}, with the given package name.
      *
@@ -349,7 +349,7 @@ public class ExtendedPropertiesUtils {
         return null;
     }
 
-    
+
     /**
      * Returns an {@link ApplicationInfo}, with the given PID.
      *
@@ -371,7 +371,7 @@ public class ExtendedPropertiesUtils {
     }
 
     /**
-     * Traces the input argument <code>msg</code> as a log. 
+     * Traces the input argument <code>msg</code> as a log.
      * Used for debugging. Should not be used on public classes.
      *
      * @param  msg  the message to log
@@ -380,7 +380,7 @@ public class ExtendedPropertiesUtils {
         StringWriter sw = new StringWriter();
         new Throwable("").printStackTrace(new PrintWriter(sw));
         String stackTrace = sw.toString();
-        Log.i(TAG + ":" + msg, "Trace=" + stackTrace); 
+        Log.i(TAG + ":" + msg, "Trace=" + stackTrace);
     }
 
     /**
@@ -453,7 +453,7 @@ public class ExtendedPropertiesUtils {
         for(int i=0; i<props.length; i++) {
             if(props[i].contains("=")) {
                 if(props[i].substring(0, props[i].lastIndexOf("=")).equals(prop)) {
-                    String result = props[i].replace(prop+"=", "").trim();  
+                    String result = props[i].replace(prop+"=", "").trim();
                     if (result.startsWith(PARANOID_PREFIX)) {
                         result = getProperty(result, def);
                     }
@@ -465,8 +465,8 @@ public class ExtendedPropertiesUtils {
     }
 
     /**
-     * Returns an {@link Integer}, equivalent to what other classes will actually 
-     * load for the input argument <code>property</code>. it differs from 
+     * Returns an {@link Integer}, equivalent to what other classes will actually
+     * load for the input argument <code>property</code>. it differs from
      * {@link #getProperty(String, String) getProperty}, because the values
      * returned will never be zero.
      *
@@ -482,9 +482,9 @@ public class ExtendedPropertiesUtils {
             ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()
                     - PARANOID_DPI_SUFFIX.length()));
             if(appInfo != null) {
-                boolean isSystemApp = 
+                boolean isSystemApp =
                         appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
-                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ?
                         "system_default_dpi" : "user_default_dpi"))));
             } else {
                 getProp = true;
@@ -495,7 +495,7 @@ public class ExtendedPropertiesUtils {
             if(appInfo != null) {
                 boolean isSystemApp =
                         appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
-                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ?
                         "system_default_layout" : "user_default_layout"))));
             } else {
                 getProp = true;
@@ -529,10 +529,10 @@ public class ExtendedPropertiesUtils {
             return false;
         }
     }
-    
+
     public void debugOut(String msg) {
-        Log.i(TAG + ":" + msg, "Init=" + (mMainThread != null && mContext != null && 
-            mPackageManager != null) + " App=" + getName() + " Dpi=" + getDpi() + 
+        Log.i(TAG + ":" + msg, "Init=" + (mMainThread != null && mContext != null &&
+            mPackageManager != null) + " App=" + getName() + " Dpi=" + getDpi() +
             " Layout=" + getLayout());
     }
 }

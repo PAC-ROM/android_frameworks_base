@@ -39,7 +39,7 @@ class TaskRecord extends ThumbnailHolder {
 
     String stringName;      // caching of toString() result.
     int userId;             // user for which this task was created
-    
+
     TaskRecord(int _taskId, ActivityInfo info, Intent _intent) {
         taskId = _taskId;
         affinity = info.taskAffinity;
@@ -49,11 +49,11 @@ class TaskRecord extends ThumbnailHolder {
     void touchActiveTime() {
         lastActiveTime = android.os.SystemClock.elapsedRealtime();
     }
-    
+
     long getInactiveDuration() {
         return android.os.SystemClock.elapsedRealtime() - lastActiveTime;
     }
-    
+
     void setIntent(Intent _intent, ActivityInfo info) {
         stringName = null;
 
@@ -104,7 +104,7 @@ class TaskRecord extends ThumbnailHolder {
             userId = UserHandle.getUserId(info.applicationInfo.uid);
         }
     }
-    
+
     void dump(PrintWriter pw, String prefix) {
         if (numActivities != 0 || rootWasReset || userId != 0) {
             pw.print(prefix); pw.print("numActivities="); pw.print(numActivities);

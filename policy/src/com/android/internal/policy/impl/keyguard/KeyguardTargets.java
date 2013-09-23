@@ -104,7 +104,7 @@ public class KeyguardTargets extends LinearLayout {
             if(!isScreenLarge()) {
                 dimens *= resourceString == null ? .6f : .5f;
             }
-            LinearLayout.LayoutParams vp = 
+            LinearLayout.LayoutParams vp =
                     new LinearLayout.LayoutParams(dimens, dimens);
             i.setLayoutParams(vp);
             Drawable img = null;
@@ -141,7 +141,7 @@ public class KeyguardTargets extends LinearLayout {
 
     private void addSeparator() {
         View v = new View(mContext);
-        LinearLayout.LayoutParams vp = 
+        LinearLayout.LayoutParams vp =
                 new LinearLayout.LayoutParams(INNER_PADDING, 0);
         v.setLayoutParams(vp);
         addView(v);

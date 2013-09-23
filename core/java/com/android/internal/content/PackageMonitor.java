@@ -54,9 +54,9 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         sExternalFilt.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         sExternalFilt.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
     }
-    
+
     final HashSet<String> mUpdatingPackages = new HashSet<String>();
-    
+
     Context mRegisteredContext;
     Handler mRegisteredHandler;
     String[] mDisappearingPackages;
@@ -118,14 +118,14 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         mRegisteredContext.unregisterReceiver(this);
         mRegisteredContext = null;
     }
-    
+
     //not yet implemented
     boolean isPackageUpdating(String packageName) {
         synchronized (mUpdatingPackages) {
             return mUpdatingPackages.contains(packageName);
         }
     }
-    
+
     public void onBeginPackageChanges() {
     }
 
@@ -181,23 +181,23 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         }
         return false;
     }
-    
+
     public boolean onHandleForceStop(Intent intent, String[] packages, int uid, boolean doit) {
         return false;
     }
 
     public void onHandleUserStop(Intent intent, int userHandle) {
     }
-    
+
     public void onUidRemoved(int uid) {
     }
-    
+
     public void onPackagesAvailable(String[] packages) {
     }
-    
+
     public void onPackagesUnavailable(String[] packages) {
     }
-    
+
     public static final int PACKAGE_UNCHANGED = 0;
     public static final int PACKAGE_UPDATING = 1;
     public static final int PACKAGE_TEMPORARY_CHANGE = 2;
@@ -220,11 +220,11 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
      */
     public void onPackageModified(String packageName) {
     }
-    
+
     public boolean didSomePackagesChange() {
         return mSomePackagesChanged;
     }
-    
+
     public int isPackageAppearing(String packageName) {
         if (mAppearingPackages != null) {
             for (int i=mAppearingPackages.length-1; i>=0; i--) {
@@ -235,11 +235,11 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         }
         return PACKAGE_UNCHANGED;
     }
-    
+
     public boolean anyPackagesAppearing() {
         return mAppearingPackages != null;
     }
-    
+
     public int isPackageDisappearing(String packageName) {
         if (mDisappearingPackages != null) {
             for (int i=mDisappearingPackages.length-1; i>=0; i--) {
@@ -250,11 +250,11 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         }
         return PACKAGE_UNCHANGED;
     }
-    
+
     public boolean anyPackagesDisappearing() {
         return mDisappearingPackages != null;
     }
-    
+
     public boolean isPackageModified(String packageName) {
         if (mModifiedPackages != null) {
             for (int i=mModifiedPackages.length-1; i>=0; i--) {
@@ -265,10 +265,10 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         }
         return false;
     }
-    
+
     public void onSomePackagesChanged() {
     }
-    
+
     public void onFinishPackageChanges() {
     }
 
@@ -281,7 +281,7 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
         String pkg = uri != null ? uri.getSchemeSpecificPart() : null;
         return pkg;
     }
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
         mChangeUserId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE,
@@ -291,10 +291,10 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
                     "Intent broadcast does not contain user handle: " + intent);
         }
         onBeginPackageChanges();
-        
+
         mDisappearingPackages = mAppearingPackages = null;
         mSomePackagesChanged = false;
-        
+
         String action = intent.getAction();
         if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
             String pkg = getPackageName(intent);
@@ -403,11 +403,11 @@ public abstract class PackageMonitor extends android.content.BroadcastReceiver {
                 }
             }
         }
-        
+
         if (mSomePackagesChanged) {
             onSomePackagesChanged();
         }
-        
+
         onFinishPackageChanges();
         mChangeUserId = UserHandle.USER_NULL;
     }

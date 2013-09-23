@@ -25,7 +25,7 @@ interface IBatteryStats {
     byte[] getStatistics();
     void noteStartWakelock(int uid, int pid, String name, int type);
     void noteStopWakelock(int uid, int pid, String name, int type);
-    
+
     /* DO NOT CHANGE the position of noteStartSensor without updating
        SensorService.cpp */
     void noteStartSensor(int uid, int sensor);

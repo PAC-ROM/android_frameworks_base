@@ -42,8 +42,8 @@ import com.android.systemui.statusbar.NotificationData;
 
 import java.util.HashMap;
 
-public class NotificationRowLayout 
-        extends LinearLayout 
+public class NotificationRowLayout
+        extends LinearLayout
         implements SwipeHelper.Callback, ExpandHelper.Callback
 {
     private static final String TAG = "NotificationRowLayout";
@@ -81,7 +81,7 @@ public class NotificationRowLayout
         mRealLayoutTransition = new LayoutTransition();
         mRealLayoutTransition.setAnimateParentHierarchy(true);
         setLayoutTransitionsEnabled(true);
-        
+
         setOrientation(LinearLayout.VERTICAL);
 
         if (DEBUG) {

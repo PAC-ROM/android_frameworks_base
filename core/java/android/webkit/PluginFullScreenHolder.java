@@ -129,7 +129,7 @@ class PluginFullScreenHolder {
             return true;
         }
     }
-    
+
     private final WebChromeClient.CustomViewCallback mCallback =
         new WebChromeClient.CustomViewCallback() {
             public void onCustomViewHidden() {

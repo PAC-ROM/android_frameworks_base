@@ -80,7 +80,7 @@ public class QuickSettingsContainerView extends FrameLayout {
             mNumFinalColumns = mNumColumns * 2;
         } else {
             mNumFinalColumns = mNumColumns;
-        } 
+        }
         // Calculate the cell width dynamically
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -

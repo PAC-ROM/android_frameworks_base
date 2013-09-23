@@ -176,7 +176,7 @@ public class KeyguardSimPinView extends KeyguardAbsKeyInputView
     @Override
     protected void verifyPasswordAndUnlock() {
         String entry = mPasswordEntry.getText().toString();
-        
+
         if (entry.length() < 4) {
             // otherwise, display a message to the user, and don't submit.
             mSecurityMessageDisplay.setMessage(R.string.kg_invalid_sim_pin_hint, true);

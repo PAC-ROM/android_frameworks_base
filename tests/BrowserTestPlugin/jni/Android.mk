@@ -42,7 +42,7 @@ LOCAL_C_INCLUDES += \
 	$(WEBCORE_PATH)/platform/android/JavaVM \
 	external/webkit/Source/WebKit/android/plugins
 
-LOCAL_CFLAGS += -fvisibility=hidden 
+LOCAL_CFLAGS += -fvisibility=hidden
 
 
 LOCAL_MODULE := libtestplugin

@@ -319,7 +319,7 @@ final class BackStackRecord extends FragmentTransaction implements
                                 writer.println("Removed:");
                             }
                             writer.print(innerPrefix); writer.print("  #"); writer.print(i);
-                                    writer.print(": "); 
+                                    writer.print(": ");
                         }
                         writer.println(op.removed.get(i));
                     }
@@ -577,7 +577,7 @@ final class BackStackRecord extends FragmentTransaction implements
     public int commitAllowingStateLoss() {
         return commitInternal(true);
     }
-    
+
     int commitInternal(boolean allowStateLoss) {
         if (mCommitted) throw new IllegalStateException("commit already called");
         if (FragmentManagerImpl.DEBUG) {
@@ -595,7 +595,7 @@ final class BackStackRecord extends FragmentTransaction implements
         mManager.enqueueAction(this, allowStateLoss);
         return mIndex;
     }
-    
+
     public void run() {
         if (FragmentManagerImpl.DEBUG) Log.v(TAG, "Run: " + this);
 

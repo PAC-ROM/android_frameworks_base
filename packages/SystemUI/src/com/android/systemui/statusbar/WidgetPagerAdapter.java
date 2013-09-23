@@ -48,7 +48,7 @@ public class WidgetPagerAdapter extends PagerAdapter {
             } else {
                 height = 100;  // default size
             }
-            setSavedHeight(pos, height);    
+            setSavedHeight(pos, height);
         }
         return height;
     }
@@ -56,9 +56,9 @@ public class WidgetPagerAdapter extends PagerAdapter {
     public String getLabel(int pos) {
     	if (hostViews[pos] != null && hostViews[pos].getAppWidgetInfo() != null) {
     		return hostViews[pos].getAppWidgetInfo().label;
-    	} else 
+    	} else
     		return "Widget";
-    	
+
     }
     private int getSavedHeight(int pos) {
         SharedPreferences prefs = mContext.getSharedPreferences("widget_adapter",
@@ -76,7 +76,7 @@ public class WidgetPagerAdapter extends PagerAdapter {
      * Create the page for the given position. The adapter is responsible for
      * adding the view to the container given here, although it only must ensure
      * this is done by the time it returns from {@link #finishUpdate()}.
-     * 
+     *
      * @param container The containing View in which the page will be shown.
      * @param position The page position to be instantiated.
      * @return Returns an Object representing the new page. This does not need
@@ -99,7 +99,7 @@ public class WidgetPagerAdapter extends PagerAdapter {
      * Remove a page for the given position. The adapter is responsible for
      * removing the view from its container, although it only must ensure this
      * is done by the time it returns from {@link #finishUpdate()}.
-     * 
+     *
      * @param container The containing View from which the page will be removed.
      * @param position The page position to be removed.
      * @param object The same object that was returned by
@@ -119,7 +119,7 @@ public class WidgetPagerAdapter extends PagerAdapter {
      * Called when the a change in the shown pages has been completed. At this
      * point you must ensure that all of the pages have actually been added or
      * removed from the container as appropriate.
-     * 
+     *
      * @param container The containing View which is displaying this adapter's
      *            page views.
      */

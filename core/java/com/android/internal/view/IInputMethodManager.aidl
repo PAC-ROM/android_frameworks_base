@@ -41,7 +41,7 @@ interface IInputMethodManager {
     void addClient(in IInputMethodClient client,
             in IInputContext inputContext, int uid, int pid);
     void removeClient(in IInputMethodClient client);
-            
+
     InputBindResult startInput(in IInputMethodClient client,
             IInputContext inputContext, in EditorInfo attribute, int controlFlags);
     void finishInput(in IInputMethodClient client);
@@ -54,7 +54,7 @@ interface IInputMethodManager {
     InputBindResult windowGainedFocus(in IInputMethodClient client, in IBinder windowToken,
             int controlFlags, int softInputMode, int windowFlags,
             in EditorInfo attribute, IInputContext inputContext);
-            
+
     void showInputMethodPickerFromClient(in IInputMethodClient client);
     void showInputMethodAndSubtypeEnablerFromClient(in IInputMethodClient client, String topId);
     void setInputMethod(in IBinder token, String id);

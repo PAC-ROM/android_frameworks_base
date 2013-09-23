@@ -26,8 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Adapter that exposes data from a {@link android.database.Cursor Cursor} to a 
- * {@link android.widget.ListView ListView} widget. The Cursor must include 
+ * Adapter that exposes data from a {@link android.database.Cursor Cursor} to a
+ * {@link android.widget.ListView ListView} widget. The Cursor must include
  * a column named "_id" or this class will not work.
  */
 public abstract class CursorAdapter extends BaseAdapter implements Filterable,
@@ -198,7 +198,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
             return 0;
         }
     }
-    
+
     /**
      * @see android.widget.ListAdapter#getItem(int)
      */
@@ -225,7 +225,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
             return 0;
         }
     }
-    
+
     @Override
     public boolean hasStableIds() {
         return true;
@@ -267,7 +267,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
             return null;
         }
     }
-    
+
     /**
      * Makes a new view to hold the data pointed to by cursor.
      * @param context Interface to application's global information
@@ -298,11 +298,11 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
      * moved to the correct position.
      */
     public abstract void bindView(View view, Context context, Cursor cursor);
-    
+
     /**
      * Change the underlying cursor to a new cursor. If there is an existing cursor it will be
      * closed.
-     * 
+     *
      * @param cursor The new cursor to be used
      */
     public void changeCursor(Cursor cursor) {
@@ -374,7 +374,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
      *
      * This method is always executed on a background thread, not on the
      * application's main thread (or UI thread.)
-     * 
+     *
      * Contract: when constraint is null or empty, the original results,
      * prior to any filtering, must be returned.
      *
@@ -434,7 +434,7 @@ public abstract class CursorAdapter extends BaseAdapter implements Filterable,
      * Called when the {@link ContentObserver} on the cursor receives a change notification.
      * The default implementation provides the auto-requery logic, but may be overridden by
      * sub classes.
-     * 
+     *
      * @see ContentObserver#onChange(boolean)
      */
     protected void onContentChanged() {

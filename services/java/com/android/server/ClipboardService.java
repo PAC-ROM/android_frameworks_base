@@ -125,7 +125,7 @@ public class ClipboardService extends IClipboard.Stub {
             Slog.w("clipboard", "Exception: ", e);
             throw e;
         }
-        
+
     }
 
     private PerUserClipboard getClipboard() {
@@ -186,7 +186,7 @@ public class ClipboardService extends IClipboard.Stub {
             }
         }
     }
-    
+
     public ClipData getPrimaryClip(String pkg) {
         synchronized (this) {
             if (mAppOps.noteOp(AppOpsManager.OP_READ_CLIPBOARD, Binder.getCallingUid(),

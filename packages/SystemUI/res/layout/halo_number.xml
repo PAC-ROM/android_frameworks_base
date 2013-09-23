@@ -27,7 +27,7 @@
             android:id="@+id/number"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"            
+            android:gravity="center"
             android:textColor="#fff"
             android:textStyle="bold"
             android:textSize="@dimen/halo_number_text_size"/>

@@ -1158,7 +1158,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         // run a ticker without being attached will crash!
         if (hasTicker(n.getNotification()) && mStatusBarView.getWindowToken() != null) {
             if (0 == (mDisabled & (StatusBarManager.DISABLE_NOTIFICATION_ICONS
-                            | StatusBarManager.DISABLE_NOTIFICATION_TICKER))) {               
+                            | StatusBarManager.DISABLE_NOTIFICATION_TICKER))) {
                 mTabletTicker.add(key, n);
                 if (mHaloActive) {
                     mFeedbackIconArea.setVisibility(View.VISIBLE);

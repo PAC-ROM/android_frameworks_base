@@ -28,7 +28,7 @@ public class HybridTile extends QuickSettingsTile {
 
     private static final String PARANOID_PREFERENCES_PKG = "com.paranoid.preferences";
     private static final String STOCK_COLORS = "NULL|NULL|NULL|NULL|NULL";
-    
+
     private String mDefaultLabel;
     private String mPackageName;
     private String mSourceDir;
@@ -38,7 +38,7 @@ public class HybridTile extends QuickSettingsTile {
 
     private PackageManager mPm;
 
-    public HybridTile(Context context, 
+    public HybridTile(Context context,
             QuickSettingsController qsc, Handler handler) {
         super(context, qsc, R.layout.quick_settings_tile_hybrid);
 
@@ -57,7 +57,7 @@ public class HybridTile extends QuickSettingsTile {
                     intent.putExtra("filename", mSourceDir);
                     intent.putExtra("apply", "autoLaunch");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setComponent(new ComponentName(PARANOID_PREFERENCES_PKG, 
+                    intent.setComponent(new ComponentName(PARANOID_PREFERENCES_PKG,
                             PARANOID_PREFERENCES_PKG + ".hybrid.ViewPagerActivity"));
                     mContext.startActivity(intent);
                 }
@@ -70,7 +70,7 @@ public class HybridTile extends QuickSettingsTile {
                 try {
                     Intent intent = new Intent("android.intent.action.MAIN");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setComponent(new ComponentName(PARANOID_PREFERENCES_PKG, 
+                    intent.setComponent(new ComponentName(PARANOID_PREFERENCES_PKG,
                             PARANOID_PREFERENCES_PKG + ".MainActivity"));
                     mContext.startActivity(intent);
                     mQsc.mBar.collapseAllPanels(true);
@@ -141,7 +141,7 @@ public class HybridTile extends QuickSettingsTile {
         if (colors.length == ExtendedPropertiesUtils.PARANOID_COLORS_COUNT) {
             for(int colorIndex = 0; colorIndex < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; colorIndex++) {
                 swatches[colorIndex].setBackgroundDrawable(mContext.getResources().getDrawable(
-                        R.drawable.color_picker).mutate());                    
+                        R.drawable.color_picker).mutate());
                 swatches[colorIndex].getBackground().setColorFilter(colors[colorIndex]
                         .toUpperCase().equals("NULL") ? ExtendedPropertiesUtils.PARANOID_COLORCODES_DEFAULTS[
                 colorIndex] : ColorUtils.hexToInt(colors[colorIndex]),

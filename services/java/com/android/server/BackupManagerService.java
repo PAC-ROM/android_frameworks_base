@@ -2417,7 +2417,7 @@ class BackupManagerService extends IBackupManager.Stub {
                 this.notifyAll();
             }
         }
-        
+
     }
 
     private void routeSocketDataToOutput(ParcelFileDescriptor inPipe, OutputStream out)
@@ -2452,7 +2452,7 @@ class BackupManagerService extends IBackupManager.Stub {
         AtomicBoolean mLatchObject;
         File mFilesDir;
         File mManifestFile;
-        
+
 
         class FullBackupRunner implements Runnable {
             PackageInfo mPackage;
@@ -2507,7 +2507,7 @@ class BackupManagerService extends IBackupManager.Stub {
             }
         }
 
-        PerformFullBackupTask(ParcelFileDescriptor fd, IFullBackupRestoreObserver observer, 
+        PerformFullBackupTask(ParcelFileDescriptor fd, IFullBackupRestoreObserver observer,
                 boolean includeApks, boolean includeObbs, boolean includeShared,
                 String curPassword, String encryptPassword, boolean doAllApps,
                 boolean doSystem, String[] packages, AtomicBoolean latch) {

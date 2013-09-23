@@ -25,7 +25,7 @@ public class WeatherText extends TextView {
     public static final String EXTRA_WIND = "wind";
     public static final String EXTRA_LOW = "todays_low";
     public static final String EXTRA_HIGH = "todays_high";
-    
+
     private Context mContext;
     private boolean mShowLocation;
 
@@ -100,7 +100,7 @@ public class WeatherText extends TextView {
         boolean useWeather = (Settings.System.getBoolean(resolver, Settings.System.USE_WEATHER, false)
                 && Settings.System.getInt(resolver, Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 0);
         mShowLocation = Settings.System.getBoolean(resolver, Settings.System.WEATHER_SHOW_LOCATION, true);
-        
+
         this.setVisibility(useWeather ? View.VISIBLE : View.GONE);
     }
 }

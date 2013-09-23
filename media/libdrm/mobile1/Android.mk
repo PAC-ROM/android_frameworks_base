@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 # ---------------------------------------
 # First project
-# 
+#
 # Build DRM1 core library
 #
 # Output: libdrm1.so
@@ -53,7 +53,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 # ---------------------------------------
 # Second project
-# 
+#
 # Build DRM1 Java Native Interface(JNI) library
 #
 # Output: libdrm1_jni.so

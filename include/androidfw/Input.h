@@ -293,7 +293,7 @@ public:
     // Return true if this event represents a system key.
     static bool isSystemKey(int32_t keyCode);
     bool isSystemKey() const;
-    
+
     void initialize(
             int32_t deviceId,
             int32_t source,

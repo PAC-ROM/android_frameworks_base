@@ -127,7 +127,7 @@ public class ShirtPocket extends ImageView {
 
     // TODO: "pin area" panel, dragging things out
     ObjectAnimator mAnimHide, mAnimShow;
-    
+
     protected void onAttachedToWindow() {
     }
 

@@ -5784,7 +5784,7 @@ public final class WebViewClassic implements WebViewProvider, WebViewProvider.Sc
         }
         return mWebViewPrivate.super_dispatchKeyEvent(event);
     }
-    
+
     private static final int SNAP_BOUND = 16;
     private static int sChannelDistance = 16;
     private int mFirstTouchX = -1; // the first touched point

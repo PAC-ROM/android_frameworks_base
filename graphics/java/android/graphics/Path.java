@@ -67,7 +67,7 @@ public class Path {
         mNativePath = init2(valNative);
         mDetectSimplePaths = HardwareRenderer.isAvailable();
     }
-    
+
     /**
      * Clear any lines and curves from the path, making it empty.
      * This does NOT change the fill-type setting.
@@ -111,13 +111,13 @@ public class Path {
         EVEN_ODD        (1),
         INVERSE_WINDING (2),
         INVERSE_EVEN_ODD(3);
-        
+
         FillType(int ni) {
             nativeInt = ni;
         }
         final int nativeInt;
     }
-    
+
     // these must be in the same order as their native values
     static final FillType[] sFillTypeArray = {
         FillType.WINDING,
@@ -144,7 +144,7 @@ public class Path {
     public void setFillType(FillType ft) {
         native_setFillType(mNativePath, ft.nativeInt);
     }
-    
+
     /**
      * Returns true if the filltype is one of the INVERSE variants
      *
@@ -154,7 +154,7 @@ public class Path {
         final int ft = native_getFillType(mNativePath);
         return (ft & 2) != 0;
     }
-    
+
     /**
      * Toggles the INVERSE state of the filltype
      */
@@ -163,7 +163,7 @@ public class Path {
         ft ^= 2;
         native_setFillType(mNativePath, ft);
     }
-    
+
     /**
      * Returns true if the path is empty (contains no lines or curves)
      *
@@ -343,7 +343,7 @@ public class Path {
         isSimplePath = false;
         native_arcTo(mNativePath, oval, startAngle, sweepAngle, forceMoveTo);
     }
-    
+
     /**
      * Append the specified arc to the path as a new contour. If the start of
      * the path is different from the path's current last point, then an
@@ -359,7 +359,7 @@ public class Path {
         isSimplePath = false;
         native_arcTo(mNativePath, oval, startAngle, sweepAngle, false);
     }
-    
+
     /**
      * Close the current contour. If the current point is not equal to the
      * first point of the contour, a line segment is automatically added.
@@ -378,13 +378,13 @@ public class Path {
         CW  (1),    // must match enum in SkPath.h
         /** counter-clockwise */
         CCW (2);    // must match enum in SkPath.h
-        
+
         Direction(int ni) {
             nativeInt = ni;
         }
         final int nativeInt;
     }
-    
+
     private void detectSimplePath(float left, float top, float right, float bottom, Direction dir) {
         if (mDetectSimplePaths) {
             if (mLastDirection == null) {
@@ -484,7 +484,7 @@ public class Path {
         isSimplePath = false;
         native_addRoundRect(mNativePath, rect, rx, ry, dir.nativeInt);
     }
-    
+
     /**
      * Add a closed round-rectangle contour to the path. Each corner receives
      * two radius values [X, Y]. The corners are ordered top-left, top-right,
@@ -504,7 +504,7 @@ public class Path {
         isSimplePath = false;
         native_addRoundRect(mNativePath, rect, radii, dir.nativeInt);
     }
-    
+
     /**
      * Add a copy of src to the path, offset by (dx,dy)
      *

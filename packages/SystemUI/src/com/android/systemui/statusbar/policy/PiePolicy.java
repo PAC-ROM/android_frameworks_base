@@ -64,7 +64,7 @@ public class PiePolicy {
 
     public PiePolicy(Context context) {
         mContext = context;
-        mContext.registerReceiver(mBatteryReceiver, 
+        mContext.registerReceiver(mBatteryReceiver,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
@@ -80,7 +80,7 @@ public class PiePolicy {
     public void setOnClockChangedListener(OnClockChangedListener l){
         mClockChangedListener = l;
     }
-    
+
     public boolean supportsTelephony() {
         return mTelephony;
     }

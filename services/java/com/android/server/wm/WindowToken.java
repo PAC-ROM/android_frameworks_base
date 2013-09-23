@@ -30,7 +30,7 @@ import java.util.ArrayList;
 class WindowToken {
     // The window manager!
     final WindowManagerService service;
-    
+
     // The actual token.
     final IBinder token;
 

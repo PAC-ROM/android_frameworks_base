@@ -1828,7 +1828,7 @@ public final class PowerManagerService extends IPowerManager.Stub
             mDisplayPowerRequest.useProximitySensor = shouldUseProximitySensorLocked();
 
             mDisplayPowerRequest.blockScreenOn = mScreenOnBlocker.isHeld();
-            
+
             mDisplayPowerRequest.responsitivityFactor = mAutoBrightnessResponsitivityFactor;
 
             mDisplayPowerRequest.electronBeamOffEnabled = mElectronBeamOffEnabled;

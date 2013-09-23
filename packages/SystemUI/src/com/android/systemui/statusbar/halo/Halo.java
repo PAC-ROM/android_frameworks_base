@@ -1340,7 +1340,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                     new DecelerateInterpolator(), null);
         }
 
-        CustomObjectAnimator contentFlipAnimator = new CustomObjectAnimator(this);        
+        CustomObjectAnimator contentFlipAnimator = new CustomObjectAnimator(this);
         public void flipContent(int duration, int delay) {
 
             // Make sure the animation does not stutter by letting it finish

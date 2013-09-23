@@ -26,7 +26,7 @@
     android:paddingEnd="40dp"
     android:background="#DD000000"
     android:focusable="true"
-    android:orientation="horizontal" 
+    android:orientation="horizontal"
     android:gravity="top|start"
     >
 

@@ -37,7 +37,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
 
-/** 
+/**
  * Enterprise configuration details for Wi-Fi. Stores details about the EAP method
  * and any associated credentials.
  */

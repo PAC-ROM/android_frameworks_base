@@ -166,7 +166,7 @@ class ZoomManager {
     // the current computed zoom scale and its inverse.
     private float mActualScale;
     private float mInvActualScale;
-    
+
     /*
      * The initial scale for the WebView. 0 means default. If initial scale is
      * greater than 0, the WebView starts with this value as its initial scale.
@@ -198,7 +198,7 @@ class ZoomManager {
 
     // whether support multi-touch
     private boolean mSupportMultiTouch;
-    
+
     /**
      * True if we have a touch panel capable of detecting smooth pan/scale at the same time
      */
@@ -410,7 +410,7 @@ class ZoomManager {
         mZoomCenterY = mWebView.getViewHeight() * .5f;
         mAnchorX = mWebView.viewToContentX((int) mZoomCenterX + mWebView.getScrollX());
         mAnchorY = mWebView.viewToContentY((int) mZoomCenterY + mWebView.getScrollY());
-        return startZoomAnimation(mActualScale * zoomMultiplier, 
+        return startZoomAnimation(mActualScale * zoomMultiplier,
             !mWebView.getSettings().getUseFixedViewport());
     }
 
@@ -456,7 +456,7 @@ class ZoomManager {
      *
      * A fixed length animation begins when startZoomAnimation(...) is called and
      * continues until the ZOOM_ANIMATION_LENGTH time has elapsed. During that
-     * interval each time the WebView draws it calls this function which is 
+     * interval each time the WebView draws it calls this function which is
      * responsible for generating the animation.
      *
      * Additionally, the WebView can check to see if such an animation is currently
@@ -699,7 +699,7 @@ class ZoomManager {
         if (scrollY < mWebView.getTitleHeight()) {
             mWebView.updateScrollCoordinates(mWebView.getScrollX(), 0);
         }
-        startZoomAnimation(getZoomOverviewScale(), 
+        startZoomAnimation(getZoomOverviewScale(),
             !mWebView.getSettings().getUseFixedViewport());
     }
 
@@ -730,7 +730,7 @@ class ZoomManager {
 
         final WebSettings settings = mWebView.getSettings();
         final PackageManager pm = context.getPackageManager();
-        mSupportMultiTouch = 
+        mSupportMultiTouch =
                 (pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH)
                  || pm.hasSystemFeature(PackageManager.FEATURE_FAKETOUCH_MULTITOUCH_DISTINCT))
                 && settings.supportZoom() && settings.getBuiltInZoomControls();

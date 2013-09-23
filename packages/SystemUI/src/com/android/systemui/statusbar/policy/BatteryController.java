@@ -116,14 +116,14 @@ public class BatteryController extends BroadcastReceiver {
     }
 
     public void updateBatteryLevel() {
-        final int icon = mPlugged ? R.drawable.stat_sys_battery_charge 
+        final int icon = mPlugged ? R.drawable.stat_sys_battery_charge
                 : R.drawable.stat_sys_battery;
         int N = mIconViews.size();
         for (int i=0; i<N; i++) {
             ImageView v = mIconViews.get(i);
             Drawable batteryBitmap = mContext.getResources().getDrawable(icon);
             if (mColorInfo.isLastColorNull) {
-                batteryBitmap.clearColorFilter();                
+                batteryBitmap.clearColorFilter();
             } else {
                 batteryBitmap.setColorFilter(mColorInfo.lastColor, PorterDuff.Mode.SRC_IN);
             }

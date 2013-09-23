@@ -37,11 +37,11 @@ import java.util.Locale;
 /**
  * A ListPopupWindow anchors itself to a host view and displays a
  * list of choices.
- * 
+ *
  * <p>ListPopupWindow contains a number of tricky behaviors surrounding
  * positioning, scrolling parents to fit the dropdown, interacting
  * sanely with the IME if present, and others.
- * 
+ *
  * @see android.widget.AutoCompleteTextView
  * @see android.widget.Spinner
  */
@@ -99,7 +99,7 @@ public class ListPopupWindow {
 
     /**
      * The provided prompt view should appear above list content.
-     * 
+     *
      * @see #setPromptPosition(int)
      * @see #getPromptPosition()
      * @see #setPromptView(View)
@@ -108,7 +108,7 @@ public class ListPopupWindow {
 
     /**
      * The provided prompt view should appear below list content.
-     * 
+     *
      * @see #setPromptPosition(int)
      * @see #getPromptPosition()
      * @see #setPromptView(View)
@@ -121,13 +121,13 @@ public class ListPopupWindow {
      * If used to specify a popup height, the popup will fill available space.
      */
     public static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
-    
+
     /**
      * Alias for {@link ViewGroup.LayoutParams#WRAP_CONTENT}.
      * If used to specify a popup width, the popup will use the width of its content.
      */
     public static final int WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT;
-    
+
     /**
      * Mode for {@link #setInputMethodMode(int)}: the requirements for the
      * input method should be based on the focusability of the popup.  That is
@@ -135,7 +135,7 @@ public class ListPopupWindow {
      * it doesn't.
      */
     public static final int INPUT_METHOD_FROM_FOCUSABLE = PopupWindow.INPUT_METHOD_FROM_FOCUSABLE;
-    
+
     /**
      * Mode for {@link #setInputMethodMode(int)}: this popup always needs to
      * work with an input method, regardless of whether it is focusable.  This
@@ -143,7 +143,7 @@ public class ListPopupWindow {
      * the input method while it is shown.
      */
     public static final int INPUT_METHOD_NEEDED = PopupWindow.INPUT_METHOD_NEEDED;
-    
+
     /**
      * Mode for {@link #setInputMethodMode(int)}: this popup never needs to
      * work with an input method, regardless of whether it is focusable.  This
@@ -155,7 +155,7 @@ public class ListPopupWindow {
     /**
      * Create a new, empty popup window capable of displaying items from a ListAdapter.
      * Backgrounds should be set using {@link #setBackgroundDrawable(Drawable)}.
-     * 
+     *
      * @param context Context used for contained views.
      */
     public ListPopupWindow(Context context) {
@@ -165,7 +165,7 @@ public class ListPopupWindow {
     /**
      * Create a new, empty popup window capable of displaying items from a ListAdapter.
      * Backgrounds should be set using {@link #setBackgroundDrawable(Drawable)}.
-     * 
+     *
      * @param context Context used for contained views.
      * @param attrs Attributes from inflating parent views used to style the popup.
      */
@@ -176,7 +176,7 @@ public class ListPopupWindow {
     /**
      * Create a new, empty popup window capable of displaying items from a ListAdapter.
      * Backgrounds should be set using {@link #setBackgroundDrawable(Drawable)}.
-     * 
+     *
      * @param context Context used for contained views.
      * @param attrs Attributes from inflating parent views used to style the popup.
      * @param defStyleAttr Default style attribute to use for popup content.
@@ -188,7 +188,7 @@ public class ListPopupWindow {
     /**
      * Create a new, empty popup window capable of displaying items from a ListAdapter.
      * Backgrounds should be set using {@link #setBackgroundDrawable(Drawable)}.
-     * 
+     *
      * @param context Context used for contained views.
      * @param attrs Attributes from inflating parent views used to style the popup.
      * @param defStyleAttr Style attribute to read for default styling of popup content.
@@ -219,7 +219,7 @@ public class ListPopupWindow {
         if (mAdapter != null) {
             adapter.registerDataSetObserver(mObserver);
         }
-        
+
         if (mDropDownList != null) {
             mDropDownList.setAdapter(mAdapter);
         }
@@ -228,9 +228,9 @@ public class ListPopupWindow {
     /**
      * Set where the optional prompt view should appear. The default is
      * {@link #POSITION_PROMPT_ABOVE}.
-     * 
+     *
      * @param position A position constant declaring where the prompt should be displayed.
-     * 
+     *
      * @see #POSITION_PROMPT_ABOVE
      * @see #POSITION_PROMPT_BELOW
      */
@@ -240,7 +240,7 @@ public class ListPopupWindow {
 
     /**
      * @return Where the optional prompt view should appear.
-     * 
+     *
      * @see #POSITION_PROMPT_ABOVE
      * @see #POSITION_PROMPT_BELOW
      */
@@ -250,11 +250,11 @@ public class ListPopupWindow {
 
     /**
      * Set whether this window should be modal when shown.
-     * 
+     *
      * <p>If a popup window is modal, it will receive all touch and key input.
      * If the user touches outside the popup window's content area the popup window
      * will be dismissed.
-     * 
+     *
      * @param modal {@code true} if the popup window should be modal, {@code false} otherwise.
      */
     public void setModal(boolean modal) {
@@ -264,7 +264,7 @@ public class ListPopupWindow {
 
     /**
      * Returns whether the popup window will be modal when shown.
-     * 
+     *
      * @return {@code true} if the popup window will be modal, {@code false} otherwise.
      */
     public boolean isModal() {
@@ -275,7 +275,7 @@ public class ListPopupWindow {
      * Forces outside touches to be ignored. Normally if {@link #isDropDownAlwaysVisible()} is
      * false, we allow outside touch to dismiss the dropdown. If this is set to true, then we
      * ignore outside touch even when the drop down is not set to always visible.
-     * 
+     *
      * @hide Used only by AutoCompleteTextView to handle some internal special cases.
      */
     public void setForceIgnoreOutsideTouch(boolean forceIgnoreOutsideTouch) {
@@ -332,7 +332,7 @@ public class ListPopupWindow {
 
     /**
      * Sets a drawable to use as the list item selector.
-     * 
+     *
      * @param selector List selector drawable to use in the popup.
      */
     public void setListSelector(Drawable selector) {
@@ -348,7 +348,7 @@ public class ListPopupWindow {
 
     /**
      * Sets a drawable to be the background for the popup window.
-     * 
+     *
      * @param d A drawable to set as the background.
      */
     public void setBackgroundDrawable(Drawable d) {
@@ -357,7 +357,7 @@ public class ListPopupWindow {
 
     /**
      * Set an animation style to use when the popup window is shown or dismissed.
-     * 
+     *
      * @param animationStyle Animation style to use.
      */
     public void setAnimationStyle(int animationStyle) {
@@ -367,7 +367,7 @@ public class ListPopupWindow {
     /**
      * Returns the animation style that will be used when the popup window is
      * shown or dismissed.
-     * 
+     *
      * @return Animation style that will be used.
      */
     public int getAnimationStyle() {
@@ -376,7 +376,7 @@ public class ListPopupWindow {
 
     /**
      * Returns the view that will be used to anchor this popup.
-     * 
+     *
      * @return The popup's anchor view
      */
     public View getAnchorView() {
@@ -386,7 +386,7 @@ public class ListPopupWindow {
     /**
      * Sets the popup's anchor view. This popup will always be positioned relative to
      * the anchor view when shown.
-     * 
+     *
      * @param anchor The view to use as an anchor.
      */
     public void setAnchorView(View anchor) {
@@ -402,7 +402,7 @@ public class ListPopupWindow {
 
     /**
      * Set the horizontal offset of this popup from its anchor view in pixels.
-     * 
+     *
      * @param offset The horizontal offset of the popup from its anchor.
      */
     public void setHorizontalOffset(int offset) {
@@ -421,7 +421,7 @@ public class ListPopupWindow {
 
     /**
      * Set the vertical offset of this popup from its anchor view in pixels.
-     * 
+     *
      * @param offset The vertical offset of the popup from its anchor.
      */
     public void setVerticalOffset(int offset) {
@@ -439,7 +439,7 @@ public class ListPopupWindow {
     /**
      * Sets the width of the popup window in pixels. Can also be {@link #MATCH_PARENT}
      * or {@link #WRAP_CONTENT}.
-     * 
+     *
      * @param width Width of the popup window.
      */
     public void setWidth(int width) {
@@ -471,7 +471,7 @@ public class ListPopupWindow {
 
     /**
      * Sets the height of the popup window in pixels. Can also be {@link #MATCH_PARENT}.
-     * 
+     *
      * @param height Height of the popup window.
      */
     public void setHeight(int height) {
@@ -480,9 +480,9 @@ public class ListPopupWindow {
 
     /**
      * Sets a listener to receive events when a list item is clicked.
-     * 
+     *
      * @param clickListener Listener to register
-     * 
+     *
      * @see ListView#setOnItemClickListener(android.widget.AdapterView.OnItemClickListener)
      */
     public void setOnItemClickListener(AdapterView.OnItemClickListener clickListener) {
@@ -491,9 +491,9 @@ public class ListPopupWindow {
 
     /**
      * Sets a listener to receive events when a list item is selected.
-     * 
+     *
      * @param selectedListener Listener to register.
-     * 
+     *
      * @see ListView#setOnItemSelectedListener(android.widget.AdapterView.OnItemSelectedListener)
      */
     public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener selectedListener) {
@@ -503,7 +503,7 @@ public class ListPopupWindow {
     /**
      * Set a view to act as a user prompt for this popup window. Where the prompt view will appear
      * is controlled by {@link #setPromptPosition(int)}.
-     * 
+     *
      * @param prompt View to use as an informational prompt.
      */
     public void setPromptView(View prompt) {
@@ -595,7 +595,7 @@ public class ListPopupWindow {
 
             mPopup.setWindowLayoutMode(widthSpec, heightSpec);
             mPopup.setClipToScreenEnabled(true);
-            
+
             // use outside touchable to dismiss drop down when touching outside of it, so
             // only set this if the dropdown is not always visible
             mPopup.setOutsideTouchable(!mForceIgnoreOutsideTouch && !mDropDownAlwaysVisible);
@@ -603,7 +603,7 @@ public class ListPopupWindow {
             mPopup.showAsDropDown(getAnchorView(),
                     mDropDownHorizontalOffset, mDropDownVerticalOffset);
             mDropDownList.setSelection(ListView.INVALID_POSITION);
-            
+
             if (!mModal || mDropDownList.isInTouchMode()) {
                 clearListSelection();
             }
@@ -647,11 +647,11 @@ public class ListPopupWindow {
      * Control how the popup operates with an input method: one of
      * {@link #INPUT_METHOD_FROM_FOCUSABLE}, {@link #INPUT_METHOD_NEEDED},
      * or {@link #INPUT_METHOD_NOT_NEEDED}.
-     * 
+     *
      * <p>If the popup is showing, calling this method will take effect only
      * the next time the popup is shown or through a manual call to the {@link #show()}
      * method.</p>
-     * 
+     *
      * @see #getInputMethodMode()
      * @see #show()
      */
@@ -661,7 +661,7 @@ public class ListPopupWindow {
 
     /**
      * Return the current value in {@link #setInputMethodMode(int)}.
-     * 
+     *
      * @see #setInputMethodMode(int)
      */
     public int getInputMethodMode() {
@@ -671,7 +671,7 @@ public class ListPopupWindow {
     /**
      * Set the selected position of the list.
      * Only valid when {@link #isShowing()} == {@code true}.
-     * 
+     *
      * @param position List position to set as selected.
      */
     public void setSelection(int position) {
@@ -716,7 +716,7 @@ public class ListPopupWindow {
 
     /**
      * Perform an item click operation on the specified list adapter position.
-     * 
+     *
      * @param position Adapter position for performing the click
      * @return true if the click action could be performed, false if not.
      *         (e.g. if the popup was not showing, this method would return false.)
@@ -747,7 +747,7 @@ public class ListPopupWindow {
     /**
      * @return The position of the currently selected item or {@link ListView#INVALID_POSITION}
      * if {@link #isShowing()} == {@code false}.
-     * 
+     *
      * @see ListView#getSelectedItemPosition()
      */
     public int getSelectedItemPosition() {
@@ -760,7 +760,7 @@ public class ListPopupWindow {
     /**
      * @return The ID of the currently selected item or {@link ListView#INVALID_ROW_ID}
      * if {@link #isShowing()} == {@code false}.
-     * 
+     *
      * @see ListView#getSelectedItemId()
      */
     public long getSelectedItemId() {
@@ -773,7 +773,7 @@ public class ListPopupWindow {
     /**
      * @return The View for the currently selected item or null if
      * {@link #isShowing()} == {@code false}.
-     * 
+     *
      * @see ListView#getSelectedView()
      */
     public View getSelectedView() {
@@ -804,11 +804,11 @@ public class ListPopupWindow {
     /**
      * Filter key down events. By forwarding key down events to this function,
      * views using non-modal ListPopupWindow can have it handle key selection of items.
-     *  
+     *
      * @param keyCode keyCode param passed to the host view's onKeyDown
      * @param event event param passed to the host view's onKeyDown
      * @return true if the event was handled, false if it was ignored.
-     * 
+     *
      * @see #setModal(boolean)
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -829,7 +829,7 @@ public class ListPopupWindow {
                 final boolean below = !mPopup.isAboveAnchor();
 
                 final ListAdapter adapter = mAdapter;
-                
+
                 boolean allEnabled;
                 int firstItem = Integer.MAX_VALUE;
                 int lastItem = Integer.MIN_VALUE;
@@ -839,9 +839,9 @@ public class ListPopupWindow {
                     firstItem = allEnabled ? 0 :
                             mDropDownList.lookForSelectablePosition(0, true);
                     lastItem = allEnabled ? adapter.getCount() - 1 :
-                            mDropDownList.lookForSelectablePosition(adapter.getCount() - 1, false);                    
+                            mDropDownList.lookForSelectablePosition(adapter.getCount() - 1, false);
                 }
-                
+
                 if ((below && keyCode == KeyEvent.KEYCODE_DPAD_UP && curIndex <= firstItem) ||
                         (!below && keyCode == KeyEvent.KEYCODE_DPAD_DOWN && curIndex >= lastItem)) {
                     // When the selection is at the top, we block the key
@@ -900,11 +900,11 @@ public class ListPopupWindow {
     /**
      * Filter key down events. By forwarding key up events to this function,
      * views using non-modal ListPopupWindow can have it handle key selection of items.
-     *  
+     *
      * @param keyCode keyCode param passed to the host view's onKeyUp
      * @param event event param passed to the host view's onKeyUp
      * @return true if the event was handled, false if it was ignored.
-     * 
+     *
      * @see #setModal(boolean)
      */
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -930,11 +930,11 @@ public class ListPopupWindow {
      * Filter pre-IME key events. By forwarding {@link View#onKeyPreIme(int, KeyEvent)}
      * events to this function, views using ListPopupWindow can have it dismiss the popup
      * when the back key is pressed.
-     *  
+     *
      * @param keyCode keyCode param passed to the host view's onKeyPreIme
      * @param event event param passed to the host view's onKeyPreIme
      * @return true if the event was handled, false if it was ignored.
-     * 
+     *
      * @see #setModal(boolean)
      */
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
@@ -1033,18 +1033,18 @@ public class ListPopupWindow {
                 LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f
                 );
-                
+
                 switch (mPromptPosition) {
                 case POSITION_PROMPT_BELOW:
                     hintContainer.addView(dropDownView, hintParams);
                     hintContainer.addView(hintView);
                     break;
-                    
+
                 case POSITION_PROMPT_ABOVE:
                     hintContainer.addView(hintView);
                     hintContainer.addView(dropDownView, hintParams);
                     break;
-                    
+
                 default:
                     Log.e(TAG, "Invalid hint position " + mPromptPosition);
                     break;
@@ -1166,7 +1166,7 @@ public class ListPopupWindow {
          * returns super.isInTouchMode().
          */
         private boolean mListSelectionHidden;
-        
+
         /**
          * True if this wrapper should fake focus.
          */
@@ -1247,7 +1247,7 @@ public class ListPopupWindow {
                 show();
             }
         }
-        
+
         @Override
         public void onInvalidated() {
             dismiss();
@@ -1275,7 +1275,7 @@ public class ListPopupWindow {
             final int action = event.getAction();
             final int x = (int) event.getX();
             final int y = (int) event.getY();
-            
+
             if (action == MotionEvent.ACTION_DOWN &&
                     mPopup != null && mPopup.isShowing() &&
                     (x >= 0 && x < mPopup.getWidth() && y >= 0 && y < mPopup.getHeight())) {

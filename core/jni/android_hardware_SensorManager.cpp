@@ -78,7 +78,7 @@ nativeGetNextSensor(JNIEnv *env, jclass clazz, jobject sensor, jint next)
     size_t count = mgr.getSensorList(&sensorList);
     if (size_t(next) >= count)
         return -1;
-    
+
     Sensor const* const list = sensorList[next];
     const SensorOffsets& sensorOffsets(gSensorOffsets);
     jstring name = env->NewStringUTF(list->getName().string());
@@ -92,7 +92,7 @@ nativeGetNextSensor(JNIEnv *env, jclass clazz, jobject sensor, jint next)
     env->SetFloatField(sensor, sensorOffsets.resolution, list->getResolution());
     env->SetFloatField(sensor, sensorOffsets.power,      list->getPowerUsage());
     env->SetIntField(sensor, sensorOffsets.minDelay,     list->getMinDelay());
-    
+
     next++;
     return size_t(next) < count ? next : 0;
 }

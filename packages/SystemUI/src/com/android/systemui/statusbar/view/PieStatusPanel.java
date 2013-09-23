@@ -175,7 +175,7 @@ public class PieStatusPanel {
                         break;
                 }
                 return false;
-            }                  
+            }
     }
 
     private View.OnClickListener mClearButtonListener = new View.OnClickListener() {

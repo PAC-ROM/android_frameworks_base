@@ -96,7 +96,7 @@ public class UsbStorageActivity extends Activity
             switchDisplay(on);
         }
     };
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +107,7 @@ public class UsbStorageActivity extends Activity
                 Log.w(TAG, "Failed to get StorageManager");
             }
         }
-        
+
         mUIHandler = new Handler();
 
         HandlerThread thr = new HandlerThread("SystemUI UsbStorageActivity");
@@ -186,7 +186,7 @@ public class UsbStorageActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        
+
         unregisterReceiver(mUsbStateReceiver);
         if (mStorageManager != null && mStorageListener != null) {
             mStorageManager.unregisterListener(mStorageListener);
@@ -258,7 +258,7 @@ public class UsbStorageActivity extends Activity
                 // will be hidden once USB mass storage kicks in (or fails)
             }
         });
-        
+
         // things to do elsewhere
         mAsyncStorageHandler.post(new Runnable() {
             @Override

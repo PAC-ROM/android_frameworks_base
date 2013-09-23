@@ -256,7 +256,7 @@ public class Surface implements Parcelable {
         }
     }
 
-    /** 
+    /**
      * @deprecated This API has been removed and is not supported.  Do not use.
      */
     @Deprecated
@@ -463,7 +463,7 @@ public class Surface implements Parcelable {
         public void getMatrix(Matrix m) {
             super.getMatrix(m);
             if (mOrigMatrix == null) {
-                mOrigMatrix = new Matrix(); 
+                mOrigMatrix = new Matrix();
             }
             mOrigMatrix.set(m);
         }

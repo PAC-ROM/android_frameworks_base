@@ -153,7 +153,7 @@ public class AppOpsService extends IAppOpsService.Stub {
         mHandler = new Handler();
         readState();
     }
-    
+
     public void publish(Context context) {
         mContext = context;
         ServiceManager.addService(Context.APP_OPS_SERVICE, asBinder());

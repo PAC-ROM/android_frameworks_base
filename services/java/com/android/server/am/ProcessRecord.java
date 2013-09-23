@@ -115,7 +115,7 @@ class ProcessRecord {
     Object adjSource;           // Debugging: option dependent object.
     int adjSourceOom;           // Debugging: oom_adj of adjSource's process.
     Object adjTarget;           // Debugging: target component impacting oom_adj.
-    
+
     // contains HistoryRecord objects
     final ArrayList<ActivityRecord> activities = new ArrayList<ActivityRecord>();
     // all ServiceRecord running in this process
@@ -125,16 +125,16 @@ class ProcessRecord {
              = new HashSet<ServiceRecord>();
     // All ConnectionRecord this process holds
     final HashSet<ConnectionRecord> connections
-            = new HashSet<ConnectionRecord>();  
+            = new HashSet<ConnectionRecord>();
     // all IIntentReceivers that are registered from this process.
     final HashSet<ReceiverList> receivers = new HashSet<ReceiverList>();
     // class (String) -> ContentProviderRecord
     final HashMap<String, ContentProviderRecord> pubProviders
-            = new HashMap<String, ContentProviderRecord>(); 
+            = new HashMap<String, ContentProviderRecord>();
     // All ContentProviderRecord process is using
     final ArrayList<ContentProviderConnection> conProviders
             = new ArrayList<ContentProviderConnection>();
-    
+
     boolean persistent;         // always keep this application running?
     boolean crashing;           // are we in the process of crashing?
     Dialog crashDialog;         // dialog being displayed due to crash.
@@ -145,10 +145,10 @@ class ProcessRecord {
     boolean debugging;          // was app launched for debugging?
     boolean waitedForDebugger;  // has process show wait for debugger dialog?
     Dialog waitDialog;          // current wait for debugger dialog
-    
+
     String shortStringName;     // caching of toShortString() result.
     String stringName;          // caching of toString() result.
-    
+
     // These reports are generated & stored when an app gets into an error condition.
     // They will be "null" when all is OK.
     ActivityManager.ProcessErrorStateInfo crashingReport;
@@ -323,7 +323,7 @@ class ProcessRecord {
             }
         }
     }
-    
+
     ProcessRecord(BatteryStatsImpl.Uid.Proc _batteryStats, IApplicationThread _thread,
             ApplicationInfo _info, String _processName, int _uid) {
         batteryStats = _batteryStats;
@@ -347,7 +347,7 @@ class ProcessRecord {
         shortStringName = null;
         stringName = null;
     }
-    
+
     /**
      * This method returns true if any of the activities within the process record are interesting
      * to the user. See HistoryRecord.isInterestingToUserLocked()
@@ -362,7 +362,7 @@ class ProcessRecord {
         }
         return false;
     }
-    
+
     public void stopFreezingAllLocked() {
         int i = activities.size();
         while (i > 0) {
@@ -370,7 +370,7 @@ class ProcessRecord {
             activities.get(i).stopFreezingScreenLocked(true);
         }
     }
-    
+
     public void unlinkDeathRecipient() {
         if (deathRecipient != null && thread != null) {
             thread.asBinder().unlinkToDeath(deathRecipient, 0);
@@ -398,7 +398,7 @@ class ProcessRecord {
         toShortString(sb);
         return shortStringName = sb.toString();
     }
-    
+
     void toShortString(StringBuilder sb) {
         sb.append(pid);
         sb.append(':');
@@ -417,7 +417,7 @@ class ProcessRecord {
             }
         }
     }
-    
+
     public String toString() {
         if (stringName != null) {
             return stringName;
@@ -430,7 +430,7 @@ class ProcessRecord {
         sb.append('}');
         return stringName = sb.toString();
     }
-    
+
     /*
      *  Return true if package has been added false if not
      */
@@ -441,7 +441,7 @@ class ProcessRecord {
         }
         return false;
     }
-    
+
     /*
      *  Delete all packages from list except the package indicated in info
      */
@@ -449,7 +449,7 @@ class ProcessRecord {
         pkgList.clear();
         pkgList.add(info.packageName);
     }
-    
+
     public String[] getPackageList() {
         int size = pkgList.size();
         if (size == 0) {

@@ -32,7 +32,7 @@ public class WiFiTile extends QuickSettingsTile implements NetworkSignalChangedC
                 wfm.setWifiEnabled(!wfm.isWifiEnabled());
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
-                }  
+                }
             }
         };
         mOnLongClick = new OnLongClickListener() {

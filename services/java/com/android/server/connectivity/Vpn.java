@@ -84,7 +84,7 @@ import libcore.io.IoUtils;
 public class Vpn extends BaseNetworkStateTracker {
     private static final String TAG = "Vpn";
     private static final boolean LOGD = true;
-    
+
     // TODO: create separate trackers for each unique VPN to support
     // automated reconnection
 
@@ -690,7 +690,7 @@ public class Vpn extends BaseNetworkStateTracker {
             // mConfig.interfaze will change to point to OUR
             // internal interface soon. TODO - add inner/outer to mconfig
             // TODO - we have a race - if the outer iface goes away/disconnects before we hit this
-            // we will leave the VPN up.  We should check that it's still there/connected after 
+            // we will leave the VPN up.  We should check that it's still there/connected after
             // registering
             mOuterInterface = mConfig.interfaze;
 
