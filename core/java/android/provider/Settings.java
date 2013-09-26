@@ -8925,6 +8925,12 @@ public final class Settings {
          */
         public static final String SCREEN_ON_NOTIFICATION_LED = "screen_on_notification_led";
 
+        /**
+         * Whether or not to show circle battery around the lockscreen ring
+         * @hide
+         */
+        public static final String BATTERY_AROUND_LOCKSCREEN_RING = "battery_around_lockscreen_ring";
+
     }
 
     /**
