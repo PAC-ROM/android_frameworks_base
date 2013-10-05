@@ -2662,22 +2662,6 @@ public final class Settings {
         public static final String LOCKSCREEN_MUSIC_CONTROLS = "lockscreen_music_controls";
 
         /**
-         * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
-         * instead
-         * @hide
-         */
-        @Deprecated
-        public static final String LOW_BATTERY_SOUND = Global.LOW_BATTERY_SOUND;
-
-        /**
-         * @deprecated Use {@link android.provider.Settings.Global#DESK_DOCK_SOUND}
-         * instead
-         * @hide
-         */
-        @Deprecated
-        public static final String DESK_DOCK_SOUND = Global.DESK_DOCK_SOUND;
-
-        /**
          * Whether to display notifications on screen when screen is off
          * @hide
          */
@@ -2731,6 +2715,34 @@ public final class Settings {
          * @hide
          */
         public static final String ACTIVE_DISPLAY_SHOW_DATE = "active_display_show_date";
+
+        /**
+         * Whether to invert the colors when in bright light
+         * @hide
+         */
+        public static final String ACTIVE_DISPLAY_SUNLIGHT_MODE = "active_display_sunlight_mode";
+
+        /**
+         * Timeout of the display when there is no user interaction
+         * @hide
+         */
+        public static final String ACTIVE_DISPLAY_TIMEOUT = "active_display_timeout";
+
+        /**
+         * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
+         * instead
+         * @hide
+         */
+        @Deprecated
+        public static final String LOW_BATTERY_SOUND = Global.LOW_BATTERY_SOUND;
+
+        /**
+         * @deprecated Use {@link android.provider.Settings.Global#DESK_DOCK_SOUND}
+         * instead
+         * @hide
+         */
+        @Deprecated
+        public static final String DESK_DOCK_SOUND = Global.DESK_DOCK_SOUND;
 
         /**
          * @deprecated Use {@link android.provider.Settings.Global#DESK_UNDOCK_SOUND}
