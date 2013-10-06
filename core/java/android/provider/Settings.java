@@ -3398,6 +3398,24 @@ public final class Settings {
         public static final String STATUS_BAR_COLOR = "status_bar_color";
 
         /**
+         * Whether to wake the screen with the camera key half-press.
+         * @hide
+         */
+        public static final String CAMERA_WAKE_SCREEN = "camera_wake_screen";
+
+        /**
+         * Whether or not to send device back to sleep if Camera button is released ("Peek")
+         * @hide
+         */
+        public static final String CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
+
+        /**
+         * Whether or not camera button music controls should be enabled to play/pause media tracks
+         * @hide
+         */
+        public static final String CAMERA_MUSIC_CONTROLS = "camera_music_controls";
+
+        /**
          * Status icon color. May include alpha
          * Format: AARRGGBB|AARRGGBB|index[|speed]
          * First color is the primary, systemwide color
@@ -4999,6 +5017,12 @@ public final class Settings {
         public static final String GESTURE_SWIPE_CAPTURE = "gesture_swipe_capture";
 
         /**
+         * Whether to unlock the screen with the camera key.  The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String CAMERA_UNLOCK_SCREEN = "camera_unlock_screen";
+
+        /**
          * @hide
          */
         public static final String GESTURE_SWIPE_DISTANCE = "gesture_swipe_distance";
@@ -5012,6 +5036,32 @@ public final class Settings {
          * @hide
          */
         public static final String GESTURE_BLACKLIST = "gesture_blacklist";
+
+        /**
+         * @hide
+         */
+        public static final String LOCKSCREEN_MAXIMIZE_WIDGETS = "lockscreen_maximize_widgets";
+
+        /**
+         * Action to perform when the assistant (search) key is long-pressed. (Default is 4)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+         * @hide
+         */
+        public static final String KEY_ASSIST_LONG_PRESS_ACTION = "key_assist_long_press_action";
+
+        /**
+         * Action to perform when the app switch key is pressed. (Default is 2)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+         * @hide
+         */
+        public static final String KEY_APP_SWITCH_ACTION = "key_app_switch_action";
+
+        /**
+         * Action to perform when the app switch key is long-pressed. (Default is 0)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+         * @hide
+         */
+        public static final String KEY_APP_SWITCH_LONG_PRESS_ACTION = "key_app_switch_long_press_action";
 
         /**
          * Notifications Expand Behavior

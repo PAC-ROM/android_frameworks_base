@@ -340,13 +340,34 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     int mPointerLocationMode = 0; // guarded by mLock
     int mDeviceHardwareKeys;
+    boolean mSingleStageCameraKey;
     boolean mHasMenuKeyEnabled;
 
     int mCurrentUser = 0;
 
     // The last window we were told about in focusChanged.
-    private WindowState mFocusedWindow;
-    private IApplicationToken mFocusedApp;
+    WindowState mFocusedWindow;
+    IApplicationToken mFocusedApp;
+
+    // Behavior of home wake
+    boolean mHomeWakeScreen;
+
+    // Behavior of volume wake
+    boolean mVolumeWakeScreen;
+
+    // Behavior of camera wake
+    boolean mCameraWakeScreen;
+    boolean mCameraSleepOnRelease;
+    boolean mIsFocusPressed;
+
+    // Behavior of volbtn/camera music controls
+    boolean mCameraMusicControls;
+    boolean mVolBtnMusicControls;
+    boolean mIsLongPress;
+    boolean mCameraKeyPressable = false;
+
+    private boolean mAnimatingWindows;
+    private boolean mNeedUpdateSettings;
 
     private static final class PointerLocationInputEventReceiver extends InputEventReceiver {
         private final PointerLocationView mView;
@@ -612,6 +633,24 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HOME_WAKE_SCREEN), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLUME_WAKE_SCREEN), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CAMERA_WAKE_SCREEN), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CAMERA_SLEEP_ON_RELEASE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLBTN_MUSIC_CONTROLS), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CAMERA_MUSIC_CONTROLS), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION), false, this,
@@ -1021,7 +1060,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mContext.sendBroadcast(i);
                 break;
             case KEY_ACTION_LAUNCH_CAMERA:
-                triggerVirtualKeypress(KeyEvent.KEYCODE_CAMERA);
+                launchCameraAction();
                 break;
             default:
                 break;
@@ -1238,6 +1277,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.bool.config_hasRemovableLid);
         mDeviceHardwareKeys = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_deviceHardwareKeys);
+        mSingleStageCameraKey = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_singleStageCameraKey);
 
         updateKeyAssignments();
 
@@ -1501,6 +1542,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR,
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT,
                     UserHandle.USER_CURRENT);
+            mHomeWakeScreen = (Settings.System.getIntForUser(resolver,
+                    Settings.System.HOME_WAKE_SCREEN, 1, UserHandle.USER_CURRENT) == 1);
+            mVolumeWakeScreen = (Settings.System.getIntForUser(resolver,
+                    Settings.System.VOLUME_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1);
+            mCameraWakeScreen = (Settings.System.getIntForUser(resolver,
+                    Settings.System.CAMERA_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1);
+            mCameraSleepOnRelease = ((Settings.System.getIntForUser(resolver,
+                    Settings.System.CAMERA_SLEEP_ON_RELEASE, 0, UserHandle.USER_CURRENT) == 1)
+                    && mCameraWakeScreen);
+            mVolBtnMusicControls = (Settings.System.getIntForUser(resolver,
+                    Settings.System.VOLBTN_MUSIC_CONTROLS, 1, UserHandle.USER_CURRENT) == 1);
+            mCameraMusicControls = ((Settings.System.getIntForUser(resolver,
+                    Settings.System.CAMERA_MUSIC_CONTROLS, 1, UserHandle.USER_CURRENT) == 1)
+                    && !mCameraWakeScreen);
 
             updateKeyAssignments();
 
@@ -2941,6 +2996,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 Slog.w(TAG, "No activity to handle assist action.", e);
             }
         }
+    }
+
+    private void launchCameraAction() {
+        sendCloseSystemWindows();
+        Intent intent = new Intent(Intent.ACTION_CAMERA_BUTTON, null);
+        mContext.sendOrderedBroadcastAsUser(intent, UserHandle.CURRENT_OR_SELF,
+                null, null, null, 0, null, null);
     }
 
     private SearchManager getSearchManager() {
@@ -4395,6 +4457,92 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Handle special keys.
         switch (keyCode) {
+            case KeyEvent.KEYCODE_ENDCALL: {
+                result &= ~ACTION_PASS_TO_USER;
+                if (down) {
+                    ITelephony telephonyService = getTelephonyService();
+                    boolean hungUp = false;
+                    if (telephonyService != null) {
+                        try {
+                            hungUp = telephonyService.endCall();
+                        } catch (RemoteException ex) {
+                            Log.w(TAG, "ITelephony threw RemoteException", ex);
+                        }
+                    }
+                    interceptPowerKeyDown(!isScreenOn || hungUp);
+                } else {
+                    if (interceptPowerKeyUp(canceled)) {
+                        if ((mEndcallBehavior
+                                & Settings.System.END_BUTTON_BEHAVIOR_HOME) != 0) {
+                            if (goHome()) {
+                                break;
+                            }
+                        }
+                        if ((mEndcallBehavior
+                                & Settings.System.END_BUTTON_BEHAVIOR_SLEEP) != 0) {
+                            result = (result & ~ACTION_WAKE_UP) | ACTION_GO_TO_SLEEP;
+                        }
+                    }
+                }
+                break;
+            }
+            case KeyEvent.KEYCODE_HOME:
+                if (down && !isScreenOn && isWakeKey && mHomeWakeScreen) {
+                    if (keyguardActive) {
+                        // If the keyguard is showing, let it wake the device when ready.
+                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode);
+                    } else {
+                        // Otherwise, wake the device ourselves.
+                        result |= ACTION_WAKE_UP;
+                    }
+                }
+                break;
+            case KeyEvent.KEYCODE_FOCUS:
+                if (down && !isScreenOn && mCameraWakeScreen) {
+                    if (keyguardActive) {
+                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode);
+                    } else {
+                        result |= ACTION_WAKE_UP;
+                    }
+                    if (mCameraSleepOnRelease) {
+                        mIsFocusPressed = true;
+                    }
+                } else if (!down && isScreenOn && mIsFocusPressed) {
+                     result = (result & ~ACTION_WAKE_UP) | ACTION_GO_TO_SLEEP;
+                     mIsFocusPressed = false;
+                }
+                break;
+            case KeyEvent.KEYCODE_CAMERA:
+                if (down && mIsFocusPressed) {
+                    mIsFocusPressed = false;
+                }
+                if (down && !isScreenOn && mCameraWakeScreen && mSingleStageCameraKey) {
+                    if (keyguardActive) {
+                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode);
+                    } else {
+                        result |= ACTION_WAKE_UP;
+                    }
+                }
+                if (mCameraMusicControls) {
+                    // if the camera key is not pressable, see if music is active
+                    if (!mCameraKeyPressable) {
+                        mCameraKeyPressable = isMusicActive();
+                    }
+
+                    if (mCameraKeyPressable) {
+                        if (down) {
+                            Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,
+                                    new KeyEvent(event.getDownTime(), event.getEventTime(),
+                                    event.getAction(), KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0));
+                            msg.setAsynchronous(true);
+                            mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
+                            break;
+                        } else {
+                            mHandler.removeMessages(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK);
+                        }
+                    }
+                }
+                break;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE: {
@@ -4661,7 +4809,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_MUTE:
                 return mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED;
 
-            // ignore media and camera keys
+            // ignore media keys
             case KeyEvent.KEYCODE_MUTE:
             case KeyEvent.KEYCODE_HEADSETHOOK:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
@@ -4673,7 +4821,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_MEDIA_REWIND:
             case KeyEvent.KEYCODE_MEDIA_RECORD:
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+                return false;
+
+            // home & camera wake can be configurable so default to no here
+            case KeyEvent.KEYCODE_FOCUS:
             case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_HOME:
                 return false;
         }
         return true;
@@ -4859,6 +5012,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         synchronized (mLock) {
+            // since the screen turned on, assume we don't enable play-pause again
+            // unless they turn it off and music is still playing.  this is done to
+            // prevent the camera button from starting playback if playback wasn't
+            // originally running
+            mCameraKeyPressable = false;
             mScreenOnEarly = true;
             updateOrientationListenerLp();
             updateLockScreenTimeout();
