@@ -211,10 +211,6 @@ public class TabletStatusBar extends BaseStatusBar implements
     private String mShortClickWeather;
     private String mLongClickWeather;
 
-    //Appbar
-    private AppSidebar mAppSidebar;
-    private int mSidebarPosition;
-
     ViewGroup mBarContents;
 
     // hide system chrome ("lights out") support
@@ -611,13 +607,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         mHasDockBattery = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasDockBattery);
 
-        if (mRecreating) {
-            if (mAppSidebar != null)
-                mWindowManager.removeView(mAppSidebar);
-        }
-        mAppSidebar = (AppSidebar)View.inflate(context, R.layout.app_sidebar, null);
-        mWindowManager.addView(mAppSidebar, getAppSidebarLayoutParams(mSidebarPosition));
-
         if (mHasDockBattery) {
             mDockBatteryController = new DockBatteryController(mContext);
             mDockBatteryController.addIconView((ImageView)sb.findViewById(R.id.dock_battery));
@@ -726,7 +715,13 @@ public class TabletStatusBar extends BaseStatusBar implements
         settingsObserver.observe();
         updateSettings();
 
+        if (mRecreating) {
+            removeSidebarView();
+        }
+
         addActiveDisplayView();
+
+        addSidebarView();
 
         return sb;
     }
@@ -747,26 +742,6 @@ public class TabletStatusBar extends BaseStatusBar implements
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
             | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-
-        return lp;
-    }
-
-
-    private WindowManager.LayoutParams getAppSidebarLayoutParams(int position) {
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
-                0
-                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.TOP;// | Gravity.FILL_VERTICAL;
-        lp.gravity |= position == AppSidebar.SIDEBAR_POSITION_LEFT ? Gravity.LEFT : Gravity.RIGHT;
-        lp.setTitle("AppSidebar");
 
         return lp;
     }
@@ -1920,7 +1895,7 @@ public class TabletStatusBar extends BaseStatusBar implements
         if (sidebarPosition != mSidebarPosition) {
             mSidebarPosition = sidebarPosition;
             mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
-            }
+        }
 
         onBarHeightChanged(getStatusBarHeight());
         mNumberOfButtons = Settings.System.getInt(cr, Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);

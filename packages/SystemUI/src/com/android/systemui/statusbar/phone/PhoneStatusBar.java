@@ -209,9 +209,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private boolean showingAltCluster = false;
 
-    private AppSidebar mAppSidebar;
-    private int mSidebarPosition;
-
     // These are no longer handled by the policy, because we need custom strategies for them
     BluetoothController mBluetoothController;
     DockBatteryController mDockBatteryController;
@@ -598,13 +595,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     }
                 });
 
-        if (mRecreating) {
-            if (mAppSidebar != null)
-                mWindowManager.removeView(mAppSidebar);
-        }
-        mAppSidebar = (AppSidebar)View.inflate(context, R.layout.app_sidebar, null);
-        mWindowManager.addView(mAppSidebar, getAppSidebarLayoutParams(mSidebarPosition));
-
         if (ENABLE_INTRUDERS) {
             mIntruderAlertView = (IntruderAlertView) View.inflate(context, R.layout.intruder_alert, null);
             mIntruderAlertView.setVisibility(View.GONE);
@@ -631,7 +621,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         // set recents activity navigation bar view
         RecentsActivity.addNavigationCallback(mNavigationBarView);
 
+        if (mRecreating) {
+            removeSidebarView();
+        }
+
         addActiveDisplayView();
+
+        addSidebarView();
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.TRANSLUCENT;
@@ -1003,25 +999,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
         | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-        return lp;
-    }
-
-    private WindowManager.LayoutParams getAppSidebarLayoutParams(int position) {
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
-                0
-                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-        lp.gravity = Gravity.TOP;// | Gravity.FILL_VERTICAL;
-        lp.gravity |= position == AppSidebar.SIDEBAR_POSITION_LEFT ? Gravity.LEFT : Gravity.RIGHT;
-        lp.setTitle("AppSidebar");
-
         return lp;
     }
 
@@ -3264,8 +3241,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 }
                 try {
                     // position app sidebar on left if in landscape orientation and device has a navbar
+                    mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
                     if (mWindowManagerService.hasNavigationBar() &&
-                            config.orientation == Configuration.ORIENTATION_LANDSCAPE && (mCurrentUIMode == 0)) {
+                            mSystemUiLayout < 600 &&
+                            config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         mWindowManager.updateViewLayout(mAppSidebar,
                                 getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
                         mHandler.postDelayed(new Runnable() {
