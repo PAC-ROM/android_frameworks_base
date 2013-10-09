@@ -2600,7 +2600,7 @@ public final class Settings {
          */
         public static final String ENABLE_MWI_NOTIFICATION = "enable_mwi_notification";
 
-	/**
+        /**
          * Battery warning preferences
          *
          * 0 = show dialog + play sound (default)
@@ -2675,7 +2675,7 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
-	/**
+        /**
          * Whether to display notifications on screen when screen is off
          * @hide
          */
@@ -3615,13 +3615,13 @@ public final class Settings {
          */
         public static final String SWIPE_TO_SWITCH_SCREEN_DETECTION = "full_swipe_to_switch_detection";
 
-	/**
+        /**
          * Give SMS Notifications a breathing effect
          * @hide
          */
         public static final String KEY_SMS_BREATH = "pref_key_sms_breath";
 
-	/**
+        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
@@ -3746,6 +3746,13 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+
+        /**
+         * Holds the text for the Carrier label. An empty string
+         * will bring the default text back.
+         * @hide
+         */
+        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
