@@ -2559,6 +2559,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     preloadRecentApps();
                 }
                 if (!keyguardOn && mLongPressOnHomeBehavior != KEY_ACTION_NOTHING) {
+                    mHomePressed = true;
                     performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
                     mHomeConsumed = true;
                     performKeyAction(mLongPressOnHomeBehavior);
