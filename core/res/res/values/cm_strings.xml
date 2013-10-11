@@ -201,4 +201,7 @@
     <string name="permlab_changeHwuiState">enable or disable hardware acceleration</string>
     <string name="permdesc_changeHwuiState">Allows the application to change whether another application runs with hardware acceleration</string>
 
+    <!-- Description of the Random button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_random">Reload random buttons</string>
+
 </resources>
