@@ -111,6 +111,7 @@ class ProcessList {
         // <1.5GB - 25
         // >1.5GB - 40
         MemInfoReader mi = new MemInfoReader();
+        mi.readMemInfo();
         MAX_HIDDEN_APPS = SystemProperties.getInt("sys.mem.max_hidden_apps",
                 (mi.getTotalSize() > (1.5*1024*1024)) ? 40 :
                 (mi.getTotalSize() < (512*1024)) ? 15 : 25);
