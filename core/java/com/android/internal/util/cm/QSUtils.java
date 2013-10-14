@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import com.android.internal.telephony.PhoneConstants;
 
@@ -43,6 +44,13 @@ public class QSUtils {
 
         public static boolean systemProfilesEnabled(ContentResolver resolver) {
             return (Settings.System.getInt(resolver, Settings.System.SYSTEM_PROFILES_ENABLED, 1) == 1);
+        }
+
+        public static boolean deviceSupportsPerformanceProfiles(Context ctx) {
+            Resources res = ctx.getResources();
+            String perfProfileProp = res.getString(
+                    com.android.internal.R.string.config_perf_profile_prop);
+            return !TextUtils.isEmpty(perfProfileProp);
         }
 
         public static boolean deviceSupportsNfc(Context ctx) {

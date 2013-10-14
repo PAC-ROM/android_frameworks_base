@@ -201,4 +201,9 @@
     <!-- Description of the Random button in a KeyboardView. [CHAR LIMIT=NONE] -->
     <string name="keyboardview_keycode_random">Reload random buttons</string>
 
+    <!-- Performance profile modes -->
+    <string name="perf_profile_pwrsv">Power save</string>
+    <string name="perf_profile_bal">Balanced</string>
+    <string name="perf_profile_perf">Performance</string>
+
 </resources>

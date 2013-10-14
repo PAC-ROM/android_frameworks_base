@@ -48,6 +48,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_NETWORKADB;
 import static com.android.internal.util.cm.QSConstants.TILE_NETWORKMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_NFC;
 import static com.android.internal.util.cm.QSConstants.TILE_PROFILE;
+import static com.android.internal.util.cm.QSConstants.TILE_PERFORMANCE_PROFILE;
 import static com.android.internal.util.cm.QSConstants.TILE_QUIETHOURS;
 import static com.android.internal.util.cm.QSConstants.TILE_RINGER;
 import static com.android.internal.util.cm.QSConstants.TILE_ROCKETLAUNCHER;
@@ -63,6 +64,9 @@ import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_DESKTOPMODE;
 import static com.android.internal.util.cm.QSConstants.TILE_HYBRID;
 import static com.android.internal.util.cm.QSConstants.TILE_PIB;
+
+import android.os.SystemProperties;
+
 import com.android.internal.util.cm.QSUtils;
 
 import com.android.systemui.quicksettings.AirplaneModeTile;
@@ -81,6 +85,7 @@ import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.MusicTile;
 import com.android.systemui.quicksettings.NetworkAdbTile;
 import com.android.systemui.quicksettings.NfcTile;
+import com.android.systemui.quicksettings.PerformanceProfileTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.ProfileTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
@@ -107,6 +112,7 @@ import com.android.systemui.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class QuickSettingsController {
     private static String TAG = "QuickSettingsController";
@@ -250,6 +256,10 @@ public class QuickSettingsController {
                 mTileStatusUris.add(Settings.System.getUriFor(Settings.System.SYSTEM_PROFILES_ENABLED));
                 if (QSUtils.systemProfilesEnabled(resolver)) {
                     qs = new ProfileTile(mContext, this);
+                }
+            } else if (tile.equals(TILE_PERFORMANCE_PROFILE)) {
+                if (QSUtils.deviceSupportsPerformanceProfiles(mContext)) {
+                    qs = new PerformanceProfileTile(mContext, this);
                 }
             // User cannot add the NFC tile if the device does not support it
             // No need to check again here

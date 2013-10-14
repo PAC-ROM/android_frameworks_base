@@ -66,4 +66,8 @@
     <string name="toast_rotation_locked">Otáčení zobrazení zakázáno</string>
 
     <string name="stylus_app_not_installed">Aplikace %s není nainstalována</string>
+
+    <string name="perf_profile_pwrsv">Úsporný</string>
+    <string name="perf_profile_bal">Vyvážený</string>
+    <string name="perf_profile_perf">Výkonný</string>
 </resources>

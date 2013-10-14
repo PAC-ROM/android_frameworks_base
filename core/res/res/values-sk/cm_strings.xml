@@ -69,4 +69,7 @@
     <string name="policydesc_enforceSelinux">Prepnúť stav zabezpečenia SELinux.</string>
     <string name="policylab_enforceMmac">vynútiť MMAC</string>
     <string name="policydesc_enforceMmac">Prepnúť stav zabezpečenia MMAC.</string>
+    <string name="perf_profile_pwrsv">Úsporný</string>
+    <string name="perf_profile_bal">Vyvážený</string>
+    <string name="perf_profile_perf">Výkonný</string>
 </resources>
