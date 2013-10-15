@@ -2,6 +2,9 @@
 <!--
 /* //device/apps/common/assets/res/any/colors.xml
 **
+** Copyright (c) 2013, The Linux Foundation. All rights reserved.
+** Not a Contribution.
+**
 ** Copyright 2006, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -418,12 +421,10 @@
         <item>WXYZ</item><!-- 9 -->
     </string-array>
 
-
     <array name="shutdown_reboot_icons">
         <item>@drawable/ic_lock_reboot</item>
         <item>@drawable/ic_lock_reboot_recovery</item>
         <item>@drawable/ic_lock_reboot_bootloader</item>
     </array>
-
 
 </resources>
