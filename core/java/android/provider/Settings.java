@@ -3401,6 +3401,12 @@ public final class Settings {
         public static final String FOREGROUND_APP = "foreground_app";
 
         /**
+         * Pie enabled, should default to 1 (Pie is enabled)
+         * @hide
+         */
+        public static final String PIE_ENABLED = "pie_enabled";
+
+        /**
          * Pie menu, should default to 1 (yes, show)
          * @hide
          */
