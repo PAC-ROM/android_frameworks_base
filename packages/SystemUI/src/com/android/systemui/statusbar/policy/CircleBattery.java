@@ -218,7 +218,7 @@ public class CircleBattery extends ImageView {
         // do not want to use static 0x404040 color value. would break theming.
         mPaintGray.setColor(res.getColor(R.color.darker_gray));
         mPaintRed.setColor(res.getColor(R.color.holo_red_light));
-        mPaintGreen.setColor(res.getColor(R.color.holo_green_light));
+        mPaintGreen.setColor(res.getColor(R.color.holo_green_dark));
 
         // font needs some extra settings
         mPaintFont.setTextAlign(Align.CENTER);
