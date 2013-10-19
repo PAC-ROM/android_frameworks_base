@@ -110,7 +110,7 @@ public class CPUInfoService extends Service {
             if (density < 1) {
                 textSize = 9;
             } else {
-                textSize = (int)(10*density);
+                textSize = (int)(12*density);
                 if (textSize < 10) {
                     textSize = 10;
                 }
