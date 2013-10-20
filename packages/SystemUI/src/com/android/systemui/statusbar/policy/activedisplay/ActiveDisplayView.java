@@ -198,6 +198,7 @@ public class ActiveDisplayView extends FrameLayout {
                 mNotification = null;
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
+                    sendUnlockBroadcast();
                     // This is a BUTT ugly hack to allow dismissing the slide lock
                     Intent intent = new Intent(mContext, DummyActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -213,6 +214,7 @@ public class ActiveDisplayView extends FrameLayout {
                 disableProximitySensor();
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
+                    sendUnlockBroadcast();
                     try {
                         // Dismiss the lock screen when Settings starts.
                         ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
@@ -223,6 +225,12 @@ public class ActiveDisplayView extends FrameLayout {
             } else if (target == DISMISS_TARGET) {
                 dismissNotification();
             }
+        }
+
+        private void sendUnlockBroadcast() {
+            Intent u = new Intent();
+            u.setAction("com.android.lockscreen.ACTION_UNLOCK_RECEIVER");
+            mContext.sendBroadcastAsUser(u, UserHandle.ALL);
         }
 
         public void onReleased(final View v, final int handle) {
