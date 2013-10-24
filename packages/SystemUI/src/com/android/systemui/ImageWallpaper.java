@@ -213,6 +213,7 @@ public class ImageWallpaper extends WallpaperService {
                     unregisterReceiver(mReceiver);
                 } catch (Exception ignored) { }
             }
+            mBackground = null;
         }
 
         void updateSurfaceSize(SurfaceHolder surfaceHolder) {
