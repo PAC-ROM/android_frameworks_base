@@ -779,24 +779,25 @@ public class PhoneStatusBar extends BaseStatusBar {
             mDockBatteryController.addIconView((ImageView)mStatusBarView.findViewById(R.id.dock_battery));
         }
 
-        mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
-
-        mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
-        mNetworkController.addSignalCluster(mSignalCluster);
-        mSignalCluster.setNetworkController(mNetworkController);
-
-        mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
-        mSignalCluster.setNetworkController(mNetworkController);
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             mMSimNetworkController = new MSimNetworkController(mContext);
-            MSimSignalClusterView mSimSignalCluster = (MSimSignalClusterView)
-              mStatusBarView.findViewById(R.id.msim_signal_cluster);
-            for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
-                mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+
+            if (!showingAltCluster) {
+                mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster);
+                for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+                    mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+                }
+                mSimSignalCluster.setNetworkController(mMSimNetworkController);
+            } else {
+                mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster_alt);
+                for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+                    mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+                }
+                mSimSignalCluster.setNetworkController(mMSimNetworkController);
             }
-            mSimSignalCluster.setNetworkController(mMSimNetworkController);
+
             mEmergencyCallLabel = (TextView)mStatusBarWindow.findViewById(
                                                           R.id.emergency_calls_only);
             if (mEmergencyCallLabel != null) {
@@ -811,12 +812,20 @@ public class PhoneStatusBar extends BaseStatusBar {
                     }});
             }
 
+            mNotificationShortcutsHideCarrier = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
+
+            mCarrierAndWifiView = mStatusBarWindow.findViewById(R.id.carrier_wifi);
+            mWifiView = mStatusBarWindow.findViewById(R.id.wifi_view);
             mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
             mShowCarrierInPanel = (mCarrierLabel != null);
-            if (DEBUG) Slog.v(TAG, "carrierlabel=" + mCarrierLabel + " show=" + mShowCarrierInPanel);
+            if (DEBUG) Slog.v(TAG, "carrierlabel=" + mCarrierLabel + " show=" +
+                                                                  mShowCarrierInPanel);
             if (mShowCarrierInPanel) {
-                mCarrierLabel.setVisibility(mCarrierLabelVisible ? View.VISIBLE : View.INVISIBLE);
-
+                lpCarrierLabel = (FrameLayout.LayoutParams) mCarrierAndWifiView.getLayoutParams();
+                mCarrierLabel.setVisibility((mCarrierAndWifiViewVisible && !mNotificationShortcutsHideCarrier) ? View.VISIBLE : View.GONE);
+                if (mNotificationShortcutsHideCarrier)
+                   mShowCarrierInPanel = false;
                 // for mobile devices, we always show mobile connection info here (SPN/PLMN)
                 // for other devices, we show whatever network is connected
                 if (mMSimNetworkController.hasMobileDataFeature()) {
@@ -824,7 +833,34 @@ public class PhoneStatusBar extends BaseStatusBar {
                 } else {
                     mMSimNetworkController.addCombinedLabelView(mCarrierLabel);
                 }
+            }
 
+            mWifiLabel = (TextView)mStatusBarWindow.findViewById(R.id.wifi_text);
+
+            if (mWifiLabel != null) {
+                mNetworkController.addWifiLabelView(mWifiLabel);
+
+                mWifiLabel.addTextChangedListener(new TextWatcher() {
+
+                    public void afterTextChanged(Editable s) {
+                    }
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                            int after) {
+                    }
+                    public void onTextChanged(CharSequence s, int start, int before,
+                            int count) {
+                         if (Settings.System.getInt(mContext.getContentResolver(),
+                                Settings.System.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
+                                count > 0) {
+                            mWifiView.setVisibility(View.VISIBLE);
+                        }
+                        else
+                        {
+                            mWifiView.setVisibility(View.GONE);
+                        }
+                    }
+
+                });
                 // set up the dynamic hide/show of the label
                 mPile.setOnSizeChangedListener(new OnSizeChangedListener() {
                     @Override
@@ -833,9 +869,17 @@ public class PhoneStatusBar extends BaseStatusBar {
                     }
                 });
             }
-
-            mNetworkController.addSignalCluster(mSignalCluster);
-            mSignalCluster.setNetworkController(mNetworkController);
+        } else {
+            mNetworkController = new NetworkController(mContext);
+            if (!showingAltCluster) {
+                mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+                mNetworkController.addSignalCluster(mSignalCluster);
+                mSignalCluster.setNetworkController(mNetworkController);
+            } else {
+                mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+                mNetworkController.addSignalCluster(mSignalCluster);
+                mSignalCluster.setNetworkController(mNetworkController);
+            }
 
             final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
             if (isAPhone) {
@@ -2864,12 +2908,21 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View notifications = mStatusBarView.findViewById(R.id.notification_icon_area);
             final View systemIcons = mStatusBarView.findViewById(R.id.statusIcons);
             final View signal;
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-                signal = mStatusBarView.findViewById(R.id.msim_signal_cluster);
+            if (!showingAltCluster) {
+                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                    signal = mStatusBarView.findViewById(R.id.msim_signal_cluster);
+                } else {
+                    signal = mStatusBarView.findViewById(R.id.signal_cluster);
+                }
+                final View signal2 = mStatusBarView.findViewById(R.id.signal_cluster);
             } else {
-                signal = mStatusBarView.findViewById(R.id.signal_cluster);
+                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                    signal = mStatusBarView.findViewById(R.id.msim_signal_cluster_alt);
+                } else {
+                    signal = mStatusBarView.findViewById(R.id.signal_cluster_alt);
+                }
+                final View signal2 = mStatusBarView.findViewById(R.id.signal_cluster_alt);
             }
-            final View signal2 = mStatusBarView.findViewById(R.id.signal_cluster);
             final View battery = mStatusBarView.findViewById(R.id.battery);
             final View traffic = mStatusBarView.findViewById(R.id.traffic);
 

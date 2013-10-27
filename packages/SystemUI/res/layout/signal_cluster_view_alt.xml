@@ -45,8 +45,10 @@
             />
         <com.android.systemui.statusbar.policy.WifiText
             android:id="@+id/wifi_signal_text"
+            android:textAppearance="@style/TextAppearance.StatusBar.WifiText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            />
     </FrameLayout>
     <View
         android:layout_height="6dp"
@@ -71,7 +73,8 @@
             >
             <FrameLayout
                 android:layout_height="match_parent"
-                android:layout_width="wrap_content" >
+                android:layout_width="wrap_content"
+                >
             <ImageView
                 android:id="@+id/mobile_type"
                 android:layout_height="wrap_content"
@@ -88,11 +91,19 @@
             <ImageView
                 android:id="@+id/mobile_signal"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                />
             <com.android.systemui.statusbar.policy.SignalText
                 android:id="@+id/signal_text"
+                android:textAppearance="@style/TextAppearance.StatusBar.SignalText"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
+            <ImageView
+                android:id="@+id/no_sim"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                />
         </LinearLayout>
     </FrameLayout>
     <ImageView

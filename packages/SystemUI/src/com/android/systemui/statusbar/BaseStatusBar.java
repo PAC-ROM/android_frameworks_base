@@ -197,6 +197,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     public BatteryController mBatteryController;
     public SbBatteryController mSbBatteryController;
     public SignalClusterView mSignalCluster;
+    public MSimSignalClusterView mSimSignalCluster;
     public Clock mClock;
     public ClockCenter mCClock;
 

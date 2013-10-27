@@ -50,7 +50,8 @@
             android:textAppearance="@style/TextAppearance.StatusBar.WifiText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingRight="8dp" />
+            android:paddingRight="8dp"
+            />
     </FrameLayout>
     <View
         android:layout_height="6dp"

@@ -109,8 +109,8 @@ public class SignalClusterView
         mMobile         = (ImageView) findViewById(R.id.mobile_signal);
         mMobileActivity = (ImageView) findViewById(R.id.mobile_inout);
         mMobileType     = (ImageView) findViewById(R.id.mobile_type);
-        mMobileText     = (TextView)  findViewById(R.id.signal_text);
         mNoSimSlot      = (ImageView) findViewById(R.id.no_sim);
+        mMobileText     = (TextView)  findViewById(R.id.signal_text);
         mWiFiText       = (TextView)  findViewById(R.id.wifi_signal_text);
         mSpacer         =             findViewById(R.id.spacer);
         mAirplane       = (ImageView) findViewById(R.id.airplane);
@@ -218,14 +218,15 @@ public class SignalClusterView
         if(mAirplane != null) {
             mAirplane.setImageDrawable(null);
         }
+
+        apply();
     }
 
     // Run after each indicator change.
-    public void apply() {
+    private void apply() {
         if (mWifiGroup == null) return;
 
         if (mWifiVisible) {
-            mWifiGroup.setVisibility(View.VISIBLE);
             Drawable wifiBitmap = mContext.getResources().getDrawable(mWifiStrengthId);
             if (mColorInfo.isLastColorNull) {
                 wifiBitmap.clearColorFilter();
@@ -236,6 +237,7 @@ public class SignalClusterView
             mWifiActivity.setImageResource(mWifiActivityId);
 
             mWifiGroup.setContentDescription(mWifiDescription);
+            mWifiGroup.setVisibility(View.VISIBLE);
             if (showingWiFiText){
                 mWifi.setVisibility(View.GONE);
                 mWifiActivity.setVisibility(View.GONE);
@@ -255,7 +257,6 @@ public class SignalClusterView
                     mWifiStrengthId, mWifiActivityId));
 
         if (mMobileVisible && !mIsAirplaneMode) {
-            mMobileGroup.setVisibility(View.VISIBLE);
             if(mMobileStrengthId != 0) {
                 Drawable mobileBitmap = mContext.getResources().getDrawable(mMobileStrengthId);
                 if (mColorInfo.isLastColorNull) {
@@ -288,8 +289,9 @@ public class SignalClusterView
             mMobileType.setImageResource(mMobileTypeId);
 
             mMobileGroup.setContentDescription(mMobileTypeDescription + " " + mMobileDescription);
+            mMobileGroup.setVisibility(View.VISIBLE);
             mNoSimSlot.setImageResource(mNoSimIconId);
-            if (showingSignalText && !mIsAirplaneMode) {
+            if (showingSignalText && !mIsAirplaneMode && !showingAltCluster) {
                 mMobile.setVisibility(View.GONE);
                 mMobileText.setVisibility(View.VISIBLE);
             } else{
@@ -366,8 +368,8 @@ public class SignalClusterView
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        showingSignalText = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_SIGNAL_TEXT, 0) != 0;
+        showingSignalText = (Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_SIGNAL_TEXT,STYLE_HIDE) > 0);
         showingWiFiText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0) != 0;
         boolean clustdefault = getResources().getBoolean(R.bool.statusbar_alt_signal_layout);

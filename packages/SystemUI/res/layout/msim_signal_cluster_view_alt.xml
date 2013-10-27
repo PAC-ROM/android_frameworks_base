@@ -91,44 +91,51 @@
             android:layout_width="6dp"
             android:visibility="invisible"
             />
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/mobile_combo_sub3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
-            <ImageView
-                android:id="@+id/mobile_signal_sub3"
-                android:layout_height="wrap_content"
+            <FrameLayout
+                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                />
+                >
             <ImageView
                 android:id="@+id/mobile_type_sub3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="left|top"
+                android:layout_gravity="center|right"
                 />
             <ImageView
                 android:id="@+id/mobile_inout_sub3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="end|bottom"
+                android:layout_gravity="center|right"
+                />
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/mobile_signal_sub3"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 />
             <com.android.systemui.statusbar.policy.SignalText
                 android:id="@+id/signal_text_sub3"
                 android:textAppearance="@style/TextAppearance.StatusBar.SignalText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="8dp" />
+                />
             <ImageView
                 android:id="@+id/no_sim_slot3"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 />
-        </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
     <View
         android:layout_height="8dp"
         android:layout_width="8dp"
+        android:visibility="gone"
         android:id="@+id/spacer"
         />
     <FrameLayout
@@ -140,44 +147,51 @@
             android:layout_width="6dp"
             android:visibility="invisible"
             />
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/mobile_combo_sub2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
-            <ImageView
-                android:id="@+id/mobile_signal_sub2"
-                android:layout_height="wrap_content"
+            <FrameLayout
+                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                />
+                >
             <ImageView
                 android:id="@+id/mobile_type_sub2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="left|top"
+                android:layout_gravity="center|right"
                 />
             <ImageView
                 android:id="@+id/mobile_inout_sub2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="end|bottom"
+                android:layout_gravity="center|right"
+                />
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/mobile_signal_sub2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 />
             <com.android.systemui.statusbar.policy.SignalText
                 android:id="@+id/signal_text_sub2"
                 android:textAppearance="@style/TextAppearance.StatusBar.SignalText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="8dp" />
+                />
             <ImageView
                 android:id="@+id/no_sim_slot2"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 />
-        </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
     <View
         android:layout_height="8dp"
         android:layout_width="8dp"
+        android:visibility="gone"
         android:id="@+id/spacer"
         />
     <FrameLayout
@@ -189,40 +203,46 @@
             android:layout_width="6dp"
             android:visibility="invisible"
             />
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/mobile_combo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
-            <ImageView
-                android:id="@+id/mobile_signal"
-                android:layout_height="wrap_content"
+            <FrameLayout
+                android:layout_height="match_parent"
                 android:layout_width="wrap_content"
-                />
+                >
             <ImageView
                 android:id="@+id/mobile_type"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="left|top"
+                android:layout_gravity="center|right"
                 />
             <ImageView
                 android:id="@+id/mobile_inout"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="end|bottom"
+                android:layout_gravity="center|right"
+                />
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/mobile_signal"
+                android:textAppearance="@style/TextAppearance.StatusBar.SignalText"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 />
             <com.android.systemui.statusbar.policy.SignalText
                 android:id="@+id/signal_text"
-                android:textAppearance="@style/TextAppearance.StatusBar.SignalText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="8dp" />
+                />
             <ImageView
                 android:id="@+id/no_sim"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 />
-        </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
     <ImageView
         android:id="@+id/airplane"

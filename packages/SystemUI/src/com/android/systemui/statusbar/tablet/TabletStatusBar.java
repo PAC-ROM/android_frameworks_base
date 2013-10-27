@@ -603,19 +603,29 @@ public class TabletStatusBar extends BaseStatusBar implements
         mBluetoothController.addIconView((ImageView)sb.findViewById(R.id.bluetooth));
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            final MSimSignalClusterView mSimSignalCluster =
-                    (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster);
-
             mMSimNetworkController = new MSimNetworkController(mContext);
-            for(int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+
+            mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster);
+            for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
                 mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
             }
-        } else {
-            final SignalClusterView signalCluster =
-                    (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+            mSimSignalCluster.setNetworkController(mMSimNetworkController);
 
+            mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster_alt);
+            for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+                mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+            }
+            mSimSignalCluster.setNetworkController(mMSimNetworkController);
+        } else {
             mNetworkController = new NetworkController(mContext);
-            mNetworkController.addSignalCluster(signalCluster);
+
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
+
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
         }
 
         mBarView = (ViewGroup) mStatusBarView;
