@@ -489,7 +489,7 @@ public class SSLCertificateSocketFactory extends SSLSocketFactory {
 
     @Override
     public String[] getDefaultCipherSuites() {
-        return getDelegate().getSupportedCipherSuites();
+        return getDelegate().getDefaultCipherSuites();
     }
 
     @Override
