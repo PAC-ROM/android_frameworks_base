@@ -1724,6 +1724,10 @@ public final class ActivityManagerService  extends ActivityManagerNative
         File dataDir = Environment.getDataDirectory();
         File systemDir = new File(dataDir, "system");
         systemDir.mkdirs();
+        if (new File(systemDir, "appops.xml").exists()){
+            Slog.i(TAG, "Deleting AppOp Stats!");
+            new File(systemDir, "appops.xml").delete();
+        }
         mBatteryStatsService = new BatteryStatsService(new File(
                 systemDir, "batterystats.bin").toString());
         mBatteryStatsService.getActiveStatistics().readLocked();
