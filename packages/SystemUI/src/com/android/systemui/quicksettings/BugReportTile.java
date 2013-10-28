@@ -39,7 +39,7 @@ public class BugReportTile extends QuickSettingsTile{
                 showBugreportDialog();
             }
         };
-        qsc.registerObservedContent(Settings.System.getUriFor(Settings.Secure.BUGREPORT_IN_POWER_MENU), this);
+        qsc.registerObservedContent(Settings.System.getUriFor(Settings.Global.BUGREPORT_IN_POWER_MENU), this);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class BugReportTile extends QuickSettingsTile{
         mDrawable = com.android.internal.R.drawable.stat_sys_adb;
         final ContentResolver cr = mContext.getContentResolver();
         try {
-            enabled = (Settings.Secure.getInt(cr, Settings.Secure.BUGREPORT_IN_POWER_MENU) != 0);
+            enabled = (Settings.Secure.getInt(cr, Settings.Global.BUGREPORT_IN_POWER_MENU) != 0);
         } catch (SettingNotFoundException e) {
         }
     }
