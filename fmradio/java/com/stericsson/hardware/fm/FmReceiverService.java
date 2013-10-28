@@ -538,7 +538,7 @@ public class FmReceiverService extends IFmReceiver.Stub {
     /* Returns true if airplane mode is currently on */
     private boolean isAirplaneModeOn() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, 0) == 1;
+                Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
     }
 
     public FmReceiverService(Context context) {
