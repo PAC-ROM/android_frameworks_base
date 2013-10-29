@@ -933,6 +933,9 @@ public class DownloadManager {
     public long enqueue(Request request) {
         ContentValues values = request.toContentValues(mPackageName);
         Uri downloadUri = mResolver.insert(Downloads.Impl.CONTENT_URI, values);
+        if (downloadUri == null) {
+            return -1;
+        }
         long id = Long.parseLong(downloadUri.getLastPathSegment());
         return id;
     }

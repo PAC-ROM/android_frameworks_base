@@ -225,11 +225,12 @@ class BrowserFrame extends Handler {
             ActivityManager am = (ActivityManager) context
                     .getSystemService(Context.ACTIVITY_SERVICE);
             int defCacheSize = am.getMemoryClass() > 16 ?
-                8 * 1024 * 1024 : 4 * 1024 * 1024;
+                    8 * 1024 * 1024 : 4 * 1024 * 1024;
             int cacheSize = SystemProperties.getInt("net.webkit.cache.size", defCacheSize);
             if ((cacheSize < 0) || (cacheSize > (100 * 1024 * 1024))) {
                 cacheSize = defCacheSize;
             }
+            sJavaBridge.setCacheSize(cacheSize);
             // create CookieSyncManager with current Context
             CookieSyncManager.createInstance(appContext);
             // create PluginManager with current Context

@@ -2612,6 +2612,9 @@ public final class WebViewClassic implements WebViewProvider, WebViewProvider.Sc
         dataUrl.append(mimeType);
         if ("base64".equals(encoding)) {
             dataUrl.append(";base64");
+        } else if (encoding != null) {
+            dataUrl.append(";charset=");
+            dataUrl.append(encoding);
         }
         dataUrl.append(",");
         dataUrl.append(data);
