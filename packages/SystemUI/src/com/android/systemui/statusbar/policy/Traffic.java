@@ -28,6 +28,7 @@ public class Traffic extends TextView {
     long trafficBurstStartTime;
     long trafficBurstStartBytes;
     long keepOnUntil = Long.MIN_VALUE;
+    int mCurrUiInvertedMode;
     NumberFormat decimalFormat = new DecimalFormat("##0.0");
     NumberFormat integerFormat = NumberFormat.getIntegerInstance();
 
@@ -94,6 +95,8 @@ public class Traffic extends TextView {
             }
 
             mTrafficColor = getTextColors().getDefaultColor();
+
+            mCurrUiInvertedMode = mContext.getResources().getConfiguration().uiInvertedMode;
 
             SettingsObserver settingsObserver = new SettingsObserver(getHandler());
             settingsObserver.observe();
@@ -246,7 +249,12 @@ public class Traffic extends TextView {
 
             totalRxBytes = currentRxBytes;
             lastUpdateTime = SystemClock.elapsedRealtime();
-            getHandler().postDelayed(mRunnable, 1000);
+            int uiInvertedMode =
+                mContext.getResources().getConfiguration().uiInvertedMode;
+
+            if (uiInvertedMode == mCurrUiInvertedMode) {
+                getHandler().postDelayed(mRunnable, 1000);
+            }
         }
     };
 
