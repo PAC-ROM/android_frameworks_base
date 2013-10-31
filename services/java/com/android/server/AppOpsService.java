@@ -42,6 +42,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -57,6 +58,7 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.util.TimeUtils;
 import android.util.Xml;
+import android.widget.Toast;
 
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.app.IAppOpsCallback;
@@ -796,6 +798,15 @@ public class AppOpsService extends IAppOpsService.Stub {
         if (op >= 0 && op < AppOpsManager._NUM_OP) {
             return;
         }
+        File dataDir = Environment.getDataDirectory();
+        File systemDir = new File(dataDir, "system");
+        // DElete the faulty app ops file and report to the user!
+        if (new File(systemDir, "appops.xml").exists()){
+            Slog.i(TAG, "Deleting AppOp Stats!");
+            // TODO toast or dialog RESTART NEEDED
+            new File(systemDir, "appops.xml").delete();
+        }
+        Toast.makeText(mContext , "AppOps Corupted: Reboot Required!", Toast.LENGTH_SHORT).show();
         throw new IllegalArgumentException("Bad operation #" + op);
     }
 
