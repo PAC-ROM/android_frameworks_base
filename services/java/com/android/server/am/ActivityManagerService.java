@@ -45,6 +45,7 @@ import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.AppGlobals;
 import android.app.ApplicationErrorReport;
 import android.app.Dialog;
@@ -72,6 +73,7 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.IContentProvider;
 import android.content.IIntentReceiver;
 import android.content.IIntentSender;
@@ -1734,6 +1736,26 @@ public final class ActivityManagerService  extends ActivityManagerNative
 
         mUsageStatsService = new UsageStatsService(new File(
                 systemDir, "usagestats").toString());
+
+        if (new File(systemDir, "appops_fault").exists()){
+            Slog.i(TAG, "Deleting AppOp Stats!");
+            new File(systemDir, "appops_fault").delete();
+            new File(systemDir, "appops.xml").delete();
+
+            // TODO add a dialog popup here
+            Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Sorry About That");
+            builder.setMessage("AppOps and Privacy Gaurd was Corupt!\nPhone Rebooted To Recovery\nSorry Your Settigns Were Lost");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Ok", new OnClickListener(){
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
         mAppOpsService = new AppOpsService(new File(systemDir, "appops.xml"));
         mHeadless = "1".equals(SystemProperties.get("ro.config.headless", "0"));
 

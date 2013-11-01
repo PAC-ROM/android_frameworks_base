@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.Runtime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import java.util.Map;
 import android.app.AppOpsManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -58,7 +60,7 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.util.TimeUtils;
 import android.util.Xml;
-import android.widget.Toast;
+
 
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.app.IAppOpsCallback;
@@ -86,6 +88,7 @@ public class AppOpsService extends IAppOpsService.Stub {
     final boolean mStrictEnable;
 
     static final int SHOW_PERMISSION_DIALOG = 1;
+    static final int SHOW_APPOP_ERROR = 2;
 
     boolean mWriteScheduled;
     final Runnable mWriteRunner = new Runnable() {
@@ -192,6 +195,13 @@ public class AppOpsService extends IAppOpsService.Stub {
                             op.dialogResult.mDialog = d;
                             d.show();
                         }
+                    }
+                }break;
+                case SHOW_APPOP_ERROR: {
+                    try {
+                        Runtime.getRuntime().exec(new String[]{"su","-c","reboot now"});
+                    } catch (IOException e){
+                        // not good...
                     }
                 }break;
                 }
@@ -800,13 +810,18 @@ public class AppOpsService extends IAppOpsService.Stub {
         }
         File dataDir = Environment.getDataDirectory();
         File systemDir = new File(dataDir, "system");
-        // DElete the faulty app ops file and report to the user!
+        // Delete the faulty app ops file (on reboot) and report to the user!
         if (new File(systemDir, "appops.xml").exists()){
             Slog.i(TAG, "Deleting AppOp Stats!");
-            // TODO toast or dialog RESTART NEEDED
-            new File(systemDir, "appops.xml").delete();
+            try {
+                new File(systemDir, "appops_fault").createNewFile();
+            } catch (IOException e){
+                // something sent VERY VERY VERY wrong
+            }
         }
-        Toast.makeText(mContext , "AppOps Corupted: Reboot Required!", Toast.LENGTH_SHORT).show();
+        Message msg = Message.obtain();
+        msg.what = SHOW_APPOP_ERROR;
+        mHandler.sendMessage(msg);
         throw new IllegalArgumentException("Bad operation #" + op);
     }
 
