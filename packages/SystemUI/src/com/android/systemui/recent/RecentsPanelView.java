@@ -154,6 +154,8 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
     private ImageView mFuubo;
 
     private ScrollView mShortcutBar;
+    private LinearLayout mRecentsShortcutBarApps;
+    boolean mRecentsShortcutBarAppsEnabled;
 
     private String mCameraPath;
 
@@ -443,8 +445,21 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
             // if there are no apps, bring up a "No recent apps" message
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(getTasks() == 0 ? View.VISIBLE : View.INVISIBLE);
-            mRecentsKillAllButton.setVisibility(getTasks() == 0 ? View.GONE : View.VISIBLE);
-            //mShortcutBar.setVisibility(getTasks() == 0 ? View.GONE : View.VISIBLE);
+            // check if Kill-All-Button is enabled and show if so
+            mRecentsKillAllEnabled = Settings.System.getBoolean(
+                    mContext.getContentResolver(),
+                    Settings.System.RECENT_KILL_ALL_BUTTON, false);
+            if (mRecentsKillAllButton != null) {
+                    // add check (no apps -> do not display)
+                    mRecentsKillAllButton.setVisibility(mRecentsKillAllEnabled ? (getTasks() == 0 ? View.GONE : View.VISIBLE) : View.GONE);
+            }
+            // same for App Shortcuts
+            mRecentsShortcutBarAppsEnabled = Settings.System.getBoolean(
+                    mContext.getContentResolver(),
+                    Settings.System.RECENT_APP_SHORTCUTS, false);
+            if (mRecentsShortcutBarApps != null) {
+                mRecentsShortcutBarApps.setVisibility(mRecentsShortcutBarAppsEnabled ? View.VISIBLE : View.GONE);
+            }
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -560,6 +575,7 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
         mShortcutBar = (ScrollView) findViewById(R.id.shortcut_bar);
+        mRecentsShortcutBarApps = (LinearLayout) findViewById(R.id.shortcut_bar_apps);
         mAlarmClock = (ImageView) findViewById(R.id.shortcut_alarmclock);
         mCalculator = (ImageView) findViewById(R.id.shortcut_calculator);
         mCamera = (ImageView) findViewById(R.id.shortcut_camera);
@@ -1099,6 +1115,9 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.RECENT_KILL_ALL_BUTTON),
                     false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.RECENT_APP_SHORTCUTS),
+                    false, this);
             updateSettings();
         }
 
@@ -1254,7 +1273,15 @@ public class RecentsPanelView extends FrameLayout implements OnClickListener, On
                 Settings.System.RECENT_KILL_ALL_BUTTON, false);
 
         if (mRecentsKillAllButton != null) {
-            mRecentsKillAllButton.setVisibility(mRecentsKillAllEnabled ? View.VISIBLE : View.GONE);
+			// add check (no apps -> do not display)
+            mRecentsKillAllButton.setVisibility(mRecentsKillAllEnabled ? (getTasks() == 0 ? View.GONE : View.VISIBLE) : View.GONE);
+        }
+        mRecentsShortcutBarAppsEnabled = Settings.System.getBoolean(
+                mContext.getContentResolver(),
+                Settings.System.RECENT_APP_SHORTCUTS, false);
+
+        if (mRecentsShortcutBarApps != null) {
+            mRecentsShortcutBarApps.setVisibility(mRecentsShortcutBarAppsEnabled ? View.VISIBLE : View.GONE);
         }
     }
 }
