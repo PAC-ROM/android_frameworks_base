@@ -16,18 +16,42 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- App sidebar -->
+    <string name="default_folder_text">Folder</string>
+    <string name="title_activity_sidebar_configuration">Appbar content setup</string>
+    <string name="action_save">Save</string>
+    <string name="toast_items_saved">Appbar items have been saved.</string>
+    <string name="content_setup_instructions">Add items to the Appbar by long pressing any item on the right and drag it over to the Appbar.\n\nCombine items into folders by droping an item onto any existing item in the Appbar.\n\nTo remove an item simply drag it out of the \@appbar.</string>
+    <string name="content_setup_dismiss">Continue</string>
+
+    <!-- Blacklisted app for floating mode -->
+    <string name="floating_mode_blacklisted_app">The current app is blacklisted as it may not work as expected in floating mode </string>
+
+    <!-- Content description of the halo button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_halo">Create notification halo.</string>
+
     <!-- CPUFreq -->
     <string name="cpufreq_max">Max CPU Freq</string>
     <string name="cpufreq_min">Min CPU Freq</string>
 
+    <!-- HALO -->
+    <string name="halo_on">HALO ON</string>
+    <string name="halo_off">HALO OFF</string>
+    <string name="halo_dismiss">Dismiss notification</string>
+    <string name="halo_hide">Hide</string>
+    <string name="halo_clear_all">Dismiss all notifications</string>
+    <string name="halo_silence">Hide &amp; silence until woken</string>
+    <string name="halo_tutorial1">This is HALO</string>
+    <string name="halo_tutorial2">Move me: double tap &amp; drag</string>
+    <string name="halo_tutorial3">Browse tasks: Horizontal drag</string>
+
+    <!-- Heads up -->
+    <string name="status_bar_notification_heads_up_enable_title">Enable heads up</string>
+    <string name="status_bar_notification_heads_up_disable_title">Disable heads up</string>
+    <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
+
     <!-- Long-press back kill application -->
     <string name="app_killed_message">App killed</string>
-
-    <!-- Slim pie -->
-    <!-- Battery status in pie controls -->
-    <string name="pie_battery_status_charging">Charging (<xliff:g id="percent">%d</xliff:g>%%)</string>
-    <string name="pie_battery_status_full">Charged</string>
-    <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% remaining</string>
 
     <!-- Phone status in pie controls -->
     <string name="pie_phone_status_no_service">No service</string>
@@ -44,36 +68,20 @@
     <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
     <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>
 
+    <!-- Slim pie -->
+    <!-- Battery status in pie controls -->
+    <string name="pie_battery_status_charging">Charging (<xliff:g id="percent">%d</xliff:g>%%)</string>
+    <string name="pie_battery_status_full">Charged</string>
+    <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% remaining</string>
+
     <!-- Slim recents -->
     <string name="status_bar_recent_playstore_item_title">Play Store</string>
     <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
-
-    <!-- Heads up -->
-    <string name="status_bar_notification_heads_up_enable_title">Enable heads up</string>
-    <string name="status_bar_notification_heads_up_disable_title">Disable heads up</string>
-    <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
     <!-- Title shown in notification popup for launching notification in floating mode -->
     <string name="status_bar_notification_floating_item_title">Floating mode</string>
 
     <!-- Title shown when app provides no interface -->
     <string name="status_bar_floating_no_interface">App provides no interface</string>
-
-    <!-- Blacklisted app for floating mode -->
-    <string name="floating_mode_blacklisted_app">The current app is blacklisted as it may not work as expected in floating mode </string>
-
-    <!-- Content description of the halo button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
-    <string name="accessibility_halo">Create notification halo.</string>
-
-    <!-- HALO -->
-    <string name="halo_on">HALO ON</string>
-    <string name="halo_off">HALO OFF</string>
-    <string name="halo_dismiss">Dismiss notification</string>
-    <string name="halo_hide">Hide</string>
-    <string name="halo_clear_all">Dismiss all notifications</string>
-    <string name="halo_silence">Hide &amp; silence until woken</string>
-    <string name="halo_tutorial1">This is HALO</string>
-    <string name="halo_tutorial2">Move me: double tap &amp; drag</string>
-    <string name="halo_tutorial3">Browse tasks: Horizontal drag</string>
 
 </resources>
