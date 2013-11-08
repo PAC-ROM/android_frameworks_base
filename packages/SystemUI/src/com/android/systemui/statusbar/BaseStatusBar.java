@@ -106,6 +106,7 @@ import com.android.systemui.SwipeHelper;
 import com.android.systemui.SystemUI;
 import com.android.systemui.cm.SpamMessageProvider;
 import com.android.systemui.pac.gestureanywhere.GestureAnywhereView;
+import com.android.systemui.pac.sidebar.AppSidebar;
 import com.android.systemui.statusbar.NotificationData.Entry;
 import com.android.systemui.statusbar.NotificationData.Entry;
 import com.android.systemui.statusbar.phone.NavigationBarView;
@@ -245,6 +246,9 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected Display mDisplay;
 
+    protected AppSidebar mAppSidebar;
+    protected int mSidebarPosition;
+
     private boolean mDeviceProvisioned = false;
 
     private RecentsComponent mRecents;
@@ -323,6 +327,9 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(
                     Settings.PAC.getUriFor(Settings.PAC.HEADS_UP_BLACKLIST_VALUES),
                     false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.APP_SIDEBAR_POSITION),
+                    false, this);
             update();
         }
 
@@ -339,6 +346,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                     Settings.PAC.HEADS_UP_BLACKLIST_VALUES);
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+            int sidebarPosition = Settings.PAC.getInt(
+                resolver, Settings.PAC.APP_SIDEBAR_POSITION,AppSidebar.SIDEBAR_POSITION_LEFT);
+            if (sidebarPosition != mSidebarPosition) {
+                mSidebarPosition = sidebarPosition;
+                mWindowManager.updateViewLayout(mAppSidebar,
+                getAppSidebarLayoutParams(sidebarPosition));
+            }
         }
     };
 
@@ -2371,6 +2385,36 @@ public abstract class BaseStatusBar extends SystemUI implements
         lp.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
         lp.gravity = Gravity.TOP | gravity;
         lp.setTitle("GestureAnywhereView");
+
+        return lp;
+    }
+
+    protected void addSidebarView() {
+        mAppSidebar = (AppSidebar)View.inflate(mContext, R.layout.app_sidebar, null);
+        mWindowManager.addView(mAppSidebar, getAppSidebarLayoutParams(mSidebarPosition));
+    }
+
+    protected void removeSidebarView() {
+        if (mAppSidebar != null)
+            mWindowManager.removeView(mAppSidebar);
+    }
+
+    protected WindowManager.LayoutParams getAppSidebarLayoutParams(int position) {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
+                0
+                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.TRANSLUCENT);
+        lp.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        lp.gravity = Gravity.TOP;// | Gravity.FILL_VERTICAL;
+        lp.gravity |= position == AppSidebar.SIDEBAR_POSITION_LEFT ? Gravity.LEFT : Gravity.RIGHT;
+        lp.setTitle("AppSidebar");
 
         return lp;
     }
