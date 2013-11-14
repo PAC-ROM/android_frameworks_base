@@ -16,10 +16,10 @@
 
 package com.android.internal.util.pac;
 
-public class SlimActionConstants {
+public class ActionConstants {
 
     // key must fit with the values arrays from Settings to use
-    // SlimActions.java actions
+    // ActionsConstants.java actions
     public static final String ACTION_HOME                 = "**home**";
     public static final String ACTION_BACK                 = "**back**";
     public static final String ACTION_SEARCH               = "**search**";
@@ -28,6 +28,7 @@ public class SlimActionConstants {
     public static final String ACTION_MENU_BIG             = "**menu_big**";
     public static final String ACTION_POWER                = "**power**";
     public static final String ACTION_NOTIFICATIONS        = "**notifications**";
+    public static final String ACTION_SETTINGS_PANEL       = "**settings_panel**";
     public static final String ACTION_RECENTS              = "**recents**";
     public static final String ACTION_SCREENSHOT           = "**screenshot**";
     public static final String ACTION_IME                  = "**ime**";
