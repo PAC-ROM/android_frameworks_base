@@ -117,7 +117,6 @@ public class Clock extends TextView implements DemoMode {
                 if (! newLocale.equals(mLocale)) {
                     mLocale = newLocale;
                 }
-                updateSettings();
                 return;
             }
             updateClock();
