@@ -318,11 +318,11 @@ LOCAL_JAVA_RESOURCE_FILES += $(LOCAL_PATH)/preloaded-classes
 include $(BUILD_JAVA_LIBRARY)
 framework_module := $(LOCAL_INSTALLED_MODULE)
 
-# Build part 2 of the framework library.
+# Build pac part of the framework library.
 # ============================================================
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := framework2
+LOCAL_MODULE := framework-pac
 LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 LOCAL_NO_STANDARD_LIBRARIES := true
 LOCAL_STATIC_JAVA_LIBRARIES := framework-base
@@ -332,14 +332,14 @@ LOCAL_DX_FLAGS := --core-library
 LOCAL_JAR_PACKAGES := com\* javax\*
 
 include $(BUILD_JAVA_LIBRARY)
-framework2_module := $(LOCAL_INSTALLED_MODULE)
+framework-pac_module := $(LOCAL_INSTALLED_MODULE)
 
 # Make sure that all framework modules are installed when framework is.
 # ============================================================
 $(framework_module): | $(dir $(framework_module))framework-res.apk
-$(framework_module): | $(dir $(framework_module))framework2.jar
+$(framework_module): | $(dir $(framework_module))framework-pac.jar
 
-framework_built := $(call java-lib-deps,framework framework2)
+framework_built := $(call java-lib-deps,framework framework-pac)
 
 # Copy AIDL files to be preprocessed and included in the SDK,
 # specified relative to the root of the build tree.
@@ -499,7 +499,7 @@ framework_docs_LOCAL_API_CHECK_JAVA_LIBRARIES := \
 	okhttp \
 	ext \
 	framework \
-	framework2 \
+	framework-pac \
 	mms-common \
 	telephony-common \
 	voip-common
