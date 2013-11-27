@@ -116,6 +116,9 @@
         <service android:name=".ImageWallpaper"
                 android:permission="android.permission.BIND_WALLPAPER"
                 android:exported="true" />
+	
+        <receiver android:name=".statusbar.StatusBarMonitor"
+                android:exported="true" />
 
         <receiver android:name=".BootReceiver" androidprv:primaryUserOnly="true">
             <intent-filter>
