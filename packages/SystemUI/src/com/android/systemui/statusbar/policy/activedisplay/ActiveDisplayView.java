@@ -654,6 +654,7 @@ public class ActiveDisplayView extends FrameLayout {
         }
         setVisibility(View.GONE);
         restoreBrightness();
+        mBar.disable(0);
         mWakedByPocketMode = false;
         cancelTimeoutTimer();
         unregisterSensorListener(mLightSensor);
@@ -931,8 +932,6 @@ public class ActiveDisplayView extends FrameLayout {
                         iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
                         mOverflowNotifications.addView(iv, mOverflowLayoutParams);
                     }
-                } catch (RemoteException re) {
-                } catch (NullPointerException npe) {
                 }
             }
         });
