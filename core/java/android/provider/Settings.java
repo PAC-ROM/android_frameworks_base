@@ -4137,6 +4137,18 @@ public final class Settings {
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
         /**
+         * Navigation recent long press
+         * @hide
+         */
+        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
+
+        /**
+         * Wether navigation bar in power menu is enabled or not
+         * @hide
+         */
+        public static final String POWER_MENU_NAV_BAR_ENABLED = "power_menu_nav_bar_enabled";
+
+        /**
          * show clear all recents button
          *  @hide
          */
@@ -4257,12 +4269,6 @@ public final class Settings {
          * @hide
          */
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
-
-        /**
-         * Navigation recent long press
-         * @hide
-         */
-        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
 
         /**
          * Whether pie controls are enabled
@@ -4411,12 +4417,6 @@ public final class Settings {
                 "pie_buttons_config_second_layer";
 
         /**
-         * Wether navigation bar in power menu is enabled or not
-         * @hide
-         */
-        public static final String POWER_MENU_NAV_BAR_ENABLED = "power_menu_nav_bar_enabled";
-
-        /**
          * SMOOTH PROGRESS BAR Mirror
          * @hide
          */
@@ -4482,6 +4482,18 @@ public final class Settings {
          * @hide
          */
         public static final String SWIPE_TO_SWITCH_SCREEN_DETECTION = "full_swipe_to_switch_detection";
+
+        /**
+         * Whether to show the network status in the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_STATS = "status_bar_network_stats";
+
+        /**
+         * Frequency at which stats are updated, in milliseconds
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL = "status_bar_network_stats_update_frequency";
 
     }
 

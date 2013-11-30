@@ -16,6 +16,9 @@
 -->
 <resources>
 
+    <!-- Network stats text size -->
+    <dimen name="network_stats_text_size">10dp</dimen>
+
     <!-- Pie controls -->
     <!-- Padding between the pie controls and the screen border -->
     <dimen name="pie_padding">4dp</dimen>
