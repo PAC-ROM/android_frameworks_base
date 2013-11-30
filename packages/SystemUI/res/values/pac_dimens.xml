@@ -47,4 +47,7 @@
     <!-- Height of carrier label + close handle -->
     <dimen name="weather_text_margin">56dp</dimen>
 
+    <!-- Network stats text size -->
+    <dimen name="network_stats_text_size">10dp</dimen>
+
 </resources>
