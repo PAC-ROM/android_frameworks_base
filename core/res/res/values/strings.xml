@@ -3198,10 +3198,10 @@
     <!-- Title of the alert when an application has crashed. -->
     <string name="aerr_title"></string>
     <!-- Text of the alert that is displayed when an application has crashed. -->
-    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.</string>
+    <string name="aerr_application">Unfortunately, <xliff:g id="application">%1$s</xliff:g> has stopped.\nBlame Tyler.</string>
     <!-- Text of the alert that is displayed when an application has crashed. -->
     <string name="aerr_process">Unfortunately, the process <xliff:g id="process">%1$s</xliff:g> has
-        stopped.</string>
+        stopped.\nBlame Tyler</string>
     <!-- Title of the alert when an application is not responding. -->
     <string name="anr_title"></string>
     <!-- Text of the alert that is displayed when an application is not responding. -->
