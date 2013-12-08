@@ -33,7 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/status_bar_recents_background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:fitsSystemWindows="true">
 
             <view class="com.android.systemui.recent.LinearColorBar"
                 android:id="@+id/ram_usage_bar"
