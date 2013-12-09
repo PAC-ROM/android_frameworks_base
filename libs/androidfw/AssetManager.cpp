@@ -167,7 +167,7 @@ AssetManager::~AssetManager(void)
     delete[] mVendor;
 }
 
-bool AssetManager::addAssetPath(const String8& path, void** cookie, bool asSkin)
+bool AssetManager::addAssetPath(const String8& path, void** cookie)
 {
     AutoMutex _l(mLock);
 
@@ -177,7 +177,6 @@ bool AssetManager::addAssetPath(const String8& path, void** cookie, bool asSkin)
     if (kAppZipName) {
         realPath.appendPath(kAppZipName);
     }
-    ap.asSkin = asSkin;
     ap.type = ::getFileType(realPath.string());
     if (ap.type == kFileTypeRegular) {
         ap.path = realPath;
@@ -538,13 +537,9 @@ Asset* AssetManager::open(const char* fileName, AccessMode mode)
     size_t i = mAssetPaths.size();
     while (i > 0) {
         i--;
-        const asset_path& ap = mAssetPaths.itemAt(i);
-        if (ap.asSkin) {
-            continue;
-        }
         ALOGV("Looking for asset '%s' in '%s'\n",
-                assetName.string(), ap.path.string());
-        Asset* pAsset = openNonAssetInPathLocked(assetName.string(), mode, ap);
+                assetName.string(), mAssetPaths.itemAt(i).path.string());
+        Asset* pAsset = openNonAssetInPathLocked(assetName.string(), mode, mAssetPaths.itemAt(i));
         if (pAsset != NULL) {
             return pAsset != kExcludedAsset ? pAsset : NULL;
         }
@@ -576,13 +571,9 @@ Asset* AssetManager::openNonAsset(const char* fileName, AccessMode mode)
     size_t i = mAssetPaths.size();
     while (i > 0) {
         i--;
-        const asset_path& ap = mAssetPaths.itemAt(i);
-        if (ap.asSkin) {
-            continue;
-        }
-        ALOGV("Looking for non-asset '%s' in '%s'\n", fileName, ap.path.string());
+        ALOGV("Looking for non-asset '%s' in '%s'\n", fileName, mAssetPaths.itemAt(i).path.string());
         Asset* pAsset = openNonAssetInPathLocked(
-            fileName, mode, ap);
+            fileName, mode, mAssetPaths.itemAt(i));
         if (pAsset != NULL) {
             return pAsset != kExcludedAsset ? pAsset : NULL;
         }
@@ -1194,9 +1185,6 @@ AssetDir* AssetManager::openDir(const char* dirName)
     while (i > 0) {
         i--;
         const asset_path& ap = mAssetPaths.itemAt(i);
-        if (ap.asSkin) {
-            continue;
-        }
         if (ap.type == kFileTypeRegular) {
             ALOGV("Adding directory %s from zip %s", dirName, ap.path.string());
             scanAndMergeZipLocked(pMergedInfo, ap, kAssetsRoot, dirName);
@@ -2087,16 +2075,3 @@ bool AssetManager::detachThemePath(const String8 &packageName, void* cookie)
     return true;
 }
 
-void AssetManager::addRedirections(PackageRedirectionMap* resMap)
-{
-    getResources();
-    ResTable* rt = mResources;
-    rt->addRedirections(resMap);
-}
-
-void AssetManager::clearRedirections()
-{
-    getResources();
-    ResTable* rt = mResources;
-    rt->clearRedirections();
-}
