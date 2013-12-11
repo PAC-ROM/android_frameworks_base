@@ -110,6 +110,10 @@ public class ActionTarget {
         } else if (action.equals(ACTION_IME_SWITCHER)) {
             mContext.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
             return true;
+        } else if (action.equals(ACTION_POWER_MENU)) {
+            Intent intent = new Intent(Intent.ACTION_POWERMENU);
+            mContext.sendBroadcast(intent);
+            return true;
         } else if (action.equals(ACTION_SCREENSHOT)) {
             takeScreenshot();
             return true;
