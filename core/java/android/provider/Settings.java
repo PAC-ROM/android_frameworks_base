@@ -4355,6 +4355,13 @@ public final class Settings {
          */
         public static final String POWER_MENU_NAV_BAR_ENABLED = "power_menu_nav_bar_enabled";
 
+        /**
+         * Wether to allow full screen swipe detection on notification drawer
+         * for swipe to switch or not
+         * @hide
+         */
+        public static final String SWIPE_TO_SWITCH_SCREEN_DETECTION = "full_swipe_to_switch_detection";
+
     }
 
     /**
