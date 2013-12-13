@@ -4571,6 +4571,13 @@ public final class Settings {
         */
        public static final String FLIP_ACTION_KEY = "flip_action";
 
+       /**
+        * Should call status sounds be player
+        *
+        * @hide
+        */
+       public static final String CALL_END_SOUND = "call_end_sound";
+
     }
 
     /**
