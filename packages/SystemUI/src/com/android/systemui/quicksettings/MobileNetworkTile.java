@@ -52,6 +52,7 @@ public class MobileNetworkTile extends NetworkTile {
                 }
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
+                }
             }
         };
 
