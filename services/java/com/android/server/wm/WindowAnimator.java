@@ -123,6 +123,12 @@ public class WindowAnimator {
         mDisplayContentsAnimators.delete(displayId);
     }
 
+    AppWindowAnimator getWallpaperAppAnimator() {
+        return mService.mWallpaperTarget == null
+                ? null : mService.mWallpaperTarget.mAppToken == null
+                        ? null : mService.mWallpaperTarget.mAppToken.mAppAnimator;
+    }
+
     void hideWallpapersLocked(final WindowState w) {
         final WindowState wallpaperTarget = mService.mWallpaperTarget;
         final WindowState lowerWallpaperTarget = mService.mLowerWallpaperTarget;
@@ -252,7 +258,7 @@ public class WindowAnimator {
                                 mForceHiding = KEYGUARD_SHOWN;
                             }
                         } else {
-                            mForceHiding = win.isDrawnLw() ? KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
+                            mForceHiding = KEYGUARD_NOT_SHOWN;
                         }
                     }
                     if (WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
