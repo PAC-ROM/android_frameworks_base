@@ -693,10 +693,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
             mDateView.setEnabled(true);
         }
         mClockView = mNotificationPanelHeader.findViewById(R.id.clock);
-        if (mClockView != null) {
-            mClockView.setOnClickListener(mClockClickListener);
-            mClockView.setEnabled(true);
-        }
 
         mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel);
         mHasFlipSettings = res.getBoolean(R.bool.config_hasFlipSettingsPanel);
@@ -2964,12 +2960,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         }
     };
 
-    private View.OnClickListener mClockClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            startActivityDismissingKeyguard(
-                    new Intent(AlarmClock.ACTION_SHOW_ALARMS), true); // have fun, everyone
-        }
-    };
     private View.OnClickListener mCalendarClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_CALENDAR);
