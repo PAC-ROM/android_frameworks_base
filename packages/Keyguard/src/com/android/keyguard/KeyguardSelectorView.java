@@ -210,15 +210,12 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     public KeyguardSelectorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLockPatternUtils = new LockPatternUtils(getContext());
-<<<<<<< HEAD
         mTargetOffset = LockscreenTargetUtils.getTargetOffset(context);
-=======
         if (mUnlockFilter == null) {
             mUnlockFilter = new IntentFilter();
             mUnlockFilter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
         }
         if (mUnlockReceiver == null) mUnlockReceiver = new UnlockReceiver();
->>>>>>> b94dd0e... Custom Navigation Ring FW part
     }
 
     @Override
@@ -522,7 +519,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 hideBouncer(mSecurityMessageDisplay, mFadeView, mBouncerFrame, duration);
     }
 
-<<<<<<< HEAD
     public void updateLockscreenBattery(KeyguardUpdateMonitor.BatteryStatus status) {
         if (Settings.System.getIntForUser(
                 mContext.getContentResolver(),
@@ -543,7 +539,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             mGlowPadView.setArc(mBatteryLevel * 3.6f, Color.HSVToColor(0x80, new float[]{ hue, 1.f, 1.f }));
         } else {
             mGlowPadView.setArc(0, 0);
-=======
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -564,7 +562,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 mCallback.userActivity(0);
                 mCallback.dismiss(false);
             }
->>>>>>> b94dd0e... Custom Navigation Ring FW part
         }
     }
 }

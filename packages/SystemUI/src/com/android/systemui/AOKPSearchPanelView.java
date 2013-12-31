@@ -50,6 +50,8 @@ import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.FrameLayout;
 
 import static com.android.internal.util.aokp.AwesomeConstants.*;
+
+import com.android.internal.util.aokp.AwesomeAction;
 import com.android.internal.util.aokp.NavRingHelpers;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
@@ -62,7 +64,6 @@ import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.StatusBarPanel;
-import com.android.systemui.aokp.AwesomeAction;
 
 import java.util.ArrayList;
 
@@ -293,9 +294,9 @@ public class AOKPSearchPanelView extends FrameLayout implements
         mLongPress = false;
         mSearchPanelLock = false;
 
-        String tgtCenter = Settings.AOKP.getString(mContentResolver, Settings.AOKP.SYSTEMUI_NAVRING[0]);
+        String tgtCenter = Settings.System.getString(mContentResolver, Settings.System.SYSTEMUI_NAVRING[0]);
         if (TextUtils.isEmpty(tgtCenter)) {
-            Settings.AOKP.putString(mContentResolver, Settings.AOKP.SYSTEMUI_NAVRING[0], AwesomeConstant.ACTION_ASSIST.value());
+            Settings.System.putString(mContentResolver, Settings.System.SYSTEMUI_NAVRING[0], AwesomeConstant.ACTION_ASSIST.value());
         }
 
         // Custom Targets
@@ -544,18 +545,18 @@ public class AOKPSearchPanelView extends FrameLayout implements
         }
 
         void observe() {
-            mContentResolver.registerContentObserver(Settings.AOKP.getUriFor(
-                    Settings.AOKP.SYSTEMUI_NAVRING_AMOUNT), false, this);
-            mContentResolver.registerContentObserver(Settings.AOKP.getUriFor(
-                    Settings.AOKP.SYSTEMUI_NAVRING_LONG_ENABLE), false, this);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEMUI_NAVRING_AMOUNT), false, this);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEMUI_NAVRING_LONG_ENABLE), false, this);
 
             for (int i = 0; i < 5; i++) {
 	            mContentResolver.registerContentObserver(
-                    Settings.AOKP.getUriFor(Settings.AOKP.SYSTEMUI_NAVRING[i]), false, this);
+                    Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING[i]), false, this);
                 mContentResolver.registerContentObserver(
-                    Settings.AOKP.getUriFor(Settings.AOKP.SYSTEMUI_NAVRING_LONG[i]), false, this);
+                    Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING_LONG[i]), false, this);
                 mContentResolver.registerContentObserver(
-                    Settings.AOKP.getUriFor(Settings.AOKP.SYSTEMUI_NAVRING_ICON[i]), false, this);
+                    Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVRING_ICON[i]), false, this);
             }
         }
 
@@ -569,19 +570,19 @@ public class AOKPSearchPanelView extends FrameLayout implements
     public void updateSettings() {
 
         for (int i = 0; i < 5; i++) {
-            targetActivities[i] = Settings.AOKP.getString(
-                    mContentResolver, Settings.AOKP.SYSTEMUI_NAVRING[i]);
-            longActivities[i] = Settings.AOKP.getString(
-                    mContentResolver, Settings.AOKP.SYSTEMUI_NAVRING_LONG[i]);
-            customIcons[i] = Settings.AOKP.getString(
-                    mContentResolver, Settings.AOKP.SYSTEMUI_NAVRING_ICON[i]);
+            targetActivities[i] = Settings.System.getString(
+                    mContentResolver, Settings.System.SYSTEMUI_NAVRING[i]);
+            longActivities[i] = Settings.System.getString(
+                    mContentResolver, Settings.System.SYSTEMUI_NAVRING_LONG[i]);
+            customIcons[i] = Settings.System.getString(
+                    mContentResolver, Settings.System.SYSTEMUI_NAVRING_ICON[i]);
         }
 
-        mBoolLongPress = (Settings.AOKP.getBoolean(mContentResolver,
-                Settings.AOKP.SYSTEMUI_NAVRING_LONG_ENABLE, false));
+        mBoolLongPress = (Settings.System.getBoolean(mContentResolver,
+                Settings.System.SYSTEMUI_NAVRING_LONG_ENABLE, false));
 
-        mNavRingAmount = Settings.AOKP.getInt(mContentResolver,
-                         Settings.AOKP.SYSTEMUI_NAVRING_AMOUNT, 1);
+        mNavRingAmount = Settings.System.getInt(mContentResolver,
+                         Settings.System.SYSTEMUI_NAVRING_AMOUNT, 1);
 
     }
 }

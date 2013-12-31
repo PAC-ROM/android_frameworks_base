@@ -164,7 +164,6 @@ public class GlowPadView extends View {
     private boolean mMagneticTargets = false;
     private boolean mDragging;
     private int mNewTargetResources;
-    private ArrayList<TargetDrawable> mNewTargetDrawables;
 
     private Paint mArcPaint;
     private RectF mArcRect;
