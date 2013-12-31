@@ -76,4 +76,7 @@
     <dimen name="navigation_tablet_key_padding_land">42dip</dimen>
     <dimen name="navigation_tablet_key_width_land">162dip</dimen>
 
+    <!-- Constant for hidden ribbon drag handle -->
+    <dimen name="ribbon_drag_handle_height">25dp</dimen>
+
 </resources>
