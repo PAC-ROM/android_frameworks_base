@@ -851,7 +851,7 @@ public class BatteryMeterView extends View implements DemoMode {
         }
 
         @Override
-        public void onDraw(Canvas c) {
+        public void onDraw(Canvas c, BatteryTracker tracker) {
             if (mDisposed) return;
 
             int level = mTracker.level;
