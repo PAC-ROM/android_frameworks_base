@@ -54,7 +54,7 @@
     <bool name="config_showRotationLock">true</bool>
 
     <!-- Amount of time to hold off before showing the search panel when the user presses home -->
-    <integer name="config_show_search_delay">250</integer>
+    <integer name="config_show_search_delay">1000</integer>
 
     <!-- Vibration duration for MultiWaveView used in SearchPanelView -->
     <integer translatable="false" name="config_vibration_duration">0</integer>
@@ -72,7 +72,7 @@
     <!-- decay duration (from size_max -> size), in ms -->
     <integer name="navigation_bar_deadzone_hold">333</integer>
     <integer name="navigation_bar_deadzone_decay">333</integer>
-    
+
     <bool name="config_dead_zone_flash">false</bool>
 
     <!-- Min alpha % that recent items will fade to while being dismissed -->
