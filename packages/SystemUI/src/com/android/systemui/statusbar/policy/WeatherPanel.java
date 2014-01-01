@@ -55,8 +55,8 @@ public class WeatherPanel extends FrameLayout {
     };
 
     public void updateSettings() {
-        mShowLocation = Settings.System.getBoolean(mContentResolver,
-                Settings.System.WEATHER_SHOW_LOCATION, true);
+        ContentResolver resolver = mContext.getContentResolver();
+        mShowLocation = Settings.System.getBoolean(resolver, Settings.System.WEATHER_SHOW_LOCATION, true);
         updateCityVisibility();
     }
 
