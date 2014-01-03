@@ -3731,6 +3731,12 @@ public final class Settings {
         public static final String KEY_MISSED_CALL_BREATH = "missed_call_breath";
 
         /**
+         * Give Voicemail notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_VOICEMAIL_BREATH = "voicemail_breath";
+
+        /**
          * whether which Ram Usage Bar mode is used on recent switcher
          * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
          * @hide
