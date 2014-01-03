@@ -3719,10 +3719,16 @@ public final class Settings {
         public static final String SWIPE_TO_SWITCH_SCREEN_DETECTION = "full_swipe_to_switch_detection";
 
         /**
-         * Give SMS Notifications a breathing effect
+         * Give SMS notifications a breathing effect
          * @hide
          */
-        public static final String KEY_SMS_BREATH = "pref_key_sms_breath";
+        public static final String KEY_SMS_BREATH = "sms_breath";
+
+        /**
+         * Give Missed call notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_MISSED_CALL_BREATH = "missed_call_breath";
 
         /**
          * whether which Ram Usage Bar mode is used on recent switcher
