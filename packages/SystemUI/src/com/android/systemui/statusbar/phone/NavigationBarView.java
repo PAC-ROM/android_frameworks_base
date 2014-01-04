@@ -175,7 +175,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             }
         }
 
-         public void onBackAltCleared() {
+        public void onBackAltCleared() {
             // When dismissing ime during unlock, force the back button to run the same appearance
             // animation as home (if we catch this condition early enough).
             if (!mBackTransitioning && getBackButton() != null && getBackButton().getVisibility() == VISIBLE
@@ -450,6 +450,12 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mNavigationIconHints = hints;
 
+        if (getBackButton() != null) {
+            ((ImageView) getBackButton()).setImageResource(backAlt
+                    ? R.drawable.ic_sysbar_back_ime
+                    : R.drawable.ic_sysbar_back);
+        }
+
         setDisabledFlags(mDisabledFlags, true);
     }
 
@@ -512,7 +518,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             if (button != null) {
                 Object tag = button.getTag();
                 if (tag == null) {
-                    Log.e(TAG, "error finding tag with some view");
+                    setVisibleOrInvisible(button, !disableHome);
                 } else if (AwesomeConstant.ACTION_HOME.value().equals(tag)) {
                     setVisibleOrInvisible(button, !disableHome);
                 } else if (AwesomeConstant.ACTION_BACK.value().equals(tag)) {
