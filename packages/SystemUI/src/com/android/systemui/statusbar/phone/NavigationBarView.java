@@ -352,11 +352,11 @@ public class NavigationBarView extends LinearLayout {
 
         mNavigationIconHints = hints;
 
-//        ((ImageView)getBackButton()).setImageDrawable(backAlt
-//                ? (mVertical ? mBackAltLandIcon : mBackAltIcon)
-//                : (mVertical ? mBackLandIcon : mBackIcon));
-//
-//        ((ImageView)getRecentsButton()).setImageDrawable(mVertical ? mRecentLandIcon : mRecentIcon);
+        if (getBackButton() != null) {
+            ((ImageView) getBackButton()).setImageResource(backAlt
+                    ? R.drawable.ic_sysbar_back_ime
+                    : R.drawable.ic_sysbar_back);
+        }
 
         setDisabledFlags(mDisabledFlags, true);
     }
@@ -405,7 +405,7 @@ public class NavigationBarView extends LinearLayout {
             if (button != null) {
                 Object tag = button.getTag();
                 if (tag == null) {
-                    Log.e(TAG, "error finding tag with some view");
+                    setVisibleOrInvisible(button, !disableHome);
                 } else if (AwesomeConstant.ACTION_HOME.value().equals(tag)) {
                     setVisibleOrInvisible(button, !disableHome);
                 } else if (AwesomeConstant.ACTION_BACK.value().equals(tag)) {

@@ -391,20 +391,20 @@ public class KeyButtonView extends ImageView {
             this.iconUri = uri;
 
             if (singleAction != null) {
-                if (singleAction.isEmpty()
-                        || singleAction.equals(AwesomeConstant.ACTION_NULL.value())) {
+                if ((singleAction.isEmpty()
+                        || singleAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
                     singleAction = null;
                 }
             }
             if (doubleTapAction != null) {
-                if (doubleTapAction.isEmpty()
-                        || doubleTapAction.equals(AwesomeConstant.ACTION_NULL.value())) {
+                if ((doubleTapAction.isEmpty()
+                        || doubleTapAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
                     doubleTapAction = null;
                 }
             }
             if (longPressAction != null) {
-                if (longPressAction.isEmpty()
-                        || longPressAction.equals(AwesomeConstant.ACTION_NULL.value())) {
+                if ((longPressAction.isEmpty()
+                        || longPressAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
                     longPressAction = null;
                 }
             }
