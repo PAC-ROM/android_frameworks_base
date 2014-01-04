@@ -26,8 +26,11 @@ import android.os.Bundle;
 import com.android.systemui.screenshot.GlobalScreenshot;
 
 public class DeleteScreenshot extends BroadcastReceiver {
-    // Intent extra fields
-    public static final String SCREENSHOT_URI = "com.android.systemui.SCREENSHOT_URI";
+    private static final String LOG_TAG = "DeleteScreenshot";
+
+    // Intent bungle fields
+    public static final String SCREENSHOT_URI =
+            "com.android.systemui.SCREENSHOT_URI";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,7 +43,7 @@ public class DeleteScreenshot extends BroadcastReceiver {
 
         Uri screenshotUri = Uri.parse(extras.getString(SCREENSHOT_URI));
         if (screenshotUri != null) {
-            context.getContentResolver().delete(screenshotUri, null, null);
+                context.getContentResolver().delete(screenshotUri, null, null);
         }
 
         // Dismiss the notification that brought us here.
@@ -48,4 +51,5 @@ public class DeleteScreenshot extends BroadcastReceiver {
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(GlobalScreenshot.SCREENSHOT_NOTIFICATION_ID);
     }
+
 }
