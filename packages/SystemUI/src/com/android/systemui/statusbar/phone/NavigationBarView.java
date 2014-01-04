@@ -175,15 +175,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             }
         }
 
-        public void onBackAltCleared() {
+         public void onBackAltCleared() {
             // When dismissing ime during unlock, force the back button to run the same appearance
             // animation as home (if we catch this condition early enough).
-            View backView = findButton(NavbarEditor.NAVBAR_BACK);
-            View homeView = findButton(NavbarEditor.NAVBAR_HOME);
-            if (!mBackTransitioning && backView != null && backView.getVisibility() == VISIBLE
-                    && mHomeAppearing && homeView != null && homeView.getAlpha() == 0) {
-                backView.setAlpha(0);
-                ValueAnimator a = ObjectAnimator.ofFloat(backView, "alpha", 0, 1);
+            if (!mBackTransitioning && getBackButton() != null && getBackButton().getVisibility() == VISIBLE
+                    && mHomeAppearing && getHomeButton() != null && getHomeButton().getAlpha() == 0) {
+                getBackButton().setAlpha(0);
+                ValueAnimator a = ObjectAnimator.ofFloat(getBackButton(), "alpha", 0, 1);
                 a.setStartDelay(mStartDelay);
                 a.setDuration(mDuration);
                 a.setInterpolator(mInterpolator);
