@@ -1,22 +1,8 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- * Copyright (C) 2013 CyanogenMod Project
- * Copyright (C) 2013 The SlimRoms Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.android.systemui.quicksettings;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import android.app.ActivityManagerNative;
 import android.content.Context;
@@ -25,13 +11,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.UserInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Profile;
 import android.util.Log;
@@ -70,8 +60,7 @@ public class UserTile extends QuickSettingsTile {
                         Log.e(TAG, "Couldn't show user switcher", e);
                     }
                 } else {
-                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                            ContactsContract.Profile.CONTENT_URI);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Profile.CONTENT_URI);
                     startSettingsActivity(intent);
                 }
             }
@@ -102,6 +91,7 @@ public class UserTile extends QuickSettingsTile {
         TextView tv = (TextView) mTile.findViewById(R.id.user_textview);
         if (tv != null) {
             tv.setText(mLabel);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
         }
         iv.setImageDrawable(userAvatar);
     }
@@ -127,8 +117,7 @@ public class UserTile extends QuickSettingsTile {
             @Override
             protected Pair<String, Drawable> doInBackground(Void... params) {
                 try {
-                    // The system needs some time to change the picture,
-                    // if we try to load it when we receive the broadcast, we will load the old one
+                    // The system needs some time to change the picture, if we try to load it when we receive the broadcast, we will load the old one
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -136,17 +125,9 @@ public class UserTile extends QuickSettingsTile {
                 final UserManager um =
                         (UserManager) mContext.getSystemService(Context.USER_SERVICE);
 
-                // Fall back to the UserManager nickname if we can't read the name from the local
-                // profile below.
-                String name = userName;
+                String name = null;
                 Drawable avatar = null;
-                Bitmap rawAvatar = um.getUserIcon(userId);
-                if (rawAvatar != null) {
-                    avatar = new BitmapDrawable(mContext.getResources(), rawAvatar);
-                } else {
-                    avatar = mContext.getResources().getDrawable(R.drawable.ic_qs_default_user);
-                }
-
+                String id = null;
                 // If it's a single-user device, get the profile name, since the nickname is not
                 // usually valid
                 if (um.getUsers().size() <= 1) {
@@ -158,9 +139,36 @@ public class UserTile extends QuickSettingsTile {
                         try {
                             if (cursor.moveToFirst()) {
                                 name = cursor.getString(cursor.getColumnIndex(Phone.DISPLAY_NAME));
+                                id = cursor.getString(cursor.getColumnIndex(Phone._ID));
                             }
                         } finally {
                             cursor.close();
+                        }
+                        // Fall back to the UserManager nickname if we can't read the name from the local
+                        // profile below.
+                        if (name == null) {
+                            avatar = mContext.getResources().getDrawable(R.drawable.ic_qs_default_user);
+                            name = mContext.getResources().getString(com.android.internal.R.string.owner_name);
+                        } else {
+                            Bitmap rawAvatar = null;
+                            InputStream is = null;
+                            try {
+                                Uri.Builder uriBuilder = ContactsContract.RawContacts.CONTENT_URI.buildUpon();
+                                uriBuilder.appendPath(id);
+                                uriBuilder.appendPath(Contacts.Photo.DISPLAY_PHOTO);
+                                is = mContext.getContentResolver().openInputStream(uriBuilder.build());
+                                rawAvatar = BitmapFactory.decodeStream(is);
+                                avatar = new BitmapDrawable(mContext.getResources(), rawAvatar);
+                            } catch (FileNotFoundException e) {
+                                avatar = mContext.getResources().getDrawable(R.drawable.ic_qs_default_user);
+                            } finally {
+                                if (is != null) {
+                                    try {
+                                        is.close();
+                                    } catch (IOException e) {
+                                    }
+                                }
+                            }
                         }
                     }
                 }
