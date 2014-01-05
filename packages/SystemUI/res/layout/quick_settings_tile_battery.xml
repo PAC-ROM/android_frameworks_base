@@ -37,6 +37,7 @@
     </FrameLayout>
 
     <TextView
+<<<<<<< HEAD
         android:id="@+id/text"
         style="@style/TextAppearance.QuickSettings.TileView"
         android:layout_width="match_parent"
@@ -47,3 +48,14 @@
         android:gravity="top|center_horizontal" />
 
 </RelativeLayout>
+=======
+            style="@style/TextAppearance.QuickSettings.TileView"
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            />
+</LinearLayout>
+>>>>>>> e813cde... Fix up quicksettings 1/2

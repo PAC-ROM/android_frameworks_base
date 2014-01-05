@@ -68,6 +68,7 @@ public class UserTile extends QuickSettingsTile {
                         }
                     }, 400); // TODO: ideally this would be tied to the collapse of the panel
                 } else {
+<<<<<<< HEAD
                     final Cursor cursor = mContext.getContentResolver().query(
                             Profile.CONTENT_URI, null, null, null, null);
                     if (cursor.moveToNext() && !cursor.isNull(0)) {
@@ -81,6 +82,10 @@ public class UserTile extends QuickSettingsTile {
                         startSettingsActivity(intent);
                     }
                     cursor.close();
+=======
+                    Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Profile.CONTENT_URI);
+                    startSettingsActivity(intent);
+>>>>>>> e813cde... Fix up quicksettings 1/2
                 }
             }
         };
@@ -110,6 +115,7 @@ public class UserTile extends QuickSettingsTile {
         TextView tv = (TextView) mTile.findViewById(R.id.user_textview);
         if (tv != null) {
             tv.setText(mLabel);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
         }
 
         if (iv != null) {
@@ -137,7 +143,18 @@ public class UserTile extends QuickSettingsTile {
         mUserInfoTask = new AsyncTask<Void, Void, Pair<String, Drawable>>() {
             @Override
             protected Pair<String, Drawable> doInBackground(Void... params) {
+<<<<<<< HEAD
                 final UserManager um = UserManager.get(mContext);
+=======
+                try {
+                    // The system needs some time to change the picture, if we try to load it when we receive the broadcast, we will load the old one
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                final UserManager um =
+                        (UserManager) mContext.getSystemService(Context.USER_SERVICE);
+>>>>>>> e813cde... Fix up quicksettings 1/2
 
                 String name = null;
                 Drawable avatar = null;
@@ -153,7 +170,11 @@ public class UserTile extends QuickSettingsTile {
                         try {
                             if (cursor.moveToFirst()) {
                                 name = cursor.getString(cursor.getColumnIndex(Phone.DISPLAY_NAME));
+<<<<<<< HEAD
                                 id = cursor.getString(cursor.getColumnIndex(Phone.PHOTO_FILE_ID));
+=======
+                                id = cursor.getString(cursor.getColumnIndex(Phone._ID));
+>>>>>>> e813cde... Fix up quicksettings 1/2
                             }
                         } finally {
                             cursor.close();
@@ -167,8 +188,14 @@ public class UserTile extends QuickSettingsTile {
                             Bitmap rawAvatar = null;
                             InputStream is = null;
                             try {
+<<<<<<< HEAD
                                 Uri.Builder uriBuilder = ContactsContract.DisplayPhoto.CONTENT_URI.buildUpon();
                                 uriBuilder.appendPath(id);
+=======
+                                Uri.Builder uriBuilder = ContactsContract.RawContacts.CONTENT_URI.buildUpon();
+                                uriBuilder.appendPath(id);
+                                uriBuilder.appendPath(Contacts.Photo.DISPLAY_PHOTO);
+>>>>>>> e813cde... Fix up quicksettings 1/2
                                 is = mContext.getContentResolver().openInputStream(uriBuilder.build());
                                 rawAvatar = BitmapFactory.decodeStream(is);
                                 avatar = new BitmapDrawable(mContext.getResources(), rawAvatar);
@@ -183,6 +210,7 @@ public class UserTile extends QuickSettingsTile {
                                 }
                             }
                         }
+<<<<<<< HEAD
                     }
                 } else {
                     name = userName;
@@ -191,6 +219,8 @@ public class UserTile extends QuickSettingsTile {
                         avatar = new BitmapDrawable(mContext.getResources(), rawAvatar);
                     } else {
                         avatar = mContext.getResources().getDrawable(R.drawable.ic_qs_default_user);
+=======
+>>>>>>> e813cde... Fix up quicksettings 1/2
                     }
                 }
 

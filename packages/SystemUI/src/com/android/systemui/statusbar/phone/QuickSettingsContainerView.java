@@ -25,8 +25,11 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.graphics.Point;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.android.systemui.R;
@@ -54,6 +57,12 @@ public class QuickSettingsContainerView extends FrameLayout {
     private boolean mSingleRow;
     private Context mContext;
     private boolean mSmallIcons;
+    private boolean mSingleRow;
+
+    private Context mContext;
+    private Resources mResources;
+
+    private boolean mFirstStartUp = true;
 
     public QuickSettingsContainerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,10 +102,10 @@ public class QuickSettingsContainerView extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Calculate the cell width dynamically
         int width = MeasureSpec.getSize(widthMeasureSpec);
-
+        int height = MeasureSpec.getSize(heightMeasureSpec);
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
                 (mNumColumns - 1) * mCellGap);
-        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumColumns);
+        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumColumns);      
         int cellHeight = 0;
         float cellGap = mCellGap;
 
@@ -119,14 +128,22 @@ public class QuickSettingsContainerView extends FrameLayout {
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
                 int colSpan = v.getColumnSpan();
                 lp.width = (int) ((colSpan * cellWidth) + (colSpan - 1) * cellGap);
+                if (mSingleRow) {
                 lp.height = cellHeight;
-
                 // Measure the child
                 int newWidthSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
                 int newHeightSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
                 v.measure(newWidthSpec, newHeightSpec);
+
+                // Save the cell height
+                if (cellHeight <= 0) {
+                    cellHeight = v.getMeasuredHeight();
+                }
+
                 cursor += colSpan;
+                if (mSingleRow) {                
                 totalWidth += v.getMeasuredWidth() + cellGap;
+                }
             }
         }
 
@@ -225,4 +242,5 @@ public class QuickSettingsContainerView extends FrameLayout {
             return mTextPadding = (int) mPadding3Tiles;
         }
     }
+
 }
