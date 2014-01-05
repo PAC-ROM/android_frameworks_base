@@ -3749,6 +3749,14 @@ public final class Settings {
         public static final String SWIPE_TO_SWITCH_SCREEN_DETECTION = "full_swipe_to_switch_detection";
 
         /**
+         * @hide
+         * Show Wifi network name in notification drawer
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
+        /**
          * Give SMS notifications a breathing effect
          * @hide
          */
