@@ -767,8 +767,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
                 // add the button last so it hangs on the edge
                 addButton(navButtons, menuButton, landscape);
+                addLightsOutButton(lightsOut, menuButton, landscape, true);
             } else {
                 addButton(navButtons, menuButton, landscape);
+                addLightsOutButton(lightsOut, menuButton, landscape, true);
             }
         }
         invalidate();
