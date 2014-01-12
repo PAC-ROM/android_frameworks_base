@@ -3793,7 +3793,19 @@ public final class Settings {
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
 
         /**
-         * show "clear all recents" button
+         * What application to launch when the user click the clock in the notification bar
+         * @hide
+         */
+        public static final String CLOCK_SHORTCUT = "clock_shortcut";
+
+        /**
+         * What application to launch when the user click the calendar in the notification bar
+         * @hide
+         */
+        public static final String CALENDAR_SHORTCUT = "calendar_shortcut";
+
+        /**
+         * Show clear all recents button
          *  @hide
          */
         public static final String SHOW_CLEAR_RECENTS_BUTTON = "clear_recents_button";
