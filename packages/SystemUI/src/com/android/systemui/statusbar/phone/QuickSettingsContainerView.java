@@ -100,16 +100,14 @@ public class QuickSettingsContainerView extends FrameLayout {
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
                 (mNumFinalColumns - 1) * mCellGap);
         float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);
-        int cellHeight = 0;
         float cellGap = mCellGap;
 
         if (mSingleRow) {
             cellWidth = MeasureSpec.getSize(heightMeasureSpec);
-            cellHeight = (int) cellWidth;
             cellGap /= 2;
-        } else {
-            cellHeight = (int) getResources().getDimension(R.dimen.quick_settings_cell_height);
         }
+
+        int cellHeight = (int) cellWidth;
 
         // Update each of the children's widths accordingly to the cell width
         int N = getChildCount();
