@@ -97,10 +97,9 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
         // Calculate the cell width dynamically
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
                 (mNumFinalColumns - 1) * mCellGap);
-        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);        
+        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumFinalColumns);
         int cellHeight = 0;
         float cellGap = mCellGap;
 
@@ -113,8 +112,8 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
 
         // Update each of the children's widths accordingly to the cell width
-        int N = getChildCount();        
-        int totalWidth = 0;        
+        int N = getChildCount();
+        int totalWidth = 0;
         int cursor = 0;
         for (int i = 0; i < N; ++i) {
             // Update the child's width
@@ -123,31 +122,20 @@ public class QuickSettingsContainerView extends FrameLayout {
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
                 int colSpan = v.getColumnSpan();
                 lp.width = (int) ((colSpan * cellWidth) + (colSpan - 1) * cellGap);
-                if (mSingleRow) {
                 lp.height = cellHeight;
-                } else if (mNumFinalColumns > 3 && !isLandscape()) {
-                   lp.height = (lp.width * mNumFinalColumns - 1) / mNumFinalColumns;
-                }
                 // Measure the child
                 int newWidthSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
                 int newHeightSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
                 v.measure(newWidthSpec, newHeightSpec);
 
-                // Save the cell height
-                if (cellHeight <= 0) {
-                    cellHeight = v.getMeasuredHeight();
-                }
-
                 cursor += colSpan;
-                if (mSingleRow) {                
                 totalWidth += v.getMeasuredWidth() + cellGap;
-                }
             }
         }
 
         // Set the measured dimensions.  We always fill the tray width, but wrap to the height of
         // all the tiles.
-        int numRows = (int) Math.ceil((float) cursor / mNumColumns);
+        int numRows = (int) Math.ceil((float) cursor / mNumFinalColumns);
         int newHeight = (int) ((numRows * cellHeight) + ((numRows - 1) * cellGap)) +
                 getPaddingTop() + getPaddingBottom();
         if (mSingleRow) {
@@ -160,8 +148,11 @@ public class QuickSettingsContainerView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int N = getChildCount();
-        int x = getPaddingLeft();
+        final int N = getChildCount();
+        final boolean isLayoutRtl = isLayoutRtl();
+        final int width = getWidth();
+
+        int x = getPaddingStart();
         int y = getPaddingTop();
         int cursor = 0;
 
@@ -171,59 +162,56 @@ public class QuickSettingsContainerView extends FrameLayout {
             cellGap /= 2;
         }
 
-        if (mDuplicateColumnsLandscape && isLandscape()) {
+        if (mDuplicateColumnsLandscape && isLandscape() && !mSingleRow) {
             mNumFinalColumns = mNumColumns * 2;
         } else {
             mNumFinalColumns = mNumColumns;
         }
 
-        // onMeasure is done onLayout called last time isLandscape()
-        // so first bootup is done, set it to false
-        mFirstStartUp = false;
-
         for (int i = 0; i < N; ++i) {
-            QuickSettingsTileView v = (QuickSettingsTileView) getChildAt(i);
-            ViewGroup.LayoutParams lp = v.getLayoutParams();
-            if (v.getVisibility() != GONE) {
-                int col = cursor % mNumFinalColumns;
-                int colSpan = v.getColumnSpan();
-                int row = cursor / mNumFinalColumns;
+            QuickSettingsTileView child = (QuickSettingsTileView) getChildAt(i);
+            ViewGroup.LayoutParams lp = child.getLayoutParams();
+            if (child.getVisibility() != GONE) {
+                final int col = cursor % mNumFinalColumns;
+                final int colSpan = child.getColumnSpan();
+
+                final int childWidth = lp.width;
+                final int childHeight = lp.height;
+
+                int row = (int) (cursor / mNumFinalColumns);
 
                 // Push the item to the next row if it can't fit on this one
                 if ((col + colSpan) > mNumFinalColumns && !mSingleRow) {
-                    x = getPaddingLeft();
-                    y += lp.height + mCellGap;
+                    x = getPaddingStart();
+                    y += childHeight + cellGap;
                     row++;
                 }
 
+                final int childLeft = (isLayoutRtl) ? width - x - childWidth : x;
+                final int childRight = childLeft + childWidth;
+
+                final int childTop = y;
+                final int childBottom = childTop + childHeight;
+
                 // Layout the container
-                v.layout(x, y, x + lp.width, y + lp.height);
+                child.layout(childLeft, childTop, childRight, childBottom);
 
                 // Offset the position by the cell gap or reset the position and cursor when we
                 // reach the end of the row
-                cursor += v.getColumnSpan();
+                cursor += child.getColumnSpan();
                 if (cursor < (((row + 1) * mNumFinalColumns)) || mSingleRow) {
-                    x += lp.width + mCellGap;
+                    x += childWidth + cellGap;
                 } else if (!mSingleRow) {
-                    x = getPaddingLeft();
-                    y += lp.height + mCellGap;
+                    x = getPaddingStart();
+                    y += childHeight + cellGap;
                 }
             }
         }
     }
 
     private boolean isLandscape() {
-        if (mFirstStartUp) {
-            WindowManager wm =
-                ((WindowManager) mContext.getSystemService(mContext.WINDOW_SERVICE));
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            return size.x > size.y;
-        } else {
-            return Resources.getSystem().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE;
-        }
+        return Resources.getSystem().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public int getTileTextSize() {
