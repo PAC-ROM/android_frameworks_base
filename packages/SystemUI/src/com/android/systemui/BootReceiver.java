@@ -24,6 +24,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -36,6 +38,9 @@ import java.util.Calendar;
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "SystemUIBootReceiver";
 
+    private static final String KEY_MUSIC_TIMER =
+            "key_music_timer";
+
     private static final String KEY_REMINDER_ACTION =
             "key_reminder_action";
     private static final String SCHEDULE_REMINDER_NOTIFY =
@@ -47,6 +52,12 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
 
         SharedPreferences shared = context.getSharedPreferences(
+                KEY_MUSIC_TIMER, Context.MODE_PRIVATE);
+        shared.edit().putBoolean("scheduled", false).commit();
+        shared.edit().putInt("hour", -1).commit();
+        shared.edit().putInt("minutes", -1).commit();
+
+        shared = context.getSharedPreferences(
                 KEY_REMINDER_ACTION, Context.MODE_PRIVATE);
         int hours = shared.getInt("hours", -1);
         if (shared.getBoolean("scheduled", false)
