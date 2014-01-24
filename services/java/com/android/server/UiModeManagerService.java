@@ -90,6 +90,7 @@ final class UiModeManagerService extends IUiModeManager.Stub
     private int mSetUiMode = 0;
     private int mSetUiThemeMode = 0;
     private boolean mAllowConfigChange = true;
+    private float mCurrentSwitchLevel = SensorManager.LIGHT_FULLMOON;
 
     private boolean mHoldingConfiguration = false;
     private Configuration mConfiguration = new Configuration();
@@ -315,9 +316,11 @@ final class UiModeManagerService extends IUiModeManager.Stub
     public void onSensorChanged(SensorEvent event) {
         int type = event.sensor.getType();
         if (type == Sensor.TYPE_LIGHT) {
-            if (event.values[0] <= SensorManager.LIGHT_FULLMOON) {
+            if (event.values[0] <= mCurrentSwitchLevel) {
+                mCurrentSwitchLevel = SensorManager.LIGHT_OVERCAST;
                 mConfiguration.uiThemeMode = Configuration.UI_THEME_MODE_HOLO_DARK;
             } else {
+                mCurrentSwitchLevel = SensorManager.LIGHT_FULLMOON;
                 mConfiguration.uiThemeMode = Configuration.UI_THEME_MODE_HOLO_LIGHT;
             }
 
