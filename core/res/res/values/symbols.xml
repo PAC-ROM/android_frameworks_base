@@ -2023,4 +2023,5 @@
 
   <!-- External media format -->
   <java-symbol type="string" name="extmedia_format_message_cm" />
+
 </resources>
