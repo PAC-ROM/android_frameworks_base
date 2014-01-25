@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.cm;
+package com.android.internal.util.slim;
 
 import android.content.Intent;
 
@@ -38,8 +38,6 @@ public class TorchConstants {
      * Intent broadcast action for turning the torch on
      */
     public static final String ACTION_ON = APP_PACKAGE_NAME + ".FLASHLIGHT_ON";
-
-    /**
 
     /**
      * Extra for {@link ACTION_TOGGLE_STATE}:

@@ -19,5 +19,8 @@ package com.android.internal.util.slim;
 public class ButtonsConstants {
 
     public static final String ACTION_THEME_SWITCH         = "**theme_switch**";
+    public static final String ACTION_TORCH                = "**torch**";
+    public static final String ACTION_VIB                  = "**ring_vib**";
+    public static final String ACTION_VIB_SILENT           = "**ring_vib_silent**";
 
 }
