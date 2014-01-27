@@ -29,6 +29,7 @@ import static android.content.Context.USER_SERVICE;
 import static android.Manifest.permission.READ_PROFILE;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.gesture.Gesture;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Process;
@@ -266,6 +267,13 @@ public class LockSettingsService extends ILockSettings.Stub {
         return mStorage.hasPattern(userId);
     }
 
+    @Override
+    public boolean haveGesture(int userId) throws RemoteException {
+        // Do we need a permissions check here?
+
+        return mStorage.hasGesture(userId);
+    }
+
     private void maybeUpdateKeystore(String password, int userHandle) {
         final UserManager um = (UserManager) mContext.getSystemService(USER_SERVICE);
         final KeyStore ks = KeyStore.getInstance();
@@ -300,6 +308,23 @@ public class LockSettingsService extends ILockSettings.Stub {
         final byte[] hash = mLockPatternUtils.patternToHash(
                 mLockPatternUtils.stringToPattern(pattern));
         mStorage.writePatternHash(hash, userId);
+    }
+
+    @Override
+    public void setLockGesture(Gesture gesture, int userId) throws RemoteException {
+        checkWritePermission(userId);
+
+        if (gesture == null)
+            return;
+
+        mStorage.writeLockGesture(gesture, userId);
+    }
+
+    @Override
+    public boolean checkGesture(Gesture gesture, int userId) throws RemoteException {
+        checkPasswordReadPermission(userId);
+
+        return mStorage.readLockGesture(gesture, userId);
     }
 
     @Override
@@ -427,6 +452,8 @@ public class LockSettingsService extends ILockSettings.Stub {
         Secure.LOCK_PATTERN_SIZE,
         Secure.LOCK_DOTS_VISIBLE,
         Secure.LOCK_SHOW_ERROR_PATH,
+        Secure.LOCK_GESTURE_ENABLED,
+        Secure.LOCK_GESTURE_VISIBLE
     };
 
     // These are protected with a read permission

@@ -26,6 +26,11 @@ import android.content.pm.UserInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.Prediction;
+import android.gesture.GestureStore;
 import android.os.Environment;
 import android.os.UserManager;
 import android.util.ArrayMap;
@@ -36,6 +41,7 @@ import com.android.internal.widget.LockPatternUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 import static android.content.Context.USER_SERVICE;
 
@@ -61,6 +67,7 @@ class LockSettingsStorage {
     private static final String SYSTEM_DIRECTORY = "/system/";
     private static final String LOCK_PATTERN_FILE = "gesture.key";
     private static final String LOCK_PASSWORD_FILE = "password.key";
+    private static final String LOCK_GESTURE_FILE = "lock_gesture.key";
 
     private static final Object DEFAULT = new Object();
 
@@ -167,12 +174,36 @@ class LockSettingsStorage {
         return null;
     }
 
+    public boolean readLockGesture(Gesture gesture, int userId) {
+        File storeFile = new File(getLockGestureFilename(userId));
+
+        GestureLibrary store = GestureLibraries.fromFile(storeFile);
+        int minPredictionScore = 4;
+        store.setOrientationStyle(GestureStore.ORIENTATION_SENSITIVE);
+        store.load();
+
+        ArrayList<Prediction> predictions = store.recognize(gesture);
+        if (predictions.size() > 0) {
+            Prediction prediction = predictions.get(0);
+            if (prediction.score > minPredictionScore) {
+                if (prediction.name.equals(LOCK_GESTURE_FILE)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean hasPassword(int userId) {
         return hasFile(getLockPasswordFilename(userId));
     }
 
     public boolean hasPattern(int userId) {
         return hasFile(getLockPatternFilename(userId));
+    }
+
+    public boolean hasGesture(int userId) {
+        return hasFile(getLockGestureFilename(userId));
     }
 
     private boolean hasFile(String name) {
@@ -249,6 +280,19 @@ class LockSettingsStorage {
         writeFile(getLockPasswordFilename(userId), hash);
     }
 
+    public void writeLockGesture(Gesture gesture, int userId) {
+        File storeFile = new File(getLockGestureFilename(userId));
+        GestureLibrary store = GestureLibraries.fromFile(storeFile);
+
+        store.load();
+        if (store.getGestures(LOCK_GESTURE_FILE) != null) {
+            store.removeEntry(LOCK_GESTURE_FILE);
+        }
+
+        store.addGesture(LOCK_GESTURE_FILE, gesture);
+        store.save();
+    }
+
     public byte getLockPatternSize(int userId) {
         long size = Long.valueOf(readKeyValue(Settings.Secure.LOCK_PATTERN_SIZE, "-1", userId));
         if (size > 0 && size < 128) {
@@ -275,6 +319,11 @@ class LockSettingsStorage {
     @VisibleForTesting
     String getLockPasswordFilename(int userId) {
         return getLockCredentialFilePathForUser(userId, LOCK_PASSWORD_FILE);
+    }
+
+    @VisibleForTesting
+    String getLockGestureFilename(int userId) {
+        return getLockCredentialFilePathForUser(userId, LOCK_GESTURE_FILE);
     }
 
     private String getLockCredentialFilePathForUser(int userId, String basename) {
