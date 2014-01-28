@@ -1448,6 +1448,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (!mShowCarrierInPanel || mCarrierAndWifiView == null) {
             return;
         }
+    }
 
     /**
      * Listen for UI updates and refresh layout.
