@@ -58,6 +58,7 @@ public class KeyButtonView extends ImageView {
     long mUpTime;
     int mTouchSlop;
     Drawable mGlowBG;
+    int mGlowBgId;
     int mGlowWidth, mGlowHeight;
     float mGlowAlpha = 0f, mGlowScale = 1f;
     @ViewDebug.ExportedProperty(category = "drawing")
@@ -102,6 +103,7 @@ public class KeyButtonView extends ImageView {
             mGlowHeight = mGlowBG.getIntrinsicHeight();
         }
 
+        mGlowBgId = a.getResourceId(R.styleable.KeyButtonView_glowBackground, 0);
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mSinglePressTimeout = 200;
@@ -135,6 +137,12 @@ public class KeyButtonView extends ImageView {
             setImageDrawable(NavBarHelpers.getIconImage(mContext, mActions.singleAction));
         } else {
             setImageResource(R.drawable.ic_sysbar_null);
+        }
+    }
+
+    public void updateResources() {
+        if (mGlowBgId != 0) {
+            mGlowBG = mContext.getResources().getDrawable(mGlowBgId);
         }
     }
 
