@@ -20,10 +20,10 @@ import static android.app.StatusBarManager.NAVIGATION_HINT_BACK_ALT;
 import static android.app.StatusBarManager.WINDOW_STATE_HIDDEN;
 import static android.app.StatusBarManager.WINDOW_STATE_SHOWING;
 import static android.app.StatusBarManager.windowStateToString;
+import static com.android.systemui.statusbar.phone.BarTransitions.MODE_LIGHTS_OUT;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_OPAQUE;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_SEMI_TRANSPARENT;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSLUCENT;
-import static com.android.systemui.statusbar.phone.BarTransitions.MODE_LIGHTS_OUT;
 
 import android.app.Activity;
 import android.animation.Animator;
@@ -142,6 +142,7 @@ import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.WeatherPanel;
 
 import com.android.systemui.aokp.AokpSwipeRibbon;
+import com.android.systemui.aokp.SearchPanelSwipeView;
 import com.android.systemui.omni.StatusHeaderMachine;
 
 import java.io.UnsupportedEncodingException;
@@ -694,6 +695,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private AokpSwipeRibbon mAokpSwipeRibbonLeft;
     private AokpSwipeRibbon mAokpSwipeRibbonRight;
+    private SearchPanelSwipeView mSearchPanelSwipeView;
 
     private final Runnable mAutohide = new Runnable() {
         @Override
@@ -878,6 +880,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         checkUserAutohide(v, event);
                         return false;
                     }});
+            } else if (!showNav) {
+                mSearchPanelSwipeView = new SearchPanelSwipeView(mContext, this);
+                mWindowManager.addView(mSearchPanelSwipeView, mSearchPanelSwipeView.getGesturePanelLayoutParams());
+                updateSearchPanel();
             }
         } catch (RemoteException ex) {
             // no window manager? good luck with that
@@ -1314,6 +1320,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNavigationBarView != null) {
             mNavigationBarView.setDelegateView(mSearchPanelView);
         }
+        if (mSearchPanelSwipeView != null) {
+            mSearchPanelSwipeView.setDelegateView(mSearchPanelView);
+        }
     }
 
     @Override
@@ -1440,6 +1449,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         prepareNavigationBarView();
 
         mWindowManager.updateViewLayout(mNavigationBarView, getNavigationBarLayoutParams());
+    }
+
+    private void repositionSearchPanelSwipeView() {
+        if (mSearchPanelSwipeView == null || !mSearchPanelSwipeView.isAttachedToWindow()) return;
+        mSearchPanelSwipeView.updateLayout();
+        mWindowManager.updateViewLayout(mSearchPanelSwipeView, mSearchPanelSwipeView.getGesturePanelLayoutParams());
+        updateSearchPanel();
     }
 
     private void notifyNavigationBarScreenOn(boolean screenOn) {
@@ -3447,6 +3463,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateResources();
         repositionNavigationBar();
+        repositionSearchPanelSwipeView();
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         updateShowSearchHoldoff();
     }
@@ -3552,8 +3569,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             enableOrDisableReminder();
         }
-        final ContentResolver cr = mContext.getContentResolver();
-
         //Default to mWindowManagerService.hasNavigationBar()
         boolean hasNav = true; // If below fails then better show the navbar
         try {
@@ -3562,13 +3577,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         catch (RemoteException ex) {
             //OH NO!
         }
-        mWantsNavigationBar = Settings.System.getBoolean(cr, Settings.System.ENABLE_NAVIGATION_BAR, hasNav);
+        mWantsNavigationBar = Settings.System.getBoolean(resolver, Settings.System.ENABLE_NAVIGATION_BAR, hasNav);
     }
 
     private void toggleNavigationBar(boolean show) {
         if (show) {
             if (mNavigationBarView != null || mRecreating) return;
-            if (DEBUG) Log.d(TAG, "Enabling navigation bar now");
+           if (DEBUG) Log.d(TAG, "Enabling navigation bar now");
             mNavigationBarView = (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
             mNavigationBarView.setDisabledFlags(mDisabled);
             mNavigationBarView.setBar(this);
@@ -3974,7 +3989,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            updateSettings();
             toggleNavigationBar(mWantsNavigationBar);
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QUICK_SETTINGS_TILES))
