@@ -890,7 +890,7 @@ public class KeyguardViewManager {
     }
 
     public void dispatchButtonClick(int buttonId) {
-        mNotificationView.showAllNotifications();
+        mNotificationView.onButtonClick(buttonId);
     }
 
     public void launchCamera() {
