@@ -282,7 +282,9 @@ public class NotificationHostView extends FrameLayout {
         mNotificationMinRowHeight = mContext.getResources().getDimensionPixelSize(R.dimen.notification_row_min_height);
         mNotificationManager = INotificationManager.Stub.asInterface(
                 ServiceManager.getService(Context.NOTIFICATION_SERVICE));
-        mDynamicWidth = NotificationViewManager.config.dynamicWidth;
+        if (NotificationViewManager.config != null) {
+            mDynamicWidth = NotificationViewManager.config.dynamicWidth;
+        }
     }
 
     @Override
