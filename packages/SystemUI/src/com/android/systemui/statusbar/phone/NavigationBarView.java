@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -89,6 +90,8 @@ public class NavigationBarView extends LinearLayout {
     boolean mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
+
+    private Drawable mRecentAltIcon, mRecentAltLandIcon;
 
     boolean mWasNotifsButtonVisible = false;
 
@@ -251,6 +254,8 @@ public class NavigationBarView extends LinearLayout {
         mButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
         mMenuButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
 
+        getIcons(res);
+
         mBarTransitions = new NavigationBarTransitions(this);
 
         mCameraDisabledByDpm = isCameraDisabledByDpm();
@@ -338,6 +343,11 @@ public class NavigationBarView extends LinearLayout {
     // used for lockscreen notifications
     public View getNotifsButton() {
         return mCurrentView.findViewById(R.id.show_notifs);
+    }
+
+    private void getIcons(Resources res) {
+        mRecentAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
+        mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
 
     @Override
