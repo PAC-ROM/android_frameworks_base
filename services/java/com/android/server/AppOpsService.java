@@ -116,6 +116,8 @@ public class AppOpsService extends IAppOpsService.Stub {
         public long time;
         public long rejectTime;
         public int nesting;
+        public int allowedCount;
+        public int ignoredCount;
 
         public Op(int _uid, String _packageName, int _op) {
             uid = _uid;
