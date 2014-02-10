@@ -2852,6 +2852,7 @@ public final class Settings {
         public static final String DIALER_OPENCNAM_AUTH_TOKEN = "dialer_opencnam_auth_token";
 
         /**
+<<<<<<< HEAD
          * Heads Up Notifications
          *
          * @hide
@@ -4219,6 +4220,13 @@ public final class Settings {
          * @hide
          */
         public static final String PIE_CONTROLS = "pie_controls";
+
+        /**
+         * Whether pie triggers on the left and right edge should be reduced if IME shows up.
+         * Default = 1 (enabled)
+         * @hide
+         */
+        public static final String PIE_IME_CONTROL = "pie_ime_control";
 
         /**
          * Whether dynamic menu button is shown or not or dynamic (default)
