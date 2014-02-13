@@ -9746,6 +9746,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
+        /**
+         * Whether to vibrate when quick settings tile is pressed
+         * @hide
+         */
+        public static final String QS_TILES_VIBRATE = "qs_tiles_vibrate";
+
     }
 
     /**

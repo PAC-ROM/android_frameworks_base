@@ -19,6 +19,7 @@ package com.android.systemui.qs;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -30,6 +31,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,7 @@ import android.widget.TextView;
 
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
+import com.android.systemui.cm.UserContentObserver;
 import com.android.systemui.qs.QSTile.DetailAdapter;
 import com.android.systemui.settings.BrightnessController;
 import com.android.systemui.settings.ToggleSlider;
@@ -54,6 +57,9 @@ import java.util.Collection;
 
 /** View that represents the quick settings tile panel. **/
 public class QSPanel extends ViewGroup {
+    public static final int VIBRATION_DURATION_SHORT = 0;
+    public static final int VIBRATION_DURATION_LONG = 1;
+
     private static final float TILE_ASPECT = 1.2f;
 
     private final Context mContext;
@@ -96,6 +102,8 @@ public class QSPanel extends ViewGroup {
     private DetailCallback mDetailCallback;
     private int mContainerTop;
 
+    private boolean mShouldVibrate;
+
     private boolean mHideQsTilesWithSensitiveData;
     private final KeyguardMonitor.Callback mKeyguardListener = new KeyguardMonitor.Callback() {
         @Override
@@ -137,8 +145,54 @@ public class QSPanel extends ViewGroup {
             @Override
             public void onClick(View v) {
                 closeDetail();
+                vibrateTile(VIBRATION_DURATION_SHORT);
             }
         });
+
+        final SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
+    }
+
+    private class SettingsObserver extends UserContentObserver {
+
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void observe() {
+            super.observe();
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.PAC.getUriFor(Settings.PAC.QS_TILES_VIBRATE),
+                    false, this, UserHandle.USER_ALL);
+
+            onChange(false);
+        }
+
+        @Override
+        protected void unobserve() {
+            super.unobserve();
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        protected void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            mShouldVibrate = Settings.PAC.getIntForUser(resolver,
+                    Settings.PAC.QS_TILES_VIBRATE,
+                    1, UserHandle.USER_CURRENT) != 0;
+        }
+    }
+
+    public void vibrateTile(int duration) {
+        if (!mShouldVibrate) return;
+
+        if (VIBRATION_DURATION_SHORT == duration) {
+            performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        } else if (VIBRATION_DURATION_LONG == duration) {
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        }
     }
 
     /**
@@ -392,6 +446,7 @@ public class QSPanel extends ViewGroup {
             public void onToggleStateChanged(boolean state) {
                 if (mDetailRecord == r) {
                     fireToggleStateChanged(state);
+                    vibrateTile(VIBRATION_DURATION_SHORT);
                 }
             }
             @Override
@@ -412,18 +467,21 @@ public class QSPanel extends ViewGroup {
             @Override
             public void onClick(View v) {
                 r.tile.click();
+                vibrateTile(VIBRATION_DURATION_SHORT);
             }
         };
         final View.OnClickListener clickSecondary = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 r.tile.secondaryClick();
+                vibrateTile(VIBRATION_DURATION_SHORT);
             }
         };
         final View.OnLongClickListener longClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 r.tile.longClick();
+                vibrateTile(VIBRATION_DURATION_LONG);
                 return true;
             }
         };
@@ -487,6 +545,7 @@ public class QSPanel extends ViewGroup {
                 @Override
                 public void onClick(View v) {
                     mHost.startSettingsActivity(settingsIntent);
+                    vibrateTile(VIBRATION_DURATION_LONG);
                 }
             });
 
