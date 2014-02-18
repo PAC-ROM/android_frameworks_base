@@ -310,13 +310,13 @@ public class ProgressBar extends View {
             int Count = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.PROGRESSBAR_COUNT, 6);
             int Color1 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_1, -1);
+                    Settings.System.PROGRESSBAR_COLOR_1, 0xffffff00);
             int Color2 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_2, -1);
+                    Settings.System.PROGRESSBAR_COLOR_2, 0xff99cc00);
             int Color3 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_3, -1);
+                    Settings.System.PROGRESSBAR_COLOR_3, 0xffaa66cc);
             int Color4 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_4, -1);
+                    Settings.System.PROGRESSBAR_COLOR_4, 0xff00ddff);
 
             int Colors[] = { Color1, Color2, Color3, Color4 };
                 Builder abc = new SmoothProgressDrawable.Builder(context);
