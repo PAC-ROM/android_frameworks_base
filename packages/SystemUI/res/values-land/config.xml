@@ -31,4 +31,3 @@
     <!-- The number of columns that the top level tiles span in the QuickSettings -->
     <integer name="quick_settings_user_time_settings_tile_span">2</integer>
 </resources>
-
