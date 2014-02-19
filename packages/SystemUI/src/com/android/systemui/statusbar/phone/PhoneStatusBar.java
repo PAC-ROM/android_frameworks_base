@@ -79,6 +79,7 @@ import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -481,6 +482,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.PAC.HEADS_UP_NOTIFICATION_DECAY), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.ENABLE_TASK_MANAGER), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.USE_SLIM_RECENTS), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -489,6 +496,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             super.unobserve();
             ContentResolver resolver = mContext.getContentResolver();
             resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.USE_SLIM_RECENTS))) {
+                updateRecents();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR))
+                    || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
+                rebuildRecentsScreen();
+            }
         }
 
         @Override

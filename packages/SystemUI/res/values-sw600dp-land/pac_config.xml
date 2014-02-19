@@ -16,15 +16,10 @@
 -->
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-    <!-- Doze: force using accelerometer as pick up sensor -->
-    <bool name="config_dozeUseAccelerometer">false</bool>
+<resources>
 
     <!-- Slim recents -->
-    <!-- The duration (in milliseconds) of recent app screen animation. -->
-    <integer name="config_recentDefaultDur">300</integer>
-    <!-- The duration (in milliseconds) of recent app screen exit animation. -->
-    <integer name="config_recentExitDur">450</integer>
+    <!-- Default value how much apps show the app screenshot on recents view entry -->
+    <integer name="expanded_items_default">2</integer>
 
 </resources>
