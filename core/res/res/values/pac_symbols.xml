@@ -26,4 +26,11 @@
   <java-symbol type="id" name="busy_dlg_title" />
   <java-symbol type="layout" name="busy_dlg" />
 
+  <!-- Slim recent app screen-->
+  <java-symbol type="integer" name="config_recentDefaultDur" />
+  <java-symbol type="integer" name="config_recentExitDur" />
+  <java-symbol type="style" name="Animation.RecentScreen" />
+  <java-symbol type="anim" name="recent_screen_enter" />
+  <java-symbol type="anim" name="recent_screen_fade_out" />
+
 </resources>
