@@ -8854,6 +8854,12 @@ public final class Settings {
          */
         public static final String HALO_NOTIFY_SILENT = "halo_notify_silent";
 
+        /**
+         * ToastAnimation
+         * @hide
+         */
+        public static final String TOAST_ANIMATION = "toast_animation";
+
     }
 
     /**
