@@ -8890,6 +8890,12 @@ public final class Settings {
          */
         public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
 
+        /**
+         * ToastAnimation
+         * @hide
+         */
+        public static final String TOAST_ANIMATION = "toast_animation";
+
     }
 
     /**
