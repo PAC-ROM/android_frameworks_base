@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.os.Vibrator;
@@ -30,6 +31,8 @@ import android.view.WindowManager;
 import android.util.Log;
 
 import com.android.internal.telephony.PhoneConstants;
+import static android.hardware.Sensor.TYPE_LIGHT;
+import static android.hardware.Sensor.TYPE_PROXIMITY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +75,16 @@ public class DeviceUtils {
 
     public static boolean deviceSupportsGps(Context context) {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
+    }
+
+    public static boolean deviceSupportsProximitySensor(Context context) {
+        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return sm.getDefaultSensor(TYPE_PROXIMITY) != null;
+    }
+
+    public static boolean deviceSupportsLightSensor(Context context) {
+        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return sm.getDefaultSensor(TYPE_LIGHT) != null;
     }
 
     /*public static boolean deviceSupportsImeSwitcher(Context ctx) {
