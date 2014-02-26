@@ -16,6 +16,9 @@
 -->
 <resources>
 
+    <!-- Active Display -->
+    <color name="ad_notification_background_color">#3fff</color>
+
     <!-- App sidebar -->
     <!-- app sidebar trigger region color -->
     <color name="trigger_region_color">#8015a0e5</color>
