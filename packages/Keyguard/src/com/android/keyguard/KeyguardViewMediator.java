@@ -332,7 +332,8 @@ public class KeyguardViewMediator {
             // ActivityManagerService) will not reconstruct the keyguard if it is already showing.
             synchronized (KeyguardViewMediator.this) {
                 mSwitchingUser = true;
-                resetStateLocked(null);
+                // It doesn't make sense to me to reset the lockscreen when screen is turned off on lockscreen
+                // resetStateLocked(null);
                 adjustStatusBarLocked();
                 // When we switch users we want to bring the new user to the biometric unlock even
                 // if the current user has gone to the backup.
