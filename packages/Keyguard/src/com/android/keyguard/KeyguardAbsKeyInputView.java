@@ -17,6 +17,7 @@
 package com.android.keyguard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
@@ -36,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.android.internal.util.cm.TorchConstants;
 import com.android.internal.widget.LockPatternUtils;
 
 /**
@@ -112,8 +114,19 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                int doubletapoption = Settings.System.getInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_GLOWPAD_DOUBLETAP_OPTION, 0);
+                switch(doubletapoption) {
+                case 0:
                 PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
                 if (pm != null) pm.goToSleep(e.getEventTime());
+                break;
+                case 1:
+                Intent i = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
+                i.putExtra("strobe", false);
+                i.putExtra("bright", false);
+                mContext.sendBroadcast(i);
+                break;
+                }
                 return true;
             }
         });
@@ -123,7 +136,7 @@ public abstract class KeyguardAbsKeyInputView extends LinearLayout
         mPasswordEntry.addTextChangedListener(this);
 
         if (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0) == 1) {
+                    Settings.System.DOUBLE_TAP_GLOWPAD_GESTURE, 0) == 1) {
             mPasswordEntry.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {

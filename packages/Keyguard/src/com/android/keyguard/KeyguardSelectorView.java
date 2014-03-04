@@ -295,14 +295,25 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                int doubletapoption = Settings.System.getInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_GLOWPAD_DOUBLETAP_OPTION, 0);
+                switch(doubletapoption) {
+                case 0:
                 PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
                 if (pm != null) pm.goToSleep(e.getEventTime());
+                break;
+                case 1:
+                Intent i = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
+                i.putExtra("strobe", false);
+                i.putExtra("bright", false);
+                mContext.sendBroadcast(i);
+                break;
+                }
                 return true;
             }
         });
 
         if (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0) == 1) {
+                    Settings.System.DOUBLE_TAP_GLOWPAD_GESTURE, 0) == 1) {
             mGlowPadView.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -326,11 +337,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 ecaContainer.bringToFront();
             }
         }
-        mGlowTorchRunning = false;
-        mGlowTorch = Settings.System.getIntForUser(
-                mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_GLOWPAD_TORCH, 0,
-                UserHandle.USER_CURRENT) == 1;
     }
 
     public void setCarrierArea(View carrierArea) {
