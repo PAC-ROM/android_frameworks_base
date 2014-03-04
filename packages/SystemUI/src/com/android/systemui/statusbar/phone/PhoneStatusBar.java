@@ -828,9 +828,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     if (Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
                         count > 0) {
-                        mWifiView.setVisibility(View.VISIBLE);
+                        if (mWifiView != null)
+                            mWifiView.setVisibility(View.VISIBLE);
                     } else {
-                        mWifiView.setVisibility(View.GONE);
+                        if (mWifiView != null)
+                            mWifiView.setVisibility(View.GONE);
                     }
                 }
             });
