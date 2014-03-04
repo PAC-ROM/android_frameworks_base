@@ -9457,6 +9457,19 @@ public final class Settings {
          * @hide
          */
         public static final String BYPASS_INSECURE_LOCKSCREEN = "bypass_insecure_lockscreen";
+
+        /**
+         * Lockscreen Glowpad DoubleTap Option
+         * @hide
+         */
+        public static final String LOCKSCREEN_GLOWPAD_DOUBLETAP_OPTION = "lockscreen_glowpad_doubletap_option";
+
+        /**
+         * Lockscreen Glowpad DoubleTap Gesture
+         * @hide
+         */
+        public static final String DOUBLE_TAP_GLOWPAD_GESTURE = "double_tap_glowpad_gesture";
+
     }
 
     /**
