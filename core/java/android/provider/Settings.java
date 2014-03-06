@@ -4554,6 +4554,11 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
+        /**
+         * Enable / disable navring
+         * @hide
+         */
+        public static final String ENABLE_NAVRING = "enable_navring";
 
         /**
          * Electronic beam animation mode
