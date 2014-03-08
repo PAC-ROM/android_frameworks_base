@@ -56,4 +56,8 @@
     <string name="app_window">Application Window</string>
     <string name="close">Close</string>
 
+    <!-- Slim recents -->
+    <string name="status_bar_recent_playstore_item_title">Play Store</string>
+    <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
+
 </resources>
