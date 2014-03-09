@@ -4128,6 +4128,11 @@ public final class Settings {
          */
         public static final String RECENTS_USE_OMNISWITCH = "recents_use_omniswitch";
 
+        /**
+         * Alternative recent apps integration using Slim recents
+         * @hide
+         */
+        public static final String RECENTS_USE_SLIM = "recents_use_slim";
     }
 
     /**
