@@ -226,6 +226,11 @@ interface IWindowManager
     boolean hasNavigationBar();
 
     /**
+     * Device wants a navigation bar (becuase it has hardware keys)
+     */
+    boolean wantsNavigationBar();
+
+    /**
      * Device can generate KEY_ACTION_MENU keypress
      */
     boolean hasMenuKeyEnabled();

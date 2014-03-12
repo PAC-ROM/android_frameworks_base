@@ -4471,6 +4471,12 @@ public final class Settings {
         };
 
         /**
+         * Whether to enable the navbar for hw key devices
+         * @hide
+         */
+        public static final String ENABLE_NAVIGATION_BAR = "enable_navigation_bar";
+
+        /**
          * @hide
          */
         public static final String NAVIGATION_BAR_BUTTONS = "navigation_bar_buttons";
