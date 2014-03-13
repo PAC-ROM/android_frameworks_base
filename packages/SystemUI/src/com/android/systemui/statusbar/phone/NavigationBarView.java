@@ -183,6 +183,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             // animation as home (if we catch this condition early enough).
             if (!mBackTransitioning && getBackButton() != null && getBackButton().getVisibility() == VISIBLE
                     && mHomeAppearing && getHomeButton() != null && getHomeButton().getAlpha() == 0) {
+                ((KeyButtonView) getBackButton()).resetImage();
                 getBackButton().setAlpha(0);
                 ValueAnimator a = ObjectAnimator.ofFloat(getBackButton(), "alpha", 0, 1);
                 a.setStartDelay(mStartDelay);
@@ -414,6 +415,18 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         if (kbv != null) {
             kbv.updateResources(mThemedResources);
         }
+    }
+    public void updateResources() {
+        for (int i = 0; i < mRotatedViews.length; i++) {
+            ViewGroup container = (ViewGroup) mRotatedViews[i];
+            if (container != null) {
+                updateKeyButtonViewResources(container);
+            }
+        }
+    }
+
+    private void updateKeyButtonViewResources(ViewGroup container) {
+        // TODO: fix this for AOKP
     }
 
     @Override
