@@ -455,11 +455,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.ENABLE_NAVRING), false, this);
             updateSettings();
         }
-
         @Override
         public void onChange(boolean selfChange) {
             updateCustomHeaderStatus();
-            onChange(selfChange, null);
+            updateSettings();
+            updateNavBar();
+            toggleNavigationBarOrNavRing(mWantsNavigationBar, mEnableNavring);
         }
     }
 
@@ -867,7 +868,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateShowSearchHoldoff();
 
-        updateSettings();
+        updateNavBar(); //Check for Navbar. This replace the Try/Catch Statement.
         if (DEBUG) Log.v(TAG, "hasNavigationBar=" + mWantsNavigationBar);
         if (mWantsNavigationBar && !mRecreating) {
             mNavigationBarView =
@@ -3580,6 +3581,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             enableOrDisableReminder();
         }
+    }
+
+    private void updateNavBar() {
+        ContentResolver resolver = mContext.getContentResolver();
         //Default to mWindowManagerService.hasNavigationBar()
         boolean hasNav = true; // If below fails then better show the navbar
         try {
@@ -3733,6 +3738,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
 
         updateSettings();
+
+        updateNavBar();
 
         mRecreating = false;
     }
