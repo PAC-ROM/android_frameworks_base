@@ -33,7 +33,7 @@ public class GPSTile extends QuickSettingsTile implements LocationSettingsChange
         mOnClick = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLocationController.setLocationEnabled(!mLocationEnabled);
+                changeLocationMode();
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
                 }
