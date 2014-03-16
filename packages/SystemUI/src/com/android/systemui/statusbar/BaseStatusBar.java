@@ -321,14 +321,14 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         mRecents = getComponent(RecentsComponent.class);
 
+        mLocale = mContext.getResources().getConfiguration().locale;
+        mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
+
         if (mSlimRecentsEnabled) {
-            mSlimRecents = new RecentController(mContext);
+            mSlimRecents = new RecentController(mContext, mLayoutDirection);
         } else {
             mRecents = getComponent(RecentsComponent.class);
         }
-
-        mLocale = mContext.getResources().getConfiguration().locale;
-        mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
 
         mShowNotificationCounts = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIF_COUNT, 0) == 1;
