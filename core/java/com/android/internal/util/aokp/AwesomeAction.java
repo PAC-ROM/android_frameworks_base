@@ -180,7 +180,7 @@ public class AwesomeAction {
                     case ACTION_TORCH:
                         Intent intentTorch = new Intent("android.intent.action.MAIN");
                         intentTorch.setComponent(ComponentName
-                                .unflattenFromString("com.aokp.Torch/.TorchActivity"));
+                                .unflattenFromString("net.cactii.flash2/.MainActivity"));
                         intentTorch.addCategory("android.intent.category.LAUNCHER");
                         intentTorch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mContext.startActivity(intentTorch);
