@@ -469,6 +469,14 @@ public class NavigationBarView extends LinearLayout {
             }
         }
 
+        if (getMenuButton() != null) {
+            setVisibleOrInvisible(getMenuButton(), !disableRecent);
+        }
+
+        if (getMenuButtonTwo() != null) {
+            setVisibleOrInvisible(getMenuButtonTwo(), !disableRecent);
+        }
+
         final boolean showSearch = disableHome && !disableSearch;
         final boolean showCamera = showSearch && !mCameraDisabledByDpm
                 && mLockUtils.getCameraEnabled();
