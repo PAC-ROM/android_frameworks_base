@@ -59,4 +59,7 @@
     <string name="animation_grow_shrink_left">Grow in (Left)</string>
     <string name="animation_grow_shrink_right">Grow in (Right)</string>
 
+    <!-- label for item that takes On-The-Go in the phone options dialog -->
+    <string name="global_action_onthego">On-The-Go Mode</string>
+
 </resources>
