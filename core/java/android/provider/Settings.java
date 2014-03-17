@@ -4585,6 +4585,16 @@ public final class Settings {
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
         /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU = "navigation_menu";
+
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU_FORCE = "navigation_menu_force";
+
+        /**
          * Enable / disable navring
          * @hide
          */
