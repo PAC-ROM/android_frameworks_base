@@ -22,6 +22,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityManagerNative;
+import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -469,12 +470,18 @@ public class NavigationBarView extends LinearLayout {
             }
         }
 
-        if (getMenuButton() != null) {
-            setVisibleOrInvisible(getMenuButton(), !disableRecent);
-        }
+        KeyguardManager kgMgr =
+            (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
+        if (kgMgr.inKeyguardRestrictedInputMode()) {
+            if (getMenuButton() != null) {
+                getMenuButton().setVisibility(INVISIBLE);
+            }
 
-        if (getMenuButtonTwo() != null) {
-            setVisibleOrInvisible(getMenuButtonTwo(), !disableRecent);
+            if (getMenuButtonTwo() != null) {
+                getMenuButtonTwo().setVisibility(INVISIBLE);
+            }
+        } else {
+            setMenuVisibility(mShowMenu, true /* force */);
         }
 
         final boolean showSearch = disableHome && !disableSearch;
@@ -490,6 +497,7 @@ public class NavigationBarView extends LinearLayout {
         setVisibleOrGone(getNotifsButton(), showNotifs && mWasNotifsButtonVisible);
 
         mBarTransitions.applyBackButtonQuiescentAlpha(mBarTransitions.getMode(), true /*animate*/);
+
     }
 
     private void setVisibleOrInvisible(View view, boolean visible) {
