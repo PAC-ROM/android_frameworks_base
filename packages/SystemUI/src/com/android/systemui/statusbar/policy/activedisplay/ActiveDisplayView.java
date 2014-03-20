@@ -73,6 +73,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.android.internal.util.omni.DeviceUtils;
+import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
@@ -193,6 +194,7 @@ public class ActiveDisplayView extends FrameLayout
     private boolean mProximityIsFar = true;
     private boolean mIsInBrightLight = false;
     private boolean mWakedByPocketMode = false;
+    private boolean mIsScreenOff = false;
     private long mPocketTime = 0;
     private long mTurnOffTime = 0;
     private long mTurnOffTimeThreshold = 200L;
@@ -248,7 +250,7 @@ public class ActiveDisplayView extends FrameLayout
         @Override
         public void onNotificationRemoved(final StatusBarNotification sbn) {
             if (mNotification != null && sbn.getPackageName().equals(mNotification.getPackageName())) {
-                if (getVisibility() == View.VISIBLE) {
+                if (getVisibility() == View.VISIBLE && !mIsScreenOff) {
                     mNotification = getNextAvailableNotification();
                     if (mNotification != null) {
                         setActiveNotification(mNotification, true);
@@ -1004,6 +1006,7 @@ public class ActiveDisplayView extends FrameLayout
         if (!mWakedByPocketMode) {
             disableProximitySensor();
         }
+        mIsScreenOff = false;
     }
 
     private void onScreenTurnedOff() {
@@ -1023,6 +1026,7 @@ public class ActiveDisplayView extends FrameLayout
     private void turnScreenOff() {
         mHandler.removeCallbacks(runWakeDevice);
         mWakedByPocketMode = false;
+        mIsScreenOff = true;
         try {
             mPM.goToSleep(SystemClock.uptimeMillis(), GO_TO_SLEEP_REASON_USER);
         } catch (RemoteException e) {
@@ -1170,6 +1174,7 @@ public class ActiveDisplayView extends FrameLayout
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
         mContext.registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -1362,7 +1367,7 @@ public class ActiveDisplayView extends FrameLayout
      * @param sbn StatusBarNotification to check.
      * @return True if it should be used, false otherwise.
      */
-    private boolean isValidNotification(final StatusBarNotification sbn) {
+    private boolean isValidNotification(StatusBarNotification sbn) {
         return (!isExcludeApp(sbn) && isNotAppBanned(sbn.getPackageName()) && !isOnCall()
                 && (sbn.getNotification().icon != 0) && (sbn.isClearable() || mShowAllNotifications)
                 && !(mHideLowPriorityNotifications && sbn.getNotification().priority < HIDE_NOTIFICATIONS_BELOW_SCORE)
@@ -1375,7 +1380,7 @@ public class ActiveDisplayView extends FrameLayout
      * @param BaseStatusBar notificationIsForCurrentUser to check.
      * @return True if this for current, false otherwise.
      */
-    private boolean isNotificationForUser(final StatusBarNotification sbn) {
+    private boolean isNotificationForUser(StatusBarNotification sbn) {
         if (mBaseStatusBar != null) {
             return mBaseStatusBar.notificationIsForCurrentUser(sbn);
         }
@@ -1403,7 +1408,7 @@ public class ActiveDisplayView extends FrameLayout
      * @param sbn StatusBarNotification to check.
      * @return True if has privacy mode, false otherwise.
      */
-    private boolean isExcludeApp(final StatusBarNotification sbn) {
+    private boolean isExcludeApp(StatusBarNotification sbn) {
         if (mExcludedApps != null) {
             return mExcludedApps.contains(sbn.getPackageName());
         }
@@ -1496,13 +1501,18 @@ public class ActiveDisplayView extends FrameLayout
      */
     private void setActiveNotification(final StatusBarNotification sbn, final boolean updateOthers) {
         mNotificationDrawable = getIconDrawable(sbn);
+        final Drawable drawable = mNotificationDrawable;
         final NotificationData nd = NotificationUtils.getNotificationData(mContext, sbn);
         post(new Runnable() {
              @Override
              public void run() {
-                 if (mNotificationDrawable != null) {
-                     mCurrentNotificationIcon.setImageDrawable(mNotificationDrawable);
-                     mCurrentNotificationIcon.placeNumber(nd.number, mShowNotificationCount);
+                 if (drawable != null) {
+                     mCurrentNotificationIcon.setImageDrawable(drawable);
+                     if (nd != null) {
+                         mCurrentNotificationIcon.placeNumber(nd.number, mShowNotificationCount);
+                     } else {
+                         mCurrentNotificationIcon.placeNumber(0, false);
+                     }
                      setHandleText(sbn);
                      mNotification = sbn;
                  } else {
@@ -1518,12 +1528,25 @@ public class ActiveDisplayView extends FrameLayout
         });
     }
 
+    private Drawable getIconDrawable(StatusBarNotification sbn) {
+        Drawable drawable = null;
+        try {
+            Context pkgContext = mContext.createPackageContext(sbn.getPackageName(), Context.CONTEXT_RESTRICTED);
+            drawable = pkgContext.getResources().getDrawable(sbn.getNotification().icon);
+        } catch (NameNotFoundException nnfe) {
+            drawable = null;
+        } catch (Resources.NotFoundException nfe) {
+            drawable = null;
+        }
+        return drawable;
+    }
+
     /**
      * Inflates the RemoteViews specified by {@code sbn}.  If bigContentView is available it will be
      * used otherwise the standard contentView will be inflated.
      * @param sbn The StatusBarNotification to inflate content from.
      */
-    private void inflateRemoteView(final StatusBarNotification sbn) {
+    private void inflateRemoteView(StatusBarNotification sbn) {
         final Notification notification = sbn.getNotification();
         boolean useBigContent = notification.bigContentView != null;
         RemoteViews rv = useBigContent ? notification.bigContentView : notification.contentView;
@@ -1549,11 +1572,7 @@ public class ActiveDisplayView extends FrameLayout
         }
     }
 
-    private Drawable getIconDrawable(StatusBarNotification sbn) {
-        return NotificationUtils.getIconDrawable(mContext, sbn);
-    }
-
-    private RemoteViews applyStandardTemplate(final Notification notification, final StatusBarNotification sbn) {
+    private RemoteViews applyStandardTemplate(Notification notification, StatusBarNotification sbn) {
         RemoteViews contentView = new RemoteViews(mContext.getPackageName(), R.layout.active_display_notification);
         NotificationData nd = NotificationUtils.getNotificationData(mContext, sbn);
         if (nd == null) {
@@ -1678,12 +1697,12 @@ public class ActiveDisplayView extends FrameLayout
                 onScreenTurnedOff();
             } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
                 onScreenTurnedOn();
+            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
+                if (!isLockScreenDisabled()) {
+                    cancelAllState();
+                }
             } else if (action.equals(ACTION_UNLOCK_DEVICE)) {
-                cancelAllTimer();
-                setUserActivity();
-                restoreBrightness();
-                disableProximitySensor();
-                mWakedByPocketMode = false;
+                cancelAllState();
                 if (mIsUnlockByUser) {
                     mIsUnlockByUser = false;
                     if (!isScreenOn()) {
@@ -1697,6 +1716,14 @@ public class ActiveDisplayView extends FrameLayout
             }
         }
     };
+
+    private void cancelAllState() {
+        cancelAllTimer();
+        setUserActivity();
+        restoreBrightness();
+        disableProximitySensor();
+        mWakedByPocketMode = false;
+    }
 
     /**
      * Cancels the All timer.
@@ -1776,5 +1803,11 @@ public class ActiveDisplayView extends FrameLayout
         }
         String[] appsToExclude = privacyApps.split("\\|");
         mPrivacyApps = new HashSet<String>(Arrays.asList(appsToExclude));
-     }
+    }
+
+    private boolean isLockScreenDisabled() {
+        LockPatternUtils utils = new LockPatternUtils(mContext);
+        utils.setCurrentUser(UserHandle.USER_OWNER);
+        return utils.isLockScreenDisabled();
+    }
 }
