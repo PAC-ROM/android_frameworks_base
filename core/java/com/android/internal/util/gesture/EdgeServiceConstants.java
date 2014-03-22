@@ -32,7 +32,7 @@ public final class EdgeServiceConstants {
      * <p>
      * Positions are specified by {@code EdgeGesturePosition.FLAG}.
      */
-    public static final int POSITION_MASK = 0x0000001f;
+    public static final int POSITION_MASK = 0x0000000f;
 
     /**
      * Mask for coding sensitivity within the flags of
@@ -41,7 +41,7 @@ public final class EdgeServiceConstants {
      * Sensitivity influences the speed of the swipe, the trigger area, and trigger distance that
      * is needed to activate the edge gesture.
      */
-    public static final int SENSITIVITY_MASK = 0x70000000;
+    public static final int SENSITIVITY_MASK = 0xf0000000;
 
     /**
      * Number of bits to shift left, to get a integer within the {@link #SENSITIVITY_MASK}.
@@ -56,7 +56,7 @@ public final class EdgeServiceConstants {
     /**
      * Default sensitivity, picked by the edge gesture service automatically.
      */
-    public static final int SENSITIVITY_DEFAULT = 2;
+    public static final int SENSITIVITY_DEFAULT = 5;
 
     /**
      * Lowest valid sensitivity value.
@@ -66,7 +66,7 @@ public final class EdgeServiceConstants {
     /**
      * Highest sensitivity value.
      */
-    public static final int SENSITIVITY_HIGHEST = 4;
+    public static final int SENSITIVITY_HIGHEST = 10;
 
     /**
      * Do not cut 10% area on th edges
