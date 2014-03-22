@@ -3840,6 +3840,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         restorePieTriggerMask();
 
         checkBarModes();
+        restartHalo();
+
         mRecreating = false;
     }
 
