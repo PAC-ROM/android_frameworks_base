@@ -75,4 +75,6 @@
   <java-symbol type="anim" name="slide_in_up_ribbon" />
   <java-symbol type="anim" name="slide_out_down_ribbon" />
 
+  <java-symbol type="array" name="anim_controls_entries" />
+
 </resources>
