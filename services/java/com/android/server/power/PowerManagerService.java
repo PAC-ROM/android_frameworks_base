@@ -1029,7 +1029,7 @@ public final class PowerManagerService extends IPowerManager.Stub
     private void notifyWakeLockReleasedLocked(WakeLock wakeLock) {
         if (mSystemReady) {
             if (!wakeLock.isBlocked()){
-                mNotifier.onWakeLockReleased(wakeLock.mFlags, wakeLock.mTag, wakeLock.mPackageName,
+                mNotifier.onWakeLockAcquired(wakeLock.mFlags, wakeLock.mTag, wakeLock.mPackageName,
                     wakeLock.mOwnerUid, wakeLock.mOwnerPid, wakeLock.mWorkSource);
             }
         }
