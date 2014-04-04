@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Title of an application permission that lets an application view/edit revoked permissions. -->
+    <string name="permlab_revokePermissions">允许查看和编辑撤销的权限。 一般应用不应使用。</string>
+    <!-- Description of an application permission that lets lets an application view/edit revoked permissions. -->
+    <string name="permdesc_revokePermissions">允许读取或写入撤销的权限。一般应用不应使用。</string>
+
+    <!-- Title of an application permission that lets an application access the ThemeManagerService. -->
+    <string name="permlab_accessThemeService">允许访问主题管理器服务。一般应用不应使用。</string>
+    <!-- Description of an application permission that lets lets an application access the ThemeManagerService -->
+    <string name="permdesc_accessThemeService">允许应用设置 / 重置主题。一般应用不应使用。</string>
+
+    <!-- Awesome Action Stuff-->
+    <string name="action_home">主屏幕</string>
+    <string name="action_back">返回</string>
+    <string name="action_recents">最近应用</string>
+    <string name="action_recents_gb">最近应用 (GB 样式)</string>
+    <string name="action_search">搜索</string>
+    <string name="action_screenshot">屏幕截图</string>
+    <string name="action_menu">菜单</string>
+    <string name="action_ime">打开输入法切换器</string>
+    <string name="action_kill">强行停止任务</string>
+    <string name="action_lastapp">最后应用</string>
+    <string name="action_power">电源</string>
+    <string name="action_notifications">通知</string>
+    <string name="action_assist">搜索 (Google 即时)</string>
+    <string name="action_clockoptions">时钟设置</string>
+    <string name="action_voiceassist">语音搜索</string>
+    <string name="action_torch">手电筒</string>
+    <string name="action_silent">响铃/静音</string>
+    <string name="action_vib">响铃/震动</string>
+    <string name="action_silent_vib">响铃/震动/静音</string>
+    <string name="action_event">事件</string>
+    <string name="action_today">今日</string>
+    <string name="action_alarm">闹钟</string>
+    <string name="action_unlock">解锁</string>
+    <string name="action_camera">相机</string>
+    <string name="action_null">空</string>
+    <string name="action_widgets">导航小部件</string>
+    <string name="action_app_window">应用窗口</string>
+    <string name="action_ribbon">AOKP 操作区</string>
+    <string name="action_app">自定义应用/快捷方式</string>
+
+    <!-- Animation Strings -->
+    <string name="animation_fade">淡入淡出</string>
+    <string name="animation_slide_right">滑入右侧</string>
+    <string name="animation_slide_left">滑入左侧</string>
+    <string name="animation_slide_right_no_fade">滑入右侧 (不淡入淡出)</string>
+    <string name="animation_slide_left_no_fade">滑入左侧 (不淡入淡出)</string>
+    <string name="animation_slide_up">滑入底部</string>
+    <string name="animation_slide_down">滑入顶部</string>
+    <string name="animation_default">默认</string>
+    <string name="animation_translucent">半透明</string>
+    <string name="animation_grow_shrink">放大 (顶部)</string>
+    <string name="animation_grow_shrink_center">放大 (中部)</string>
+    <string name="animation_grow_shrink_bottom">放大 (底部)</string>
+    <string name="animation_grow_shrink_left">放大 (左侧)</string>
+    <string name="animation_grow_shrink_right">放大 (右侧)</string>
+
+    <!-- label for item that takes On-The-Go in the phone options dialog -->
+    <string name="global_action_onthego">随身模式</string>
+
+</resources>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2006 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!--General String-->
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="dlg_ok">确定</string>
+    <string name="cancel">取消</string>
+    <!--ScreenShot Trash-->
+    <string name="delete">删除</string>
+
+    <!-- Off/On/Toggle -->
+    <string name="off">关</string>
+    <string name="on">开</string>
+    <string name="toggle">开关</string>
+
+    <!--  Weather -->
+    <string name="weatherpanel_slash">/</string>
+
+    <!-- App sidebar -->
+    <string name="default_folder_text">文件夹</string>
+    <string name="title_activity_sidebar_configuration">应用栏内容设置</string>
+    <string name="action_save">保存</string>
+    <string name="toast_items_saved">应用栏项目已保存。</string>
+    <string name="content_setup_instructions">要添加项目，长按项目拖拽到应用栏上。\n\n要合并项目到文件夹中，把一个项目拖拽到应用栏上任意一个已存在的项目。\n\n要删除一个项目，把它拖拽出应用栏。</string>
+    <string name="content_setup_dismiss">继续</string>
+
+    <!-- Active Display -->
+    <string name="active_display_privacy_content">信息内容不显示，因为隐私模式已启用</string>
+
+    <!-- Slim Shortcut Actions -->
+    <string name="shortcut_picker">Slim 快捷方式</string>
+    <string name="shortcut_immersive">沉浸模式</string>
+    <string name="shortcut_quiethours">安静时段</string>
+    <string name="shortcut_rotation">旋转</string>
+    <string name="shortcut_torch">手电筒开关</string>
+    <string name="shortcut_reboot">重新启动</string>
+    <string name="shortcut_recovery">恢复模式</string>
+    <string name="shortcut_last_app">最后应用</string>
+    <string name="shortcut_power_menu">电源菜单</string>
+    <string name="shortcut_screenshot">屏幕截图</string>
+    <string name="shortcut_screensleep">睡眠</string>
+    <string name="shortcut_volume">音量</string>
+    <string name="shortcut_toggle_title">执行的动作</string>
+
+    <!-- Notification Reminder Slim Roms -->
+    <string name="quick_settings_reminder">提醒</string>
+    <string name="quick_settings_reminder_title">标题：</string>
+    <string name="quick_settings_reminder_message">信息：</string>
+    <string name="quick_settings_reminder_time">提醒时间</string>
+    <string name="quick_settings_reminder_set">设置时间</string>
+    <string name="quick_settings_reminder_update">更新时间</string>
+    <string name="quick_settings_reminder_no_expire">无提醒</string>
+    <string name="quick_settings_reminder_dismiss">清除当前提醒</string>
+    <string name="quick_settings_reminder_dismiss_message">清除当前提醒？</string>
+    <string name="quick_settings_reminder_help_title">触摸</string>
+    <string name="quick_settings_reminder_noti_dismiss">关闭</string>
+    <string name="quick_settings_reminder_noti_later">更新时间</string>
+    <string name="quick_settings_reminder_help_message">触摸上方的空白区域以设置或更改提醒。长按清除当前提醒。 </string>
+
+    <!-- App Window -->
+    <string name="app_window">应用窗口</string>
+    <string name="close">关闭</string>
+
+    <!-- On The Go -->
+    <string name="onthego_activity">随身模式</string>
+    <string name="onthego_notif_ticker">随身模式已启动</string>
+    <string name="onthego_notif_title">随身模式已启用</string>
+    <string name="onthego_notif_stop">停止</string>
+    <string name="onthego_notif_options">选项</string>
+    <string name="onthego_notif_error">无法启动随身模式</string>
+    <string name="onthego_transparency">透明度</string>
+    <string name="quick_settings_onthego_back">后置摄像头</string>
+    <string name="quick_settings_onthego_front">前置摄像头</string>
+    <string name="onthego_notif_restart">重新启动随身模式</string>
+    <string name="onthego_notif_camera_changed">相机模式已改变</string>
+    <string name="onthego_front_camera">使用前置摄像头</string>
+    <string name="onthego_service_toggle">自动重启服务</string>
+
+    <!-- Battery Saver -->
+    <string name="network_4G">4G/LTE</string>
+    <string name="network_3G_only">仅 3G</string>
+    <string name="network_3G_auto">2G/3G 自动</string>
+    <string name="network_3G">首选 2G/3G</string>
+    <string name="network_2G">仅 2G</string>
+    <string name="quick_settings_network_unknown">未知</string>
+
+    <!-- battery saver mode -->
+    <string name="battery_saver_start">节电已启用</string>
+    <string name="battery_saver_stop">节电已禁用</string>
+    <string name="battery_saver_change">节电模式更改网络到</string>
+    <string name="battery_saver_network">网络已恢复</string>
+    <string name="battery_saver_data">移动数据已恢复</string>
+    <string name="battery_saver_wifi">Wi-Fi 已恢复</string>
+    <string name="battery_saver_all">所有配置已恢复</string>
+    <string name="battery_saver_no_changes">无配置被恢复</string>
+    <string name="battery_saver_enable_ticker">节电模式正在运行...</string>
+    <string name="battery_saver_enable_title">节电模式</string>
+    <string name="battery_saver_airplane_ticker">飞行模式被节电模式启用</string>
+    <string name="battery_saver_airplane_text">飞行模式被节电模式启用，因为已无信号 5 分钟</string>
+    <string name="battery_saver_disable">禁用</string>
+
+</resources>
