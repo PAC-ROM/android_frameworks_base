@@ -88,27 +88,19 @@ public class LocationController extends BroadcastReceiver {
         // Register to listen for changes in location settings.
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(LocationManager.MODE_CHANGED_ACTION);
-        context.registerReceiverAsUser(mBroadcastReceiver,
-               UserHandle.ALL, intentFilter, null, new Handler());
+        context.registerReceiverAsUser(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (LocationManager.MODE_CHANGED_ACTION.equals(action)) {
+                    locationSettingsChanged();
+                }
+            }
+        }, UserHandle.ALL, intentFilter, null, new Handler());
 
         // Examine the current location state and initialize the status view.
         updateActiveLocationRequests();
         refreshViews();
-    }
-
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (LocationManager.MODE_CHANGED_ACTION.equals(action)) {
-                locationSettingsChanged();
-            }
-        }
-    };
-
-    public void unregisterController(Context context) {
-        context.unregisterReceiver(this);
-        context.unregisterReceiver(mBroadcastReceiver);
     }
 
     /**
@@ -116,10 +108,6 @@ public class LocationController extends BroadcastReceiver {
      */
     public void addSettingsChangedCallback(LocationSettingsChangeCallback cb) {
         mSettingsChangeCallbacks.add(cb);
-    }
-
-    public void removeSettingsChangedCallback(LocationSettingsChangeCallback cb) {
-        mSettingsChangeCallbacks.remove(cb);
     }
 
     /**
@@ -216,7 +204,7 @@ public class LocationController extends BroadcastReceiver {
     /**
      * Returns true if there currently exist active high power location requests.
      */
-    public boolean areActiveHighPowerLocationRequests() {
+    private boolean areActiveHighPowerLocationRequests() {
         List<AppOpsManager.PackageOps> packages
             = mAppOpsManager.getPackagesForOps(mHighPowerRequestAppOpArray);
         // AppOpsManager can return null when there is no requested data.
