@@ -513,6 +513,7 @@ easier.
     <style name="Theme.DeviceDefault.Panel" parent="Theme.Holo.Panel" >
 
     </style>
+
     <!-- DeviceDefault light theme for panel windows. This removes all extraneous window
     decorations, so you basically have an empty rectangle in which to place your content. It makes
     the window floating, with a transparent background, and turns off dimming behind the window. -->
