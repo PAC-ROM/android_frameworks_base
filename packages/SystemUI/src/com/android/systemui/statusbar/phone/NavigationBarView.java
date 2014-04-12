@@ -362,7 +362,7 @@ public class NavigationBarView extends LinearLayout {
         mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
 
-    public void updateResources() {
+    /*public void updateResources() {
         getIcons(mContext.getResources());
         for (int i = 0; i < mRotatedViews.length; i++) {
             ViewGroup container = (ViewGroup) mRotatedViews[i];
@@ -373,7 +373,7 @@ public class NavigationBarView extends LinearLayout {
     }
 
     private void updateKeyButtonViewResources(ViewGroup container) {
-        ViewGroup midNavButtons = (ViewGroup) container.findViewById(R.id.mid_nav_buttons);
+        ViewGroup midNavButtons = (ViewGroup) container.findViewById(R.id.nav_buttons);
         if (midNavButtons != null) {
             final int nChildern = midNavButtons.getChildCount();
             for (int i = 0; i < nChildern; i++) {
@@ -383,11 +383,11 @@ public class NavigationBarView extends LinearLayout {
                 }
             }
         }
-        KeyButtonView kbv = (KeyButtonView) findViewById(R.id.six);
+        KeyButtonView kbv = (KeyButtonView) findViewById(R.id.nav_buttons);
         if (kbv != null) {
             kbv.updateResources();
         }
-    }
+    }*/
 
     @Override
     public void setLayoutDirection(int layoutDirection) {

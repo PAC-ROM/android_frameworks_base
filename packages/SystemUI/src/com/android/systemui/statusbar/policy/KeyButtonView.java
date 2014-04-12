@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -102,6 +103,9 @@ public class KeyButtonView extends ImageView {
             mGlowWidth = mGlowBG.getIntrinsicWidth();
             mGlowHeight = mGlowBG.getIntrinsicHeight();
         }
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+                defStyle, 0);
 
         mGlowBgId = a.getResourceId(R.styleable.KeyButtonView_glowBackground, 0);
         setClickable(true);
