@@ -328,7 +328,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         mRecents = getComponent(RecentsComponent.class);
 
         if (mSlimRecentsEnabled) {
-            mSlimRecents = new RecentController(mContext);
+            mSlimRecents = new RecentController(mContext, mLayoutDirection);
         } else {
             mRecents = getComponent(RecentsComponent.class);
         }
