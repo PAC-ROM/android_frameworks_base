@@ -112,6 +112,9 @@ public class KeyguardViewMediator {
     private static final String DELAYED_KEYGUARD_ACTION =
         "com.android.internal.policy.impl.PhoneWindowManager.DELAYED_KEYGUARD";
 
+    private static final String SHAKE_SECURE_TIMER =
+        "com.android.keyguard.SHAKE_SECURE_TIMER";
+
     private static final String DISMISS_KEYGUARD_SECURELY_ACTION =
             "com.android.keyguard.action.DISMISS_KEYGUARD_SECURELY";
 
@@ -326,6 +329,11 @@ public class KeyguardViewMediator {
          * Report when keyguard is actually gone
          */
         void keyguardGone();
+
+        /**
+         * Set statusbar flags
+         */
+        void adjustStatusBarLocked();
     }
 
     KeyguardUpdateMonitorCallback mUpdateCallback = new KeyguardUpdateMonitorCallback() {
@@ -485,6 +493,11 @@ public class KeyguardViewMediator {
         public void keyguardGone() {
             mKeyguardDisplayManager.hide();
         }
+
+        @Override
+        public void adjustStatusBarLocked() {
+            KeyguardViewMediator.this.adjustStatusBarLocked();
+        }
     };
 
     private class SettingsObserver extends ContentObserver {
@@ -529,7 +542,11 @@ public class KeyguardViewMediator {
         mShowKeyguardWakeLock = mPM.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "show keyguard");
         mShowKeyguardWakeLock.setReferenceCounted(false);
 
-        mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DELAYED_KEYGUARD_ACTION));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SHAKE_SECURE_TIMER);
+        filter.addAction(DELAYED_KEYGUARD_ACTION);
+        mContext.registerReceiver(mBroadcastReceiver, filter);
+
         mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DISMISS_KEYGUARD_SECURELY_ACTION),
                 android.Manifest.permission.CONTROL_KEYGUARD, null);
 
@@ -1129,6 +1146,14 @@ public class KeyguardViewMediator {
                 synchronized (KeyguardViewMediator.this) {
                     dismiss();
                 }
+            } else if (SHAKE_SECURE_TIMER.equals(intent.getAction())) {
+                if (mLockPatternUtils.isSecure()) {
+                    Settings.Secure.putIntForUser(mContext.getContentResolver(),
+                            Settings.Secure.LOCK_TEMP_SECURE_MODE, 1,
+                            mLockPatternUtils.getCurrentUser());
+                    KeyguardHostView.shakeSecureNow();
+                                adjustStatusBarLocked();
+                }
             }
         }
     };
@@ -1395,13 +1420,24 @@ public class KeyguardViewMediator {
                 // (like recents). Temporary enable/disable (e.g. the "back" button) are
                 // done in KeyguardHostView.
                 flags |= StatusBarManager.DISABLE_RECENT;
-                if (isSecure() || !ENABLE_INSECURE_STATUS_BAR_EXPAND) {
+                final boolean isSecure = isSecure();
+                boolean tempDisable = false;
+                if (isSecure && KeyguardHostView.shakeInsecure()) {
+                    tempDisable = true;
+                }
+                if (isSecure || !ENABLE_INSECURE_STATUS_BAR_EXPAND) {
+                    if (!tempDisable) {
+                        // showing secure lockscreen; disable expanding.
+                        flags |= StatusBarManager.DISABLE_EXPAND;
+                    }
+                }
+                if (isSecure) {
+                    if (!tempDisable) {
+                        // showing secure lockscreen; disable ticker.
+                        flags |= StatusBarManager.DISABLE_NOTIFICATION_TICKER;
+                    }
                     // showing secure lockscreen; disable expanding.
                     flags |= StatusBarManager.DISABLE_EXPAND;
-                }
-                if (isSecure()) {
-                    // showing secure lockscreen; disable ticker.
-                    flags |= StatusBarManager.DISABLE_NOTIFICATION_TICKER;
                 }
                 if (!isAssistantAvailable()) {
                     flags |= StatusBarManager.DISABLE_SEARCH;
