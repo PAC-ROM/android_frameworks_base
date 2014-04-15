@@ -4184,6 +4184,12 @@ public final class Settings {
          */
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
 
+        /**
+         * Navigation recent long press
+         * @hide
+         */
+        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
+
     }
 
     /**
