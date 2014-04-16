@@ -121,19 +121,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private ArrayList<AwesomeButtonInfo> mNavButtons = new ArrayList<AwesomeButtonInfo>();
 
-    private ContentObserver mSettingsObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            setupNavigationButtons();
-            setMenuVisibility(mShowMenu, true /* force */);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            setupNavigationButtons();
-            setMenuVisibility(mShowMenu, true /* force */);
-        }
-    };
+    private ContentObserver mSettingsObserver;
 
     private DelegateViewHelper mDelegateHelper;
     private DeadZone mDeadZone;
@@ -746,26 +734,35 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (mSettingsObserver == null) {
 
-        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_BUTTONS),
-                false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_DPAD_KEYS),
-                false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU),
-                false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU_FORCE),
-                false, mSettingsObserver);
+            mSettingsObserver = new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    setupNavigationButtons();
+                    setMenuVisibility(mShowMenu, true /* force */);
+                }
+            };
 
-        mObserver.observe();
+            mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_BUTTONS),
+                    false, mSettingsObserver);
+            mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_DPAD_KEYS),
+                    false, mSettingsObserver);
+            mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU),
+                    false, mSettingsObserver);
+            mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU_FORCE),
+                    false, mSettingsObserver);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
-
-        mObserver.unobserve();
+        if (mSettingsObserver != null) {
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+            mSettingsObserver = null;
+        }
     }
 
     private void readUserConfig() {
