@@ -45,9 +45,9 @@ public class PacBusyDialog extends Dialog {
     public PacBusyDialog(Context context, int i) {
         super(context, i);
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(pac.R.layout.busy_dlg, null);
-        mMessage = (TextView)v.findViewById(pac.R.id.busy_dlg_title);
-        ImageView img = (ImageView)v.findViewById(pac.R.id.busy_dlg_animation);
+        View v = inflater.inflate(R.layout.busy_dlg, null);
+        mMessage = (TextView)v.findViewById(R.id.busy_dlg_title);
+        ImageView img = (ImageView)v.findViewById(R.id.busy_dlg_animation);
         AnimationDrawable frameAnimation = (AnimationDrawable)img.getDrawable();
         frameAnimation.setCallback(img);
         frameAnimation.setVisible(true, true);

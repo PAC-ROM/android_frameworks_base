@@ -27,6 +27,10 @@
   <!-- Config IME switcher -->
   <java-symbol type="bool" name="config_show_IMESwitcher" />
 
+  <java-symbol type="layout" name="busy_dlg" />
+  <java-symbol type="id" name="busy_dlg_title" />
+  <java-symbol type="id" name="busy_dlg_animation" />
+
   <!-- Ribbon -->
   <java-symbol type="layout" name="ribbon_item" />
   <java-symbol type="id" name="ribbon_container" />
