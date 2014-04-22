@@ -362,33 +362,6 @@ public class NavigationBarView extends LinearLayout {
         mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
 
-    /*public void updateResources() {
-        getIcons(mContext.getResources());
-        for (int i = 0; i < mRotatedViews.length; i++) {
-            ViewGroup container = (ViewGroup) mRotatedViews[i];
-            if (container != null) {
-                updateKeyButtonViewResources(container);
-            }
-        }
-    }
-
-    private void updateKeyButtonViewResources(ViewGroup container) {
-        ViewGroup midNavButtons = (ViewGroup) container.findViewById(R.id.nav_buttons);
-        if (midNavButtons != null) {
-            final int nChildern = midNavButtons.getChildCount();
-            for (int i = 0; i < nChildern; i++) {
-                final View child = midNavButtons.getChildAt(i);
-                if (child instanceof KeyButtonView) {
-                    ((KeyButtonView) child).updateResources();
-                }
-            }
-        }
-        KeyButtonView kbv = (KeyButtonView) findViewById(R.id.nav_buttons);
-        if (kbv != null) {
-            kbv.updateResources();
-        }
-    }*/
-
     @Override
     public void setLayoutDirection(int layoutDirection) {
 
@@ -690,7 +663,7 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
-    private void setupNavigationButtons() {
+    public void setupNavigationButtons() {
         readUserConfig();
         final boolean stockThreeButtonLayout = mNavButtons.size() == 3;
         int separatorSize = (int) mMenuButtonWidth;
