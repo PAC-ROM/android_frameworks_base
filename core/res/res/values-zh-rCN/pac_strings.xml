@@ -7,11 +7,6 @@
     <!-- Description of an application permission that lets lets an application view/edit revoked permissions. -->
     <string name="permdesc_revokePermissions">允许读取或写入撤销的权限。一般应用不应使用。</string>
 
-    <!-- Title of an application permission that lets an application access the ThemeManagerService. -->
-    <string name="permlab_accessThemeService">允许访问主题管理器服务。一般应用不应使用。</string>
-    <!-- Description of an application permission that lets lets an application access the ThemeManagerService -->
-    <string name="permdesc_accessThemeService">允许应用设置 / 重置主题。一般应用不应使用。</string>
-
     <!-- Awesome Action Stuff-->
     <string name="action_home">主屏幕</string>
     <string name="action_back">返回</string>
