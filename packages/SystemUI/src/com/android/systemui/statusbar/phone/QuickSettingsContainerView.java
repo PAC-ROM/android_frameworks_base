@@ -17,7 +17,6 @@
 package com.android.systemui.statusbar.phone;
 
 import android.animation.LayoutTransition;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -49,13 +48,7 @@ public class QuickSettingsContainerView extends FrameLayout {
     // The gap between tiles in the QuickSettings grid
     private float mCellGap;
 
-    private float mPadding4Tiles = -8.0f;
-    private float mPadding3Tiles = 0.0f;
-    private float mSize4Tiles = 10.0f;
-    private float mSize3Tiles = 12.0f;
-
     private boolean mSingleRow;
-    private boolean mSmallIcons;
 
     private Context mContext;
     private Resources mResources;
@@ -67,6 +60,7 @@ public class QuickSettingsContainerView extends FrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickSettingsContainer, 0, 0);
         mSingleRow = a.getBoolean(R.styleable.QuickSettingsContainer_singleRow, false);
         a.recycle();
+
         mContext = context;
         mResources = getContext().getResources();
 
@@ -82,9 +76,6 @@ public class QuickSettingsContainerView extends FrameLayout {
     }
 
     public void updateResources() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mSmallIcons = Settings.System.getIntForUser(resolver,
-                Settings.System.QUICK_SETTINGS_SMALL_ICONS, 0, UserHandle.USER_CURRENT) == 1;
         mCellGap = mResources.getDimension(R.dimen.quick_settings_cell_gap);
         mNumColumns = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.QUICK_TILES_PER_ROW, 3, UserHandle.USER_CURRENT);
@@ -94,13 +85,6 @@ public class QuickSettingsContainerView extends FrameLayout {
                 Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE,
                 1, UserHandle.USER_CURRENT) == 1
                         && mResources.getBoolean(R.bool.config_hasFlipSettingsPanel);
-        mTextSize = (int) mSize3Tiles;
-        mTextPadding = (int) mPadding3Tiles;
-        if (mSmallIcons) {
-            mNumColumns = r.getInteger(R.integer.quick_settings_num_columns_small);
-            mTextSize = (int) mSize4Tiles;
-            mTextPadding = (int) mPadding4Tiles;
-        }
         requestLayout();
     }
 
@@ -254,25 +238,4 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
     }
 
-    public int getTileTextSize() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mSmallIcons = Settings.System.getIntForUser(resolver,
-                Settings.System.QUICK_SETTINGS_SMALL_ICONS, 0, UserHandle.USER_CURRENT) == 1;
-        if (mSmallIcons) {
-            return mTextSize = (int) mSize4Tiles;
-        } else {
-            return mTextSize = (int) mSize3Tiles;
-        }
-    }
-
-    public int getTileTextPadding() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mSmallIcons = Settings.System.getIntForUser(resolver,
-                Settings.System.QUICK_SETTINGS_SMALL_ICONS, 0, UserHandle.USER_CURRENT) == 1;
-        if (mSmallIcons) {
-            return mTextPadding = (int) mPadding4Tiles;
-        } else {
-            return mTextPadding = (int) mPadding3Tiles;
-        }
-    }
 }

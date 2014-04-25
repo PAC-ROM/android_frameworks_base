@@ -3850,13 +3850,6 @@ public final class Settings {
         public static final String RECENTS_USE_SLIM = "recents_use_slim";
 
         /**
-         * Quick Settings show small icons
-         *
-         * @hide
-         */
-        public static final String QUICK_SETTINGS_SMALL_ICONS = "qs_small_icons";
-
-        /**
          * Enable looking up of phone numbers of nearby places
          *
          * @hide
