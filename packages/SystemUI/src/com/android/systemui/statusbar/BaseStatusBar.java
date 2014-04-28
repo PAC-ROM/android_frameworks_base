@@ -246,9 +246,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected Display mDisplay;
 
-    protected AppSidebar mAppSidebar;
-    protected int mSidebarPosition;
-
     private boolean mDeviceProvisioned = false;
 
     private RecentsComponent mRecents;
@@ -257,6 +254,9 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
     protected GestureAnywhereView mGestureAnywhereView;
+
+    protected AppSidebar mAppSidebar;
+    protected int mSidebarPosition;
 
     private ArrayList<String> mDndList;
     private ArrayList<String> mBlacklist;
@@ -350,8 +350,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                 resolver, Settings.PAC.APP_SIDEBAR_POSITION,AppSidebar.SIDEBAR_POSITION_LEFT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
-                mWindowManager.updateViewLayout(mAppSidebar,
-                getAppSidebarLayoutParams(sidebarPosition));
+                removeSidebarView();
+                addSidebarView();
             }
         }
     };
