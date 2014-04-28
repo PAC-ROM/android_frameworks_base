@@ -362,6 +362,36 @@ public class NavigationBarView extends LinearLayout {
         mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
 
+    public void updateResources() {
+        for (int i = 0; i < mRotatedViews.length; i++) {
+            ViewGroup container = (ViewGroup) mRotatedViews[i];
+            if (container != null) {
+                updateKeyButtonViewResources(container);
+                setupNavigationButtons();
+            }
+        }
+    }
+
+    private void updateKeyButtonViewResources(ViewGroup container) {
+        // TODO: fix this for AOKP
+        // Disable the following codes as we don't have CM's Navbar, still waiting for AOKP's fix.
+
+        /*ViewGroup midNavButtons = (ViewGroup) container.findViewById(R.id.nav_buttons);
+        if (midNavButtons != null) {
+            final int nChildern = midNavButtons.getChildCount();
+            for (int i = 0; i < nChildern; i++) {
+                final View child = midNavButtons.getChildAt(i);
+                if (child instanceof KeyButtonView) {
+                    ((KeyButtonView) child).updateResources();
+                }
+            }
+        }
+        KeyButtonView kbv = (KeyButtonView) findViewById(R.id.nav_buttons);
+        if (kbv != null) {
+            kbv.updateResources();
+        }*/
+    }
+
     @Override
     public void setLayoutDirection(int layoutDirection) {
 
@@ -663,7 +693,7 @@ public class NavigationBarView extends LinearLayout {
         }
     }
 
-    public void setupNavigationButtons() {
+    private void setupNavigationButtons() {
         readUserConfig();
         final boolean stockThreeButtonLayout = mNavButtons.size() == 3;
         int separatorSize = (int) mMenuButtonWidth;
