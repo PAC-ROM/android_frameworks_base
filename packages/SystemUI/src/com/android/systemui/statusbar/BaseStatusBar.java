@@ -180,8 +180,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected int mExpandedDesktopStyle = 0;
 
-    private Map<Integer, Boolean> mOmniSwitchStarted = new HashMap<Integer, Boolean>();
-
     public IStatusBarService getStatusBarService() {
         return mBarService;
     }
@@ -291,14 +289,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 mCurrentUserId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
                 if (true) Log.v(TAG, "userId " + mCurrentUserId + " is in the house");
                 userSwitched(mCurrentUserId);
-            } else if (OmniSwitchConstants.ACTION_SERVICE_START.equals(action)) {
-                int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
-                Log.v(TAG, "OmniSwitch service started " + userId);
-                mOmniSwitchStarted.put(userId, true);
-            } else if (OmniSwitchConstants.ACTION_SERVICE_STOP.equals(action)) {
-                int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
-                Log.v(TAG, "OmniSwitch service stoped " + userId);
-                mOmniSwitchStarted.put(userId, false);
             }
         }
     };
@@ -393,8 +383,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_USER_SWITCHED);
-        filter.addAction(OmniSwitchConstants.ACTION_SERVICE_START);
-        filter.addAction(OmniSwitchConstants.ACTION_SERVICE_STOP);
         mContext.registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -666,14 +654,10 @@ public abstract class BaseStatusBar extends SystemUI implements
     };
 
     private boolean isOmniSwitchEnabled() {
-        // TODO no user specific value here
-        int settingsValue = Settings.System.getInt(
-                mContext.getContentResolver(), Settings.System.RECENTS_USE_OMNISWITCH, 0);
-        boolean omniSwitchStarted = false;
-        if (mOmniSwitchStarted.containsKey(mCurrentUserId)){
-            omniSwitchStarted = mOmniSwitchStarted.get(mCurrentUserId);
-        }
-        return (settingsValue == 1) && omniSwitchStarted;
+        int settingsValue = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.RECENTS_USE_OMNISWITCH, 0
+                , UserHandle.USER_CURRENT);
+        return (settingsValue == 1);
     }
 
     protected void toggleRecentsActivity() {
