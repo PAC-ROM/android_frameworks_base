@@ -553,7 +553,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     }
 
     private void createCustomAnimations(LayoutTransition transitioner) {
-        transitioner.setDuration(150);
+        transitioner.setDuration(200);
         transitioner.setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
         transitioner.setAnimator(LayoutTransition.DISAPPEARING, null);
     }
@@ -639,12 +639,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 !mRecentTasksLoader.isFirstScreenful()) {
             int timeSinceWindowAnimation =
                     (int) (System.currentTimeMillis() - mWindowAnimationStartTime);
-            final int minStartDelay = 100;
+            final int minStartDelay = 150;
             final int startDelay = Math.max(0, Math.min(
                     minStartDelay - timeSinceWindowAnimation, minStartDelay));
-            final int duration = 200;
+            final int duration = 250;
             final ViewHolder holder = mItemToAnimateInWhenWindowAnimationIsFinished;
-            final TimeInterpolator cubic = new DecelerateInterpolator(1.0f);
+            final TimeInterpolator cubic = new DecelerateInterpolator(1.5f);
             FirstFrameAnimatorHelper.initializeDrawListener(holder.iconView);
             for (View v :
                 new View[] { holder.iconView, holder.labelView, holder.calloutLine }) {
