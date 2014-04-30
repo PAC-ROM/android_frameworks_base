@@ -1324,10 +1324,6 @@ public class PackageManagerService extends IPackageManager.Stub {
                 // code, so don't dexopt it to avoid the resulting log spew.
                 alreadyDexOpted.add(frameworkDir.getPath() + "/framework-res.apk");
 
-                // Gross hack for now: we know this file doesn't contain any
-                // code, so don't dexopt it to avoid the resulting log spew.
-                alreadyDexOpted.add(frameworkDir.getPath() + "/framework-pac-res.apk");
-
                 // Gross hack for now: we know this file is only part of
                 // the boot class path for art, so don't dexopt it to
                 // avoid the resulting log spew.
