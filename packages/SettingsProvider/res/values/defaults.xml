@@ -204,4 +204,7 @@
 
     <!-- Default value of Settings.System.NOISE_SUPPRESSION -->
     <bool name="def_noise_suppression">false</bool>
+
+    <!-- Default value of Settings.System.SYSTEM_POWER_CRT_MODE -->
+    <integer name="def_screen_power_crt_mode">1</integer>
 </resources>
