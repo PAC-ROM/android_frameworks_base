@@ -421,8 +421,6 @@ public class ConnectivityService extends IConnectivityManager.Stub {
 
     private SettingsObserver mSettingsObserver;
 
-    private AppOpsManager mAppOpsManager;
-
     NetworkConfig[] mNetConfigs;
     int mNetworksDefined;
 
@@ -714,7 +712,6 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         filter.addAction(CONNECTED_TO_PROVISIONING_NETWORK_ACTION);
         mContext.registerReceiver(mProvisioningReceiver, filter);
 
-        mAppOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
     }
 
     /**
@@ -1619,7 +1616,6 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         if (Binder.getCallingUid() == Process.SYSTEM_UID) {
             exempt = true;
         } else {
-            mAppOpsManager.checkPackage(Binder.getCallingUid(), packageName);
             try {
                 ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName,
                         0);
