@@ -91,6 +91,10 @@ public class QSUtils {
             return (Settings.Global.getInt(resolver, Settings.Global.ADB_ENABLED, 0)) == 1;
         }
 
+        public static boolean deviceSupportsFastcharge() {
+            return new File("/sys/kernel/fast_charge/force_fast_charge").exists();
+        }
+
         public static boolean deviceSupportsCPUFreq() {
             /*
              * Actually every kernel should support this,
