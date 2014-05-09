@@ -92,27 +92,16 @@
     <string name="onthego_front_camera">使用前置摄像头</string>
     <string name="onthego_service_toggle">自动重启服务</string>
 
-    <!-- Battery Saver -->
-    <string name="network_4G">4G/LTE</string>
-    <string name="network_3G_only">仅 3G</string>
-    <string name="network_3G_auto">2G/3G 自动</string>
-    <string name="network_3G">首选 2G/3G</string>
-    <string name="network_2G">仅 2G</string>
-    <string name="quick_settings_network_unknown">未知</string>
+    <!-- Title shown in notification popup for launching notification in floating mode -->
+    <string name="status_bar_notification_floating_item_title">悬浮模式</string>
 
-    <!-- battery saver mode -->
-    <string name="battery_saver_start">节电已启用</string>
-    <string name="battery_saver_stop">节电已禁用</string>
-    <string name="battery_saver_change">节电模式更改网络到</string>
-    <string name="battery_saver_network">网络已恢复</string>
-    <string name="battery_saver_data">移动数据已恢复</string>
-    <string name="battery_saver_wifi">Wi-Fi 已恢复</string>
-    <string name="battery_saver_all">所有配置已恢复</string>
-    <string name="battery_saver_no_changes">无配置被恢复</string>
-    <string name="battery_saver_enable_ticker">节电模式正在运行...</string>
-    <string name="battery_saver_enable_title">节电模式</string>
-    <string name="battery_saver_airplane_ticker">飞行模式被节电模式启用</string>
-    <string name="battery_saver_airplane_text">飞行模式被节电模式启用，因为已无信号 5 分钟</string>
-    <string name="battery_saver_disable">禁用</string>
+    <!-- Title shown in recents popup for showing app in floating mode -->
+    <string name="status_bar_recent_floating_item_title">悬浮模式</string>
 
+    <string name="quick_settings_fcharge_on_label">快速充电开启</string>
+    <string name="quick_settings_fcharge_off_label">快速充电关闭</string>
+
+    <!-- CPUFreq -->
+    <string name="cpufreq_max">最大 CPU 频率</string>
+    <string name="cpufreq_min">最小 CPU 频率</string>
 </resources>

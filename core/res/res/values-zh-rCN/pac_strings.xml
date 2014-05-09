@@ -25,8 +25,8 @@
     <string name="action_voiceassist">语音搜索</string>
     <string name="action_torch">手电筒</string>
     <string name="action_silent">响铃/静音</string>
-    <string name="action_vib">响铃/震动</string>
-    <string name="action_silent_vib">响铃/震动/静音</string>
+    <string name="action_vib">响铃振动</string>
+    <string name="action_silent_vib">响铃/振动/静音</string>
     <string name="action_event">事件</string>
     <string name="action_today">今日</string>
     <string name="action_alarm">闹钟</string>
