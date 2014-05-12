@@ -168,4 +168,7 @@
 
     <string name="immersive_mode_confirmation_bottom">Swipe up from the bottom to exit full screen.</string>
 
+    <!-- WiFi turn off notification -->
+    <string name="notify_turn_wifi_off_title">Turn Wi-Fi off</string>
+
 </resources>
