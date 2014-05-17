@@ -208,4 +208,8 @@
 
     <!-- Default value of Settings.System.SYSTEM_POWER_CRT_MODE -->
     <integer name="def_screen_power_crt_mode">1</integer>
+
+    <!-- Default theme -->
+    <string name="def_theme_package"></string>
+    <string name="def_theme_components"></string>
 </resources>
