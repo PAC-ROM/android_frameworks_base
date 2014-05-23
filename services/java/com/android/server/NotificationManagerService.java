@@ -219,8 +219,9 @@ public class NotificationManagerService extends INotificationManager.Stub
     private HashSet<String> mEnabledListenerPackageNames = new HashSet<String>();
 
     // Notification control database. For now just contains disabled packages.
-    private AtomicFile mPolicyFile;
+    private AtomicFile mPolicyFile, mFloatingModePolicyFile;
     private HashSet<String> mBlockedPackages = new HashSet<String>();
+    private HashSet<String> mFloatingModeBlacklist = new HashSet<String>();
 
     private static final int DB_VERSION = 1;
 
@@ -230,6 +231,8 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final String TAG_BLOCKED_PKGS = "blocked-packages";
     private static final String TAG_PACKAGE = "package";
     private static final String ATTR_NAME = "name";
+
+    private static final String FLOATING_MODE_POLICY = "floating_mode_policy.xml";
 
     private final ArrayList<NotificationScorer> mScorers = new ArrayList<NotificationScorer>();
 
@@ -409,6 +412,42 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     Archive mArchive = new Archive();
 
+    private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db) {
+        int result = DEFAULT_RESULT;
+        FileInputStream infile = null;
+        try {
+            infile = file.openRead();
+            final XmlPullParser parser = Xml.newPullParser();
+            parser.setInput(infile, null);
+
+            int type;
+            String tag;
+            int version = DB_VERSION;
+            while ((type = parser.next()) != END_DOCUMENT) {
+                tag = parser.getName();
+                if (type == START_TAG) {
+                    if (TAG_BODY.equals(tag)) {
+                        version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
+                    } else if (lookUpTag.equals(tag)) {
+                        while ((type = parser.next()) != END_DOCUMENT) {
+                            tag = parser.getName();
+                            if (TAG_PACKAGE.equals(tag)) {
+                                db.add(parser.getAttributeValue(null, ATTR_NAME));
+                            } else if (lookUpTag.equals(tag) && type == END_TAG) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Unable to read
+        } finally {
+            IoUtils.closeQuietly(infile);
+        }
+        return result;
+    }
+
     private void loadBlockDb() {
         synchronized(mBlockedPackages) {
             if (mPolicyFile == null) {
@@ -458,6 +497,63 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
+    private void loadFloatingModeBlockDb() {
+        synchronized(mFloatingModeBlacklist) {
+            if (mFloatingModePolicyFile == null) {
+                mFloatingModePolicyFile = new AtomicFile(new File(SYSTEM_FOLDER, FLOATING_MODE_POLICY));
+                mFloatingModeBlacklist.clear();
+                readPolicy(mFloatingModePolicyFile, TAG_BLOCKED_PKGS, mFloatingModeBlacklist);
+            }
+        }
+    }
+
+    private void writeFloatingModeBlockDb() {
+        synchronized(mFloatingModeBlacklist) {
+            FileOutputStream outfile = null;
+            try {
+                outfile = mFloatingModePolicyFile.startWrite();
+
+                XmlSerializer out = new FastXmlSerializer();
+                out.setOutput(outfile, "utf-8");
+
+                out.startDocument(null, true);
+
+                out.startTag(null, TAG_BODY); {
+                    out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
+                    out.startTag(null, TAG_BLOCKED_PKGS); {
+                        // write all known network policies
+                        for (String pkg : mFloatingModeBlacklist) {
+                            out.startTag(null, TAG_PACKAGE); {
+                                out.attribute(null, ATTR_NAME, pkg);
+                            } out.endTag(null, TAG_PACKAGE);
+                        }
+                    } out.endTag(null, TAG_BLOCKED_PKGS);
+                } out.endTag(null, TAG_BODY);
+
+                out.endDocument();
+
+                mFloatingModePolicyFile.finishWrite(outfile);
+            } catch (IOException e) {
+                if (outfile != null) {
+                    mFloatingModePolicyFile.failWrite(outfile);
+                }
+            }
+        }
+    }
+
+    public void setFloatingModeBlacklistStatus(String pkg, boolean status) {
+        if (status) {
+            mFloatingModeBlacklist.add(pkg);
+        } else {
+            mFloatingModeBlacklist.remove(pkg);
+        }
+        writeFloatingModeBlockDb();
+    }
+
+    public boolean isPackageAllowedForFloatingMode(String pkg) {
+        return !mFloatingModeBlacklist.contains(pkg);
+    }
+
     /**
      * Use this when you just want to know if notifications are OK for this package.
      */
@@ -492,6 +588,9 @@ public class NotificationManagerService extends INotificationManager.Stub
         if (ENABLE_BLOCKED_NOTIFICATIONS && !enabled) {
             cancelAllNotificationsInt(pkg, 0, 0, true, UserHandle.getUserId(uid));
         }
+
+        writeBlockDb();
+        writeFloatingModeBlockDb();
     }
 
 
@@ -1527,6 +1626,7 @@ public class NotificationManagerService extends INotificationManager.Stub
      */
     private void importOldBlockDb() {
         loadBlockDb();
+        loadFloatingModeBlockDb();
 
         PackageManager pm = mContext.getPackageManager();
         for (String pkg : mBlockedPackages) {
