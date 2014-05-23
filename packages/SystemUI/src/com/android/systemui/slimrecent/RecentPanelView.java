@@ -79,8 +79,9 @@ public class RecentPanelView {
     public static final int EXPANDED_STATE_BY_SYSTEM = 4;
 
     private static final int MENU_APP_DETAILS_ID   = 0;
-    private static final int MENU_APP_PLAYSTORE_ID = 1;
-    private static final int MENU_APP_AMAZON_ID    = 2;
+    private static final int MENU_FLOATING_MODE_ID = 1;
+    private static final int MENU_APP_PLAYSTORE_ID = 2;
+    private static final int MENU_APP_AMAZON_ID    = 3;
 
     private static final String PLAYSTORE_REFERENCE = "com.android.vending";
     private static final String AMAZON_REFERENCE    = "com.amazon.venezia";
@@ -290,6 +291,10 @@ public class RecentPanelView {
         popup.getMenu().add(0, MENU_APP_DETAILS_ID, 0,
                 mContext.getResources().getString(R.string.status_bar_recent_inspect_item_title));
 
+        // Add Floating mode menu entry.
+        popup.getMenu().add(0, MENU_FLOATING_MODE_ID, 0,
+                mContext.getResources().getString(R.string.status_bar_recent_floating_item_title));
+
         // Add playstore or amazon entry if it is provided by the application.
         if (checkAppInstaller(packageName, PLAYSTORE_REFERENCE)) {
             popup.getMenu().add(0, MENU_APP_PLAYSTORE_ID, 0,
@@ -304,6 +309,15 @@ public class RecentPanelView {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == MENU_APP_DETAILS_ID) {
                     startApplicationDetailsActivity(packageName, null, null);
+                } else if (item.getItemId() == MENU_FLOATING_MODE_ID) {
+                    final PackageManager pm = mContext.getPackageManager();
+                    Intent intent = null;
+                    intent = pm.getLaunchIntentForPackage(packageName);
+                    intent.addFlags(Intent.FLAG_FLOATING_WINDOW);
+                    intent.setFlags((intent.getFlags()&~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                                     | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivityAsUser(intent, getAnimation(),
+                        new UserHandle(UserHandle.USER_CURRENT));
                 } else if (item.getItemId() == MENU_APP_PLAYSTORE_ID) {
                     startApplicationDetailsActivity(null,
                             PLAYSTORE_APP_URI_QUERY + packageName, PLAYSTORE_REFERENCE);
