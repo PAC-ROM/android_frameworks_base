@@ -1369,7 +1369,6 @@
     <string name="action_mode_done" msgid="7217581640461922289">"完成"</string>
     <string name="progress_unmounting" product="nosdcard" msgid="3923810448507612746">"正在卸载 USB 存储设备..."</string>
     <string name="progress_unmounting" product="default" msgid="1327894998409537190">"正在卸载 SD 卡..."</string>
-    <string name="progress_nomediapresent" product="default">当前无可卸载媒体\u2026</string>
     <string name="progress_erasing" product="nosdcard" msgid="4521573321524340058">"正在清除 USB 存储设备的数据..."</string>
     <string name="progress_erasing" product="default" msgid="6596988875507043042">"正在清除 SD 卡的数据..."</string>
     <string name="format_error" product="nosdcard" msgid="6299769563624776948">"无法清除 USB 存储设备。"</string>
