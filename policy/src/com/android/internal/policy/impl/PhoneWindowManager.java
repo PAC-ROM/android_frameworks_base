@@ -1587,12 +1587,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Allow the navigation bar to move on small devices (phones).
         mNavigationBarCanMove = shortSizeDp < 600;
 
-        // mHasNavigationBar = res.getBoolean(com.android.internal.R.bool.config_showNavigationBar);
-        final int showByDefault = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
-        mHasNavigationBar = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault,
-                    UserHandle.USER_CURRENT) == 1;
+        setHasNavigationBar();
 
         // Allow a system property to override this. Used by the emulator.
         // See also hasNavigationBar().
@@ -1622,6 +1617,34 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // $ adb shell setprop config.override_forced_orient true
                 // $ adb shell wm size reset
                 !"true".equals(SystemProperties.get("config.override_forced_orient"));
+    }
+
+    private void setHasNavigationBar() {
+        final boolean showByDefault = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        final int hasNavigationBar = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_SHOW, -1,
+                UserHandle.USER_CURRENT);
+
+        // Allow a system property to override this if the provider value was never set.
+        // Used by the emulator.
+        // See also hasNavigationBar().
+        if (hasNavigationBar == -1) {
+            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
+            if ("1".equals(navBarOverride)) {
+                mHasNavigationBar = false;
+                mOverWriteHasNavigationBar = true;
+            } else if ("0".equals(navBarOverride)) {
+                mHasNavigationBar = true;
+                mOverWriteHasNavigationBar = true;
+            } else {
+                mHasNavigationBar = showByDefault;
+                mOverWriteHasNavigationBar = false;
+            }
+        } else {
+            mHasNavigationBar = hasNavigationBar == 1;
+        }
     }
 
     /**
@@ -1736,15 +1759,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mUserRotationAngles = Settings.System.getIntForUser(resolver,
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, -1, UserHandle.USER_CURRENT);
 
-            // if (!mDevForceNavbar) {
-                // Set the navigation bar's dimensions to 0 in expanded desktop mode
-
-            // Custom nav bar dimensions
-            final int showByDefault = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
-            mHasNavigationBar = Settings.System.getIntForUser(resolver,
-                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault,
-                    UserHandle.USER_CURRENT) == 1;
+            setHasNavigationBar();
 
             mNavigationBarHeight =
                     Settings.System.getIntForUser(mContext.getContentResolver(),
