@@ -2800,7 +2800,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     } else if (mLongPressOnMenuBehavior != KEY_ACTION_NOTHING) {
                         return -1;
                     }
-                } else if (mLongPressOnMenuBehavior != KEY_ACTION_NOTHING) {
+                } else {
                     return -1;
                 }
             }
