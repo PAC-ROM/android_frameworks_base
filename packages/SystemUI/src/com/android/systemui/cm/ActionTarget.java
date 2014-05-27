@@ -44,6 +44,7 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
+import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -85,6 +86,10 @@ public class ActionTarget {
     }
 
     public boolean launchAction(String action, Bundle opts) {
+
+        final IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
+                    ServiceManager.getService(Context.WINDOW_SERVICE));
+
         if (TextUtils.isEmpty(action) || action.equals(ACTION_NONE)) {
             return false;
         } else if (action.equals(ACTION_RECENTS)) {
@@ -112,8 +117,10 @@ public class ActionTarget {
             mContext.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
             return true;
         } else if (action.equals(ACTION_POWER_MENU)) {
-            Intent intent = new Intent(Intent.ACTION_POWERMENU);
-            mContext.sendBroadcast(intent);
+            try {
+                windowManagerService.toggleGlobalMenu();
+            } catch (RemoteException e) {
+            }
             return true;
         } else if (action.equals(ACTION_LAST_APP)) {
             TaskUtils.toggleLastAppImpl(mContext);
