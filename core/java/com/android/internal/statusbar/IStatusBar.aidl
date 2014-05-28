@@ -40,6 +40,7 @@ oneway interface IStatusBar
     void cancelPreloadRecentApps();
     void setWindowState(int window, int state);
     void setButtonDrawable(int buttonId, int iconId);
+    void setPieTriggerMask(int newMask, boolean lock);
     void setAutoRotate(boolean enabled);
     void toggleNotificationShade();
     void toggleQSShade();
