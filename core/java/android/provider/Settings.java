@@ -4342,6 +4342,12 @@ public final class Settings {
         public static final String PIE_BUTTONS_CONFIG_SECOND_LAYER =
                 "pie_buttons_config_second_layer";
 
+        /**
+         * Wether navigation bar in power menu is enabled or not
+         * @hide
+         */
+        public static final String POWER_MENU_NAV_BAR_ENABLED = "power_menu_nav_bar_enabled";
+
     }
 
     /**
