@@ -28,6 +28,13 @@
   <!-- Last app on navring -->
   <java-symbol type="drawable" name="ic_navigation_ring_lastapp" />
 
+  <!-- Navigation bar -->
+  <java-symbol type="string" name="global_actions_nav_bar_mode" />
+  <java-symbol type="string" name="global_actions_nav_bar_mode_on_status" />
+  <java-symbol type="string" name="global_actions_nav_bar_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_navbar_on" />
+  <java-symbol type="drawable" name="ic_lock_navbar_off" />
+
   <!-- Navigation ring power menu -->
   <java-symbol type="drawable" name="ic_navigation_ring_power_menu" />
 
