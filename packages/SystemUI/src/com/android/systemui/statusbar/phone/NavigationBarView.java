@@ -134,6 +134,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private FrameLayout mFlayout;
 
+    private boolean mPrefNavring;
+    private boolean mPrefLockscreen;
+    private String mUserButtons;
+
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
     final static int MSG_CHECK_INVALID_LAYOUT = 8686;
@@ -273,6 +277,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mMenuButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
 
         mBarTransitions = new NavigationBarTransitions(this);
+
+        mUserButtons = Settings.PAC.getString(mContext.getContentResolver(),
+                Settings.PAC.NAVIGATION_BAR_BUTTONS);
+        mNavigationBarForceMenu = Settings.PAC.getBoolean(mContext.getContentResolver(),
+                Settings.PAC.NAVIGATION_MENU_FORCE, false);
+        mNavigationBarMenuLocation = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.NAVIGATION_MENU, 0);
 
         mCameraDisabledByDpm = isCameraDisabledByDpm();
         watchForDevicePolicyChanges();
@@ -474,7 +485,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                     : R.drawable.ic_sysbar_back);
         }
 
-        readUserConfig();
+        //readUserConfig();
 
         if (getMenuButton() != null && getRightCursorButton() != null) {
             if (mShowIME && mShowDpadKeys) {
@@ -653,7 +664,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     public void setMenuVisibility(final boolean show, final boolean force) {
         if (!force && mShowMenu == show) return;
 
-        readUserConfig();
+        //readUserConfig();
 
         mShowMenu = show;
 
@@ -739,6 +750,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             mSettingsObserver = new ContentObserver(new Handler()) {
                 @Override
                 public void onChange(boolean selfChange) {
+                    mUserButtons = Settings.PAC.getString(r, Settings.System.NAVIGATION_BAR_BUTTONS);
+                    mNavigationBarForceMenu = Settings.PAC.getBoolean(r, Settings.PAC.NAVIGATION_MENU_FORCE, false);
+                    mNavigationBarMenuLocation = Settings.PAC.getInt(r, Settings.PAC.NAVIGATION_MENU, 0);
                     setupNavigationButtons();
                     setMenuVisibility(mShowMenu, true /* force */);
                 }
@@ -765,15 +779,14 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
     }
 
-    private void readUserConfig() {
+    private void updateUserConfig() {
         mNavigationBarForceMenu = Settings.PAC.getBoolean(getContext().getContentResolver(),
                 Settings.PAC.NAVIGATION_MENU_FORCE, false);
         mNavigationBarMenuLocation = Settings.PAC.getInt(getContext().getContentResolver(),
                 Settings.PAC.NAVIGATION_MENU, 0);
 
         mNavButtons.clear();
-        String buttons = Settings.PAC.getString(getContext().getContentResolver(), Settings.PAC.NAVIGATION_BAR_BUTTONS);
-        if (buttons == null || buttons.isEmpty()) {
+        if (mUserButtons == null || mUserButtons.isEmpty()) {
             // use default buttons
             mNavButtons.add(new AwesomeButtonInfo(
                     AwesomeConstant.ACTION_BACK.value(),    /* short press */
@@ -799,7 +812,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
              *
              * singleTapAction,doubleTapAction,longPressAction,iconUri|singleTap...
              */
-            String[] userButtons = buttons.split("\\|");
+            String[] userButtons = mUserButtons.split("\\|");
             if (userButtons != null) {
                 for (String button : userButtons) {
                     String[] actions = button.split(",", 4);
@@ -811,7 +824,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     }
 
     private void setupNavigationButtons() {
-        readUserConfig();
+        updateUserConfig();
         final boolean stockThreeButtonLayout = mNavButtons.size() == 3;
         int separatorSize = (int) mMenuButtonWidth;
 
