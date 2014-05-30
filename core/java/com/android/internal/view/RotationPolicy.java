@@ -22,7 +22,6 @@ import android.os.SystemProperties;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;

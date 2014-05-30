@@ -28,22 +28,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.gesture.Gesture;
-import android.os.Binder;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.storage.IMountService;
-import android.provider.CalendarContract;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.IWindowManager;
 import android.view.View;
@@ -56,10 +50,7 @@ import com.google.android.collect.Lists;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Utilities for the lock pattern and its settings.
@@ -206,7 +197,7 @@ public class LockPatternUtils {
     private ILockSettings getLockSettings() {
         if (mLockSettingsService == null) {
             mLockSettingsService = ILockSettings.Stub.asInterface(
-                (IBinder) ServiceManager.getService("lock_settings"));
+                    ServiceManager.getService("lock_settings"));
         }
         return mLockSettingsService;
     }
@@ -785,7 +776,7 @@ public class LockPatternUtils {
                 // hashes have the same length for simplicity of implementation.
                 String passwordHistory = getString(PASSWORD_HISTORY_KEY, userHandle);
                 if (passwordHistory == null) {
-                    passwordHistory = new String();
+                    passwordHistory = "";
                 }
                 int passwordHistoryLength = getRequestedPasswordHistoryLength();
                 if (passwordHistoryLength == 0) {

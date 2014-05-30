@@ -37,7 +37,12 @@
 #include <utils/misc.h>
 #include <utils/Log.h>
 
+<<<<<<< HEAD:core/jni/android_net_wifi_Gbk2Utf.h
 namespace android {
+=======
+import android.content.ComponentName;
+import android.content.Intent;
+>>>>>>> 2e727f0... Base: huge cleanup:core/java/com/android/internal/app/ActivityTrigger.java
 
 struct accessPointObjectItem {
     String8 *ssid_utf8;
