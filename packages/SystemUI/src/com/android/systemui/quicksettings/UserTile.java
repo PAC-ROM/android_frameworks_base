@@ -122,7 +122,9 @@ public class UserTile extends QuickSettingsTile {
             tv.setText(mLabel);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
         }
+        if (iv != null) {
         iv.setImageDrawable(userAvatar);
+        }
     }
 
     private void queryForUserInformation() {
