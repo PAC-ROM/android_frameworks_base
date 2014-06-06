@@ -3809,7 +3809,7 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
             }
         }
 
-        if (mLayout != null) && mLayoutParams != null) {
+        if (mLayout != null && mLayoutParams != null) {
             checkForRelayout();
         }
 
