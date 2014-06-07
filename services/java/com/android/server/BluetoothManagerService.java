@@ -441,7 +441,7 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
         return true;
     }
 
-    public boolean disable(String callingPackage, boolean persist) {
+    public boolean disable(boolean persist) {
         mContext.enforceCallingOrSelfPermission(BLUETOOTH_ADMIN_PERM,
                                                 "Need BLUETOOTH ADMIN permissicacheNameAndAddresson");
 
@@ -460,13 +460,6 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
         if (DBG) {
             Log.d(TAG,"disable(): mBluetooth = " + mBluetooth +
                 " mBinding = " + mBinding);
-        }
-
-        AppOpsManager appOps = (AppOpsManager) mContext.getSystemService(Context.APP_OPS_SERVICE);
-        int callingUid = Binder.getCallingUid();
-        if (appOps.noteOp(AppOpsManager.OP_BLUETOOTH_CHANGE, callingUid, callingPackage) !=
-                AppOpsManager.MODE_ALLOWED) {
-            return false;
         }
 
         synchronized(mReceiver) {
