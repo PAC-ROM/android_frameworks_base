@@ -97,6 +97,12 @@ public class QSUtils {
             return new File("/sys/kernel/fast_charge/force_fast_charge").exists();
         }
 
+        public static boolean deviceSupportsCompass(Context context) {
+            SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            return (sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
+                    && sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null);
+        }
+
         public static boolean deviceSupportsCPUFreq() {
             /*
              * Actually every kernel should support this,
@@ -106,11 +112,5 @@ public class QSUtils {
             for (String path : paths)
                 if (new File(path).exists()) return true;
             return false;
-        }
-
-        public static boolean deviceSupportsCompass(Context context) {
-            SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-            return (sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
-                    && sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null);
         }
 }

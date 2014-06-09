@@ -303,9 +303,9 @@ public class QuickSettingsController {
             } else if (tile.contains(TILE_CPUFREQ)) {
                 if (cpufreqSupported) {
                     qs = new CPUFreqTile(mContext, this);
+                }
             } else if (tile.equals(TILE_COMPASS)) {
                 qs = new CompassTile(mContext, this);
-                }
             }
 
             if (qs != null) {
