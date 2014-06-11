@@ -3583,6 +3583,14 @@ public final class Settings {
         public static final String VOICE_LAUNCH_INTENT = "voice_launch_intent";
 
         /**
+         * Hover, default is 0 (off).
+         * 0 = disabled
+         * 1 = enabled
+         * @hide
+         */
+        public static final String HOVER_STATE = "hover_state";
+
+        /**
          * Locale for secondary overlay on dialer for t9 search input
          * @hide
          */
@@ -5880,6 +5888,9 @@ public final class Settings {
 
         /** @hide */
         public static final String IMMERSIVE_MODE_CONFIRMATIONS = "immersive_mode_confirmations";
+
+        /** @hide */
+        public static final String HOVER_FIRST_TIME = "hover_first_time";
 
         /**
          * This is the query URI for finding a print service to install.
