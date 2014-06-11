@@ -2998,7 +2998,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         @Override
         public void tickerStarting() {
             if (mHoverState == HOVER_DISABLED) mTicking = true;
-            mTicking = true;
             mStatusBarContents.setVisibility(View.GONE);
             if (mClockStyle == CLOCK_STYLE_CENTERED && mShowClock) {
                 mClockView.setVisibility(View.INVISIBLE);
