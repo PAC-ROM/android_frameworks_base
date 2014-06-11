@@ -108,5 +108,10 @@
     <string name="permdesc_screenshot">Capture screenshot</string>
     <string name="permlab_screenshot">Allows the app to cature a screenshot. This is protected by SystemUI.</string>
 
+    <!-- Blacklisted app for floating mode -->
+    <string name="floating_mode_blacklisted_app">The current app is blacklisted as it may not work as expected in floating mode </string>
+
+    <!-- First time run hover -->
+    <string name="hover_cling_text">Hover is now enabled.\n\nWhen a new notification arrives, an overlay will show allowing you to respond to it without leaving current app.</string>
 
 </resources>
