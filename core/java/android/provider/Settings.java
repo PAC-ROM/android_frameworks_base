@@ -4417,6 +4417,24 @@ public final class Settings {
         public static final String POWER_MENU_NAV_BAR_ENABLED = "power_menu_nav_bar_enabled";
 
         /**
+         * Whether incomming call UI stays in background
+         *
+         * @hide
+         */
+         public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
+
+        /**
+         * Hover, default is 0 (off).
+         * 0 = disabled
+         * 1 = enabled
+         * @hide
+         */
+        public static final String HOVER_STATE = "hover_state";
+
+        /** @hide */
+        public static final String HOVER_FIRST_TIME = "hover_first_time";
+
+        /**
          * SMOOTH PROGRESS BAR Mirror
          * @hide
          */
