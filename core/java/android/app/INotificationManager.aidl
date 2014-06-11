@@ -48,4 +48,9 @@ interface INotificationManager
     void cancelAllNotificationsFromListener(in INotificationListener token);
 
     StatusBarNotification[] getActiveNotificationsFromListener(in INotificationListener token);
+
+    void setFloatingModeBlacklistStatus(String pkg, boolean status);
+    void setHoverBlacklistStatus(String pkg, boolean status);
+    boolean isPackageAllowedForFloatingMode(String pkg);
+    boolean isPackageAllowedForHover(String pkg);
 }
