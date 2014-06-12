@@ -3931,6 +3931,14 @@ public final class Settings {
          public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
 
         /**
+         * In call dialpad state.
+         * 0 = hidden
+         * 1 = showing
+         * @hide
+         */
+        public static final String DIALPAD_STATE = "dialpad_state";
+
+        /**
          * Sets the lockscreen background style
          * @hide
          */
