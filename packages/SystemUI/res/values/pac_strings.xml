@@ -54,6 +54,8 @@
     <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
     <!-- Title shown in notification popup for launching notification in floating mode -->
-+    <string name="status_bar_notification_floating_item_title">Floating mode</string>
+    <string name="status_bar_notification_floating_item_title">Floating mode</string>
+    <!-- Title shown when app provides no interface -->
+    <string name="status_bar_floating_no_interface">App provides no interface</string>
 
 </resources>
