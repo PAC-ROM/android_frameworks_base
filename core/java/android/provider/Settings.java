@@ -4657,6 +4657,12 @@ public final class Settings {
          */
         public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
 
+        /**
+         * HALO notify silent?, should default to 0 (no, do not ping silent notifications)
+         * @hide
+         */
+        public static final String HALO_NOTIFY_SILENT = "halo_notify_silent";
+
     }
 
     /**
