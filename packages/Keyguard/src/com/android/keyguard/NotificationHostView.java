@@ -190,6 +190,9 @@ public class NotificationHostView extends FrameLayout {
             if (!swipeGesture) {
                 PendingIntent i = statusBarNotification.getNotification().contentIntent;
                 if (!longpress && i != null) {
+                    if ((statusBarNotification.getNotification().flags & Notification.FLAG_AUTO_CANCEL) != 0) {
+                        dismiss(statusBarNotification);
+                    }
                     try {
                         Intent intent = i.getIntent();
                         intent.setFlags(
