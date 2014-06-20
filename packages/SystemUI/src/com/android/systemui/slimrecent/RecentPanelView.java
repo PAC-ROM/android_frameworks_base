@@ -343,13 +343,16 @@ public class RecentPanelView {
                 if (item.getItemId() == MENU_APP_DETAILS_ID) {
                     startApplicationDetailsActivity(td.packageName, null, null);
                 } else if (item.getItemId() == MENU_APP_FLOATING_ID) {
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_FLOATING_WINDOW);
-                    intent.setComponent(td.intent.getComponent());
-                    mContext.startActivity(intent);
                     exit();
+                    selectedView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = td.intent;
+                            intent.setFlags(Intent.FLAG_FLOATING_WINDOW
+                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(intent);
+                        }
+                    });
                 } else if (item.getItemId() == MENU_APP_STOP_ID) {
                     ActivityManager am = (ActivityManager)mContext.getSystemService(
                             Context.ACTIVITY_SERVICE);
