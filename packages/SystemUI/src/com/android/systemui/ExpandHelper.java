@@ -274,7 +274,7 @@ public class ExpandHelper implements Gefingerpoken, OnClickListener {
 
         if (v == null) {
             if (DEBUG) Log.d(TAG, "isinside null subject");
-            return true;
+            return false;
         }
         if (mEventSource != null) {
             int[] location = new int[2];
@@ -411,8 +411,7 @@ public class ExpandHelper implements Gefingerpoken, OnClickListener {
             }
 
             case MotionEvent.ACTION_DOWN:
-                final boolean inside = isInside(mScrollView, x, y);
-                mWatchingForPull = (inside || mForcedOneFinger);
+                mWatchingForPull = (isInside(mScrollView, x, y) || mForcedOneFinger);
                 mLastMotionY = y;
                 if (inside) {
                     mInitialTouchY = y;
