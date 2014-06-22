@@ -90,11 +90,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_SYSTEM = "system";
     private static final String TABLE_SECURE = "secure";
     private static final String TABLE_GLOBAL = "global";
+    private static final String TABLE_PAC = "pac";
 
     static {
         mValidTables.add(TABLE_SYSTEM);
         mValidTables.add(TABLE_SECURE);
         mValidTables.add(TABLE_GLOBAL);
+        mValidTables.add(TABLE_PAC);
         mValidTables.add("bluetooth_devices");
         mValidTables.add("bookmarks");
 
@@ -145,6 +147,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX globalIndex1 ON global (name);");
     }
 
+    private void createPACTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS pac (" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT UNIQUE ON CONFLICT REPLACE," +
+                "value TEXT" +
+                ");");
+        db.execSQL("CREATE INDEX IF NOT EXISTS pacIndex1 ON pac (name);");
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE system (" +
@@ -155,6 +166,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX systemIndex1 ON system (name);");
 
         createSecureTable(db);
+
+        createPACTable(db);
 
         // Only create the global table for the singleton 'owner' user
         if (mUserHandle == UserHandle.USER_OWNER) {
@@ -1608,6 +1621,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     if (stmt != null) stmt.close();
                 }
             }
+            //add PAC table
+            db.beginTransaction();
+            try {
+                createPACTable(db);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
             upgradeVersion = 98;
         }
 
@@ -1678,6 +1699,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP INDEX IF EXISTS bookmarksIndex1");
         db.execSQL("DROP INDEX IF EXISTS bookmarksIndex2");
         db.execSQL("DROP TABLE IF EXISTS favorites");
+        db.execSQL("DROP TABLE IF EXISTS pac");
+        db.execSQL("DROP INDEX IF EXISTS pacIndex1");
         onCreate(db);
 
         // Added for diagnosing settings.db wipes after the fact
@@ -2113,6 +2136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (mUserHandle == UserHandle.USER_OWNER) {
             loadGlobalSettings(db);
         }
+        loadPacSettings(db);
     }
 
     private void loadSystemSettings(SQLiteDatabase db) {
@@ -2225,6 +2249,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         loadStringSetting(stmt, Settings.Secure.DEFAULT_THEME_PACKAGE, R.string.def_theme_package);
         loadStringSetting(stmt, Settings.Secure.DEFAULT_THEME_COMPONENTS,
                 R.string.def_theme_components);
+    }
+
+    private void loadPacSettings(SQLiteDatabase db) {
+        SQLiteStatement stmt = null;
+        try {
+            //stmt = db.compileStatement("INSERT OR IGNORE INTO pac(name,value)"
+            //        + " VALUES(?,?);");
+            // TODO: Preload any required default values
+        } finally {
+            if (stmt != null) stmt.close();
+        }
     }
 
     private void loadSecureSettings(SQLiteDatabase db) {
