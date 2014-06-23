@@ -1,0 +1,5 @@
+[gerrit]
+host=review.pac-rom.com
+port=29418
+project=frameworks_base.git
+defaultbranch=pac-4.4
