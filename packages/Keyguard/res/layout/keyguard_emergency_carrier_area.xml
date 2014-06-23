@@ -31,8 +31,8 @@
     <com.android.keyguard.CarrierText
         android:id="@+id/carrier_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="marquee"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="@dimen/kg_status_line_font_size"
         android:textColor="?android:attr/textColorSecondary" />
