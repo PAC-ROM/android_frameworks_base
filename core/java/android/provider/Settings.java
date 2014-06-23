@@ -4250,6 +4250,13 @@ public final class Settings {
         /** @hide */
         public static final String HOVER_FIRST_TIME = "hover_first_time";
 
+        /**
+         * Hover: Option to exclude topmost app, default is 1 (on).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_TOPMOST = "hover_exclude_topmost";
+
     }
 
     /**
