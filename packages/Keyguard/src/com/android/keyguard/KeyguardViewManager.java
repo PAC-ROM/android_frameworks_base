@@ -40,7 +40,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -118,28 +117,6 @@ public class KeyguardViewManager {
         void onShown(IBinder windowToken);
     };
 
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.LOCKSCREEN_SEE_THROUGH), false, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            setKeyguardParams();
-            if (mKeyguardHost == null) {
-                maybeCreateKeyguardLocked(shouldEnableScreenRotation(), false, null);
-                hide();
-            }
-            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
-        }
-    }
-
     /**
      * @param context Used to create views.
      * @param viewManager Keyguard will be attached to this.
@@ -153,9 +130,6 @@ public class KeyguardViewManager {
         mViewManager = viewManager;
         mViewMediatorCallback = callback;
         mLockPatternUtils = lockPatternUtils;
-
-        SettingsObserver observer = new SettingsObserver(new Handler());
-        observer.observe();
     }
 
     /**
@@ -166,6 +140,8 @@ public class KeyguardViewManager {
         if (DEBUG) Log.d(TAG, "show(); mKeyguardView==" + mKeyguardView);
 
         boolean enableScreenRotation = shouldEnableScreenRotation();
+
+        setKeyguardParams(enableScreenRotation);
 
         maybeCreateKeyguardLocked(enableScreenRotation, false, options);
         maybeEnableScreenRotation(enableScreenRotation);
@@ -189,8 +165,7 @@ public class KeyguardViewManager {
         mKeyguardView.requestFocus();
     }
 
-    public void setKeyguardParams() {
-        boolean enableScreenRotation = shouldEnableScreenRotation();
+    public void setKeyguardParams(boolean enableScreenRotation) {
 
         int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
