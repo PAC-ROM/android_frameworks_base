@@ -1227,7 +1227,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         return new NotificationClicker(intent, pkg, tag, id);
     }
 
-    protected class NotificationClicker implements View.OnClickListener {
+    public class NotificationClicker implements View.OnClickListener {
         private KeyguardTouchDelegate mKeyguard;
         private PendingIntent mPendingIntent;
         private Intent mIntent;
@@ -1293,13 +1293,12 @@ public abstract class BaseStatusBar extends SystemUI implements
                     // the stack trace isn't very helpful here.  Just log the exception message.
                     Log.w(TAG, "Sending contentIntent failed: " + e);
                 }
+                KeyguardTouchDelegate.getInstance(mContext).dismiss();
             } else if(mIntent != null) {
                 if (mFloat && allowed) mIntent.addFlags(flags);
                 mContext.startActivity(mIntent);
+                KeyguardTouchDelegate.getInstance(mContext).dismiss();
             }
-
-
-            if(mKeyguard.isShowingAndNotHidden()) mKeyguard.dismiss();
 
             if(mPkg != null) { // check if we're dealing with a notification
                 try {

@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.provider.Settings;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
@@ -73,10 +74,16 @@ public class NotificationHelper {
                     entry.notification.getId());
             boolean makeFloating = floating
                     // if the notification is from the foreground app, don't open in floating mode
-                    && !entry.notification.getPackageName().equals(getForegroundPackageName());
+                    && !entry.notification.getPackageName().equals(getForegroundPackageName())
+                    && openInFloatingMode();
 
             intent.makeFloating(makeFloating);
         }
         return intent;
+    }
+
+    public boolean openInFloatingMode() {
+        return Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_FLOATING_WINDOW, true);
     }
 }

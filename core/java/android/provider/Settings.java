@@ -4593,6 +4593,13 @@ public final class Settings {
          */
         public static final String HEADS_UP_GRAVITY_BOTTOM = "heads_up_gravity_bottom";
 
+        /**
+         * Heads Up in Floating Window
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
     }
 
     /**
