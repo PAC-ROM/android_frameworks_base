@@ -3591,6 +3591,20 @@ public final class Settings {
         public static final String HOVER_STATE = "hover_state";
 
         /**
+         * Hover: Exclude non-clearable notifications, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_NON_CLEARABLE = "hover_exclude_non_clearable";
+
+        /**
+         * Hover: Exclude low priority notifications, default is 0 (off).
+         *Add a comment to this line
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_LOW_PRIORITY = "hover_exclude_low_priority";
+
+        /**
          * Locale for secondary overlay on dialer for t9 search input
          * @hide
          */
