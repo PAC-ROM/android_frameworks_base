@@ -4477,6 +4477,13 @@ public final class Settings {
         public static final String HOVER_HIDE_BUTTON = "hover_hide_button";
 
         /**
+         * Hover: Only show up if StatusBar is hidden, default is 1 (on).
+         *
+         * @hide
+         */
+        public static final String HOVER_REQUIRE_FULLSCREEN_MODE = "hover_require_fullscreen_mode";
+
+        /**
          * SMOOTH PROGRESS BAR Mirror
          * @hide
          */
