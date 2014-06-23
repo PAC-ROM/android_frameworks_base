@@ -4408,6 +4408,13 @@ public final class Settings {
          */
         public static final String HOVER_LONG_FADE_OUT_DELAY = "hover_long_fade_out_delay";
 
+        /**
+         * Hide HOVER-Button is StatusBar, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_HIDE_BUTTON = "hover_hide_button";
+
     }
 
     /**
