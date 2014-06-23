@@ -3590,12 +3590,12 @@ public final class Settings {
          public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
 
         /**
-         * Hover, default is 0 (off).
+         * Hover is active, default is 0 (off).
          * 0 = disabled
          * 1 = enabled
          * @hide
          */
-        public static final String HOVER_STATE = "hover_state";
+        public static final String HOVER_ACTIVE = "hover_active";
 
         /**
          * Hover: Exclude non-clearable notifications, default is 0 (off).
