@@ -4818,13 +4818,6 @@ public final class Settings {
         public static final String VOICE_LAUNCH_INTENT = "voice_launch_intent";
 
         /**
-         * Enable Hover, default is 0 (off).
-         *
-         * @hide
-         */
-        public static final String HOVER_ENABLED = "hover_enabled";
-
-        /**
          * Hover is active, default is 0 (off).
          * 0 = disabled
          * 1 = enabled
