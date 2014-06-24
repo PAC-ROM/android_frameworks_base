@@ -1,18 +1,19 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2013 The Android Open Source Project
+* Copyright (C) 2013-2014 The CyanogenMod Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui;
 
@@ -52,63 +53,63 @@ public class DessertCaseView extends FrameLayout {
     private static final int TAG_SPAN = 0x2000002;
 
     private static final int[] PASTRIES = {
-            R.drawable.dessert_kitkat,      // used with permission
-            R.drawable.dessert_android,     // thx irina
+            R.drawable.dessert_kitkat, // used with permission
+            R.drawable.dessert_android, // thx irina
     };
 
     private static final int[] RARE_PASTRIES = {
-            R.drawable.dessert_cupcake,     // 2009
-            R.drawable.dessert_donut,       // 2009
-            R.drawable.dessert_eclair,      // 2009
-            R.drawable.dessert_froyo,       // 2010
+            R.drawable.dessert_cupcake, // 2009
+            R.drawable.dessert_donut, // 2009
+            R.drawable.dessert_eclair, // 2009
+            R.drawable.dessert_froyo, // 2010
             R.drawable.dessert_gingerbread, // 2010
-            R.drawable.dessert_honeycomb,   // 2011
-            R.drawable.dessert_ics,         // 2011
-            R.drawable.dessert_jellybean,   // 2012
+            R.drawable.dessert_honeycomb, // 2011
+            R.drawable.dessert_ics, // 2011
+            R.drawable.dessert_jellybean, // 2012
     };
 
     private static final int[] XRARE_PASTRIES = {
-            R.drawable.dessert_petitfour,   // the original and still delicious
+            R.drawable.dessert_petitfour, // the original and still delicious
 
             R.drawable.dessert_donutburger, // remember kids, this was long before cronuts
 
-            R.drawable.dessert_flan,        //     sholes final approach
-                                            //     landing gear punted to flan
-                                            //     runway foam glistens
-                                            //         -- mcleron
+            R.drawable.dessert_flan, // sholes final approach
+                                            // landing gear punted to flan
+                                            // runway foam glistens
+                                            // -- mcleron
 
-            R.drawable.dessert_keylimepie,  // from an alternative timeline
+            R.drawable.dessert_keylimepie, // from an alternative timeline
     };
     private static final int[] XXRARE_PASTRIES = {
             R.drawable.dessert_zombiegingerbread, // thx hackbod
-            R.drawable.dessert_dandroid,    // thx morrildl
-            R.drawable.dessert_jandycane,   // thx nes
+            R.drawable.dessert_dandroid, // thx morrildl
+            R.drawable.dessert_jandycane, // thx nes
     };
 
     private static final int NUM_PASTRIES = PASTRIES.length + RARE_PASTRIES.length
             + XRARE_PASTRIES.length + XXRARE_PASTRIES.length;
 
-    private SparseArray<Drawable> mDrawables = new SparseArray<Drawable>(NUM_PASTRIES);
+    private SparseArray<Drawable> mDrawables = new SparseArray<Drawable>(getNumPastries());
 
     private static final float[] MASK = {
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            1f,  0f,  0f,  0f, 0f
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            1f, 0f, 0f, 0f, 0f
     };
 
     private static final float[] ALPHA_MASK = {
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  1f, 0f
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 1f, 0f
     };
 
     private static final float[] WHITE_MASK = {
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            0f,  0f,  0f,  0f, 255f,
-            -1f,  0f,  0f,  0f, 255f
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            0f, 0f, 0f, 0f, 255f,
+            -1f, 0f, 0f, 0f, 255f
     };
 
     public static final float SCALE = 0.25f; // natural display size will be SCALE*mCellSize
@@ -169,7 +170,8 @@ public class DessertCaseView extends FrameLayout {
         }
         opts.inMutable = true;
         Bitmap loaded = null;
-        for (int[] list : new int[][] { PASTRIES, RARE_PASTRIES, XRARE_PASTRIES, XXRARE_PASTRIES }) {
+        for (int[] list : new int[][] { getPastries(), getRarePastries(),
+                getXRarePastries(), getXXRarePastries()}) {
             for (int resid : list) {
                 opts.inBitmap = loaded;
                 loaded = BitmapFactory.decodeResource(res, resid, opts);
@@ -219,7 +221,7 @@ public class DessertCaseView extends FrameLayout {
 
     float[] hsv = new float[] { 0, 1f, .85f };
     int random_color() {
-//        return 0xFF000000 | (int) (Math.random() * (float) 0xFFFFFF); // totally random
+// return 0xFF000000 | (int) (Math.random() * (float) 0xFFFFFF); // totally random
         final int COLORS = 12;
         hsv[0] = irand(0,COLORS) * (360f/COLORS);
         return Color.HSVToColor(hsv);
@@ -295,13 +297,13 @@ public class DessertCaseView extends FrameLayout {
             final float which = frand();
             final Drawable d;
             if (which < 0.0005f) {
-                d = mDrawables.get(pick(XXRARE_PASTRIES));
+                d = mDrawables.get(pick(getXXRarePastries()));
             } else if (which < 0.005f) {
-                d = mDrawables.get(pick(XRARE_PASTRIES));
+                d = mDrawables.get(pick(getXRarePastries()));
             } else if (which < 0.5f) {
-                d = mDrawables.get(pick(RARE_PASTRIES));
+                d = mDrawables.get(pick(getRarePastries()));
             } else if (which < 0.7f) {
-                d = mDrawables.get(pick(PASTRIES));
+                d = mDrawables.get(pick(getPastries()));
             } else {
                 d = null;
             }
@@ -462,6 +464,26 @@ public class DessertCaseView extends FrameLayout {
         return result;
     }
 
+    protected int[] getPastries() {
+        return PASTRIES;
+    }
+
+    protected int[] getRarePastries() {
+        return RARE_PASTRIES;
+    };
+
+    protected int[] getXRarePastries() {
+        return XRARE_PASTRIES;
+    }
+
+    protected int[] getXXRarePastries() {
+        return XXRARE_PASTRIES;
+    }
+
+    protected int getNumPastries() {
+        return NUM_PASTRIES;
+    }
+
     static float frand() {
         return (float)(Math.random());
     }
@@ -500,29 +522,16 @@ public class DessertCaseView extends FrameLayout {
         private float mDarkness;
 
         public RescalingContainer(Context context) {
-            this(context, false);
-        }
-
-        RescalingContainer(Context context, boolean dayDream) {
             super(context);
 
-            if (dayDream) {
-                // For daydream is better to use setFullscreen + this window flags
-                // It creates a better ux exiting from immersive mode
-                setSystemUiVisibility(0
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            } else {
-                setSystemUiVisibility(0
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        );
-            }
+            setSystemUiVisibility(0
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
         }
 
         public void setView(DessertCaseView v) {

@@ -469,7 +469,38 @@
                 <action android:name="android.service.dreams.DreamService" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/dream_info" />
         </service>
+        
+        <activity android:name=".DessertCaseDreamSettings"
+            android:process=":sweetsweetdesserts"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
+        <!-- also ... started from ... somewhere -->
+        <activity
+            android:name=".UnicornSack"
+            android:exported="true"
+            android:label="UnicornSack"
+            android:icon="@drawable/redunicorn"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.android.internal.category.AOKPLOGO" />
+           <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            </intent-filter>
+        </activity>
 
         <activity android:name=".Somnambulator"
             android:label="@string/start_dreams"

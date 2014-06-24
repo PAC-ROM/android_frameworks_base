@@ -1,7 +1,6 @@
 /*
 * Copyright (C) 2010 The Android Open Source Project
-* Copyright (C) 2013-2014 The CyanogenMod Project
-*
+* This code has been modified. Portions copyright (C) 2013, ParanoidAndroid Project.
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -27,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemProperties;
+import android.os.UserHandle;
 import android.text.method.AllCapsTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.util.DisplayMetrics;
@@ -42,18 +42,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PlatLogoActivity extends Activity {
+public class PAWorldActivity extends Activity {
     FrameLayout mContent;
     int mCount;
     final Handler mHandler = new Handler();
-    private boolean mIsCM;
-    static final int BGCOLOR = 0xffed1d24;
+    final static int SOLID_BGCOLOR = 0xFF000000;
+    final static int CLEAR_BGCOLOR = 0xC0000000;
+    final static int TEXT_COLOR = 0xFFFFFFFF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mIsCM = getIntent().hasExtra("is_cm");
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -61,51 +61,42 @@ public class PlatLogoActivity extends Activity {
         Typeface light = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
         mContent = new FrameLayout(this);
-        mContent.setBackgroundColor(0xC0000000);
+        mContent.setBackgroundColor(CLEAR_BGCOLOR);
 
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER;
 
-        // Add some padding to the platlogo for devices where the
-        // width of the logo is bigger than the device width
-        int p = (int) (20 * metrics.density);
-
         final ImageView logo = new ImageView(this);
-        logo.setImageResource(mIsCM
-                ? com.android.internal.R.drawable.cm_platlogo
-                : com.android.internal.R.drawable.platlogo);
-        logo.setPadding(p, 0, p, 0);
+        logo.setImageResource(com.android.internal.R.drawable.pa_world_logo);
         logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         logo.setVisibility(View.INVISIBLE);
 
         final View bg = new View(this);
-        bg.setBackgroundColor(BGCOLOR);
+        bg.setBackgroundColor(SOLID_BGCOLOR);
         bg.setAlpha(0f);
 
         final TextView letter = new TextView(this);
 
         letter.setTypeface(bold);
-        letter.setTextSize(mIsCM ? 150 : 300);
-        letter.setTextColor(0xFFFFFFFF);
+        letter.setTextSize(200);
+        letter.setTextColor(TEXT_COLOR);
         letter.setGravity(Gravity.CENTER);
-        letter.setText(mIsCM ? "CM" : "K");
+        letter.setText("PA");
 
-        String cmVersion = SystemProperties.get("ro.cm.version");
-        if (cmVersion != null) {
-            cmVersion = cmVersion.replaceAll("([0-9\\.]+?)-.*", "$1");
-        }
-
-        p = (int) (4 * metrics.density);
+        final int p = (int)(4 * metrics.density);
 
         final TextView tv = new TextView(this);
-        tv.setTypeface(light);
-        tv.setTextSize(30);
+        if (light != null) tv.setTypeface(light);
+        tv.setTextSize(20);
         tv.setPadding(p, p, p, p);
-        tv.setTextColor(0xFFFFFFFF);
+        tv.setTextColor(TEXT_COLOR);
         tv.setGravity(Gravity.CENTER);
-        tv.setText(mIsCM ? "CyanogenMod " + cmVersion : "ANDROID " + Build.VERSION.RELEASE);
+        tv.setTransformationMethod(new AllCapsTransformationMethod(this));
+        String paVersion = SystemProperties.get("ro.pa.version");
+        paVersion = paVersion.replaceAll("([0-9\\.]+?)-.*", "$1");
+        tv.setText("Paranoid Android " + paVersion);
         tv.setVisibility(View.INVISIBLE);
 
         mContent.addView(bg);
@@ -114,7 +105,7 @@ public class PlatLogoActivity extends Activity {
 
         final FrameLayout.LayoutParams lp2 = new FrameLayout.LayoutParams(lp);
         lp2.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        lp2.bottomMargin = 10*p;
+        lp2.bottomMargin = p;
 
         mContent.addView(tv, lp2);
 
@@ -167,28 +158,20 @@ public class PlatLogoActivity extends Activity {
         logo.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (Settings.System.getLong(getContentResolver(), Settings.System.EGG_MODE, 0)
-                        == 0) {
-                    // For posterity: the moment this user unlocked the easter egg
-                    Settings.System.putLong(getContentResolver(),
-                            Settings.System.EGG_MODE,
-                            System.currentTimeMillis());
-                }
                 try {
-                    startActivity(new Intent(Intent.ACTION_MAIN)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-                        .putExtra("is_cm", mIsCM)
-                        .addCategory("com.android.internal.category.PLATLOGO"));
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.setClassName("com.android.settings", "com.android.settings.BeanBag")
+                          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getBaseContext().startActivityAsUser(intent,
+                            new UserHandle(UserHandle.USER_CURRENT));
                 } catch (ActivityNotFoundException ex) {
-                    android.util.Log.e("PlatLogoActivity", "Couldn't catch a break.");
+                    android.util.Log.e("PAWorldActivity", "Couldn't catch a break.");
                 }
                 finish();
                 return true;
             }
         });
-        
+
         setContentView(mContent);
     }
 }

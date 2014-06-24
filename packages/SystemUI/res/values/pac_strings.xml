@@ -101,6 +101,10 @@
     <!-- CPUFreq -->
     <string name="cpufreq_max">Max CPU Freq</string>
     <string name="cpufreq_min">Min CPU Freq</string>
+    
+    <!-- CMPlatlogo -->
+    <string name="dessert_case_settings_cm_title">Show CM\'s mascots</string>
+    <string name="dessert_case_settings_cm_summary">Show CM\'s mascots together with Android\'s desserts inside the dream</string>
 
     <!-- Screenshot Tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
