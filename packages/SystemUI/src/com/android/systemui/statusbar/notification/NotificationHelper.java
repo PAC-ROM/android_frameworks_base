@@ -52,6 +52,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.internal.widget.SizeAdaptiveLayout;
+import android.provider.Settings;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
@@ -164,7 +165,7 @@ public class NotificationHelper {
         NotificationClicker intent = null;
         final PendingIntent contentIntent = entry.notification.getNotification().contentIntent;
         if (contentIntent != null) {
-            intent = mHover.getStatusBar().makeClicker(contentIntent,
+            intent = mStatusBar.makeClicker(contentIntent,
                     entry.notification.getPackageName(), entry.notification.getTag(),
                     entry.notification.getId());
             boolean makeFloating = floating
@@ -318,5 +319,10 @@ public class NotificationHelper {
         return state == TelephonyManager.SIM_STATE_PIN_REQUIRED
                 | state == TelephonyManager.SIM_STATE_PUK_REQUIRED
                 | state == TelephonyManager.SIM_STATE_NETWORK_LOCKED;
+    }
+
+    public boolean openInFloatingMode() {
+        return Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_FLOATING_WINDOW, true);
     }
 }
