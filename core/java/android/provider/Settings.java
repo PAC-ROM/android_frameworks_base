@@ -3992,6 +3992,12 @@ public final class Settings {
         public static final String LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE = "lockscreen_notifications_privacy_mode";
 
         /**
+         * Enables dynamic with for shown notifications
+         * @hide
+         */
+        public static final String LOCKSCREEN_NOTIFICATIONS_DYNAMIC_WIDTH = "lockscreen_notifications_dynamic_width";
+
+        /**
          * A list of packages to exclude from being displayed as lockscreen notifications.
          * This should be a string of packages separated by |
          * @hide
