@@ -115,6 +115,7 @@ final class Settings {
     private static final String ATTR_STOPPED = "stopped";
     private static final String ATTR_BLOCKED = "blocked";
     private static final String ATTR_INSTALLED = "inst";
+    private static final String ATTR_HEADS_UP = "headsUp";
 
     private final File mSettingsFilename;
     private final File mBackupSettingsFilename;
@@ -167,13 +168,13 @@ final class Settings {
     // Packages that have been uninstalled and still need their external
     // storage data deleted.
     final ArrayList<PackageCleanItem> mPackagesToBeCleaned = new ArrayList<PackageCleanItem>();
-    
+
     // Packages that have been renamed since they were first installed.
     // Keys are the new names of the packages, values are the original
     // names.  The packages appear everwhere else under their original
     // names.
     final HashMap<String, String> mRenamedPackages = new HashMap<String, String>();
-    
+
     final StringBuilder mReadMessages = new StringBuilder();
 
     /**
@@ -483,6 +484,7 @@ final class Settings {
                                     installed,
                                     true, // stopped,
                                     true, // notLaunched
+                                    false, // heads up
                                     false, // blocked
                                     null, null, null, null, null);
                             writePackageRestrictionsLPr(user.id);
@@ -882,6 +884,7 @@ final class Settings {
                                 true,   // installed
                                 false,  // stopped
                                 false,  // notLaunched
+                                false,  // heads up
                                 false,  // blocked
                                 null, null, null, null, null);
                     }
@@ -943,6 +946,10 @@ final class Settings {
                     final boolean notLaunched = stoppedStr == null
                             ? false : Boolean.parseBoolean(notLaunchedStr);
 
+                    final String headsUpStr = parser.getAttributeValue(null, ATTR_HEADS_UP);
+                    final boolean headsUp = headsUpStr == null
+                            ? false : Boolean.parseBoolean(headsUpStr);
+
                     HashSet<String> enabledComponents = null;
                     HashSet<String> disabledComponents = null;
                     HashSet<String> protectedComponents = null;
@@ -968,8 +975,8 @@ final class Settings {
                         }
                     }
 
-                    ps.setUserState(userId, enabled, installed, stopped, notLaunched, blocked,
-                            enabledCaller, enabledComponents, disabledComponents,
+                    ps.setUserState(userId, enabled, installed, stopped, notLaunched, headsUp,
+                            blocked, enabledCaller, enabledComponents, disabledComponents,
                             protectedComponents, visibleComponents);
                 } else if (tagName.equals("preferred-activities")) {
                     readPreferredActivitiesLPw(parser, userId);
@@ -1075,7 +1082,7 @@ final class Settings {
 
             for (final PackageSetting pkg : mPackages.values()) {
                 PackageUserState ustate = pkg.readUserState(userId);
-                if (ustate.stopped || ustate.notLaunched || !ustate.installed
+                if (ustate.stopped || ustate.notLaunched || !ustate.installed || ustate.headsUp
                         || ustate.enabled != COMPONENT_ENABLED_STATE_DEFAULT
                         || ustate.blocked
                         || (ustate.enabledComponents != null
@@ -1098,6 +1105,9 @@ final class Settings {
                     }
                     if (ustate.notLaunched) {
                         serializer.attribute(null, ATTR_NOT_LAUNCHED, "true");
+                    }
+                    if (ustate.headsUp) {
+                        serializer.attribute(null, ATTR_HEADS_UP, "true");
                     }
                     if (ustate.blocked) {
                         serializer.attribute(null, ATTR_BLOCKED, "true");
@@ -1391,7 +1401,7 @@ final class Settings {
                     serializer.endTag(null, "cleaning-package");
                 }
             }
-            
+
             if (mRenamedPackages.size() > 0) {
                 for (Map.Entry<String, String> e : mRenamedPackages.entrySet()) {
                     serializer.startTag(null, "renamed-package");
@@ -1400,7 +1410,7 @@ final class Settings {
                     serializer.endTag(null, "renamed-package");
                 }
             }
-            
+
             mKeySetManager.writeKeySetManagerLPr(serializer);
 
             serializer.endTag(null, "packages");
@@ -2531,7 +2541,7 @@ final class Settings {
                 }
 
                 String tagName = parser.getName();
-                // Legacy 
+                // Legacy
                 if (tagName.equals(TAG_DISABLED_COMPONENTS)) {
                     readDisabledComponentsLPw(packageSetting, parser, 0);
                 } else if (tagName.equals(TAG_ENABLED_COMPONENTS)) {
@@ -2784,7 +2794,7 @@ final class Settings {
     private String compToString(HashSet<String> cmp) {
         return cmp != null ? Arrays.toString(cmp.toArray()) : "[]";
     }
- 
+
     boolean isEnabledLPr(ComponentInfo componentInfo, int flags, int userId) {
         if ((flags&PackageManager.GET_DISABLED_COMPONENTS) != 0) {
             return true;
@@ -2832,6 +2842,14 @@ final class Settings {
             throw new IllegalArgumentException("Unknown package: " + packageName);
         }
         return pkg.installerPackageName;
+    }
+
+    boolean getHeadsUpSettingLPr(String packageName, int userId) {
+        final PackageSetting pkg = mPackages.get(packageName);
+        if (pkg == null) {
+            throw new IllegalArgumentException("Unknown package: " + packageName);
+        }
+        return pkg.isHeadsUp(userId);
     }
 
     int getApplicationEnabledSettingLPr(String packageName, int userId) {
