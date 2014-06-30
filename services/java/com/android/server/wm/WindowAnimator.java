@@ -14,7 +14,6 @@ import static com.android.server.wm.WindowManagerService.LayoutFields.SET_WALLPA
 import android.content.Context;
 import android.os.Debug;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -239,19 +238,14 @@ public class WindowAnimator {
                         mService.mFocusMayChange = true;
                     }
                     if (win.isReadyForDisplay()) {
-                        if (Settings.PAC.getInt(mContext.getContentResolver(),
-                                Settings.PAC.LOCKSCREEN_SEE_THROUGH, 0) == 0) {
-                            if (nowAnimating) {
-                                if (winAnimator.mAnimationIsEntrance) {
-                                    mForceHiding = KEYGUARD_ANIMATING_IN;
-                                } else {
-                                    mForceHiding = KEYGUARD_ANIMATING_OUT;
-                                }
+                        if (nowAnimating) {
+                            if (winAnimator.mAnimationIsEntrance) {
+                                mForceHiding = KEYGUARD_ANIMATING_IN;
                             } else {
-                                mForceHiding = KEYGUARD_SHOWN;
+                                mForceHiding = KEYGUARD_ANIMATING_OUT;
                             }
                         } else {
-                            mForceHiding = KEYGUARD_NOT_SHOWN;
+                            mForceHiding = win.isDrawnLw() ? KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
                         }
                     }
                     if (WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
