@@ -482,9 +482,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mNavigationIconHints = hints;
 
         if (getBackButton() != null) {
-            ((ImageView) getBackButton()).setImageResource(mShowIME
-                    ? R.drawable.ic_sysbar_back_ime
-                    : R.drawable.ic_sysbar_back);
+            if (mShowIME) {
+                ((ImageView) getBackButton()).setImageResource(R.drawable.ic_sysbar_back_ime);
+            } else {
+                ((KeyButtonView) getBackButton()).setImage();
+            }
         }
 
         //readUserConfig();
