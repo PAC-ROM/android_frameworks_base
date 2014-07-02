@@ -89,15 +89,6 @@ public class AwesomeAction {
                 AwesomeConstant AwesomeEnum = fromString(action);
                 AudioManager am;
                 switch (AwesomeEnum) {
-                    case ACTION_RECENTS:
-                        try {
-                            IStatusBarService.Stub.asInterface(
-                                    ServiceManager.getService(mContext.STATUS_BAR_SERVICE))
-                                    .toggleRecentApps();
-                        } catch (RemoteException e) {
-                            // let it go.
-                        }
-                        break;
                     case ACTION_ASSIST:
                         Intent intent = new Intent(Intent.ACTION_ASSIST);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
