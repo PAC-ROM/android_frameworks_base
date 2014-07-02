@@ -338,6 +338,10 @@ public class RecentPanelView {
             }
         }
 
+        // Add floating mode menu entry
+        popup.getMenu().add(0, MENU_APP_FLOATING_ID, 0,
+                mContext.getResources().getString(R.string.status_bar_recent_floating_item_title));
+
         // Add playstore or amazon entry if it is provided by the application.
         if (checkAppInstaller(td.packageName, PLAYSTORE_REFERENCE)) {
             popup.getMenu().add(0, MENU_APP_PLAYSTORE_ID, 0,
@@ -442,19 +446,6 @@ public class RecentPanelView {
     }
 
     /**
-     * Get application launcher label of installed references.
-     */
-    private String getApplicationLabel(String packageName) {
-        final PackageManager pm = mContext.getPackageManager();
-        final Intent intent = pm.getLaunchIntentForPackage(packageName);
-        final ResolveInfo resolveInfo = pm.resolveActivity(intent, 0);
-        if (resolveInfo != null) {
-            return resolveInfo.activityInfo.loadLabel(pm).toString();
-        }
-        return null;
-    }
-
-    /**
      * Remove requested application.
      */
     private void removeApplication(TaskDescription td) {
@@ -484,6 +475,19 @@ public class RecentPanelView {
             setVisibility();
             exit();
         }
+    }
+
+    /**
+     * Get application launcher label of installed references.
+     */
+    private String getApplicationLabel(String packageName) {
+        final PackageManager pm = mContext.getPackageManager();
+        final Intent intent = pm.getLaunchIntentForPackage(packageName);
+        final ResolveInfo resolveInfo = pm.resolveActivity(intent, 0);
+        if (resolveInfo != null) {
+            return resolveInfo.activityInfo.loadLabel(pm).toString();
+        }
+        return null;
     }
 
     /**
