@@ -49,12 +49,10 @@ public class AwesomeConstants {
         ACTION_ASSIST        { @Override public String value() { return "**assist**";}},
         ACTION_POWER         { @Override public String value() { return "**power**";}},
         ACTION_WIDGETS       { @Override public String value() { return "**widgets**";}},
-        ACTION_APP_WINDOW    { @Override public String value() { return "**app_window**";}},
         ACTION_NOTIFICATIONS { @Override public String value() { return "**notifications**";}},
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},
         ACTION_LAST_APP      { @Override public String value() { return "**lastapp**";}},
-        ACTION_RECENTS_GB    { @Override public String value() { return "**recentsgb**";}},
         ACTION_TORCH         { @Override public String value() { return "**torch**";}},
         ACTION_IME           { @Override public String value() { return "**ime**";}},
         ACTION_KILL          { @Override public String value() { return "**kill**";}},
@@ -66,6 +64,8 @@ public class AwesomeConstants {
         ACTION_ALARM         { @Override public String value() { return "**alarm**";}},
         ACTION_UNLOCK        { @Override public String value() { return "**unlock**";}},
         ACTION_CAMERA        { @Override public String value() { return "**camera**";}},
+        ACTION_DPAD_LEFT     { @Override public String value() { return "**dpad_left**";}},
+        ACTION_DPAD_RIGHT    { @Override public String value() { return "**dpad_right**";}},
         ACTION_NULL          { @Override public String value() { return "**null**";}},
         ACTION_APP           { @Override public String value() { return "**app**";}};
         public String value() { return this.value(); }
@@ -141,9 +141,6 @@ public class AwesomeConstants {
             case ACTION_RECENTS:
                 value = res.getString(com.android.internal.R.string.action_recents);
                 break;
-            case ACTION_RECENTS_GB:
-                value = res.getString(com.android.internal.R.string.action_recents_gb);
-                break;
             case ACTION_SEARCH:
                 value = res.getString(com.android.internal.R.string.action_search);
                 break;
@@ -167,9 +164,6 @@ public class AwesomeConstants {
                 break;
             case ACTION_WIDGETS:
                 value = res.getString(com.android.internal.R.string.action_widgets);
-                break;
-            case ACTION_APP_WINDOW:
-                value = res.getString(com.android.internal.R.string.action_app_window);
                 break;
             case ACTION_NOTIFICATIONS:
                 value = res.getString(com.android.internal.R.string.action_notifications);
@@ -210,6 +204,12 @@ public class AwesomeConstants {
             case ACTION_CAMERA:
                 value = res.getString(com.android.internal.R.string.action_camera);
                 break;
+            case ACTION_DPAD_LEFT:
+                value = res.getString(com.android.internal.R.string.action_dpad_left);
+                break;
+            case ACTION_DPAD_RIGHT:
+                value = res.getString(com.android.internal.R.string.action_dpad_right);
+                break;
             case ACTION_APP:
                 value = res.getString(com.android.internal.R.string.action_app);
                 break;
@@ -236,9 +236,6 @@ public class AwesomeConstants {
             case ACTION_RECENTS:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_recent");
                 break;
-            case ACTION_RECENTS_GB:
-                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_recent_gb");
-                break;
             case ACTION_SEARCH:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_search");
                 break;
@@ -261,9 +258,6 @@ public class AwesomeConstants {
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_power");
                 break;
             case ACTION_WIDGETS:
-                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_widget");
-                break;
-            case ACTION_APP_WINDOW:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_widget");
                 break;
             case ACTION_NOTIFICATIONS:
@@ -304,6 +298,12 @@ public class AwesomeConstants {
                 break;
             case ACTION_CAMERA:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_lockscreen_camera");
+                break;
+            case ACTION_DPAD_LEFT:
+                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_ime_left");
+                break;
+            case ACTION_DPAD_RIGHT:
+                value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_ime_right");
                 break;
             case ACTION_APP: // APP doesn't really have an icon - it should look up
                         //the package icon - we'll return the 'null' on just in case

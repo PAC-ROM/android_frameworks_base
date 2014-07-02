@@ -2464,6 +2464,13 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public static final int SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
 
     /**
+     * @hide
+     *
+     * Flag to force showing the navigation bar even in expanded desktop mode.
+     */
+    public static final int SYSTEM_UI_FLAG_SHOW_NAVIGATION_IN_EXPANDED_DESKTOP = 0x00008000;
+
+    /**
      * @deprecated Use {@link #SYSTEM_UI_FLAG_LOW_PROFILE} instead.
      */
     public static final int STATUS_BAR_HIDDEN = SYSTEM_UI_FLAG_LOW_PROFILE;
@@ -5901,7 +5908,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @return {@code true} if this view applied the insets and it should not
      * continue propagating further down the hierarchy, {@code false} otherwise.
      * @see #getFitsSystemWindows()
-     * @see #setFitsSystemWindows(boolean) 
+     * @see #setFitsSystemWindows(boolean)
      * @see #setSystemUiVisibility(int)
      */
     protected boolean fitSystemWindows(Rect insets) {

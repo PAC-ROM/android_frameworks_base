@@ -59,7 +59,7 @@
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_fakePackageSignature">Allows the app to use mimic another app\'s package signature.</string>
 
-        <!-- Awesome Action Stuff-->
+    <!-- Awesome Action Stuff-->
     <string name="action_home">Home</string>
     <string name="action_back">Back</string>
     <string name="action_recents">Recents</string>
@@ -89,5 +89,7 @@
     <string name="action_app_window">App Window</string>
     <string name="action_ribbon">AOKP Ribbon</string>
     <string name="action_app">Custom App/Shortcut</string>
+    <string name="action_dpad_left">Arrow left </string>
+    <string name="action_dpad_right">Arrow right</string>
 
 </resources>
