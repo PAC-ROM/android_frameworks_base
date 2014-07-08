@@ -268,6 +268,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                 Context.WINDOW_SERVICE)).getDefaultDisplay();
 
         final Resources res = mContext.getResources();
+        final ContentResolver cr = mContext.getContentResolver();
+
         mBarSize = res.getDimensionPixelSize(R.dimen.navigation_bar_size);
         mVertical = false;
         mShowMenu = false;
@@ -278,14 +280,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mBarTransitions = new NavigationBarTransitions(this);
 
-        mUserButtons = Settings.PAC.getString(mContext.getContentResolver(),
-                Settings.PAC.NAVIGATION_BAR_BUTTONS);
-        mNavigationBarForceMenu = Settings.PAC.getBoolean(mContext.getContentResolver(),
-                Settings.PAC.NAVIGATION_MENU_FORCE, false);
-        mNavigationBarMenuLocation = Settings.PAC.getInt(mContext.getContentResolver(),
-                Settings.PAC.NAVIGATION_MENU, 0);
-        mShowDpadKeys = Settings.PAC.getBoolean(mContext.getContentResolver(),
-                Settings.PAC.NAVIGATION_BAR_DPAD_KEYS, false);
+        mUserButtons = Settings.PAC.getString(cr, Settings.PAC.NAVIGATION_BAR_BUTTONS);
+        mNavigationBarForceMenu = Settings.PAC.getBoolean(cr, Settings.PAC.NAVIGATION_MENU_FORCE, false);
+        mNavigationBarMenuLocation = Settings.PAC.getInt(cr, Settings.PAC.NAVIGATION_MENU, 0);
+        mShowDpadKeys = Settings.PAC.getBoolean(cr, Settings.PAC.NAVIGATION_BAR_DPAD_KEYS, false);
 
         mCameraDisabledByDpm = isCameraDisabledByDpm();
         watchForDevicePolicyChanges();
