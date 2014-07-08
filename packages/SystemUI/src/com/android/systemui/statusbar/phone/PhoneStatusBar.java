@@ -3990,7 +3990,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void recreateStatusBar() {
         mRecreating = true;
+
+        if (mHeadsUpNotificationView != null) {
+            removeHeadsUpView();
+            mHeadsUpNotificationView = null;
+        }
+
         mStatusBarContainer.removeAllViews();
+        mStatusBarContainer.clearDisappearingChildren();
         removeAllViews(mStatusBarWindow);
 
         // extract icons from the soon-to-be recreated viewgroup.
