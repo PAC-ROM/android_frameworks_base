@@ -90,7 +90,7 @@ public class KeyButtonView extends ImageView {
     }
 
     boolean mHasSingleAction = true, mHasDoubleAction, mHasLongAction;
-    boolean mIsRecentsAction = false;
+    boolean mIsRecentsAction = false, mIsRecentsSingleAction, mIsRecentsLongAction, mIsRecentsDoubleTapAction;
     volatile boolean mRecentsPreloaded;
 
     Runnable mCheckLongPress = new Runnable() {
@@ -146,11 +146,14 @@ public class KeyButtonView extends ImageView {
         mHasLongAction = mActions != null && mActions.longPressAction != null;
         mHasDoubleAction = mActions != null && mActions.doubleTapAction != null;
 
-        mIsRecentsAction = (mHasSingleAction && mActions.singleAction.equals(RECENTS_ACTION))
-                || (mHasLongAction && mActions.longPressAction.equals(RECENTS_ACTION))
-                || (mHasDoubleAction && mActions.doubleTapAction.equals(RECENTS_ACTION));
+        mIsRecentsSingleAction = (mHasSingleAction && mActions.singleAction.equals(RECENTS_ACTION));
+        mIsRecentsLongAction = (mHasLongAction && mActions.longPressAction.equals(RECENTS_ACTION));
+        mIsRecentsDoubleTapAction = (mHasDoubleAction && mActions.doubleTapAction.equals(RECENTS_ACTION));
 
-        if (mIsRecentsAction) getStatusBarInstance();
+        if (mIsRecentsSingleAction || mIsRecentsLongAction || mIsRecentsDoubleTapAction) {
+            mIsRecentsAction = true;
+            getStatusBarInstance();
+        }
 
         setLongClickable(mHasLongAction);
         Log.e(TAG, "Adding a navbar button in landscape or portrait");
@@ -395,7 +398,7 @@ public class KeyButtonView extends ImageView {
         if (callOnClick()) {
             // cool
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
-        } else if (mIsRecentsAction) {
+        } else if (mIsRecentsSingleAction) {
             try {
                 mBarService.toggleRecentApps();
                 sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
@@ -417,7 +420,7 @@ public class KeyButtonView extends ImageView {
     private void doDoubleTap() {
         if (hasDoubleTapAction()) {
             removeCallbacks(mSingleTap);
-            if (mIsRecentsAction) {
+            if (mIsRecentsDoubleTapAction) {
                 try {
                     mBarService.toggleRecentApps();
                     mRecentsPreloaded = false;
@@ -433,7 +436,7 @@ public class KeyButtonView extends ImageView {
     private void doLongPress() {
         if (hasLongTapAction()) {
             removeCallbacks(mSingleTap);
-            if (mIsRecentsAction) {
+            if (mIsRecentsLongAction) {
                 try {
                     mBarService.toggleRecentApps();
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
