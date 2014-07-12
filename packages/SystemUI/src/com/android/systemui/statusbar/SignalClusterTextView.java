@@ -130,14 +130,15 @@ public class SignalClusterTextView
         return Integer.toString(dBm);
     }
 
-    final void updateSignalText() {
-
-        if (mAirplaneMode || dBm == 0) {
-            mMobileGroup.setVisibility(View.GONE);
+    private void updateSignalText() {
+        if (mMobileSignalText == null) {
             return;
-        } else if (mSignalClusterStyle == SIGNAL_CLUSTER_STYLE_TEXT) {
-            mMobileGroup.setVisibility(View.VISIBLE);
-            mMobileSignalText.setText(getSignalLevelString(dBm));
+        }
+        if (mAirplaneMode || mDBm == 0) {
+            setVisibility(View.GONE);
+        } else if (mSignalClusterStyle == SignalClusterView.STYLE_TEXT) {
+            setVisibility(View.VISIBLE);
+            mMobileSignalText.setText(getSignalLevelString(mDBm));
         } else {
             mMobileGroup.setVisibility(View.GONE);
         }
