@@ -78,7 +78,7 @@ public class ScrollView extends FrameLayout {
     private long mLastScroll;
 
     private final Rect mTempRect = new Rect();
-    private static OverScroller mScroller;
+    private OverScroller mScroller;
     private EdgeEffect mEdgeGlowTop;
     private EdgeEffect mEdgeGlowBottom;
 
@@ -110,7 +110,7 @@ public class ScrollView extends FrameLayout {
     /**
      * Determines speed during touch scrolling
      */
-    private static VelocityTracker mVelocityTracker;
+    private VelocityTracker mVelocityTracker;
 
     /**
      * When set to true, the scroll view measure its child to make it fill the currently
@@ -166,10 +166,11 @@ public class ScrollView extends FrameLayout {
         super(context, attrs, defStyle);
         initScrollView();
 
-        final TypedArray a =
+        TypedArray a =
             context.obtainStyledAttributes(attrs, com.android.internal.R.styleable.ScrollView, defStyle, 0);
 
         setFillViewport(a.getBoolean(R.styleable.ScrollView_fillViewport, false));
+
         a.recycle();
     }
 
@@ -433,7 +434,7 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    private static void recycleVelocityTracker() {
+    private void recycleVelocityTracker() {
         if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
             mVelocityTracker = null;

@@ -37,9 +37,9 @@ public class PanelBar extends FrameLayout {
     public static final int STATE_OPENING = 1;
     public static final int STATE_OPEN = 2;
 
-    private PanelHolder mPanelHolder;
+    PanelHolder mPanelHolder;
     ArrayList<PanelView> mPanels = new ArrayList<PanelView>();
-    private PanelView mTouchingPanel;
+    PanelView mTouchingPanel;
     private int mState = STATE_CLOSED;
     private boolean mTracking;
     PanelView mFullyOpenedPanel;
@@ -190,7 +190,6 @@ public class PanelBar extends FrameLayout {
 
     public void collapseAllPanels(boolean animate) {
         boolean waiting = false;
-
         for (PanelView pv : mPanels) {
             if (animate && !pv.isFullyCollapsed()) {
                 pv.collapse();

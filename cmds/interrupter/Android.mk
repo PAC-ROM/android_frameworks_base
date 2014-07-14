@@ -16,6 +16,6 @@ LOCAL_SRC_FILES := \
     interrupter.c
 LOCAL_MODULE := interrupter
 LOCAL_MODULE_TAGS := eng tests
-LOCAL_LDLIBS += -ldl
+LOCAL_LDFLAGS := -ldl
 
 include $(BUILD_HOST_SHARED_LIBRARY)
