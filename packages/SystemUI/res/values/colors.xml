@@ -59,4 +59,9 @@
     <drawable name="notification_item_background_color">#ff111111</drawable>
     <drawable name="notification_item_background_color_pressed">#ff257390</drawable>
     <color name="notification_shortcut_color">#FFFFFFFF</color>
+
+    <!-- Quick Settings -->
+    <color name="qs_background_pressed_color">#FF161616</color>
+    <color name="qs_background_color">#FF212121</color>
+    
 </resources>

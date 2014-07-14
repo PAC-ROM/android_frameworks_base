@@ -1603,10 +1603,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void addHeadsUpView() {
-        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
-            return;
-        }
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL, // above the status bar!
@@ -1630,9 +1626,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void removeHeadsUpView() {
-        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
-            mWindowManager.removeView(mHeadsUpNotificationView);
-        }
+        mWindowManager.removeView(mHeadsUpNotificationView);
     }
 
     public void refreshAllStatusBarIcons() {
@@ -2879,9 +2873,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mBrightnessControl) {
             brightnessControl(event);
-        }
-        if ((mDisabled & StatusBarManager.DISABLE_EXPAND) != 0) {
-            return true;
+            if ((mDisabled & StatusBarManager.DISABLE_EXPAND) != 0) {
+                return true;
+            }
         }
 
         if (mStatusBarWindowState == WINDOW_STATE_SHOWING) {
@@ -3952,12 +3946,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void setHeadsUpVisibility(boolean vis) {
         if (!ENABLE_HEADS_UP) return;
         if (DEBUG) Log.v(TAG, (vis ? "showing" : "hiding") + " heads up window");
-        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
-            mHeadsUpNotificationView.setVisibility(vis ? View.VISIBLE : View.GONE);
-            if (!vis) {
-                if (DEBUG) Log.d(TAG, "setting heads up entry to null");
-                mInterruptingNotificationEntry = null;
-            }
+        mHeadsUpNotificationView.setVisibility(vis ? View.VISIBLE : View.GONE);
+        if (!vis) {
+            if (DEBUG) Log.d(TAG, "setting heads up entry to null");
+            mInterruptingNotificationEntry = null;
         }
     }
 
@@ -3999,7 +3991,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void recreateStatusBar() {
         mRecreating = true;
 
-        removeHeadsUpView();
+        if (mHeadsUpNotificationView != null) {
+            removeHeadsUpView();
+            mHeadsUpNotificationView = null;
+        }
 
         mStatusBarContainer.removeAllViews();
         mStatusBarContainer.clearDisappearingChildren();
@@ -4381,7 +4376,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QUICK_TILES_PER_ROW))
                 || uri.equals(Settings.System.getUriFor(
-                    Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE))) {
+                    Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QUICK_TILES_TEXT_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QUICK_TILES_BG_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QUICK_TILES_BG_PRESSED_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QUICK_TILES_BG_ALPHA))) {
                 if (mQS != null) {
                     mQS.setupQuickSettings();
                 }
@@ -4468,6 +4471,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QUICK_TILES_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QUICK_TILES_BG_COLOR),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QUICK_TILES_BG_PRESSED_COLOR),
+                    false, this, UserHandle.USER_ALL);
+
+            cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QUICK_TILES_BG_ALPHA),
                     false, this, UserHandle.USER_ALL);
 
             cr.registerContentObserver(
