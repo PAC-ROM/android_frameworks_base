@@ -238,4 +238,10 @@ public class QuickSettingsContainerView extends FrameLayout {
         }
     }
 
+    public int getTileTextColor() {
+        int tileTextColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_TEXT_COLOR, -2, UserHandle.USER_CURRENT);
+        return tileTextColor;
+    }
+
 }
