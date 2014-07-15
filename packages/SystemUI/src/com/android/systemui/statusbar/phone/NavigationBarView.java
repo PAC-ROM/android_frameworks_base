@@ -777,6 +777,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     public void setLeftInLandscape(boolean leftInLandscape) {
         mLeftInLandscape = leftInLandscape;
+        mBarTransitions.setLeftIfVertical(leftInLandscape);
         mDeadZone.setStartFromRight(leftInLandscape);
     }
 
