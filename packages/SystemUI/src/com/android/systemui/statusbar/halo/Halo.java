@@ -107,6 +107,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.BaseStatusBar;
+import com.android.systemui.statusbar.notification.NotificationHelper;
 import com.android.systemui.statusbar.phone.Ticker;
 
 public class Halo extends FrameLayout implements Ticker.TickerCallback {
@@ -140,6 +141,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private GestureDetector mGestureDetector;
     private KeyguardManager mKeyguardManager;
     private BroadcastReceiver mReceiver;
+    private NotificationHelper mNotificationHelper;
 
     private HaloEffect mEffect;
     private WindowManager.LayoutParams mTriggerPos;
@@ -152,7 +154,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private ComponentName mHaloComponent;
     private NotificationData.Entry mLastNotificationEntry = null;
     private NotificationData.Entry mCurrentNotficationEntry = null;
-    private NotificationClicker mContentIntent, mTaskIntent;
+    private NotificationData.Entry mTaskEntry = null;
     private NotificationData mNotificationData;
     private String mNotificationText = "";
 
@@ -475,6 +477,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
         mNotificationData = mBar.getNotificationData();
         loadLastNotification(true);
+        mNotificationHelper = new NotificationHelper(mBar, mContext);
     }
 
     void launchTask(NotificationClicker intent) {
@@ -515,7 +518,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
             if (mState != STATE_DRAG) {
-                launchTask(mContentIntent);
+                launchTask(mNotificationHelper.getNotificationClickListenerForHalo(mCurrentNotficationEntry));
             }
             return true;
         }
@@ -621,9 +624,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
                 if (mGesture == GESTURE_TASK) {
                     // Launch tasks
-                    if (mTaskIntent != null) {
+                    if (mTaskEntry != null) {
                         playSoundEffect(SoundEffectConstants.CLICK);
-                        launchTask(mTaskIntent);
+                        launchTask(mNotificationHelper.getNotificationClickListenerForHalo(mTaskEntry));
                     }
                     mEffect.nap(100);
                 } else if (mGesture == GESTURE_DOWN2) {
@@ -649,13 +652,13 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 } else if (mGesture == GESTURE_UP1) {
                     // Dismiss notification
                     playSoundEffect(SoundEffectConstants.CLICK);
-                    if (mContentIntent != null) {
+                    if (mCurrentNotficationEntry != null) {
                         try {
                             mDismissDelay = 0;
                             mBar.getService().onNotificationClear
-                                                (mContentIntent.mPkg,
-                                                 mContentIntent.mTag,
-                                                 mContentIntent.mId);
+                                                (mCurrentNotficationEntry.notification.getPackageName(),
+                                                 mCurrentNotficationEntry.notification.getTag(),
+                                                 mCurrentNotficationEntry.notification.getId());
                         } catch (RemoteException ex) {
                             // system process is dead if we're here.
                         }
@@ -828,14 +831,13 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                             if (iconIndex == -1
                                 && !verticalGesture()
                                 && oldGesture == GESTURE_TASK) {
-                                mTaskIntent = null;
+                                mTaskEntry = null;
                                 resetIcons();
                                 tick(mLastNotificationEntry, 0, -1, false, true);
                             } else {
                                 setIcon(iconIndex);
-                                NotificationData.Entry entry = mNotificationData.get(iconIndex);
-                                tick(entry, 0, -1, false, true);
-                                mTaskIntent = entry.getFloatingIntent();
+                                mTaskEntry = mNotificationData.get(iconIndex);
+                                tick(mTaskEntry, 0, -1, false, true);
                             }
                         } catch (Exception e) {
                             // IndexOutOfBoundsException
@@ -1411,7 +1413,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mEffect.mHaloNumber.setAlpha(0f);
         mEffect.mHaloNumberIcon.setAlpha(0f);
         mEffect.mHaloNumberContainer.setAlpha(0f);
-        mContentIntent = null;
         mCurrentNotficationEntry = null;
         mEffect.killTicker();
         mEffect.updateResources(mTickerLeft);
@@ -1429,7 +1430,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         Notification n = notification.getNotification();
 
         // Deal with the intent
-        mContentIntent = entry.getFloatingIntent();
         mCurrentNotficationEntry = entry;
 
         // set the avatar
@@ -1670,8 +1670,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                         // prevent halo showing removed notification after gesture
                         mLastNotificationEntry = entry;
 
-                        // no notification left, reset mTaskIntent
-                        if (entry == null) mTaskIntent = null;
+                        // no notification left, reset mTaskEntry
+                        if (entry == null) mTaskEntry = null;
                     }
                     final int c = getHaloMsgCount()-getHidden() < 0
                                         ? 0
