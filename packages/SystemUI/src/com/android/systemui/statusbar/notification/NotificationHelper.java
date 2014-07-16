@@ -82,6 +82,24 @@ public class NotificationHelper {
         return intent;
     }
 
+    public NotificationClicker getNotificationClickListenerForHalo(Entry entry) {
+        NotificationClicker intent = null;
+        final PendingIntent contentIntent = entry.notification.getNotification().contentIntent;
+        if (contentIntent != null) {
+            intent = mStatusBar.makeClicker(contentIntent,
+                    entry.notification.getPackageName(), entry.notification.getTag(),
+                    entry.notification.getId());
+            boolean makeFloating =
+                    // if the notification is from the foreground app, don't open in floating mode
+                    !entry.notification.getPackageName().equals(getForegroundPackageName())
+                    // if user is on default launcher, don't open in floating window
+                    && !isUserOnLauncher();
+
+            intent.makeFloating(makeFloating);
+        }
+        return intent;
+    }
+
     public boolean openInFloatingMode() {
         return Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.HEADS_UP_FLOATING_WINDOW, true);

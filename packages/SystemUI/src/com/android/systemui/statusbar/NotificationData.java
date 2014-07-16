@@ -22,7 +22,6 @@ import android.service.notification.StatusBarNotification;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
 import com.android.systemui.R;
 
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class NotificationData {
         public boolean hide = false;
         public Bitmap roundIcon;
         private View expandedBig;
-        public NotificationClicker floatingIntent;
         private boolean interruption;
         public Entry() {}
         public Entry(IBinder key, StatusBarNotification n, StatusBarIconView ic) {
@@ -68,10 +66,6 @@ public class NotificationData {
 
         public void setInterruption() {
             interruption = true;
-        }
-
-        public NotificationClicker getFloatingIntent() {
-            return floatingIntent;
         }
 
         public Bitmap getRoundIcon() {
