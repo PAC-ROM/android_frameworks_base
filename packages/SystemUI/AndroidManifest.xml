@@ -101,6 +101,9 @@
     <protected-broadcast android:name="android.permission.SCREENSHOT" />
     <protected-broadcast android:name="android.intent.action.SCREENSHOT" />
 
+    <!-- WallpaperManager -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
     <permission android:name="android.permission.SCREENSHOT"
                 android:protectionLevel="signatureOrSystem"
                 android:description="@string/permdesc_screenshot"
