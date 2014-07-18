@@ -365,7 +365,10 @@ public class Hover {
     }
 
     public void showCurrentNotification() {
+        clearForegroundAppNotifications();
+
         final HoverNotification currentNotification = getHoverNotification(INDEX_CURRENT);
+
         if (currentNotification != null && !isKeyguardSecureShowing() && !isStatusBarExpanded()
                 && mHoverActive && !mShowing && !isSimPanelShowing()) {
             if (isRingingOrConnected() && isDialpadShowing()) {
@@ -435,6 +438,8 @@ public class Hover {
     }
 
     private void overrideShowingNotification() {
+        clearForegroundAppNotifications();
+
         final HoverNotification currentNotification = getCurrentNotification();
         final HoverNotification nextNotification = getHoverNotification(INDEX_NEXT);
 
@@ -600,15 +605,51 @@ public class Hover {
 
     // notifications processing
     public void setNotification(Entry entry, boolean update) {
-        // first, check if current notification's package is blacklisted
+
+        // first, check if current notification's package is blacklisted or excluded in another way and/or comes from foreground app
         boolean allowed = true; // default on
+        boolean foreground = false; // default off
+
+        //Exclude blacklisted
         try {
             final String packageName = entry.notification.getPackageName();
             allowed = mStatusBar.getNotificationManager().isPackageAllowedForHover(packageName);
         } catch (android.os.RemoteException ex) {
             // System is dead
         }
-        if (!allowed) {
+
+        //Check for fullscreen mode
+        if (requireFullscreenMode()) {
+            int vis = 0;
+            try {
+                vis = mWindowManagerService.getSystemUIVisibility();
+            } catch (android.os.RemoteException ex) {
+            }
+            final boolean isStatusBarVisible = (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0
+                    || (vis & View.STATUS_BAR_TRANSIENT) != 0;
+            if (isStatusBarVisible)
+                allowed = false;
+        }
+
+        //Exclude non-clearable
+        if (!entry.notification.isClearable() && excludeNonClearable())
+            allowed = false;
+
+        //Exclude low priority
+        if (excludeLowPriority() && entry.notification.getNotification().priority < Notification.PRIORITY_LOW)
+            allowed = false;
+
+        //Exclude topmost app
+        if (excludeTopmost() && entry.notification.getPackageName().equals(
+                mNotificationHelper.getForegroundPackageName()))
+            allowed = false;
+
+        // foreground app
+        if (entry.notification.getPackageName().equals(
+                mNotificationHelper.getForegroundPackageName()))
+        foreground = true;
+
+        if (!allowed | foreground) {
             addStatusBarNotification(entry.notification);
             return;
         }
@@ -795,6 +836,15 @@ public class Hover {
 
     public void clearNotificationList() {
         reparentAllNotifications();
+    }
+
+    public void clearForegroundAppNotifications() {
+        for (int i = 0; i < mNotificationList.size(); i++) {
+            if (mNotificationList.get(i).getContent().getPackageName()
+                    .equals(mNotificationHelper.getForegroundPackageName())) {
+                mNotificationList.remove(i);
+            }
+        }
     }
 
     public void reparentAllNotifications() {
