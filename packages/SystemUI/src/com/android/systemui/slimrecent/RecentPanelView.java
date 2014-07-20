@@ -77,6 +77,7 @@ public class RecentPanelView {
     public static final int EXPANDED_STATE_EXPANDED  = 1;
     public static final int EXPANDED_STATE_COLLAPSED = 2;
     public static final int EXPANDED_STATE_BY_SYSTEM = 4;
+    public static final int EXPANDED_STATE_TOPTASK   = 8;
 
     private static final int MENU_APP_DETAILS_ID   = 0;
     private static final int MENU_FLOATING_MODE_ID = 1;
@@ -114,6 +115,7 @@ public class RecentPanelView {
 
     private int mMainGravity;
     private float mScaleFactor;
+    private boolean mShowTopTask;
 
     private PopupMenu mPopup;
 
@@ -682,15 +684,29 @@ public class RecentPanelView {
                     }
                 }
 
-                if (i == 0) {
-                    // Skip the first task for our list but save it for later use.
-                    mFirstTask = item;
+                if (i == 0 ) {
+                    if (mShowTopTask) {
+                        // User want to see actual running task. Set it here
+                        int oldState = getExpandedState(item);
+                        if ((oldState & EXPANDED_STATE_TOPTASK) == 0) {
+                            oldState |= EXPANDED_STATE_TOPTASK;
+                        }
+                        item.setExpandedState(oldState);
+                        mTasks.add(item);
+                        mFirstTask = null;
+                    } else {
+                        // Skip the first task for our list but save it for later use.
+                        mFirstTask = item;
+                    }
                 } else {
                     // FirstExpandedItems value forces to show always the app screenshot
                     // if the old state is not known.
                     // All other items we check if they were expanded from the user
                     // in last known recent app list and restore the state.
                     int oldState = getExpandedState(item);
+                    if ((oldState & EXPANDED_STATE_TOPTASK) != 0) {
+                        oldState &= ~EXPANDED_STATE_TOPTASK;
+                    }
                     if (DEBUG) Log.v(TAG, "old expanded state = " + oldState);
                     if (firstItems < firstExpandedItems) {
                         item.setExpandedState(oldState | EXPANDED_STATE_BY_SYSTEM);
@@ -829,6 +845,10 @@ public class RecentPanelView {
 
     protected void setScaleFactor(float factor) {
         mScaleFactor = factor;
+    }
+
+    protected void setShowTopTask(boolean enabled) {
+        mShowTopTask = enabled;
     }
 
     protected boolean hasFavorite() {
