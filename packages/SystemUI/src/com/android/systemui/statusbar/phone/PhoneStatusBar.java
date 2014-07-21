@@ -119,6 +119,7 @@ import com.android.systemui.DemoMode;
 import com.android.systemui.DockBatteryMeterView;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
+import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.ReminderMessageView;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.statusbar.AppSidebar;
@@ -937,6 +938,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addSidebarView();
 
+        // set recents activity navigation bar view
+        RecentsActivity.setNavigationBarView(mNavigationBarView);
+
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
 
@@ -1486,8 +1490,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private View.OnClickListener mRecentsClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             awakenDreams();
-            toggleRecentApps();
-            Log.e(TAG, "recents click listener done");
+            if(isRecentAppsVisible() && hasRecentApps()) {
+                clearRecentApps();
+            } else {
+                toggleRecentApps();
+            }
+            Log.w(TAG, "recents click listener done");
         }
     };
 
