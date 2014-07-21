@@ -55,6 +55,7 @@ public class RecentsHorizontalScrollView extends HorizontalScrollView
     private HashSet<View> mRecycledViews;
     private int mNumItemsInOneScreenful;
     private Runnable mOnScrollListener;
+    private Handler mHandler;
 
     public RecentsHorizontalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
@@ -63,6 +64,7 @@ public class RecentsHorizontalScrollView extends HorizontalScrollView
         mSwipeHelper = new SwipeHelper(SwipeHelper.Y, this, densityScale, pagingTouchSlop);
         mFadedEdgeDrawHelper = FadedEdgeDrawHelper.create(context, attrs, this, false);
         mRecycledViews = new HashSet<View>();
+        mHandler = new Handler();
     }
 
     public void setMinSwipeAlpha(float minAlpha) {
@@ -177,6 +179,39 @@ public class RecentsHorizontalScrollView extends HorizontalScrollView
     @Override
     public void removeViewInLayout(final View view) {
         dismissChild(view);
+    }
+
+    @Override
+    public void swipeAllViewsInLayout() {
+        smoothScrollTo(0, 0);
+        Thread clearAll = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int count = mLinearLayout.getChildCount();
+                // if we have more than one app, don't kill the current one
+                if(count > 1) count--;
+                View[] refView = new View[count];
+                for (int i = 0; i < count; i++) {
+                    refView[i] = mLinearLayout.getChildAt(i);
+                }
+                for (int i = 0; i < count; i++) {
+                    final View child = refView[i];
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissChild(child);
+                        }
+                    });
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        // User will see the app fading instantly after the previous
+                        // one. This will probably never happen
+                    }
+                }
+            }
+        });
+        clearAll.start();
     }
 
     @Override

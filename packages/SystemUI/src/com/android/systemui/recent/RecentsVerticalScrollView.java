@@ -54,6 +54,7 @@ public class RecentsVerticalScrollView extends ScrollView
     private HashSet<View> mRecycledViews;
     private int mNumItemsInOneScreenful;
     private Runnable mOnScrollListener;
+    private Handler mHandler;
 
     public RecentsVerticalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
@@ -184,6 +185,39 @@ public class RecentsVerticalScrollView extends ScrollView
     @Override
     public void removeViewInLayout(final View view) {
         dismissChild(view);
+    }
+
+    @Override
+    public void swipeAllViewsInLayout() {
+        smoothScrollTo(0, 0);
+        Thread clearAll = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int count = mLinearLayout.getChildCount();
+                // if we have more than one app, don't kill the current one
+                if(count > 1) count--;
+                View[] refView = new View[count];
+                for (int i = 0; i < count; i++) {
+                    refView[i] = mLinearLayout.getChildAt(i);
+                }
+                for (int i = 0; i < count; i++) {
+                    final View child = refView[i];
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissChild(child);
+                        }
+                    });
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        // User will see the app fading instantly after the previous
+                        // one. This will probably never happen
+                    }
+                }
+            }
+        });
+        clearAll.start();
     }
 
     @Override
