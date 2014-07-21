@@ -65,6 +65,8 @@ import com.android.internal.util.aokp.AwesomeConstants.AwesomeConstant;
 
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.R;
+import com.android.systemui.recent.NavigationCallback;
+import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
 import com.android.systemui.statusbar.policy.DeadZone;
@@ -75,7 +77,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class NavigationBarView extends LinearLayout {
+public class NavigationBarView extends LinearLayout implements NavigationCallback {
     final static boolean DEBUG = false;
     final static String TAG = "PhoneStatusBar/NavigationBarView";
 
@@ -99,7 +101,7 @@ public class NavigationBarView extends LinearLayout {
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
 
-    private Drawable mRecentAltIcon, mRecentAltLandIcon;
+    private Drawable mRecentIcon, mRecentLandIcon, mRecentAltIcon, mRecentAltLandIcon;
 
     boolean mWasNotifsButtonVisible = false;
     boolean mNavigationBarForceMenu = false;
@@ -133,6 +135,8 @@ public class NavigationBarView extends LinearLayout {
     private boolean mHasCmKeyguard = false;
     private boolean mModLockDisabled = true;
     private SettingsObserver mObserver;
+
+    private RecentsActivity mRecentsActivity;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
@@ -272,6 +276,8 @@ public class NavigationBarView extends LinearLayout {
         mButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
         mMenuButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
 
+        mRecentsActivity.setNavigationCallback(this);
+
         getIcons(res);
 
         mBarTransitions = new NavigationBarTransitions(this);
@@ -376,6 +382,8 @@ public class NavigationBarView extends LinearLayout {
     }
 
     private void getIcons(Resources res) {
+        mRecentIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
+        mRecentLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
         mRecentAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
         mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
@@ -445,19 +453,24 @@ public class NavigationBarView extends LinearLayout {
     }
 
     public void setNavigationIconHints(int hints) {
-        setNavigationIconHints(hints, false);
+        setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, false);
     }
 
     public void setNavigationIconHints(int hints, boolean force) {
+        setNavigationIconHints(NavigationCallback.NAVBAR_BACK_HINT, hints, force);
+    }
+
+    public void setNavigationIconHints(int button, int hints, boolean force) {
         if (!force && hints == mNavigationIconHints) return;
         final boolean backAlt = (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT) != 0;
         if ((mNavigationIconHints & StatusBarManager.NAVIGATION_HINT_BACK_ALT) != 0 && !backAlt) {
             mTransitionListener.onBackAltCleared();
         }
+
         if (DEBUG) {
             android.widget.Toast.makeText(mContext,
-                    "Navigation icon hints = " + hints,
-                    500).show();
+                "Navigation icon hints = " + hints+" button = "+button,
+                500).show();
         }
 
         mNavigationIconHints = hints;
@@ -466,9 +479,18 @@ public class NavigationBarView extends LinearLayout {
             ((ImageView) getBackButton()).setImageResource(backAlt
                     ? R.drawable.ic_sysbar_back_ime
                     : R.drawable.ic_sysbar_back);
+        } else if (getRecentsButton() != null) {
+            ((ImageView)getRecentsButton()).setImageDrawable(
+                (0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_ALT))
+                    ? (mVertical ? mRecentAltLandIcon : mRecentAltIcon)
+                    : (mVertical ? mRecentLandIcon : mRecentIcon));
         }
 
         setDisabledFlags(mDisabledFlags, true);
+    }
+
+    public int getNavigationIconHints() {
+        return mNavigationIconHints;
     }
 
     public void setButtonDrawable(int buttonId, final int iconId) {
@@ -938,6 +960,9 @@ public class NavigationBarView extends LinearLayout {
         }
 
         setNavigationIconHints(mNavigationIconHints, true);
+        // Reset recents hints after reorienting
+        ((ImageView)getRecentsButton()).setImageDrawable(mVertical
+                ? mRecentLandIcon : mRecentIcon);
     }
 
     @Override
