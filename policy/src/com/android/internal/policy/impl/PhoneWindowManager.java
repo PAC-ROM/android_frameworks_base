@@ -346,6 +346,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mLidKeyboardAccessibility;
     int mLidNavigationAccessibility;
     boolean mLidControlsSleep;
+    boolean mLidControlsWake;
     int mLongPressOnPowerBehavior = -1;
     boolean mScreenOnEarly = false;
     boolean mScreenOnFully = false;
@@ -755,6 +756,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_LID_WAKE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_LID_SLEEP), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -1338,8 +1345,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.integer.config_lidKeyboardAccessibility);
         mLidNavigationAccessibility = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_lidNavigationAccessibility);
-        mLidControlsSleep = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_lidControlsSleep);
         mTranslucentDecorEnabled = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_enableTranslucentDecor);
         mHasRemovableLid = mContext.getResources().getBoolean(
@@ -1809,6 +1814,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (mImmersiveModeConfirmation != null) {
                 mImmersiveModeConfirmation.loadSetting();
             }
+
+            mLidControlsWake = Settings.System.getBooleanForUser(resolver,
+                    Settings.System.LOCKSCREEN_LID_WAKE, true, UserHandle.USER_CURRENT);
+            mLidControlsSleep = Settings.System.getBooleanForUser(resolver,
+                    Settings.System.LOCKSCREEN_LID_SLEEP, true, UserHandle.USER_CURRENT);
         }
 
         if (updateRotation) {
@@ -4512,9 +4522,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         updateRotation(true);
 
         if (lidOpen) {
-            mPowerManager.wakeUp(SystemClock.uptimeMillis());
-        } else if (!mLidControlsSleep) {
-            mPowerManager.userActivity(SystemClock.uptimeMillis(), false);
+            if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_LID_WAKE, 1, UserHandle.USER_CURRENT) == 1) {
+                if (mLidControlsWake) mPowerManager.wakeUp(SystemClock.uptimeMillis());
+            } else if (!mLidControlsSleep) {
+                mPowerManager.userActivity(SystemClock.uptimeMillis(), false);
+            }
         }
     }
 
@@ -5985,10 +5998,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void applyLidSwitchState() {
         mPowerManager.setKeyboardVisibility(isBuiltInKeyboardVisible());
 
-        if (mLidState == LID_CLOSED && mLidControlsSleep) {
+        if (mLidState == LID_CLOSED && mLidControlsSleep
+            && Settings.System.getIntForUser(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_LID_WAKE, 1, UserHandle.USER_CURRENT) == 1) {
             ITelephony telephonyService = getTelephonyService();
             try {
-                if(telephonyService != null && telephonyService.isIdle()) {
+                if (telephonyService != null && telephonyService.isIdle() && !keyguardOn()) {
                     mPowerManager.goToSleep(SystemClock.uptimeMillis());
                 }
             } catch (RemoteException e) {
