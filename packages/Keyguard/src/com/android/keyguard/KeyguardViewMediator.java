@@ -56,6 +56,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.WindowManagerPolicy;
+import android.view.WindowManagerPolicy.WindowManagerFuncs;
 
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.util.cm.QuietHoursUtils;
@@ -259,6 +260,8 @@ public class KeyguardViewMediator {
     private int mLockSoundStreamId;
 
     private ProfileManager mProfileManager;
+
+    private int mLidState = WindowManagerPolicy.WindowManagerFuncs.LID_ABSENT;
 
     /**
      * The volume applied to the lock/unlock sounds.
@@ -543,8 +546,8 @@ public class KeyguardViewMediator {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SHAKE_SECURE_TIMER);
         filter.addAction(DELAYED_KEYGUARD_ACTION);
+        filter.addAction(WindowManagerPolicy.ACTION_LID_STATE_CHANGED);
         mContext.registerReceiver(mBroadcastReceiver, filter);
-
         mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DISMISS_KEYGUARD_SECURELY_ACTION),
                 android.Manifest.permission.CONTROL_KEYGUARD, null);
 
@@ -1105,6 +1108,14 @@ public class KeyguardViewMediator {
             } else if (DISMISS_KEYGUARD_SECURELY_ACTION.equals(intent.getAction())) {
                 synchronized (KeyguardViewMediator.this) {
                     dismiss();
+                }
+            } else if (WindowManagerPolicy.ACTION_LID_STATE_CHANGED.equals(intent.getAction())) {
+                final int state = intent.getIntExtra(WindowManagerPolicy.EXTRA_LID_STATE, WindowManagerFuncs.LID_ABSENT);
+                synchronized (KeyguardViewMediator.this) {
+                    if(state != mLidState) {
+                        mLidState = state;
+                        mUpdateMonitor.dispatchLidStateChange(state);
+                    }
                 }
             } else if (SHAKE_SECURE_TIMER.equals(intent.getAction())) {
                 if (mLockPatternUtils.isSecure()) {
