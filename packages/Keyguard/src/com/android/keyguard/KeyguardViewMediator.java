@@ -17,6 +17,8 @@
 package com.android.keyguard;
 
 import android.graphics.Bitmap;
+
+import android.os.FileObserver;
 import com.android.internal.policy.IKeyguardExitCallback;
 import com.android.internal.policy.IKeyguardShowCallback;
 import static android.provider.Settings.System.SCREEN_OFF_TIMEOUT;
@@ -61,6 +63,8 @@ import android.view.WindowManagerPolicy.WindowManagerFuncs;
 import com.android.internal.telephony.IccCardConstants;
 import com.android.internal.util.cm.QuietHoursUtils;
 import com.android.internal.widget.LockPatternUtils;
+
+import android.hardware.SmartCoverHW;
 
 /**
  * Mediates requests related to the keyguard.  This includes queries about the
@@ -261,6 +265,7 @@ public class KeyguardViewMediator {
 
     private ProfileManager mProfileManager;
 
+    private FileObserver mSmartCoverObserver;
     private int mLidState = WindowManagerPolicy.WindowManagerFuncs.LID_ABSENT;
 
     /**
@@ -387,7 +392,7 @@ public class KeyguardViewMediator {
                     doKeyguardLocked(null);
                 }
             }
-        };
+        }
 
         @Override
         public void onClockVisibilityChanged() {
@@ -508,16 +513,38 @@ public class KeyguardViewMediator {
         }
 
         void observe() {
-            ContentResolver cr = mContext.getContentResolver();
+            final ContentResolver cr = mContext.getContentResolver();
             cr.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.LOCK_SOUND), false, this);
             cr.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.UNLOCK_SOUND), false, this);
+
+            observeSmartWindow();
         }
 
         @Override
         public void onChange(boolean selfChange) {
             reloadSounds();
+            }
+    }
+
+    private void observeSmartWindow() {
+        if (SmartCoverHW.isSupported() && SmartCoverHW.isMonitorable()
+                    && mSmartCoverObserver == null) {
+            if (DEBUG) Log.d(TAG, String.format("SmartCoverHW is supported, observing: %s",
+                    SmartCoverHW.getPath()));
+            mSmartCoverObserver = new FileObserver(SmartCoverHW.getPath(), FileObserver.MODIFY) {
+                @Override public void onEvent(final int event, final String s) {
+                    if (FileObserver.MODIFY != event) return;
+                    final int state = SmartCoverHW.isPathOpen() ? 1 : 0;
+                    final Intent intent = new Intent();
+                    intent.setAction(WindowManagerPolicy.ACTION_LID_STATE_CHANGED);
+                    intent.putExtra(WindowManagerPolicy.EXTRA_LID_STATE, state);
+                    mContext.sendBroadcast(intent);
+                    if (DEBUG) Log.d(TAG, String.format("SmartCoverHAL, state: %s", state));
+                }
+            };
+            mSmartCoverObserver.startWatching();
         }
     }
 
@@ -571,8 +598,6 @@ public class KeyguardViewMediator {
         mKeyguardViewManager = new KeyguardViewManager(context, wm, mViewMediatorCallback,
                 mLockPatternUtils);
 
-        final ContentResolver cr = mContext.getContentResolver();
-
         mScreenOn = mPM.isScreenOn();
 
         mLockSounds = new SoundPool(1, AudioManager.STREAM_SYSTEM, 0);
@@ -581,7 +606,7 @@ public class KeyguardViewMediator {
                 com.android.internal.R.integer.config_lockSoundVolumeDb);
         mLockSoundVolume = (float)Math.pow(10, (float)lockSoundDefaultAttenuation/20);
 
-        SettingsObserver observer = new SettingsObserver(new Handler());
+        final SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
     }
 
