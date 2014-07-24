@@ -7361,6 +7361,13 @@ public final class Settings {
         public static final String CALL_AUTO_RETRY = "call_auto_retry";
 
         /**
+         * Detailed incall info
+         *
+         * @hide
+         */
+        public static final String DETAILED_INCALL_INFO = "detailed_incall_info";
+
+        /**
          * The preferred network mode   7 = Global
          *                              6 = EvDo only
          *                              5 = CDMA w/o EvDo
