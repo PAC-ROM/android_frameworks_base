@@ -283,6 +283,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mStatusBarHeight;
     WindowState mNavigationBar = null;
     boolean mHasNavigationBar = false;
+    boolean mOverWriteHasNavigationBar = false;
     boolean mCanHideNavigationBar = false;
     boolean mNavigationBarCanMove = false; // can the navigation bar ever move to the side?
     boolean mNavigationBarOnBottom = true; // is the navigation bar on the bottom *right now*?
@@ -701,6 +702,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USE_EDGE_SERVICE_FOR_GESTURES), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_SHOW), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_HEIGHT), false, this,
@@ -1400,7 +1404,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void updateKeyAssignments() {
         int activeHardwareKeys = mDeviceHardwareKeys;
 
-        if (mDevForceNavbar) {
+        if (mHasNavigationBar) {
             activeHardwareKeys = 0;
         }
         final boolean hasMenu = (activeHardwareKeys & KEY_MASK_MENU) != 0;
@@ -1530,14 +1534,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Allow the navigation bar to move on small devices (phones).
         mNavigationBarCanMove = shortSizeDp < 600;
 
-        mHasNavigationBar = res.getBoolean(com.android.internal.R.bool.config_showNavigationBar);
+        final int showByDefault = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
+        mHasNavigationBar = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault,
+                    UserHandle.USER_CURRENT) == 1;
+
         // Allow a system property to override this. Used by the emulator.
         // See also hasNavigationBar().
         String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
         if ("1".equals(navBarOverride)) {
             mHasNavigationBar = false;
+            mOverWriteHasNavigationBar = true;
         } else if ("0".equals(navBarOverride)) {
             mHasNavigationBar = true;
+            mOverWriteHasNavigationBar = true;
         }
 
         // For demo purposes, allow the rotation of the HDMI display to be controlled.
@@ -1664,8 +1675,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mUserRotationAngles = Settings.System.getIntForUser(resolver,
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, -1, UserHandle.USER_CURRENT);
 
-            if (!mDevForceNavbar) {
-                // Set the navigation bar's dimensions to 0 in expanded desktop mode
+            // Custom nav bar dimensions
+            final int showByDefault = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
+            mHasNavigationBar = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault,
+                    UserHandle.USER_CURRENT) == 1;
+
+            if (!mHasNavigationBar) {
+                // Set the navigation bar's dimensions to 0
                 mNavigationBarWidthForRotation[mPortraitRotation]
                         = mNavigationBarWidthForRotation[mUpsideDownRotation]
                         = mNavigationBarWidthForRotation[mLandscapeRotation]
@@ -6270,7 +6288,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // overridden by qemu.hw.mainkeys in the emulator.
     @Override
     public boolean hasNavigationBar() {
-        return mHasNavigationBar;
+        return mOverWriteHasNavigationBar
+            ? mHasNavigationBar
+            : mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_showNavigationBar);
     }
 
     @Override
