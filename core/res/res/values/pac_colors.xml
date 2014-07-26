@@ -40,4 +40,7 @@
     <color name="holo_yellow_dark">#ff8800</color>
     <color name="holo_purple_dark">#9933cc</color>
 
+<!-- Hover-Volume Panel -->
+    <color name="volume_panel_bg">#cc111111</color>
+
 </resources>
