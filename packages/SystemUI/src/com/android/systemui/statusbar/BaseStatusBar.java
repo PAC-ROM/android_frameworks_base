@@ -77,8 +77,9 @@ import com.android.internal.util.pac.OmniSwitchConstants;
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
+import com.android.systemui.SearchPanelView;
 import com.android.systemui.SystemUI;
-import com.android.systemui.pac.slimrecent.RecentController;
+import com.android.systemui.slimrecent.RecentController;
 import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 
@@ -693,7 +694,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected void preloadRecentTasksList() {
-        if (!isOmniSwitchEnabled) {
+        if (!isOmniSwitchEnabled()) {
             if (mRecents != null || mSlimRecents != null) {
                 if (mSlimRecentsEnabled) {
                     mSlimRecents.preloadRecentTasksList();
@@ -705,7 +706,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected void cancelPreloadingRecentTasksList() {
-        if (!isOmniSwitchEnabled) {
+        if (!isOmniSwitchEnabled()) {
             if (mRecents != null || mSlimRecents != null) {
                 if (mSlimRecentsEnabled) {
                     mSlimRecents.cancelPreloadingRecentTasksList();
