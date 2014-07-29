@@ -20,10 +20,6 @@
     <string name="cpufreq_max">Max CPU Freq</string>
     <string name="cpufreq_min">Min CPU Freq</string>
 
-    <!-- Music Tile -->
-    <string name="quick_settings_music_play">Play</string>
-    <string name="quick_settings_music_pause">Pause</string>
-
     <!-- Long-press back kill application -->
     <string name="app_killed_message">App killed</string>
 
