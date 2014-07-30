@@ -3375,6 +3375,13 @@ public final class Settings {
         public static final String GESTURES_LEFT_SWIPE = "gestures_left_swipe";
 
         /**
+         * Whether heads up notification is shown on the bottom of the screen (default = disabled)
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_GRAVITY_BOTTOM = "heads_up_gravity_bottom";
+
+        /**
          * Right Swipe Action
          *
          * @hide
