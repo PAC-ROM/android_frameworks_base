@@ -470,8 +470,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: Nav Bar toggle
-        boolean showNavBar = Settings.System.getIntForUser(cr,
-                Settings.System.POWER_MENU_NAV_BAR_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+        boolean showNavBar = Settings.System.getBoolean(cr,
+                Settings.System.POWER_MENU_NAV_BAR_ENABLED, false);
 
         if (showNavBar) {
             mItems.add(mNavBarModeOn);
