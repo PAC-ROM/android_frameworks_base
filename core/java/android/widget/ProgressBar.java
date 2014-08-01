@@ -301,8 +301,8 @@ public class ProgressBar extends View {
             boolean IsReversed = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.PROGRESSBAR_REVERSE, 0) == 1;
             int tmpSpeed = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_SPEED, 0);
-            float Speed = ((float) tmpSpeed+1 ) / 10;
+                    Settings.System.PROGRESSBAR_SPEED, 4);
+            float Speed = ((float) tmpSpeed + 1 ) / 10;
             int Width = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.PROGRESSBAR_WIDTH, 4);
             int Length = Settings.System.getInt(mContext.getContentResolver(),
