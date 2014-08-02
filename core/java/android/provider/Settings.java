@@ -4124,10 +4124,23 @@ public final class Settings {
         public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
 
         /**
+         *
+         * Navigation bar height when it is on landscape at the bottom
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
+
+        /**
          * Navigation bar height when it is on landscape at the right
          * @hide
          */
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
+
+        /**
+         * Navigation recent long press
+         * @hide
+         */
+        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
 
         /**
          * show clear all recents button
@@ -4250,12 +4263,6 @@ public final class Settings {
          * @hide
          */
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
-
-        /**
-         * Navigation recent long press
-         * @hide
-         */
-        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
 
         /**
          * Whether pie controls are enabled
