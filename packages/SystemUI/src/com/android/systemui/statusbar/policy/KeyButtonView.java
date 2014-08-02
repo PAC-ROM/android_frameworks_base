@@ -65,8 +65,8 @@ public class KeyButtonView extends ImageView {
     long mDownTime;
     long mUpTime;
     int mTouchSlop;
-    Drawable mGlowBG;
     int mGlowBgId;
+    Drawable mGlowBG;
     int mGlowWidth, mGlowHeight;
     float mGlowAlpha = 0f, mGlowScale = 1f;
     @ViewDebug.ExportedProperty(category = "drawing")
@@ -159,13 +159,19 @@ public class KeyButtonView extends ImageView {
         Log.e(TAG, "Adding a navbar button in landscape or portrait");
     }
 
+    /* @hide */
     public void setImage() {
+        setImage(getResources());
+    }
+
+    /* @hide */
+    public void setImage(final Resources res) {
         // set image
         if (mActions.iconUri != null && mActions.iconUri.length() > 0) {
             // custom icon from the URI here
             File f = new File(Uri.parse(mActions.iconUri).getPath());
             if (f.exists()) {
-                setImageDrawable(new BitmapDrawable(getResources(), f.getAbsolutePath()));
+                setImageDrawable(new BitmapDrawable(res, f.getAbsolutePath()));
             }
         } else if (mActions.singleAction != null) {
             setImageDrawable(NavBarHelpers.getIconImage(mContext, mActions.singleAction));
@@ -178,6 +184,7 @@ public class KeyButtonView extends ImageView {
         if (mGlowBgId != 0) {
             mGlowBG = res.getDrawable(mGlowBgId);
         }
+        setImage(res);
     }
 
     @Override
@@ -475,6 +482,7 @@ public class KeyButtonView extends ImageView {
     }
 
     public void setGlowBackground(int resId) {
+        mGlowBgId = resId;
         mGlowBG = getResources().getDrawable(resId);
         if (mGlowBG != null) {
             setDrawingAlpha(mDrawingAlpha);
