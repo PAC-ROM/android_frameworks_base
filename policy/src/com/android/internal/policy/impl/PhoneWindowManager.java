@@ -292,6 +292,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int[] mNavigationBarHeightForRotation = new int[4];
     int[] mNavigationBarWidthForRotation = new int[4];
     int mNavigationBarHeight;
+    int mNavigationBarHeightLandscape;
     int mNavigationBarWidth;
 
     WindowState mKeyguard = null;
@@ -1774,6 +1775,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         Converter.dpToPx(mContext, mNavigationBarHeight);
             }
 
+            mNavigationBarHeightLandscape =
+                    Settings.System.getIntForUser(mContext.getContentResolver(),
+                            Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE, -2,
+                            UserHandle.USER_CURRENT);
+            if (mNavigationBarHeightLandscape == -2) {
+                mNavigationBarHeightLandscape = mContext.getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_height_landscape);
+            } else {
+                mNavigationBarHeightLandscape =
+                        Converter.dpToPx(mContext, mNavigationBarHeightLandscape);
+            }
+
             mNavigationBarWidth =
                     Settings.System.getIntForUser(mContext.getContentResolver(),
                             Settings.System.NAVIGATION_BAR_WIDTH, -2,
@@ -1797,13 +1810,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         = mNavigationBarHeightForRotation[mLandscapeRotation]
                         = mNavigationBarHeightForRotation[mSeascapeRotation] = 0;
             } else {
-                // Height of the navigation bar when presented horizontally at bottom *******
+                // Height of the navigation bar when presented horizontally at bottom
                 mNavigationBarHeightForRotation[mPortraitRotation] =
                 mNavigationBarHeightForRotation[mUpsideDownRotation] = mNavigationBarHeight;
 
+                // Height of the navigation bar when presented horizontally when in landscape
                 mNavigationBarHeightForRotation[mLandscapeRotation] =
-                mNavigationBarHeightForRotation[mSeascapeRotation] = res.getDimensionPixelSize(
-                        com.android.internal.R.dimen.navigation_bar_height_landscape);
+                mNavigationBarHeightForRotation[mSeascapeRotation] = mNavigationBarHeightLandscape;
 
                 // Width of the navigation bar when presented vertically along one side
                 mNavigationBarWidthForRotation[mPortraitRotation] =
