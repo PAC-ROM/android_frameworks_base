@@ -4423,6 +4423,12 @@ public final class Settings {
                 "pie_buttons_config_second_layer";
 
         /**
+         * Pie trigger sensitivity
+         * @hide
+         */
+        public static final String PIE_TRIGGER_SENSITIVITY = "pie_trigger_sensitivity";
+
+        /**
          * SMOOTH PROGRESS BAR Mirror
          * @hide
          */
