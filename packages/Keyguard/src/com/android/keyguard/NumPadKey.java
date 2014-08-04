@@ -90,6 +90,20 @@ public class NumPadKey extends Button {
 
         mEnableHaptics = new LockPatternUtils(mContext).isTactileFeedbackEnabled();
         createNumKeyPad(false);
+        updateText();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // Reset the "announced headset" flag when detached.
+        ObscureSpeechDelegate.sAnnouncedHeadset = false;
+    }
+
+    public void setDigit(int digit) {
+        mDigit = digit;
+        updateText();
     }
 
     public void createNumKeyPad(boolean enableRandom) {
@@ -103,11 +117,14 @@ public class NumPadKey extends Button {
             mDigit = mStyleable.getInt(R.styleable.NumPadKey_digit, mDigit);
         }
 
+    }
+
+    private void updateText() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(String.valueOf(mDigit));
         if (mDigit >= 0) {
             if (sKlondike == null) {
-                sKlondike = mContext.getResources().getStringArray(
+                sKlondike = getContext().getResources().getStringArray(
                         R.array.lockscreen_num_pad_klondike);
             }
             if (sKlondike != null && sKlondike.length > mDigit) {
@@ -117,21 +134,14 @@ public class NumPadKey extends Button {
                     builder.append(" ");
                     builder.append(extra);
                     builder.setSpan(
-                        new TextAppearanceSpan(mContext, R.style.TextAppearance_NumPadKey_Klondike),
-                        builder.length()-extraLen, builder.length(), 0);
+                        new TextAppearanceSpan(mContext,
+                                R.style.TextAppearance_NumPadKey_Klondike),
+                            builder.length()-extraLen, builder.length(), 0);
                 }
             }
+            setText(builder);
         }
         sCount++;
-        setText(builder);
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        // Reset the "announced headset" flag when detached.
-        ObscureSpeechDelegate.sAnnouncedHeadset = false;
     }
 
     public void setTextView(TextView tv) {
