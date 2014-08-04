@@ -92,6 +92,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         StatusBarPanel, Animator.AnimatorListener {
     static final String TAG = "RecentsPanelView";
     static final boolean DEBUG = PhoneStatusBar.DEBUG || false;
+    private static final String  ANDROID_SETTINGS = "com.android.settings";
+    private static final String ANDROID_PROTECTED_APPS =
+            "com.android.settings.applications.ProtectedAppsActivity";
     private PopupMenu mPopup;
     private View mRecentsScrim;
     private View mRecentsNoApps;
@@ -113,6 +116,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearRecents;
+    private ImageView mProtectedApps;
 
     private LinearColorBar mRamUsageBar;
 
@@ -391,7 +395,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
                 int clearAllButtonLocation = Settings.PAC.getInt(mContext.getContentResolver(), Settings.PAC.CLEAR_RECENTS_BUTTON_LOCATION, Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mClearRecents.getLayoutParams();
-               switch (clearAllButtonLocation) {
+                switch (clearAllButtonLocation) {
                     case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
                         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
                         break;
@@ -410,7 +414,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             } else {
                 mClearRecents.setVisibility(View.GONE);
             }
-
+            mProtectedApps.setVisibility(noProtectedApps() ? View.GONE : View.VISIBLE);
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -423,6 +427,13 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 mPopup.dismiss();
             }
         }
+    }
+
+    private boolean noProtectedApps() {
+        String protectedComponents = Settings.Secure.getString(mContext.getContentResolver(),
+                Settings.Secure.PROTECTED_COMPONENTS);
+        protectedComponents = protectedComponents == null ? "" : protectedComponents;
+        return (protectedComponents.equals(""));
     }
 
     protected void onAttachedToWindow () {
@@ -524,6 +535,22 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 public void onClick(View v) {
                     mRecentsContainer.removeAllViewsInLayout();
                     mClearRecents.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+        mProtectedApps = (ImageView) findViewById(R.id.protected_apps);
+        if (mProtectedApps != null){
+            mProtectedApps.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    // Launch protected components
+                    Intent intent = new Intent();
+                    intent.setClassName(ANDROID_SETTINGS, ANDROID_PROTECTED_APPS);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    mContext.startActivityAsUser(intent, null,
+                        new UserHandle(UserHandle.USER_CURRENT));
                 }
             });
         }
@@ -1024,6 +1051,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             lp.topMargin = insets.top;
             lp.rightMargin = insets.right;
             mClearRecents.setLayoutParams(lp);
+        }
+        if (mProtectedApps != null) {
+            MarginLayoutParams lp = (MarginLayoutParams) mProtectedApps.getLayoutParams();
+            lp.topMargin = insets.top;
+            lp.rightMargin = insets.right;
+            mProtectedApps.setLayoutParams(lp);
         }
 
         return super.fitSystemWindows(insets);
