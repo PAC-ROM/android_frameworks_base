@@ -59,7 +59,6 @@ import android.service.gesture.EdgeGestureManager;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SettingConfirmationHelper;
 import android.util.Slog;
 import android.view.Display;
 import android.view.IWindowManager;
@@ -1224,16 +1223,32 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected class NotificationClicker implements View.OnClickListener {
-        private PendingIntent mIntent;
+        private KeyguardTouchDelegate mKeyguard;
+        private PendingIntent mPendingIntent;
+        private Intent mIntent;
         private String mPkg;
         private String mTag;
         private int mId;
+        private boolean mFloat;
 
         public NotificationClicker(PendingIntent intent, String pkg, String tag, int id) {
-            mIntent = intent;
+            mPendingIntent = intent;
             mPkg = pkg;
             mTag = tag;
             mId = id;
+        }
+
+        public NotificationClicker(Intent intent) {
+            this();
+            mIntent = intent;
+        }
+
+        public NotificationClicker() {
+            mKeyguard = KeyguardTouchDelegate.getInstance(mContext);
+        }
+
+        public void makeFloating(boolean floating) {
+            mFloat = floating;
         }
 
         public void onClick(View v) {
@@ -1250,6 +1265,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             } catch (RemoteException e) {
             }
 
+            int flags = Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK;
             boolean allowed = true; // default on, except for preloaded false
             try {
                 // preloaded apps are added to the blacklist array when is recreated, handled in the notification manager
@@ -1258,7 +1274,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 // System is dead
             }
 
-            if (mIntent != null) {
+            if (mPendingIntent != null) {
                 int[] pos = new int[2];
                 v.getLocationOnScreen(pos);
                 Intent overlay = new Intent();
@@ -1267,22 +1283,25 @@ public abstract class BaseStatusBar extends SystemUI implements
                 overlay.setSourceBounds(
                         new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight()));
                 try {
-                    mIntent.send(mContext, 0, overlay);
+                    mPendingIntent.send(mContext, 0, overlay);
                 } catch (PendingIntent.CanceledException e) {
                     // the stack trace isn't very helpful here.  Just log the exception message.
                     Log.w(TAG, "Sending contentIntent failed: " + e);
-                } else if(mIntent != null) {
+                }
+            } else if(mIntent != null) {
                 if (mFloat && allowed) mIntent.addFlags(flags);
                 mContext.startActivity(mIntent);
             }
 
-                KeyguardTouchDelegate.getInstance(mContext).dismiss();
-            }
 
-            try {
-                mBarService.onNotificationClick(mPkg, mTag, mId);
-            } catch (RemoteException ex) {
-                // system process is dead if we're here.
+            if(mKeyguard.isShowingAndNotHidden()) mKeyguard.dismiss();
+
+            if(mPkg != null) { // check if we're dealing with a notification
+                try {
+                    mBarService.onNotificationClick(mPkg, mTag, mId);
+                } catch (RemoteException ex) {
+                    // system process is dead if we're here.
+                }
             }
 
             // close the shade if it was open
