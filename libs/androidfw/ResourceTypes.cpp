@@ -1622,6 +1622,8 @@ int ResTable_config::compare(const ResTable_config& o) const {
     if (diff != 0) return diff;
     diff = (int32_t)(uiMode - o.uiMode);
     if (diff != 0) return diff;
+    diff = (int32_t)(uiPac - o.uiPac);
+    if (diff != 0) return diff;
     diff = (int32_t)(smallestScreenWidthDp - o.smallestScreenWidthDp);
     if (diff != 0) return diff;
     diff = (int32_t)(screenSizeDp - o.screenSizeDp);
@@ -1683,6 +1685,9 @@ int ResTable_config::compareLogical(const ResTable_config& o) const {
     if (uiMode != o.uiMode) {
         return uiMode < o.uiMode ? -1 : 1;
     }
+    if (uiPac != o.uiPac) {
+        return uiPac < o.uiPac ? -1 : 1;
+    }
     if (version != o.version) {
         return version < o.version ? -1 : 1;
     }
@@ -1706,6 +1711,7 @@ int ResTable_config::diff(const ResTable_config& o) const {
     if ((screenLayout & MASK_LAYOUTDIR) != (o.screenLayout & MASK_LAYOUTDIR)) diffs |= CONFIG_LAYOUTDIR;
     if ((screenLayout & ~MASK_LAYOUTDIR) != (o.screenLayout & ~MASK_LAYOUTDIR)) diffs |= CONFIG_SCREEN_LAYOUT;
     if (uiMode != o.uiMode) diffs |= CONFIG_UI_MODE;
+    if (uiPac != o.uiPac) diffs |= CONFIG_UI_PAC;
     if (smallestScreenWidthDp != o.smallestScreenWidthDp) diffs |= CONFIG_SMALLEST_SCREEN_SIZE;
     if (screenSizeDp != o.screenSizeDp) diffs |= CONFIG_SCREEN_SIZE;
     return diffs;
@@ -1790,6 +1796,11 @@ bool ResTable_config::isMoreSpecificThan(const ResTable_config& o) const {
             if (!(uiMode & MASK_UI_MODE_NIGHT)) return false;
             if (!(o.uiMode & MASK_UI_MODE_NIGHT)) return true;
         }
+    }
+
+    if (uiPac != o.uiPac) {
+        if (!uiPac) return false;
+        if (!o.uiPac) return true;
     }
 
     // density is never 'more specific'
@@ -1962,6 +1973,10 @@ bool ResTable_config::isBetterThan(const ResTable_config& o,
                     && (requested->uiMode & MASK_UI_MODE_NIGHT)) {
                 return (uiMode & MASK_UI_MODE_NIGHT);
             }
+        }
+
+        if (uiPac != o.uiPac && requested->uiPac) {
+            return (uiPac);
         }
 
         if (screenType || o.screenType) {
@@ -2139,6 +2154,9 @@ bool ResTable_config::match(const ResTable_config& settings) const {
                 && smallestScreenWidthDp > settings.smallestScreenWidthDp) {
             return false;
         }
+    }
+    if (uiPac != 0 && uiPac != settings.uiPac) {
+        return false;
     }
     if (screenSizeDp != 0) {
         if (screenWidthDp != 0 && screenWidthDp > settings.screenWidthDp) {
@@ -2348,6 +2366,20 @@ String8 ResTable_config::toString() const {
             default:
                 res.appendFormat("uiModeNight=%d",
                         dtohs(uiMode&MASK_UI_MODE_NIGHT));
+                break;
+        }
+    }
+    if (uiPac != UI_PAC_ANY) {
+        if (res.size() > 0) res.append("-");
+        switch (uiPac) {
+            case ResTable_config::UI_PAC_AOSP:
+                res.append("aosp");
+                break;
+            case ResTable_config::UI_PAC_ON:
+                res.append("pac");
+                break;
+            default:
+                res.appendFormat("uiPac=%d", dtohs(uiPac));
                 break;
         }
     }

@@ -515,6 +515,40 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      */
     public int uiMode;
 
+    /** Constant for {@link #uiPac}
+     * value indicating that no mode has been set.
+     * @hide
+     */
+    public static final int UI_PAC_UNDEFINED = 0;
+    /** Constant for {@link #uiPac}
+     * value that corresponds to the stock ui
+     * @hide
+     */
+    public static final int UI_PAC_NORMAL = 1;
+    /** Constant for {@link #uiPac}
+     * value that corresponds to the
+     * "aosp"
+     * resource qualifier.
+     * @hide
+     */
+    public static final int UI_PAC_AOSP = 2;
+    /** Constant for {@link #uiPac}
+     * value that corresponds to the
+     * "pac"
+     * resource qualifier.
+     * @hide
+     */
+    public static final int UI_PAC_ON = 3;
+
+    /**
+     * Bit for the ui Pac.
+     * This may be one of
+     * {@link #UI_PAC_UNDEFINED}, {@link #UI_PAC_NORMAL},
+     * {@link #UI_PAC_AOSP} or {@link #UI_PAC_ON},
+     * @hide
+     */
+    public int uiPac;
+
     /**
      * Default value for {@link #screenWidthDp} indicating that no width
      * has been specified.
@@ -614,6 +648,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     public static final int NATIVE_CONFIG_VERSION = 0x0400;
     /** @hide Native-specific bit mask for SCREEN_LAYOUT config; DO NOT USE UNLESS YOU ARE SURE. */
     public static final int NATIVE_CONFIG_SCREEN_LAYOUT = 0x0800;
+    /** @hide Native-specific bit mask for UI_PAC config; DO NOT USE UNLESS YOU ARE SURE. */
+    public static final int NATIVE_CONFIG_UI_PAC = 0x0900;
     /** @hide Native-specific bit mask for UI_MODE config; DO NOT USE UNLESS YOU ARE SURE. */
     public static final int NATIVE_CONFIG_UI_MODE = 0x1000;
     /** @hide Native-specific bit mask for SMALLEST_SCREEN_SIZE config; DO NOT USE UNLESS YOU
@@ -654,6 +690,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         orientation = o.orientation;
         screenLayout = o.screenLayout;
         uiMode = o.uiMode;
+        uiPac = o.uiPac;
         screenWidthDp = o.screenWidthDp;
         screenHeightDp = o.screenHeightDp;
         smallestScreenWidthDp = o.smallestScreenWidthDp;
@@ -755,6 +792,13 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             case UI_MODE_NIGHT_YES: sb.append(" night"); break;
             default: sb.append(" night="); sb.append(uiMode&UI_MODE_NIGHT_MASK); break;
         }
+        switch (uiPac) {
+            case UI_PAC_UNDEFINED: sb.append(" ?uipac"); break;
+            case UI_PAC_NORMAL: /* normal is not interesting to print */ break;
+            case UI_PAC_AOSP: sb.append(" aosp"); break;
+            case UI_PAC_ON: sb.append(" pac"); break;
+            default: sb.append(" uiPac="); sb.append(uiPac); break;
+        }
         switch (touchscreen) {
             case TOUCHSCREEN_UNDEFINED: sb.append(" ?touch"); break;
             case TOUCHSCREEN_NOTOUCH: sb.append(" -touch"); break;
@@ -823,6 +867,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         orientation = ORIENTATION_UNDEFINED;
         screenLayout = SCREENLAYOUT_UNDEFINED;
         uiMode = UI_MODE_TYPE_UNDEFINED;
+        uiPac = UI_PAC_UNDEFINED;
         screenWidthDp = compatScreenWidthDp = SCREEN_WIDTH_DP_UNDEFINED;
         screenHeightDp = compatScreenHeightDp = SCREEN_HEIGHT_DP_UNDEFINED;
         smallestScreenWidthDp = compatSmallestScreenWidthDp = SMALLEST_SCREEN_WIDTH_DP_UNDEFINED;
@@ -938,6 +983,11 @@ public final class Configuration implements Parcelable, Comparable<Configuration
                 uiMode = (uiMode&~UI_MODE_NIGHT_MASK)
                         | (delta.uiMode&UI_MODE_NIGHT_MASK);
             }
+        }
+        if (delta.uiPac != UI_PAC_UNDEFINED
+                && uiPac != delta.uiPac) {
+            changed |= ActivityInfo.CONFIG_UI_PAC;
+            uiPac = delta.uiPac;
         }
         if (delta.screenWidthDp != SCREEN_WIDTH_DP_UNDEFINED
                 && screenWidthDp != delta.screenWidthDp) {
@@ -1071,6 +1121,10 @@ public final class Configuration implements Parcelable, Comparable<Configuration
                 && uiMode != delta.uiMode) {
             changed |= ActivityInfo.CONFIG_UI_MODE;
         }
+        if (delta.uiPac != UI_PAC_UNDEFINED
+                && uiPac != delta.uiPac) {
+            changed |= ActivityInfo.CONFIG_UI_PAC;
+        }
         if (delta.screenWidthDp != SCREEN_WIDTH_DP_UNDEFINED
                 && screenWidthDp != delta.screenWidthDp) {
             changed |= ActivityInfo.CONFIG_SCREEN_SIZE;
@@ -1173,6 +1227,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         dest.writeInt(orientation);
         dest.writeInt(screenLayout);
         dest.writeInt(uiMode);
+        dest.writeInt(uiPac);
         dest.writeInt(screenWidthDp);
         dest.writeInt(screenHeightDp);
         dest.writeInt(smallestScreenWidthDp);
@@ -1202,6 +1257,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         orientation = source.readInt();
         screenLayout = source.readInt();
         uiMode = source.readInt();
+        uiPac = source.readInt();
         screenWidthDp = source.readInt();
         screenHeightDp = source.readInt();
         smallestScreenWidthDp = source.readInt();
@@ -1271,6 +1327,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         if (n != 0) return n;
         n = this.uiMode - that.uiMode;
         if (n != 0) return n;
+        n = this.uiPac - that.uiPac;
+        if (n != 0) return n;
         n = this.screenWidthDp - that.screenWidthDp;
         if (n != 0) return n;
         n = this.screenHeightDp - that.screenHeightDp;
@@ -1316,6 +1374,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         result = 31 * result + orientation;
         result = 31 * result + screenLayout;
         result = 31 * result + uiMode;
+        result = 31 * result + uiPac;
         result = 31 * result + screenWidthDp;
         result = 31 * result + screenHeightDp;
         result = 31 * result + smallestScreenWidthDp;

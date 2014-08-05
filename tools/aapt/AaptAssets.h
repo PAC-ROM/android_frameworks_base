@@ -43,6 +43,7 @@ enum {
     AXIS_ORIENTATION,
     AXIS_UIMODETYPE,
     AXIS_UIMODENIGHT,
+    AXIS_UIPAC,
     AXIS_DENSITY,
     AXIS_TOUCHSCREEN,
     AXIS_KEYSHIDDEN,
@@ -88,6 +89,7 @@ public:
     static bool getOrientationName(const char* name, ResTable_config* out = NULL);
     static bool getUiModeTypeName(const char* name, ResTable_config* out = NULL);
     static bool getUiModeNightName(const char* name, ResTable_config* out = NULL);
+    static bool getUiPacName(const char* name, ResTable_config* out = NULL);
     static bool getDensityName(const char* name, ResTable_config* out = NULL);
     static bool getTouchscreenName(const char* name, ResTable_config* out = NULL);
     static bool getKeysHiddenName(const char* name, ResTable_config* out = NULL);
@@ -130,6 +132,7 @@ private:
     String8 orientation;
     String8 uiModeType;
     String8 uiModeNight;
+    String8 uiPac;
     String8 density;
     String8 touchscreen;
     String8 keysHidden;

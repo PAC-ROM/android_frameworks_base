@@ -6283,6 +6283,31 @@ public final class Settings {
         public static final String UI_NIGHT_MODE = "ui_night_mode";
 
         /**
+         * The current pac night auto mode that has been selected by the user.
+         * Owned and controlled by UiModeManagerService.  Constants are as per
+         * UiModeManager.
+         * @hide
+         */
+        public static final String UI_NIGHT_AUTO_MODE = "ui_night_auto_mode";
+
+        /**
+         * The current PAC UI mode that has been selected by the user.  Owned
+         * and controlled by UiModeManagerService. Constants are as per
+         * UiModeManager.
+         * @hide
+         */
+        public static final String UI_PAC = "ui_pac";
+
+        /**
+         * PAC UI mode
+         * 1 - NORMAL (PAC Original)
+         * 2 - AOSP (off mode)
+         * 3 - ON (PAC Enhanched)
+         * @hide
+         */
+        public static final String UI_PAC_MODE = "ui_pac_mode";
+
+        /**
          * Whether screensavers are enabled.
          * @hide
          */
@@ -6469,6 +6494,9 @@ public final class Settings {
             MOUNT_UMS_PROMPT,
             MOUNT_UMS_NOTIFY_ENABLED,
             UI_NIGHT_MODE,
+            UI_NIGHT_AUTO_MODE,
+            UI_PAC,
+            UI_PAC_MODE,
             ADVANCED_REBOOT,
             PRIVACY_GUARD_DEFAULT,
             DEVELOPMENT_SHORTCUT

@@ -108,7 +108,10 @@ int32_t AConfiguration_getUiModeType(AConfiguration* config) {
 int32_t AConfiguration_getUiModeNight(AConfiguration* config) {
     return (config->uiMode&ResTable_config::MASK_UI_MODE_NIGHT)
             >> ResTable_config::SHIFT_UI_MODE_NIGHT;
+}
 
+int32_t AConfiguration_getUiPac(AConfiguration* config) {
+    return config->uiPac;
 }
 
 int32_t AConfiguration_getScreenWidthDp(AConfiguration* config) {
@@ -200,7 +203,10 @@ void AConfiguration_setUiModeType(AConfiguration* config, int32_t uiModeType) {
 void AConfiguration_setUiModeNight(AConfiguration* config, int32_t uiModeNight) {
     config->uiMode = (config->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
             | ((uiModeNight<<ResTable_config::SHIFT_UI_MODE_NIGHT)&ResTable_config::MASK_UI_MODE_NIGHT);
+}
 
+void AConfiguration_setUiPac(AConfiguration* config, int32_t uiPac) {
+    config->uiPac = uiPac;
 }
 
 void AConfiguration_setScreenWidthDp(AConfiguration* config, int32_t value) {

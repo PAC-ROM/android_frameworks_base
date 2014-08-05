@@ -246,6 +246,13 @@ AaptGroupEntry::parseNamePart(const String8& part, int* axis, uint32_t* value)
         return 0;
     }
 
+    // ui PAC
+    if (getUiPacName(part.string(), &config)) {
+        *axis = AXIS_UIPAC;
+        *value = config.uiPac;
+        return 0;
+    }
+
     // density
     if (getDensityName(part.string(), &config)) {
         *axis = AXIS_DENSITY;
@@ -326,6 +333,8 @@ AaptGroupEntry::getConfigValueForAxis(const ResTable_config& config, int axis)
             return (config.uiMode&ResTable_config::MASK_UI_MODE_TYPE);
         case AXIS_UIMODENIGHT:
             return (config.uiMode&ResTable_config::MASK_UI_MODE_NIGHT);
+        case AXIS_UIPAC:
+            return config.uiPac;
         case AXIS_DENSITY:
             return config.density;
         case AXIS_TOUCHSCREEN:
@@ -374,7 +383,7 @@ AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
 
     String8 mcc, mnc, loc, layoutsize, layoutlong, orient, den;
     String8 touch, key, keysHidden, nav, navHidden, size, layoutDir, vers;
-    String8 uiModeType, uiModeNight, smallestwidthdp, widthdp, heightdp;
+    String8 uiModeType, uiModeNight, uiPac, smallestwidthdp, widthdp, heightdp;
 
     const char *p = dir;
     const char *q;
@@ -572,6 +581,19 @@ AaptGroupEntry::initFromDirName(const char* dir, String8* resType)
         //printf("not ui mode night: %s\n", part.string());
     }
 
+    // ui PAC
+    if (getUiPacName(part.string())) {
+        uiPac = part;
+
+        index++;
+        if (index == N) {
+            goto success;
+        }
+        part = parts[index];
+    } else {
+        //printf("no ui Pac: %s\n", part.string());
+    }
+
     // density
     if (getDensityName(part.string())) {
         den = part;
@@ -688,6 +710,7 @@ success:
     this->orientation = orient;
     this->uiModeType = uiModeType;
     this->uiModeNight = uiModeNight;
+    this->uiPac = uiPac;
     this->density = den;
     this->touchscreen = touch;
     this->keysHidden = keysHidden;
@@ -730,6 +753,8 @@ AaptGroupEntry::toString() const
     s += uiModeType;
     s += ",";
     s += uiModeNight;
+    s += ",";
+    s += uiPac;
     s += ",";
     s += density;
     s += ",";
@@ -824,6 +849,12 @@ AaptGroupEntry::toDirName(const String8& resType) const
             s += "-";
         }
         s += uiModeNight;
+    }
+    if (this->uiPac != "") {
+        if (s.length() > 0) {
+            s += "-";
+        }
+        s += uiPac;
     }
     if (this->density != "") {
         if (s.length() > 0) {
@@ -1139,6 +1170,23 @@ bool AaptGroupEntry::getUiModeNightName(const char* name,
       if (out) out->uiMode =
               (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
               | ResTable_config::UI_MODE_NIGHT_NO;
+        return true;
+    }
+
+    return false;
+}
+
+bool AaptGroupEntry::getUiPacName(const char* name,
+                                        ResTable_config* out)
+{
+    if (strcmp(name, kWildcardName) == 0) {
+        if (out) out->uiPac = out->UI_PAC_ANY;
+        return true;
+    } else if (strcmp(name, "aosp") == 0) {
+        if (out) out->uiPac = out->UI_PAC_AOSP;
+        return true;
+    } else if (strcmp(name, "pac") == 0) {
+        if (out) out->uiPac = out->UI_PAC_ON;
         return true;
     }
 
@@ -1485,6 +1533,7 @@ int AaptGroupEntry::compare(const AaptGroupEntry& o) const
     if (v == 0) v = orientation.compare(o.orientation);
     if (v == 0) v = uiModeType.compare(o.uiModeType);
     if (v == 0) v = uiModeNight.compare(o.uiModeNight);
+    if (v == 0) v = uiPac.compare(o.uiPac);
     if (v == 0) v = density.compare(o.density);
     if (v == 0) v = touchscreen.compare(o.touchscreen);
     if (v == 0) v = keysHidden.compare(o.keysHidden);
@@ -1517,6 +1566,7 @@ const ResTable_config& AaptGroupEntry::toParams() const
     getOrientationName(orientation.string(), &params);
     getUiModeTypeName(uiModeType.string(), &params);
     getUiModeNightName(uiModeNight.string(), &params);
+    getUiPacName(uiPac.string(), &params);
     getDensityName(density.string(), &params);
     getTouchscreenName(touchscreen.string(), &params);
     getKeysHiddenName(keysHidden.string(), &params);
@@ -1535,7 +1585,8 @@ const ResTable_config& AaptGroupEntry::toParams() const
     } else if ((params.uiMode&ResTable_config::MASK_UI_MODE_TYPE)
                 != ResTable_config::UI_MODE_TYPE_ANY
             ||  (params.uiMode&ResTable_config::MASK_UI_MODE_NIGHT)
-                != ResTable_config::UI_MODE_NIGHT_ANY) {
+                != ResTable_config::UI_MODE_NIGHT_ANY
+            ||  params.uiPac != ResTable_config::UI_PAC_ANY) {
         minSdk = SDK_FROYO;
     } else if ((params.screenLayout&ResTable_config::MASK_SCREENSIZE)
                 != ResTable_config::SCREENSIZE_ANY

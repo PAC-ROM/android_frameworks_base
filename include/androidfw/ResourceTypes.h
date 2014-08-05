@@ -1006,6 +1006,15 @@ struct ResTable_config
         uint32_t screenSizeDp;
     };
 
+    enum {
+        // uiPac bits for PAC UI.
+        UI_PAC_ANY = ACONFIGURATION_UI_PAC_ANY,
+        UI_PAC_NORMAL = ACONFIGURATION_UI_PAC_NORMAL,
+        UI_PAC_AOSP = ACONFIGURATION_UI_PAC_AOSP,
+        UI_PAC_ON = ACONFIGURATION_UI_PAC_ON,
+    };
+    uint8_t uiPac;
+
     void copyFromDeviceNoSwap(const ResTable_config& o);
     
     void copyFromDtoH(const ResTable_config& o);
@@ -1033,6 +1042,7 @@ struct ResTable_config
         CONFIG_VERSION = ACONFIGURATION_VERSION,
         CONFIG_SCREEN_LAYOUT = ACONFIGURATION_SCREEN_LAYOUT,
         CONFIG_UI_MODE = ACONFIGURATION_UI_MODE,
+        CONFIG_UI_PAC = ACONFIGURATION_UI_PAC,
         CONFIG_LAYOUTDIR = ACONFIGURATION_LAYOUTDIR,
     };
     

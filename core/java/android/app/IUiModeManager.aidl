@@ -42,13 +42,23 @@ interface IUiModeManager {
      * The mode can be one of:
      *   1 - notnight mode
      *   2 - night mode
-     *   3 - automatic mode switching
+     *   0 - automatic mode switching
      */
     void setNightMode(int mode);
 
     /**
      * Gets the currently configured night mode.  Return 1 for notnight,
-     * 2 for night, and 3 for automatic mode switching.
+     * 2 for night, and 0 for automatic mode switching.
      */
     int getNightMode();
+
+    /**
+     * Sets PAC UI mode. Only the system can do this.
+     * The mode can be one of:
+     *   1 - default
+     *   2 - aosp
+     *   3 - pac
+     * @hide
+     */
+    void setUiPac(int mode);
 }

@@ -414,6 +414,7 @@ public class ResourcesManager {
                 DisplayMetrics dm = defaultDisplayMetrics;
                 final boolean hasOverrideConfiguration = key.hasOverrideConfiguration();
                 boolean themeChanged = (changes & ActivityInfo.CONFIG_THEME_RESOURCE) != 0;
+                final boolean uiPacChanged = (changes & ActivityInfo.CONFIG_UI_PAC) != 0;
                 if (themeChanged) {
                     AssetManager am = r.getAssets();
                     if (am.hasThemeSupport()) {
@@ -445,7 +446,7 @@ public class ResourcesManager {
                 } else {
                     r.updateConfiguration(config, dm, compat);
                 }
-                if (themeChanged) {
+                if (themeChanged || uiPacChanged) {
                     r.updateStringCache();
                 }
                 //Slog.i(TAG, "Updated app resources " + v.getKey()

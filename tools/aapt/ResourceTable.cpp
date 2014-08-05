@@ -2901,7 +2901,7 @@ status_t ResourceTable::flatten(Bundle* bundle, const sp<AaptFile>& dest)
                 ConfigDescription config = t->getUniqueConfigs().itemAt(ci);
 
                 NOISY(printf("Writing config %d config: imsi:%d/%d lang:%c%c cnt:%c%c "
-                     "orien:%d ui:%d touch:%d density:%d key:%d inp:%d nav:%d sz:%dx%d "
+                     "orien:%d ui:%d uiPac:%d touch:%d density:%d key:%d inp:%d nav:%d sz:%dx%d "
                      "sw%ddp w%ddp h%ddp dir:%d\n",
                       ti+1,
                       config.mcc, config.mnc,
@@ -2911,6 +2911,7 @@ status_t ResourceTable::flatten(Bundle* bundle, const sp<AaptFile>& dest)
                       config.country[1] ? config.country[1] : '-',
                       config.orientation,
                       config.uiMode,
+                      config.uiPac,
                       config.touchscreen,
                       config.density,
                       config.keyboard,
@@ -2944,7 +2945,7 @@ status_t ResourceTable::flatten(Bundle* bundle, const sp<AaptFile>& dest)
                 tHeader->entriesStart = htodl(typeSize);
                 tHeader->config = config;
                 NOISY(printf("Writing type %d config: imsi:%d/%d lang:%c%c cnt:%c%c "
-                     "orien:%d ui:%d touch:%d density:%d key:%d inp:%d nav:%d sz:%dx%d "
+                     "orien:%d ui:%d uiPac:%d touch:%d density:%d key:%d inp:%d nav:%d sz:%dx%d "
                      "sw%ddp w%ddp h%ddp dir:%d\n",
                       ti+1,
                       tHeader->config.mcc, tHeader->config.mnc,
@@ -2954,6 +2955,7 @@ status_t ResourceTable::flatten(Bundle* bundle, const sp<AaptFile>& dest)
                       tHeader->config.country[1] ? tHeader->config.country[1] : '-',
                       tHeader->config.orientation,
                       tHeader->config.uiMode,
+                      tHeader->config.uiPac,
                       tHeader->config.touchscreen,
                       tHeader->config.density,
                       tHeader->config.keyboard,

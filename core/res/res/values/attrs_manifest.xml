@@ -699,6 +699,8 @@
              will not result in a restart).  This represents a change in the
              currently available size, so will change when the user switches
              between landscape and portrait. -->
+        <!-- The global user interface PAC mode has changed. -->
+        <flag name="uiPac" value="0x0300" />
         <flag name="screenSize" value="0x0400" />
         <!-- The physical screen size has changed.  If applications don't
              target at least {@link android.os.Build.VERSION_CODES#HONEYCOMB_MR2}

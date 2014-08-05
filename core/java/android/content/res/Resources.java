@@ -1692,6 +1692,7 @@ public class Resources {
                     mConfiguration.smallestScreenWidthDp,
                     mConfiguration.screenWidthDp, mConfiguration.screenHeightDp,
                     mConfiguration.screenLayout, mConfiguration.uiMode,
+                    mConfiguration.uiPac,
                     Build.VERSION.RESOURCES_SDK_INT);
 
             if (DEBUG_CONFIG) {
@@ -1728,6 +1729,20 @@ public class Resources {
             cache.clear();
             return;
         }
+
+        /*
+         * Quick test to find out if the config change that occurred should
+         * trigger a full cache wipe.
+         */
+        if (Configuration.needNewResources(configChanges, ActivityInfo.CONFIG_UI_PAC)) {
+            if (DEBUG_CONFIG) {
+                Log.d(TAG, "Clear drawable cache from config changes: 0x"
+                        + Integer.toHexString(configChanges));
+            }
+            cache.clear();
+            return;
+        }
+
         int N = cache.size();
         if (DEBUG_CONFIG) {
             Log.d(TAG, "Cleaning up drawables config changes: 0x"

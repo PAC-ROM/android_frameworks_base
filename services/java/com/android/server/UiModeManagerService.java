@@ -26,12 +26,14 @@ import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Handler;
@@ -69,6 +71,7 @@ final class UiModeManagerService extends IUiModeManager.Stub {
     private int mLastBroadcastState = Intent.EXTRA_DOCK_STATE_UNDOCKED;
 
     private int mNightMode = UiModeManager.MODE_NIGHT_NO;
+    private int mUiPac;
     private boolean mCarModeEnabled = false;
     private boolean mCharging = false;
     private final int mDefaultUiModeType;
@@ -79,6 +82,7 @@ final class UiModeManagerService extends IUiModeManager.Stub {
     private boolean mComputedNightMode;
     private int mCurUiMode = 0;
     private int mSetUiMode = 0;
+    private int mSetUiPac = 0;
 
     private boolean mHoldingConfiguration = false;
     private Configuration mConfiguration = new Configuration();
@@ -159,6 +163,28 @@ final class UiModeManagerService extends IUiModeManager.Stub {
         }
     };
 
+    private final class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.UI_NIGHT_MODE),
+                    false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.UI_PAC),
+                    false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateUiPacNightMode();
+            updateUiPac();
+        }
+    }
+
     public UiModeManagerService(Context context, TwilightService twilight) {
         mContext = context;
         mTwilightService = twilight;
@@ -177,6 +203,10 @@ final class UiModeManagerService extends IUiModeManager.Stub {
 
         mConfiguration.setToDefaults();
 
+        // Register settings observer
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
+
         mDefaultUiModeType = context.getResources().getInteger(
                 com.android.internal.R.integer.config_defaultUiModeType);
         mCarModeKeepsScreenOn = (context.getResources().getInteger(
@@ -186,10 +216,27 @@ final class UiModeManagerService extends IUiModeManager.Stub {
         mTelevision = context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_TELEVISION);
 
-        mNightMode = Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.UI_NIGHT_MODE, UiModeManager.MODE_NIGHT_AUTO);
-
         mTwilightService.registerListener(mTwilightListener, mHandler);
+    }
+
+    private void updateUiPacNightMode() {
+        mNightMode = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.UI_NIGHT_MODE, UiModeManager.MODE_NIGHT_NO, UserHandle.USER_CURRENT);
+
+        updateLocked(0, 0);
+    }
+
+    private void updateUiPac() {
+        mUiPac = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.UI_PAC, 2, UserHandle.USER_CURRENT);
+
+        mConfiguration.uiPac = mUiPac;
+
+        synchronized (mLock) {
+            if (mSystemReady) {
+                sendConfigurationLocked();
+            }
+        }
     }
 
     @Override // Binder call
@@ -248,9 +295,10 @@ final class UiModeManagerService extends IUiModeManager.Stub {
         final long ident = Binder.clearCallingIdentity();
         try {
             synchronized (mLock) {
-                if (isDoingNightModeLocked() && mNightMode != mode) {
-                    Settings.Secure.putInt(mContext.getContentResolver(),
-                            Settings.Secure.UI_NIGHT_MODE, mode);
+                if ((isDoingNightModeLocked() && mNightMode != mode)
+                        || mNightMode != mode) {
+                    Settings.Secure.putIntForUser(mContext.getContentResolver(),
+                            Settings.Secure.UI_NIGHT_MODE, mode, UserHandle.USER_CURRENT);
                     mNightMode = mode;
                     updateLocked(0, 0);
                 }
@@ -267,12 +315,37 @@ final class UiModeManagerService extends IUiModeManager.Stub {
         }
     }
 
+    @Override // Binder call
+    public void setUiPac(int mode) {
+        switch (mode) {
+            case Configuration.UI_PAC_NORMAL:
+            case Configuration.UI_PAC_AOSP:
+            case Configuration.UI_PAC_ON:
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Pac UI: " + mode);
+        }
+
+        final long ident = Binder.clearCallingIdentity();
+        try {
+            mConfiguration.uiPac = mode;
+            synchronized (mLock) {
+                if (mSystemReady) {
+                    sendConfigurationLocked();
+                }
+            }
+        } finally {
+            Binder.restoreCallingIdentity(ident);
+        }
+    }
+
     void systemReady() {
         synchronized (mLock) {
             mSystemReady = true;
             mCarModeEnabled = mDockState == Intent.EXTRA_DOCK_STATE_CAR;
             updateComputedNightModeLocked();
-            updateLocked(0, 0);
+            updateUiPac();
+            updateUiPacNightMode();
         }
     }
 
@@ -316,7 +389,7 @@ final class UiModeManagerService extends IUiModeManager.Stub {
         } else if (isDeskDockState(mDockState)) {
             uiMode = Configuration.UI_MODE_TYPE_DESK;
         }
-        if (mCarModeEnabled) {
+        if (mCarModeEnabled || mNightMode != UiModeManager.MODE_NIGHT_NO) {
             if (mNightMode == UiModeManager.MODE_NIGHT_AUTO) {
                 updateComputedNightModeLocked();
                 uiMode |= mComputedNightMode ? Configuration.UI_MODE_NIGHT_YES
@@ -344,8 +417,14 @@ final class UiModeManagerService extends IUiModeManager.Stub {
     }
 
     private void sendConfigurationLocked() {
-        if (mSetUiMode != mConfiguration.uiMode) {
+        if (mSetUiMode != mConfiguration.uiMode
+                || mSetUiPac != mConfiguration.uiPac) {
             mSetUiMode = mConfiguration.uiMode;
+
+            mSetUiPac = mConfiguration.uiPac;
+            Settings.Secure.putIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.UI_PAC, mSetUiPac,
+                    UserHandle.USER_CURRENT);
 
             try {
                 ActivityManagerNative.getDefault().updateConfiguration(mConfiguration);
@@ -576,7 +655,8 @@ final class UiModeManagerService extends IUiModeManager.Stub {
 
     private void updateTwilight() {
         synchronized (mLock) {
-            if (isDoingNightModeLocked() && mNightMode == UiModeManager.MODE_NIGHT_AUTO) {
+            if ((isDoingNightModeLocked() && mNightMode == UiModeManager.MODE_NIGHT_AUTO)
+                    || mNightMode == UiModeManager.MODE_NIGHT_AUTO) {
                 updateComputedNightModeLocked();
                 updateLocked(0, 0);
             }
@@ -617,6 +697,7 @@ final class UiModeManagerService extends IUiModeManager.Stub {
                     pw.print(" mComputedNightMode="); pw.println(mComputedNightMode);
             pw.print("  mCurUiMode=0x"); pw.print(Integer.toHexString(mCurUiMode));
                     pw.print(" mSetUiMode=0x"); pw.println(Integer.toHexString(mSetUiMode));
+                    pw.print(" mSetUiPac=0x"); pw.println(Integer.toHexString(mSetUiPac));
             pw.print("  mHoldingConfiguration="); pw.print(mHoldingConfiguration);
                     pw.print(" mSystemReady="); pw.println(mSystemReady);
             pw.print("  mTwilightService.getCurrentState()=");

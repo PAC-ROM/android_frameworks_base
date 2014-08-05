@@ -38,6 +38,7 @@ static struct {
     jfieldID navigationHidden;
     jfieldID orientation;
     jfieldID uiMode;
+    jfieldID uiPac;
     jfieldID screenWidthDp;
     jfieldID screenHeightDp;
     jfieldID smallestScreenWidthDp;
@@ -63,6 +64,7 @@ void android_Configuration_getFromJava(
 
     out->orientation = env->GetIntField(clazz, gConfigurationClassInfo.orientation);
     out->uiMode = env->GetIntField(clazz, gConfigurationClassInfo.uiMode);
+    out->uiPac = env->GetIntField(clazz, gConfigurationClassInfo.uiPac);
 
     out->screenWidthDp = env->GetIntField(clazz, gConfigurationClassInfo.screenWidthDp);
     out->screenHeightDp = env->GetIntField(clazz, gConfigurationClassInfo.screenHeightDp);
@@ -116,6 +118,8 @@ int register_android_content_res_Configuration(JNIEnv* env)
             "orientation", "I");
     GET_FIELD_ID(gConfigurationClassInfo.uiMode, clazz,
             "uiMode", "I");
+    GET_FIELD_ID(gConfigurationClassInfo.uiPac, clazz,
+            "uiPac", "I");
     GET_FIELD_ID(gConfigurationClassInfo.screenWidthDp, clazz,
             "screenWidthDp", "I");
     GET_FIELD_ID(gConfigurationClassInfo.screenHeightDp, clazz,

@@ -221,4 +221,22 @@ public class UiModeManager {
         }
         return -1;
     }
+
+    /**
+     * Sets PAC UI mode. Only the system can do this.
+     * The mode can be one of:
+     *   1 - default
+     *   2 - aosp
+     *   3 - pac
+     * @hide
+     */
+    public void setUiPac(int mode) {
+        if (mService != null) {
+            try {
+                mService.setUiPac(mode);
+            } catch (RemoteException e) {
+                Log.e(TAG, "setUiPac: RemoteException", e);
+            }
+        }
+    }
 }
