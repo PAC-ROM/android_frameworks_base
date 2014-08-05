@@ -81,6 +81,7 @@ import android.widget.Toast;
 
 import com.android.internal.R;
 import com.android.internal.notification.NotificationScorer;
+import com.android.internal.util.FastXmlSerializer;
 import com.android.internal.util.cm.QuietHoursUtils;
 import com.android.internal.util.cm.SpamFilter;
 import com.android.internal.util.cm.SpamFilter.SpamContract.NotificationTable;
@@ -88,11 +89,13 @@ import com.android.internal.util.cm.SpamFilter.SpamContract.PackageTable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
@@ -118,7 +121,11 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final String TAG = "NotificationService";
     private static final boolean DBG = false;
 
+    private static final String SYSTEM_FOLDER = "/data/system"; // should be used for main notification sysytem only
+
     private static final int MAX_PACKAGE_NOTIFICATIONS = 50;
+
+    private static final int DEFAULT_RESULT = 0;
 
     // message codes
     private static final int MESSAGE_TIMEOUT = 2;
@@ -232,6 +239,7 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final String TAG_PACKAGE = "package";
     private static final String ATTR_NAME = "name";
 
+    private static final String NOTIFICATION_POLICY = "notification_policy.xml";
     private static final String FLOATING_MODE_POLICY = "floating_mode_policy.xml";
 
     private final ArrayList<NotificationScorer> mScorers = new ArrayList<NotificationScorer>();
@@ -451,47 +459,42 @@ public class NotificationManagerService extends INotificationManager.Stub
     private void loadBlockDb() {
         synchronized(mBlockedPackages) {
             if (mPolicyFile == null) {
-                File dir = new File("/data/system");
-                mPolicyFile = new AtomicFile(new File(dir, "notification_policy.xml"));
-
+                mPolicyFile = new AtomicFile(new File(SYSTEM_FOLDER, NOTIFICATION_POLICY));
                 mBlockedPackages.clear();
+                readPolicy(mPolicyFile, TAG_BLOCKED_PKGS, mBlockedPackages);
+            }
+        }
+    }
 
-                FileInputStream infile = null;
-                try {
-                    infile = mPolicyFile.openRead();
-                    final XmlPullParser parser = Xml.newPullParser();
-                    parser.setInput(infile, null);
+    private void writeBlockDb() {
+        synchronized(mBlockedPackages) {
+            FileOutputStream outfile = null;
+            try {
+                outfile = mPolicyFile.startWrite();
 
-                    int type;
-                    String tag;
-                    int version = DB_VERSION;
-                    while ((type = parser.next()) != END_DOCUMENT) {
-                        tag = parser.getName();
-                        if (type == START_TAG) {
-                            if (TAG_BODY.equals(tag)) {
-                                version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
-                            } else if (TAG_BLOCKED_PKGS.equals(tag)) {
-                                while ((type = parser.next()) != END_DOCUMENT) {
-                                    tag = parser.getName();
-                                    if (TAG_PACKAGE.equals(tag)) {
-                                        mBlockedPackages.add(parser.getAttributeValue(null, ATTR_NAME));
-                                    } else if (TAG_BLOCKED_PKGS.equals(tag) && type == END_TAG) {
-                                        break;
-                                    }
-                                }
-                            }
+                XmlSerializer out = new FastXmlSerializer();
+                out.setOutput(outfile, "utf-8");
+
+                out.startDocument(null, true);
+
+                out.startTag(null, TAG_BODY); {
+                    out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
+                    out.startTag(null, TAG_BLOCKED_PKGS); {
+                        // write all known network policies
+                        for (String pkg : mBlockedPackages) {
+                            out.startTag(null, TAG_PACKAGE); {
+                                out.attribute(null, ATTR_NAME, pkg);
+                            } out.endTag(null, TAG_PACKAGE);
                         }
-                    }
-                } catch (FileNotFoundException e) {
-                    // No data yet
-                } catch (IOException e) {
-                    Log.wtf(TAG, "Unable to read blocked notifications database", e);
-                } catch (NumberFormatException e) {
-                    Log.wtf(TAG, "Unable to parse blocked notifications database", e);
-                } catch (XmlPullParserException e) {
-                    Log.wtf(TAG, "Unable to parse blocked notifications database", e);
-                } finally {
-                    IoUtils.closeQuietly(infile);
+                    } out.endTag(null, TAG_BLOCKED_PKGS);
+                } out.endTag(null, TAG_BODY);
+
+                out.endDocument();
+
+                mPolicyFile.finishWrite(outfile);
+            } catch (IOException e) {
+                if (outfile != null) {
+                    mPolicyFile.failWrite(outfile);
                 }
             }
         }
