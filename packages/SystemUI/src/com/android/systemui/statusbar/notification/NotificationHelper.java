@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.provider.Settings;
 
 import com.android.systemui.R;
@@ -75,6 +76,8 @@ public class NotificationHelper {
             boolean makeFloating = floating
                     // if the notification is from the foreground app, don't open in floating mode
                     && !entry.notification.getPackageName().equals(getForegroundPackageName())
+                    // if user is on default launcher, don't open in floating window
+                    && !isUserOnLauncher()
                     && openInFloatingMode();
 
             intent.makeFloating(makeFloating);
@@ -103,5 +106,17 @@ public class NotificationHelper {
     public boolean openInFloatingMode() {
         return Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.HEADS_UP_FLOATING_WINDOW, true);
+    }
+
+    public boolean isUserOnLauncher() {
+        // Get default launcher name
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo resolveInfo = mContext.getPackageManager().resolveActivity(intent,
+                                              PackageManager.MATCH_DEFAULT_ONLY);
+        String currentHomePackage = resolveInfo.activityInfo.packageName;
+
+        // compare and return result
+        return getForegroundPackageName().equals(currentHomePackage);
     }
 }
