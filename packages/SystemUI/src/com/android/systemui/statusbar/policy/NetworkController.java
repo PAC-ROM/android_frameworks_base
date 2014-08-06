@@ -1321,6 +1321,11 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
             mQSPhoneSignalIconId = 0;
         }
 
+        // Cleanup the double quotes
+        if (wifiLabel.length() > 0) {
+            wifiLabel = wifiLabel.replaceAll("^\"|\"$", "");
+        }
+
         if (DEBUG) {
             Log.d(TAG, "refreshViews connected={"
                     + (mWifiConnected?" wifi":"")
