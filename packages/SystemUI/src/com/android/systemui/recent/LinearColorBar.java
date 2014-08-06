@@ -72,14 +72,14 @@ public class LinearColorBar extends LinearLayout {
     }
 
     private void updateModeAndColors() {
-        mRamBarMode = (Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.RECENTS_RAM_BAR_MODE, 0));
-        mUsedMemColor = (Settings.System.getInt(mContext.getContentResolver(),
-                               Settings.System.RECENTS_RAM_BAR_MEM_COLOR, USED_MEM_COLOR));
-        mUsedCacheMemColor = (Settings.System.getInt(mContext.getContentResolver(),
-                                    Settings.System.RECENTS_RAM_BAR_CACHE_COLOR, USED_CACHE_COLOR));
-        mUsedActiveAppsMemColor = (Settings.System.getInt(mContext.getContentResolver(),
-                                         Settings.System.RECENTS_RAM_BAR_ACTIVE_APPS_COLOR, USED_ACTIVE_APPS_COLOR));
+        mRamBarMode = (Settings.PAC.getInt(mContext.getContentResolver(),
+                             Settings.PAC.RECENTS_RAM_BAR_MODE, 0));
+        mUsedMemColor = (Settings.PAC.getInt(mContext.getContentResolver(),
+                               Settings.PAC.RECENTS_RAM_BAR_MEM_COLOR, USED_MEM_COLOR));
+        mUsedCacheMemColor = (Settings.PAC.getInt(mContext.getContentResolver(),
+                                    Settings.PAC.RECENTS_RAM_BAR_CACHE_COLOR, USED_CACHE_COLOR));
+        mUsedActiveAppsMemColor = (Settings.PAC.getInt(mContext.getContentResolver(),
+                                         Settings.PAC.RECENTS_RAM_BAR_ACTIVE_APPS_COLOR, USED_ACTIVE_APPS_COLOR));
     }
 
     @Override

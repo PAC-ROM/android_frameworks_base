@@ -88,10 +88,10 @@ public class NetworkStatsView extends LinearLayout {
 
         public void observe() {
             final ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NETWORK_STATS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.STATUS_BAR_NETWORK_STATS), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL), false, this);
             onChange(true);
         }
 
@@ -110,12 +110,12 @@ public class NetworkStatsView extends LinearLayout {
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
             mIsScreenOn = pm.isScreenOn();
 
-            mActivated = (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NETWORK_STATS, 0)) == 1
+            mActivated = (Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.STATUS_BAR_NETWORK_STATS, 0)) == 1
                     && networkAvailable;
 
-            mRefreshInterval = Settings.System.getLong(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL, 500);
+            mRefreshInterval = Settings.PAC.getLong(mContext.getContentResolver(),
+                    Settings.PAC.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL, 500);
 
             setVisibility(mActivated ? View.VISIBLE : View.GONE);
 

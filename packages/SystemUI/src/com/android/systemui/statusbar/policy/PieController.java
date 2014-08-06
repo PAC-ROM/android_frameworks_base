@@ -184,47 +184,47 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_GRAVITY), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_GRAVITY), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTONS_CONFIG), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTONS_CONFIG), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_SIZE), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_SIZE), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_COLOR), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_COLOR), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_PRESSED_COLOR), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_PRESSED_COLOR), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_LONG_PRESSED_COLOR), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_LONG_PRESSED_COLOR), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_OUTLINE_COLOR), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_OUTLINE_COLOR), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_ICON_COLOR), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_ICON_COLOR), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_ICON_COLOR_MODE), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_ICON_COLOR_MODE), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_ALPHA), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_ALPHA), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTON_PRESSED_ALPHA), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTON_PRESSED_ALPHA), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTONS_CONFIG_SECOND_LAYER), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTONS_CONFIG_SECOND_LAYER), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_MENU), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_MENU), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_IME_CONTROL), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_IME_CONTROL), false, this,
                     UserHandle.USER_ALL);
         }
 
@@ -232,8 +232,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
 
-            if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.PIE_BUTTONS_CONFIG_SECOND_LAYER))) {
+            if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_BUTTONS_CONFIG_SECOND_LAYER))) {
 
                 ArrayList<ButtonConfig> buttonsConfig =
                         ButtonsHelper.getPieSecondLayerConfig(mContext);
@@ -410,8 +410,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
     private void setupListener() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        mPieTriggerSlots = Settings.System.getIntForUser(resolver,
-                Settings.System.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
+        mPieTriggerSlots = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
                 UserHandle.USER_CURRENT);
 
         int sensitivity = mContext.getResources().getInteger(R.integer.pie_gesture_sensivity);
@@ -422,8 +422,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
 
         int flags = mPieTriggerSlots & mPieTriggerMask;
 
-        if (Settings.System.getIntForUser(resolver,
-                Settings.System.PIE_IME_CONTROL, 1,
+        if (Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.PIE_IME_CONTROL, 1,
                 UserHandle.USER_CURRENT) == 1) {
             flags |= EdgeServiceConstants.IME_CONTROL;
         }
@@ -443,8 +443,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         mIconResizeFactor = 1.0f;
         // Check the size set from the user and set resize values if needed
         float diff = PieView.PIE_ICON_START_SIZE_FACTOR -
-                Settings.System.getFloatForUser(resolver,
-                        Settings.System.PIE_SIZE, PieView.PIE_CONTROL_SIZE_DEFAULT,
+                Settings.PAC.getFloatForUser(resolver,
+                        Settings.PAC.PIE_SIZE, PieView.PIE_CONTROL_SIZE_DEFAULT,
                         UserHandle.USER_CURRENT);
         if (diff > 0.0f) {
             mIconResize = true;
@@ -470,8 +470,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
             getCustomActionsAndConstruct(resolver, buttonsConfig, true, minimumImageSize);
         }
 
-        mShowMenuVisibility = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_MENU, MENU_VISIBILITY_SYSTEM,
+        mShowMenuVisibility = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_MENU, MENU_VISIBILITY_SYSTEM,
                 UserHandle.USER_CURRENT);
 
         setNavigationIconHints(mNavigationIconHints, true);
@@ -594,11 +594,11 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
     }
 
     private Drawable prepareBackIcon(Drawable d, boolean customIcon) {
-        int customImageColorize = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_ICON_COLOR_MODE, 0,
+        int customImageColorize = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_ICON_COLOR_MODE, 0,
                 UserHandle.USER_CURRENT);
-        int drawableColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_ICON_COLOR, -2, UserHandle.USER_CURRENT);
+        int drawableColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_ICON_COLOR, -2, UserHandle.USER_CURRENT);
         if (drawableColor == -2) {
             drawableColor = mContext.getResources().getColor(R.color.pie_foreground_color);
         }
@@ -817,14 +817,14 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
             Slog.d(TAG, "onSnap from " + position.name());
         }
 
-        int triggerSlots = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
+        int triggerSlots = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
                 UserHandle.USER_CURRENT);
 
         triggerSlots = triggerSlots & ~mPosition.FLAG | position.FLAG;
 
-        Settings.System.putIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_GRAVITY, triggerSlots,
+        Settings.PAC.putIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_GRAVITY, triggerSlots,
                 UserHandle.USER_CURRENT);
     }
 

@@ -56,12 +56,12 @@ public class BatteryBar extends RelativeLayout implements Animatable {
         void observer() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUSBAR_BATTERY_BAR), false, this);
+                    Settings.PAC.getUriFor(Settings.PAC.STATUSBAR_BATTERY_BAR), false, this);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUSBAR_BATTERY_BAR_COLOR), false,
+                    Settings.PAC.getUriFor(Settings.PAC.STATUSBAR_BATTERY_BAR_COLOR), false,
                     this);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE),
+                    Settings.PAC.getUriFor(Settings.PAC.STATUSBAR_BATTERY_BAR_ANIMATE),
                     false, this);
         }
 
@@ -179,11 +179,11 @@ public class BatteryBar extends RelativeLayout implements Animatable {
     private void updateSettings() {
         ContentResolver resolver = getContext().getContentResolver();
 
-        int color = Settings.System.getInt(resolver, Settings.System.STATUSBAR_BATTERY_BAR_COLOR,
+        int color = Settings.PAC.getInt(resolver, Settings.PAC.STATUSBAR_BATTERY_BAR_COLOR,
                 0xFFFFFFFF);
 
-        shouldAnimateCharging = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE, 0) == 1;
+        shouldAnimateCharging = Settings.PAC.getInt(resolver,
+                Settings.PAC.STATUSBAR_BATTERY_BAR_ANIMATE, 0) == 1;
 
         if (mBatteryCharging && mBatteryLevel < 100 && shouldAnimateCharging) {
             start();

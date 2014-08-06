@@ -243,8 +243,8 @@ public class RecentPanelView {
      */
     private void handleFavoriteEntry(TaskDescription td) {
         ContentResolver resolver = mContext.getContentResolver();
-        final String favorites = Settings.System.getStringForUser(
-                    resolver, Settings.System.RECENT_PANEL_FAVORITES,
+        final String favorites = Settings.PAC.getStringForUser(
+                    resolver, Settings.PAC.RECENT_PANEL_FAVORITES,
                     UserHandle.USER_CURRENT);
         String entryToSave = "";
 
@@ -270,8 +270,8 @@ public class RecentPanelView {
 
         td.setIsFavorite(!td.getIsFavorite());
 
-        Settings.System.putStringForUser(
-                resolver, Settings.System.RECENT_PANEL_FAVORITES,
+        Settings.PAC.putStringForUser(
+                resolver, Settings.PAC.RECENT_PANEL_FAVORITES,
                 entryToSave,
                 UserHandle.USER_CURRENT);
     }
@@ -605,8 +605,8 @@ public class RecentPanelView {
         mTasks.clear();
 
         // Check and get user favorites.
-        final String favorites = Settings.System.getStringForUser(
-                mContext.getContentResolver(), Settings.System.RECENT_PANEL_FAVORITES,
+        final String favorites = Settings.PAC.getStringForUser(
+                mContext.getContentResolver(), Settings.PAC.RECENT_PANEL_FAVORITES,
                 UserHandle.USER_CURRENT);
         final ArrayList<String> favList = new ArrayList<String>();
         final ArrayList<TaskDescription> nonFavoriteTasks = new ArrayList<TaskDescription>();
