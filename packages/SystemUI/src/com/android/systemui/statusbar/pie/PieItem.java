@@ -111,16 +111,16 @@ public class PieItem extends PieView.PieDrawable {
 
         final Resources res = context.getResources();
 
-        float backgroundAlpha = Settings.System.getFloatForUser(context.getContentResolver(),
-                Settings.System.PIE_BUTTON_ALPHA, 0.3f,
+        float backgroundAlpha = Settings.PAC.getFloatForUser(context.getContentResolver(),
+                Settings.PAC.PIE_BUTTON_ALPHA, 0.3f,
                 UserHandle.USER_CURRENT);
-        float backgroundSelectedAlpha = Settings.System.getFloatForUser(
+        float backgroundSelectedAlpha = Settings.PAC.getFloatForUser(
                 context.getContentResolver(),
-                Settings.System.PIE_BUTTON_PRESSED_ALPHA, 0.0f,
+                Settings.PAC.PIE_BUTTON_PRESSED_ALPHA, 0.0f,
                 UserHandle.USER_CURRENT);
 
-        int backgroundPaintColor = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_BUTTON_COLOR, -2,
+        int backgroundPaintColor = Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.PIE_BUTTON_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (backgroundPaintColor == -2) {
             backgroundPaintColor = res.getColor(R.color.pie_background_color);
@@ -129,8 +129,8 @@ public class PieItem extends PieView.PieDrawable {
         mBackgroundPaint.setAlpha((int) ((1-backgroundAlpha) * 255));
         mBackgroundPaint.setAntiAlias(true);
 
-        int selectedPaintColor = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_BUTTON_PRESSED_COLOR, -2,
+        int selectedPaintColor = Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.PIE_BUTTON_PRESSED_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (selectedPaintColor == -2) {
             selectedPaintColor = res.getColor(R.color.pie_selected_color);
@@ -139,8 +139,8 @@ public class PieItem extends PieView.PieDrawable {
         mSelectedPaint.setAlpha((int) ((1-backgroundSelectedAlpha) * 255));
         mSelectedPaint.setAntiAlias(true);
 
-        int longPressPaintColor = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_BUTTON_LONG_PRESSED_COLOR, -2,
+        int longPressPaintColor = Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.PIE_BUTTON_LONG_PRESSED_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (longPressPaintColor == -2) {
             longPressPaintColor = res.getColor(R.color.pie_long_pressed_color);
@@ -149,8 +149,8 @@ public class PieItem extends PieView.PieDrawable {
         mLongPressPaint.setAlpha((int) ((1-backgroundSelectedAlpha) * 255));
         mLongPressPaint.setAntiAlias(true);
 
-        int outlinePaintColor = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_BUTTON_OUTLINE_COLOR, -2,
+        int outlinePaintColor = Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.PIE_BUTTON_OUTLINE_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (outlinePaintColor == -2) {
             outlinePaintColor = res.getColor(R.color.pie_outline_color);
@@ -220,11 +220,11 @@ public class PieItem extends PieView.PieDrawable {
                 return;
             }
 
-            int drawableColorMode = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.PIE_ICON_COLOR_MODE, 0,
+            int drawableColorMode = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.PIE_ICON_COLOR_MODE, 0,
                     UserHandle.USER_CURRENT);
-            int drawableColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.PIE_ICON_COLOR, -2,
+            int drawableColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.PIE_ICON_COLOR, -2,
                     UserHandle.USER_CURRENT);
             if (drawableColor == -2) {
                 drawableColor = color;

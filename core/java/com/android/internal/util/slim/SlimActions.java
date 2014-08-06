@@ -136,9 +136,9 @@ public class SlimActions {
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                Settings.System.putIntForUser(
+                Settings.PAC.putIntForUser(
                         context.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_SHOW,
+                        Settings.PAC.NAVIGATION_BAR_SHOW,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
             } else if (action.equals(ButtonsConstants.ACTION_KILL)) {
@@ -291,14 +291,14 @@ public class SlimActions {
     }
 
     public static boolean isPieEnabled(Context context) {
-        return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_CONTROLS,
+        return Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.PIE_CONTROLS,
                 0, UserHandle.USER_CURRENT) == 1;
     }
 
     public static boolean isNavBarEnabled(Context context) {
-        return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW,
+        return Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.NAVIGATION_BAR_SHOW,
                 isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
     }
 

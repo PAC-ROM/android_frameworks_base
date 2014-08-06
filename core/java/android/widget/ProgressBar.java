@@ -296,27 +296,27 @@ public class ProgressBar extends View {
         drawable = a.getDrawable(R.styleable.ProgressBar_indeterminateDrawable);
 
         if (String.valueOf(drawable).contains("android.graphics.drawable.AnimationDrawabl")) {
-            boolean IsMirrorMode = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_MIRROR, 0) == 1;
-            boolean IsReversed = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_REVERSE, 0) == 1;
-            int tmpSpeed = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_SPEED, 4);
+            boolean IsMirrorMode = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_MIRROR, 0) == 1;
+            boolean IsReversed = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_REVERSE, 0) == 1;
+            int tmpSpeed = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_SPEED, 4);
             float Speed = ((float) tmpSpeed + 1 ) / 10;
-            int Width = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_WIDTH, 4);
-            int Length = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_LENGTH, 10);
-            int Count = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COUNT, 6);
-            int Color1 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_1, 0xffffff00);
-            int Color2 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_2, 0xff99cc00);
-            int Color3 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_3, 0xffaa66cc);
-            int Color4 = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROGRESSBAR_COLOR_4, 0xff00ddff);
+            int Width = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_WIDTH, 4);
+            int Length = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_LENGTH, 10);
+            int Count = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_COUNT, 6);
+            int Color1 = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_COLOR_1, 0xffffff00);
+            int Color2 = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_COLOR_2, 0xff99cc00);
+            int Color3 = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_COLOR_3, 0xffaa66cc);
+            int Color4 = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.PROGRESSBAR_COLOR_4, 0xff00ddff);
 
             int Colors[] = { Color1, Color2, Color3, Color4 };
                 Builder abc = new SmoothProgressDrawable.Builder(context);

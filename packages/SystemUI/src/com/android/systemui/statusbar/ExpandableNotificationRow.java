@@ -55,8 +55,8 @@ public class ExpandableNotificationRow extends FrameLayout {
     }
 
     public boolean isUserExpanded() {
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.FORCE_EXPANDED_NOTIFICATIONS, 0) != 1) {
+        if (Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.FORCE_EXPANDED_NOTIFICATIONS, 0) != 1) {
             return mUserExpanded;
         } else {
             return true;

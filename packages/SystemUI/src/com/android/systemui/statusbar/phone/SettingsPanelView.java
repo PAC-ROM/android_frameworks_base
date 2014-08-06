@@ -187,15 +187,15 @@ public class SettingsPanelView extends PanelView {
     }
 
     protected void setBackgroundDrawables() {
-        float alpha = Settings.System.getFloatForUser(
+        float alpha = Settings.PAC.getFloatForUser(
                 mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_BACKGROUND_ALPHA, 0.1f,
+                Settings.PAC.NOTIFICATION_BACKGROUND_ALPHA, 0.1f,
                 UserHandle.USER_CURRENT);
         int backgroundAlpha = (int) ((1 - alpha) * 255);
 
-        String notifiBack = Settings.System.getStringForUser(
+        String notifiBack = Settings.PAC.getStringForUser(
                mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_BACKGROUND,
+                Settings.PAC.NOTIFICATION_BACKGROUND,
                 UserHandle.USER_CURRENT);
         if (notifiBack == null) {
             setDefaultBackground(R.drawable.notification_panel_bg, -2, backgroundAlpha);

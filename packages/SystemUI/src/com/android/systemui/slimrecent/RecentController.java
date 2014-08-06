@@ -503,17 +503,17 @@ public class RecentController implements RecentPanelView.OnExitListener,
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RECENT_PANEL_GRAVITY),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_PANEL_GRAVITY),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RECENT_PANEL_SCALE_FACTOR),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_PANEL_SCALE_FACTOR),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RECENT_PANEL_EXPANDED_MODE),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_PANEL_EXPANDED_MODE),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RECENT_PANEL_SHOW_TOPMOST),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_PANEL_SHOW_TOPMOST),
                     false, this, UserHandle.USER_ALL);
             update();
         }
@@ -531,16 +531,16 @@ public class RecentController implements RecentPanelView.OnExitListener,
             ContentResolver resolver = mContext.getContentResolver();
 
             // Get user gravity.
-            mUserGravity = Settings.System.getIntForUser(
-                    resolver, Settings.System.RECENT_PANEL_GRAVITY, Gravity.RIGHT,
+            mUserGravity = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.RECENT_PANEL_GRAVITY, Gravity.RIGHT,
                     UserHandle.USER_CURRENT);
 
             // Set main gravity and background images.
             setGravityAndImageResources();
 
             // Get user scale factor.
-            float scaleFactor = Settings.System.getIntForUser(
-                    resolver, Settings.System.RECENT_PANEL_SCALE_FACTOR, 100,
+            float scaleFactor = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.RECENT_PANEL_SCALE_FACTOR, 100,
                     UserHandle.USER_CURRENT) / 100.0f;
 
             // If changed set new scalefactor, rebuild the recent panel
@@ -551,12 +551,12 @@ public class RecentController implements RecentPanelView.OnExitListener,
             }
             if (mRecentPanelView != null) {
                 mRecentPanelView.setScaleFactor(mScaleFactor);
-                mRecentPanelView.setExpandedMode(Settings.System.getIntForUser(
-                    resolver, Settings.System.RECENT_PANEL_EXPANDED_MODE,
+                mRecentPanelView.setExpandedMode(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.RECENT_PANEL_EXPANDED_MODE,
                     mRecentPanelView.EXPANDED_MODE_AUTO,
                     UserHandle.USER_CURRENT));
-                mRecentPanelView.setShowTopTask(Settings.System.getIntForUser(
-                    resolver, Settings.System.RECENT_PANEL_SHOW_TOPMOST, 0,
+                mRecentPanelView.setShowTopTask(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.RECENT_PANEL_SHOW_TOPMOST, 0,
                     UserHandle.USER_CURRENT) == 1);
             }
         }

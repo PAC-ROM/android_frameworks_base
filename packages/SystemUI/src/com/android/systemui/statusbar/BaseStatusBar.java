@@ -326,8 +326,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STYLE), false, this);
-            mSlimRecentsEnabled = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.RECENTS_USE_SLIM,
+            mSlimRecentsEnabled = Settings.PAC.getIntForUser(
+                    mContext.getContentResolver(), Settings.PAC.RECENTS_USE_SLIM,
                     0, UserHandle.USER_CURRENT) == 1;
             update();
         }
@@ -421,7 +421,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         mSettingsObserver.observe();
 
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.RECENTS_USE_SLIM), true,
+                Settings.PAC.getUriFor(Settings.PAC.RECENTS_USE_SLIM), true,
                 mSettingsObserver, UserHandle.USER_ALL);
 
         mBarService = IStatusBarService.Stub.asInterface(
@@ -456,8 +456,8 @@ public abstract class BaseStatusBar extends SystemUI implements
             // If the system process isn't there we're doomed anyway.
         }
 
-        mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.HALO_ACTIVE, 0) == 1;
+        mHaloActive = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.HALO_ACTIVE, 0) == 1;
 
         createAndAddWindows();
 
@@ -511,14 +511,14 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // Listen for HALO state
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.HALO_ACTIVE), false, new ContentObserver(new Handler()) {
+                Settings.PAC.getUriFor(Settings.PAC.HALO_ACTIVE), false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
                 updateHalo();
             }});
 
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.HALO_SIZE), false, new ContentObserver(new Handler()) {
+                Settings.PAC.getUriFor(Settings.PAC.HALO_SIZE), false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
                 restartHalo();
@@ -575,8 +575,8 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected void updateHalo() {
-        mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.HALO_ACTIVE, 0) == 1;
+        mHaloActive = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.HALO_ACTIVE, 0) == 1;
 
         mHaloButton.setImageResource(mHaloActive
                 ? R.drawable.ic_notify_halo_pressed
@@ -1073,8 +1073,8 @@ public abstract class BaseStatusBar extends SystemUI implements
     };
 
     private boolean isOmniSwitchEnabled() {
-        int settingsValue = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.RECENTS_USE_OMNISWITCH, 0
+        int settingsValue = Settings.PAC.getIntForUser(
+                mContext.getContentResolver(), Settings.PAC.RECENTS_USE_OMNISWITCH, 0
                 , UserHandle.USER_CURRENT);
         return (settingsValue == 1);
     }
@@ -1548,8 +1548,8 @@ public abstract class BaseStatusBar extends SystemUI implements
 
 
         // Construct the round icon
-        final float haloSize = Settings.System.getFloat(mContext.getContentResolver(),
-                Settings.System.HALO_SIZE, 1.0f);
+        final float haloSize = Settings.PAC.getFloat(mContext.getContentResolver(),
+                Settings.PAC.HALO_SIZE, 1.0f);
         Resources res = mContext.getResources();
         int iconSize = (int) (res.getDimensionPixelSize(R.dimen.halo_bubble_size) * haloSize);
         int smallIconSize = (int) (res.getDimensionPixelSize(R.dimen.status_bar_icon_size) * haloSize);
