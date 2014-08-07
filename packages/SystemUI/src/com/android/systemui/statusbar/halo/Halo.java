@@ -174,6 +174,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private boolean mOverSetting = false;
     private boolean hiddenState = false;
     private boolean statusAnimation = false;
+    private boolean mNotifySilent = false;
 
     private int mIconSize, mIconHalfSize;
     private int mScreenWidth, mScreenHeight;
@@ -205,6 +206,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                     Settings.System.HALO_NOTIFY_COUNT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HAPTIC_FEEDBACK_ENABLED), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_NOTIFY_SILENT), false, this);
         }
 
         @Override
@@ -281,6 +284,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                   .getDimensionPixelSize(R.dimen.halo_bubble_size) * mHaloSize);
         mIconHalfSize = mIconSize / 2;
         mTriggerPos = getWMParams();
+        mNotifySilent = Settings.System.getInt(resolver,
+                    Settings.System.HALO_NOTIFY_SILENT, 0) == 1;
 
         // Init colors
         mPaintHoloGrey.setAntiAlias(true);
@@ -1598,6 +1603,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
             mHandler.postDelayed(new Runnable() {
                 public void run() {
+                    ApplicationInfo ai;
                     NotificationData.Entry entry = null;
 
                     // if notification received and not registered by HALO ...
@@ -1608,10 +1614,24 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                         }
 
                         if (entry != null) {
-                            mPingNewcomer = true;
-                            mLastNotificationEntry = entry;
-                            tick(entry, 0, 0, false, false);
-                            mEffect.refresh();
+                            if (mNotifySilent) {
+                                try {
+                                    ai = mPm.getApplicationInfo(entry.notification.getPackageName(), 0);
+                                } catch (final NameNotFoundException e) {
+                                    ai = null;
+                                }
+                                String text = (String) (ai != null ? mPm.getApplicationLabel(ai) : "...");
+
+                                if (entry.notification.getNotification().tickerText != null) {
+                                    text = entry.notification.getNotification().tickerText.toString();
+                                }
+                                updateTicker(n, text);
+                            } else {
+                                mPingNewcomer = true;
+                                mLastNotificationEntry = entry;
+                                tick(entry, 0, 0, false, false);
+                                mEffect.refresh();
+                            }
                         }
                     }
                     mTickerUpdated = false;
