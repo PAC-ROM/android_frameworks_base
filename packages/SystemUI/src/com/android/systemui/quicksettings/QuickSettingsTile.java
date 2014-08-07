@@ -63,7 +63,7 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     public void setupQuickSettingsTile(LayoutInflater inflater,
-            QuickSettingsContainerView container) {
+        QuickSettingsContainerView container) {
         container.updateResources();
         mTileTextSize = container.getTileTextSize();
         mTileTextPadding = container.getTileTextPadding();
@@ -204,9 +204,9 @@ public class QuickSettingsTile implements OnClickListener {
         if (mOnClick != null) {
             mOnClick.onClick(v);
         }
-                if (isFlipTilesEnabled()) {
-                    flipTile(0);
-                }
+        if (isFlipTilesEnabled()) {
+            flipTile(0);
+        }
 
         ContentResolver resolver = mContext.getContentResolver();
         boolean shouldCollapse = Settings.System.getIntForUser(resolver,
