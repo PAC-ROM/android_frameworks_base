@@ -578,10 +578,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         mHaloActive = Settings.PAC.getInt(mContext.getContentResolver(),
                 Settings.PAC.HALO_ACTIVE, 0) == 1;
 
-        mHaloButton.setImageResource(mHaloActive
-                ? R.drawable.ic_notify_halo_pressed
-                : R.drawable.ic_notify_halo_normal);
-
         if (mHaloActive) {
             if (mHalo == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext
