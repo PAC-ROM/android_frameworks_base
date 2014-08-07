@@ -63,7 +63,7 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     public void setupQuickSettingsTile(LayoutInflater inflater,
-            QuickSettingsContainerView container) {
+        QuickSettingsContainerView container) {
         container.updateResources();
         mTileTextSize = container.getTileTextSize();
         mTileTextPadding = container.getTileTextPadding();
