@@ -54,9 +54,9 @@ public class ButtonsHelper {
     }
 
     private static String getPieProvider(Context context) {
-        String config = Settings.System.getStringForUser(
+        String config = Settings.PAC.getStringForUser(
                     context.getContentResolver(),
-                    Settings.System.PIE_BUTTONS_CONFIG,
+                    Settings.PAC.PIE_BUTTONS_CONFIG,
                     UserHandle.USER_CURRENT);
         if (config == null) {
             config = ButtonsConstants.PIE_CONFIG_DEFAULT;
@@ -72,8 +72,8 @@ public class ButtonsHelper {
         } else {
             config = ConfigSplitHelper.setButtonsConfig(buttonsConfig, false);
         }
-        Settings.System.putString(context.getContentResolver(),
-                    Settings.System.PIE_BUTTONS_CONFIG,
+        Settings.PAC.putString(context.getContentResolver(),
+                    Settings.PAC.PIE_BUTTONS_CONFIG,
                     config);
     }
 
@@ -89,9 +89,9 @@ public class ButtonsHelper {
     }
 
     private static String getPieSecondLayerProvider(Context context) {
-        String config = Settings.System.getStringForUser(
+        String config = Settings.PAC.getStringForUser(
                     context.getContentResolver(),
-                    Settings.System.PIE_BUTTONS_CONFIG_SECOND_LAYER,
+                    Settings.PAC.PIE_BUTTONS_CONFIG_SECOND_LAYER,
                     UserHandle.USER_CURRENT);
         if (config == null) {
             config = ButtonsConstants.PIE_SECOND_LAYER_CONFIG_DEFAULT;
@@ -107,8 +107,8 @@ public class ButtonsHelper {
         } else {
             config = ConfigSplitHelper.setButtonsConfig(buttonsConfig, false);
         }
-        Settings.System.putString(context.getContentResolver(),
-                    Settings.System.PIE_BUTTONS_CONFIG_SECOND_LAYER,
+        Settings.PAC.putString(context.getContentResolver(),
+                    Settings.PAC.PIE_BUTTONS_CONFIG_SECOND_LAYER,
                     config);
     }
 

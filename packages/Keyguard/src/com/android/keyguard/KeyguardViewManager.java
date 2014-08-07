@@ -143,12 +143,12 @@ public class KeyguardViewManager {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_BLUR_RADIUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_SEE_THROUGH), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_BLUR_RADIUS), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS), false, this);
         }
 
         @Override
@@ -164,8 +164,8 @@ public class KeyguardViewManager {
       }
 
     private void updateSettings() {
-      mLockscreenNotifications = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_NOTIFICATIONS, mLockscreenNotifications ? 1 : 0) == 1;
+      mLockscreenNotifications = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.LOCKSCREEN_NOTIFICATIONS, mLockscreenNotifications ? 1 : 0) == 1;
         if(mLockscreenNotifications && mNotificationViewManager == null) {
             mNotificationViewManager = new NotificationViewManager(mContext, this);
         } else if(!mLockscreenNotifications && mNotificationViewManager != null) {
@@ -173,10 +173,10 @@ public class KeyguardViewManager {
             mNotificationViewManager = null;
         }
 
-        mSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
-        mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
+        mSeeThrough = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.LOCKSCREEN_SEE_THROUGH, 0) == 1;
+        mBlurRadius = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
         if(!mSeeThrough) mCustomImage = null;
     }
 
@@ -832,8 +832,8 @@ public class KeyguardViewManager {
     }
 
     private boolean isSeeThroughEnabled() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
+        return Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.LOCKSCREEN_SEE_THROUGH, 0) == 1;
     }
 
     void updateShowWallpaper(boolean show) {

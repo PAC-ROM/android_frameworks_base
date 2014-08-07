@@ -116,8 +116,8 @@ public class PowerUI extends SystemUI {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.POWER_UI_LOW_BATTERY_WARNING_POLICY),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.POWER_UI_LOW_BATTERY_WARNING_POLICY),
                     false, this, UserHandle.USER_ALL);
         }
 
@@ -140,8 +140,8 @@ public class PowerUI extends SystemUI {
      */
 
     private void setPreferences() {
-        int currentPref = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.POWER_UI_LOW_BATTERY_WARNING_POLICY,
+        int currentPref = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.POWER_UI_LOW_BATTERY_WARNING_POLICY,
                     0, UserHandle.USER_CURRENT);
 
         switch (currentPref) {

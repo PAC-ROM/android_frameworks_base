@@ -380,11 +380,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
 
-            boolean showClearAllButton = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SHOW_CLEAR_RECENTS_BUTTON, 1) == 1;
+            boolean showClearAllButton = Settings.PAC.getInt(mContext.getContentResolver(), Settings.PAC.SHOW_CLEAR_RECENTS_BUTTON, 1) == 1;
 
             if (showClearAllButton) {
                 mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
-                int clearAllButtonLocation = Settings.System.getInt(mContext.getContentResolver(), Settings.System.CLEAR_RECENTS_BUTTON_LOCATION, Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
+                int clearAllButtonLocation = Settings.PAC.getInt(mContext.getContentResolver(), Settings.PAC.CLEAR_RECENTS_BUTTON_LOCATION, Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mClearRecents.getLayoutParams();
                switch (clearAllButtonLocation) {
                     case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
@@ -1009,8 +1009,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private void updateRamBar() {
         mRamUsageBar = (LinearColorBar) findViewById(R.id.ram_usage_bar);
 
-        int mRamBarMode = (Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.RECENTS_RAM_BAR_MODE, 0));
+        int mRamBarMode = (Settings.PAC.getInt(mContext.getContentResolver(),
+                             Settings.PAC.RECENTS_RAM_BAR_MODE, 0));
 
         if (mRamBarMode != 0 && mRamUsageBar != null) {
 

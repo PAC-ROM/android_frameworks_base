@@ -745,14 +745,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             /*resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DEV_FORCE_SHOW_NAVBAR), false, this,
                     UserHandle.USER_ALL);*/
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_SHOW), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_HEIGHT), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_HEIGHT), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_WIDTH), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_WIDTH), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -1623,9 +1623,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void setHasNavigationBar() {
         final boolean showByDefault = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar);
-        final int hasNavigationBar = Settings.System.getIntForUser(
+        final int hasNavigationBar = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW, -1,
+                Settings.PAC.NAVIGATION_BAR_SHOW, -1,
                 UserHandle.USER_CURRENT);
 
         // Allow a system property to override this if the provider value was never set.
@@ -1764,8 +1764,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             setHasNavigationBar();
 
             mNavigationBarHeight =
-                    Settings.System.getIntForUser(mContext.getContentResolver(),
-                            Settings.System.NAVIGATION_BAR_HEIGHT, -2,
+                    Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                            Settings.PAC.NAVIGATION_BAR_HEIGHT, -2,
                             UserHandle.USER_CURRENT);
             if (mNavigationBarHeight == -2) {
                 mNavigationBarHeight = mContext.getResources().getDimensionPixelSize(
@@ -1776,8 +1776,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             mNavigationBarHeightLandscape =
-                    Settings.System.getIntForUser(mContext.getContentResolver(),
-                            Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE, -2,
+                    Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                            Settings.PAC.NAVIGATION_BAR_HEIGHT_LANDSCAPE, -2,
                             UserHandle.USER_CURRENT);
             if (mNavigationBarHeightLandscape == -2) {
                 mNavigationBarHeightLandscape = mContext.getResources().getDimensionPixelSize(
@@ -1788,8 +1788,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             mNavigationBarWidth =
-                    Settings.System.getIntForUser(mContext.getContentResolver(),
-                            Settings.System.NAVIGATION_BAR_WIDTH, -2,
+                    Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                            Settings.PAC.NAVIGATION_BAR_WIDTH, -2,
                             UserHandle.USER_CURRENT);
             if (mNavigationBarWidth == -2) {
                 mNavigationBarWidth = mContext.getResources().getDimensionPixelSize(

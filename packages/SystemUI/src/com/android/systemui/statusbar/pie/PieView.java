@@ -308,11 +308,11 @@ public class PieView extends View implements View.OnTouchListener {
     }
 
     private void getDimensions() {
-        mPieScale = Settings.System.getFloatForUser(mContext.getContentResolver(),
-                Settings.System.PIE_SIZE, PIE_CONTROL_SIZE_DEFAULT,
+        mPieScale = Settings.PAC.getFloatForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_SIZE, PIE_CONTROL_SIZE_DEFAULT,
                 UserHandle.USER_CURRENT);
-        mMirrorRightPie = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_MIRROR_RIGHT, 1,
+        mMirrorRightPie = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_MIRROR_RIGHT, 1,
                 UserHandle.USER_CURRENT) == 1;
 
         final Resources res = mContext.getResources();
@@ -329,8 +329,8 @@ public class PieView extends View implements View.OnTouchListener {
     private void getColors() {
         final Resources res = mContext.getResources();
 
-        int snapPaintColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_SNAP_COLOR, -2,
+        int snapPaintColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_SNAP_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (snapPaintColor == -2) {
             snapPaintColor = res.getColor(R.color.pie_snap_color);
@@ -341,12 +341,12 @@ public class PieView extends View implements View.OnTouchListener {
         mSnapPaint.setAntiAlias(true);
         mSnapActivePaint.setColor(snapPaintColor);
 
-        float backgroundAlpha = Settings.System.getFloatForUser(mContext.getContentResolver(),
-                Settings.System.PIE_BACKGROUND_ALPHA, 0.3f,
+        float backgroundAlpha = Settings.PAC.getFloatForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_BACKGROUND_ALPHA, 0.3f,
                 UserHandle.USER_CURRENT);
 
-        mBackgroundPaintColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_BACKGROUND_COLOR, -2,
+        mBackgroundPaintColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_BACKGROUND_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (mBackgroundPaintColor == -2) {
             mBackgroundPaintColor = res.getColor(R.color.pie_overlay_color);
@@ -356,8 +356,8 @@ public class PieView extends View implements View.OnTouchListener {
     }
 
     private void setupSnapPoints(int width, int height) {
-        if (Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_SHOW_SNAP, 1,
+        if (Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_SHOW_SNAP, 1,
                 UserHandle.USER_CURRENT) == 0) {
             mActiveSnap = null;
             for (EdgeGesturePosition g : EdgeGesturePosition.values()) {
@@ -653,8 +653,8 @@ public class PieView extends View implements View.OnTouchListener {
 
         mActivateStartDebug = SystemClock.uptimeMillis();
 
-        mShowBackground = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_SHOW_BACKGROUND, 1,
+        mShowBackground = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_SHOW_BACKGROUND, 1,
                 UserHandle.USER_CURRENT) == 1;
         getDimensions();
         getColors();

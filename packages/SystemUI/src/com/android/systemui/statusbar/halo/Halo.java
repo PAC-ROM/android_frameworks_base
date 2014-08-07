@@ -203,22 +203,22 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_HIDE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_NOTIFY_COUNT), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HALO_HIDE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HALO_NOTIFY_COUNT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HAPTIC_FEEDBACK_ENABLED), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_NOTIFY_SILENT), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HALO_NOTIFY_SILENT), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             ContentResolver resolver = mContext.getContentResolver();
             mHaloHide =
-                    Settings.System.getInt(resolver,
-                                Settings.System.HALO_HIDE, 0) == 1;
+                    Settings.PAC.getInt(resolver,
+                                Settings.PAC.HALO_HIDE, 0) == 1;
             if (!selfChange) {
                 //mEffect.wake();
                 mBar.restartHalo();
@@ -279,16 +279,16 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
         // Init variables
         mHaloHide =
-                Settings.System.getInt(resolver, Settings.System.HALO_HIDE, 0) == 1;
-        mHaloSize = Settings.System.getFloat(resolver, Settings.System.HALO_SIZE, 1.0f);
+                Settings.PAC.getInt(resolver, Settings.PAC.HALO_HIDE, 0) == 1;
+        mHaloSize = Settings.PAC.getFloat(resolver, Settings.PAC.HALO_SIZE, 1.0f);
         mHapticFeedback = Settings.System.getInt(resolver,
                     Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0;
         mIconSize = (int)(mContext.getResources()
                                   .getDimensionPixelSize(R.dimen.halo_bubble_size) * mHaloSize);
         mIconHalfSize = mIconSize / 2;
         mTriggerPos = getWMParams();
-        mNotifySilent = Settings.System.getInt(resolver,
-                    Settings.System.HALO_NOTIFY_SILENT, 0) == 1;
+        mNotifySilent = Settings.PAC.getInt(resolver,
+                    Settings.PAC.HALO_NOTIFY_SILENT, 0) == 1;
 
         // Init colors
         mPaintHoloGrey.setAntiAlias(true);
@@ -1154,8 +1154,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
             int newPos;
             final int triggerWidth;
 
-            int haloCounterType = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.HALO_NOTIFY_COUNT, 4);
+            int haloCounterType = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.HALO_NOTIFY_COUNT, 4);
 
             if (haloCounterType == 2 || haloCounterType == 4) {
                 mHandler.postDelayed(new Runnable() {
@@ -1219,8 +1219,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 public void run() {
                     updateTriggerPosition(triggerWidth, mHaloY);
                 }});
-            int haloCounterType = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.HALO_NOTIFY_COUNT, 4);
+            int haloCounterType = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.HALO_NOTIFY_COUNT, 4);
 
             if (haloCounterType == 2 || haloCounterType == 4) {
                 mHandler.postDelayed(new Runnable() {
@@ -1359,7 +1359,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 // Move content when ...
                 // 1. the calculated Y position is off
                 // 2. the content-animator is not running or we're in tasking state
-                if (y != getHaloContentY() 
+                if (y != getHaloContentY()
                     && (!contentYAnimator.isRunning() || verticalGesture())) {
                     setHaloContentBackground(mTickerLeft,
                     mGesture == GESTURE_TASK && mHaloY > mIconHalfSize
@@ -1367,8 +1367,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                             : HaloProperties.ContentStyle.CONTENT_UP);
                     int duration = !verticalGesture() ? 300 : 0;
                     slideContent(duration, y);
-                    int msgAnimation = Settings.System.getInt(mContext.getContentResolver(),
-                                            Settings.System.HALO_MSGBOX_ANIMATION, 2);
+                    int msgAnimation = Settings.PAC.getInt(mContext.getContentResolver(),
+                                            Settings.PAC.HALO_MSGBOX_ANIMATION, 2);
                 }
             }
 
@@ -1500,7 +1500,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                     if (entry.notification.getNotification().contentIntent == null) return;
 
                     mIsNotificationNew = true;
-                    if (mLastNotificationEntry != null 
+                    if (mLastNotificationEntry != null
                         && notification.toString()
                                         .equals(mLastNotificationEntry.notification.toString())) {
                         // Ok, this is the same notification
@@ -1519,9 +1519,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                 mEffect.sleep(HaloEffect.WAKE_TIME * 3,
                                                 HaloEffect.SLEEP_TIME, true);
                             }
-                            boolean showMsgBox = Settings.System
+                            boolean showMsgBox = Settings.PAC
                                                          .getInt(mContext.getContentResolver(),
-                                                         Settings.System.HALO_MSGBOX, 1) == 1;
+                                                         Settings.PAC.HALO_MSGBOX, 1) == 1;
                             mPingNewcomer = true;
                             tick(entry, HaloEffect.WAKE_TIME * 2, 1000, true, showMsgBox);
 
@@ -1708,8 +1708,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         public void onReceive(Context context, Intent intent) {
             final ContentResolver resolver = mContext.getContentResolver();
             if (intent.getAction().equals(Intent.ACTION_USER_PRESENT) &&
-                    Settings.System.getInt(resolver, Settings.System.HALO_ACTIVE, 0) == 1 &&
-                    Settings.System.getInt(resolver, Settings.System.HALO_UNLOCK_PING, 0) == 1 &&
+                    Settings.PAC.getInt(resolver, Settings.PAC.HALO_ACTIVE, 0) == 1 &&
+                    Settings.PAC.getInt(resolver, Settings.PAC.HALO_UNLOCK_PING, 0) == 1 &&
                     mState != STATE_SILENT && mPingNewcomer) {
                     mEffect.animateHaloBatch(0, 0, false, 0, HaloProperties.MessageType.MESSAGE);
                     mHandler.postDelayed(new Runnable() {
@@ -1720,8 +1720,8 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                                         mNotificationData.get(getHaloMsgIndex(lastMsg - 1, true));
                                 mEffect.wake();
                                 mEffect.nap(HaloEffect.NAP_DELAY + HaloEffect.WAKE_TIME * 2);
-                                boolean showMsgBox = Settings.System.getInt(resolver,
-                                                            Settings.System.HALO_MSGBOX, 1) == 1;
+                                boolean showMsgBox = Settings.PAC.getInt(resolver,
+                                                            Settings.PAC.HALO_MSGBOX, 1) == 1;
                                 tick(entry, HaloEffect.WAKE_TIME * 2, 1000, false, showMsgBox);
                                 mEffect.ping(mPaintHoloGrey, HaloEffect.WAKE_TIME * 2);
                                 mPingNewcomer = false;
@@ -1729,7 +1729,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                     }
                     }, 400);
             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT) &&
-                    Settings.System.getInt(resolver, Settings.System.HALO_ACTIVE, 0) == 1 &&
+                    Settings.PAC.getInt(resolver, Settings.PAC.HALO_ACTIVE, 0) == 1 &&
                     mKeyguardManager.isKeyguardSecure() && mPingNewcomer) {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {

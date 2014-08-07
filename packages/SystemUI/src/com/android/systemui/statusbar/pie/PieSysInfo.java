@@ -83,8 +83,8 @@ public class PieSysInfo extends PieSliceContainer implements ValueAnimator.Anima
     }
 
     private void setColor() {
-        int textColor = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_TEXT_COLOR, -2,
+        int textColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_TEXT_COLOR, -2,
                 UserHandle.USER_CURRENT);
         if (textColor == -2) {
             textColor = mContext.getResources().getColor(R.color.pie_text_color);
@@ -131,8 +131,8 @@ public class PieSysInfo extends PieSliceContainer implements ValueAnimator.Anima
     @Override
     public void draw(Canvas canvas, EdgeGesturePosition position) {
         // As long as there is no new data, we don't need to draw anything.
-        if (mStaleData || Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_SHOW_TEXT, 1, UserHandle.USER_CURRENT) == 0) {
+        if (mStaleData || Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_SHOW_TEXT, 1, UserHandle.USER_CURRENT) == 0) {
             return;
         }
 
