@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // database gets upgraded properly. At a minimum, please confirm that 'upgradeVersion'
     // is properly propagated through your change.  Not doing so will result in a loss of user
     // settings.
-    private static final int DATABASE_VERSION = 102;
+    private static final int DATABASE_VERSION = 103;
 
     private Context mContext;
     private int mUserHandle;
@@ -1654,7 +1654,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.endTransaction();
                 if (stmt != null) stmt.close();
             }
+            upgradeVersion = 102;
+        }
 
+        if (upgradeVersion == 102) {
             //add PAC table
             db.beginTransaction();
             try {
@@ -1663,7 +1666,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } finally {
                 db.endTransaction();
             }
-            upgradeVersion = 102;
+            upgradeVersion = 103;
         }
 
         // *** Remember to update DATABASE_VERSION above!
