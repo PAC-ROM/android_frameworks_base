@@ -66,6 +66,8 @@
     <string name="accessibility_halo">Create notification halo.</string>
 
     <!-- HALO -->
+    <string name="halo_on">HALO ON</string>
+    <string name="halo_off">HALO OFF</string>
     <string name="halo_dismiss">Dismiss notification</string>
     <string name="halo_hide">Hide</string>
     <string name="halo_clear_all">Dismiss all notifications</string>
