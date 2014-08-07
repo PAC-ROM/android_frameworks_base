@@ -49,6 +49,7 @@ import static com.android.internal.util.cm.QSConstants.TILE_WIFI;
 import static com.android.internal.util.cm.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.cm.QSConstants.TILE_WIMAX;
 import static com.android.internal.util.cm.QSConstants.TILE_POWER;
+import static com.android.internal.util.cm.QSConstants.TILE_HALO;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -84,6 +85,7 @@ import com.android.systemui.quicksettings.CPUFreqTile;
 import com.android.systemui.quicksettings.DockBatteryTile;
 import com.android.systemui.quicksettings.EqualizerTile;
 import com.android.systemui.quicksettings.ExpandedDesktopTile;
+import com.android.systemui.quicksettings.HaloTile;
 import com.android.systemui.quicksettings.GPSTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.LteTile;
@@ -313,6 +315,8 @@ public class QuickSettingsController {
                 }
             } else if (tile.equals(TILE_POWER)) {
                 qs = new PowerMenuTile(mContext, this);
+            } else if (tile.equals(TILE_HALO)) {
+                qs = new HaloTile(mContext, this, mHandler);
             }
 
             if (qs != null) {
