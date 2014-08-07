@@ -95,6 +95,9 @@
     <!-- Heads up -->
     <uses-permission android:name="android.permission.CHANGE_HEADS_UP_STATE" />
 
+    <!-- Halo -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
     <application
         android:persistent="true"
         android:allowClearUserData="false"

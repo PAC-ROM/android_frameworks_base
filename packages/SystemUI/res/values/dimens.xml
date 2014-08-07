@@ -237,4 +237,5 @@
     <!-- Quick Settings tile geometry: interior margin, above and below icon (ribbon mode) -->
     <dimen name="qs_tile_ribbon_icon_margin_small">4dp</dimen>
     <dimen name="qs_tile_ribbon_icon_margin_big">16dp</dimen>
+
 </resources>
