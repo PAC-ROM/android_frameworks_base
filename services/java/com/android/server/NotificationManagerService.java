@@ -243,6 +243,7 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final String TAG_PACKAGE = "package";
     private static final String ATTR_NAME = "name";
 
+    private static final String HALO_POLICY = "halo_policy.xml";
     private static final String NOTIFICATION_POLICY = "notification_policy.xml";
     private static final String FLOATING_MODE_POLICY = "floating_mode_policy.xml";
 
@@ -425,7 +426,11 @@ public class NotificationManagerService extends INotificationManager.Stub
     Archive mArchive = new Archive();
 
     private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db) {
-        int result = DEFAULT_RESULT;
+        return readPolicy(file, lookUpTag, db, null, 0);
+    }
+
+    private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
+        int result = defaultResult;
         FileInputStream infile = null;
         try {
             infile = file.openRead();
@@ -440,6 +445,10 @@ public class NotificationManagerService extends INotificationManager.Stub
                 if (type == START_TAG) {
                     if (TAG_BODY.equals(tag)) {
                         version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
+                        if (resultTag != null) {
+                            String attribValue = parser.getAttributeValue(null, resultTag);
+                            result = Integer.parseInt((attribValue != null ? attribValue : "0"));
+                        }
                     } else if (lookUpTag.equals(tag)) {
                         while ((type = parser.next()) != END_DOCUMENT) {
                             tag = parser.getName();
@@ -563,7 +572,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     private synchronized void loadHaloBlockDb() {
         if (mHaloPolicyFile == null) {
-            mHaloPolicyFile = new AtomicFile(new File(SYSTEM_FOLDER, "halo_policy.xml"));
+            mHaloPolicyFile = new AtomicFile(new File(SYSTEM_FOLDER, HALO_POLICY));
             mHaloBlacklist.clear();
             mHaloPolicyisBlack = readPolicy(mHaloPolicyFile, TAG_BLOCKED_PKGS, mHaloBlacklist, ATTR_HALO_POLICY_IS_BLACK, 1) == 1;
             mHaloWhitelist.clear();

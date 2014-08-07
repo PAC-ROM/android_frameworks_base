@@ -508,8 +508,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_USER_SWITCHED);
         mContext.registerReceiver(mBroadcastReceiver, filter);
-        SidebarObserver observer = new SidebarObserver(mHandler);
-        observer.observe();
 
         // Listen for HALO state
         mContext.getContentResolver().registerContentObserver(
