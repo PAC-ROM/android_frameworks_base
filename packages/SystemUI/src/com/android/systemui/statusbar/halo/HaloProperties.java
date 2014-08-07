@@ -155,8 +155,8 @@ public class HaloProperties extends FrameLayout {
 
         mHaloContentHeight = mContext.getResources().getDimensionPixelSize(R.dimen.notification_min_height);
 
-        mFraction = Settings.System.getFloat(mContext.getContentResolver(),
-                Settings.System.HALO_SIZE, 1.0f);
+        mFraction = Settings.PAC.getFloat(mContext.getContentResolver(),
+                Settings.PAC.HALO_SIZE, 1.0f);
         setHaloSize(mFraction);
 
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
@@ -236,8 +236,8 @@ public class HaloProperties extends FrameLayout {
             return;
         }
 
-        int haloCounterType = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.HALO_NOTIFY_COUNT, 4);
+        int haloCounterType = Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.HALO_NOTIFY_COUNT, 4);
 
         switch (haloCounterType) {
             case 1: mHaloNumberContainer.setAlpha(0f);

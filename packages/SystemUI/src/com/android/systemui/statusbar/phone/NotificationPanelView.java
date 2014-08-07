@@ -151,7 +151,7 @@ public class NotificationPanelView extends PanelView {
             boolean swipeFlipJustFinished = false;
             boolean swipeFlipJustStarted = false;
             ContentResolver resolver =  mContext.getContentResolver();
-            boolean mFullScreenDetection  = Settings.System.getBoolean(resolver, Settings.System.SWIPE_TO_SWITCH_SCREEN_DETECTION, false);
+            boolean mFullScreenDetection  = Settings.PAC.getBoolean(resolver, Settings.PAC.SWIPE_TO_SWITCH_SCREEN_DETECTION, false);
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     mGestureStartX = event.getX(0);
@@ -308,15 +308,15 @@ public class NotificationPanelView extends PanelView {
     }
 
     protected void setBackgroundDrawables() {
-        float alpha = Settings.System.getFloatForUser(
+        float alpha = Settings.PAC.getFloatForUser(
                 mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_BACKGROUND_ALPHA, 0.1f,
+                Settings.PAC.NOTIFICATION_BACKGROUND_ALPHA, 0.1f,
                 UserHandle.USER_CURRENT);
         int backgroundAlpha = (int) ((1 - alpha) * 255);
 
-        String notifiBack = Settings.System.getStringForUser(
+        String notifiBack = Settings.PAC.getStringForUser(
                 mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_BACKGROUND,
+                Settings.PAC.NOTIFICATION_BACKGROUND,
                 UserHandle.USER_CURRENT);
 
         if (notifiBack == null) {
@@ -344,9 +344,9 @@ public class NotificationPanelView extends PanelView {
             mBackgroundDrawable.setAlpha(backgroundAlpha);
         }
 
-        notifiBack = Settings.System.getStringForUser(
+        notifiBack = Settings.PAC.getStringForUser(
                 mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_BACKGROUND_LANDSCAPE,
+                Settings.PAC.NOTIFICATION_BACKGROUND_LANDSCAPE,
                 UserHandle.USER_CURRENT);
 
         mBackgroundDrawableLandscape = null;

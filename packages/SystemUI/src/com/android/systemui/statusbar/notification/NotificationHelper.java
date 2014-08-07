@@ -104,8 +104,8 @@ public class NotificationHelper {
     }
 
     public boolean openInFloatingMode() {
-        return Settings.System.getBoolean(mContext.getContentResolver(),
-                Settings.System.HEADS_UP_FLOATING_WINDOW, true);
+        return Settings.PAC.getBoolean(mContext.getContentResolver(),
+                Settings.PAC.HEADS_UP_FLOATING_WINDOW, true);
     }
 
     public boolean isUserOnLauncher() {

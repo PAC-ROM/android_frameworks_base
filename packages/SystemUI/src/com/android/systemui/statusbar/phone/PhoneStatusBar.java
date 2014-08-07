@@ -422,43 +422,43 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CUSTOM_HEADER), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVBAR_RECENT_LONG_PRESS), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.STATUS_BAR_CUSTOM_HEADER), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVBAR_RECENT_LONG_PRESS), false, this,
                     UserHandle.USER_ALL);
             // Pie controls
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_CONTROLS), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_SHOW), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_LANDSCAPE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_ALPHA), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_ALPHA), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_EXPANDED), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND_LANDSCAPE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND_ALPHA), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_ALPHA), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_EXPANDED), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_SNOOZE_TIME), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_SNOOZE_TIME), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_NOTIFCATION_DECAY), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_NOTIFCATION_DECAY), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_SHOW_UPDATE), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_SHOW_UPDATE), false, this,
                     UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_GRAVITY_BOTTOM), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_GRAVITY_BOTTOM), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -472,66 +472,66 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (uri.equals(Settings.System.getUriFor(Settings.System.STATUS_BAR_CLOCK))) {
                 updateClockLocation();
             // Pie controls
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS))) {
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_CONTROLS))) {
                 attachPieContainer(isPieEnabled());
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE))) {
                 mNavigationBarOverlay.setIsExpanded(isExpanded());
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_SHOW))) {
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW))) {
                 mNavigationBarOverlay.setIsExpanded(noNavBar());
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_LANDSCAPE))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_ALPHA))) {
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND_LANDSCAPE))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NOTIFICATION_BACKGROUND_ALPHA))) {
                 if (mNotificationPanel != null) {
                     mNotificationPanel.setBackgroundDrawables();
                 }
                 if (mSettingsPanel != null) {
                     mSettingsPanel.setBackgroundDrawables();
                 }
-            } else if (uri.equals(Settings.System.getUriFor(
-                Settings.System.NOTIFICATION_ALPHA))) {
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                Settings.PAC.NOTIFICATION_ALPHA))) {
                 setNotificationAlpha();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_EXPANDED))) {
-                    mHeadsUpExpandedByDefault = Settings.System.getIntForUser(
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_EXPANDED))) {
+                    mHeadsUpExpandedByDefault = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_EXPANDED, 0,
+                            Settings.PAC.HEADS_UP_EXPANDED, 0,
                             UserHandle.USER_CURRENT) == 1;
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_SNOOZE_TIME))) {
-                    final int snoozeTime = Settings.System.getIntForUser(
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_SNOOZE_TIME))) {
+                    final int snoozeTime = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_SNOOZE_TIME,
+                            Settings.PAC.HEADS_UP_SNOOZE_TIME,
                             DEFAULT_TIME_HEADS_UP_SNOOZE,
                             UserHandle.USER_CURRENT);
                     setHeadsUpSnoozeTime(snoozeTime);
                     if (mHeadsUpNotificationView != null) {
                         mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
                     }
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_NOTIFCATION_DECAY))) {
-                    mHeadsUpNotificationDecay = Settings.System.getIntForUser(
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_NOTIFCATION_DECAY))) {
+                    mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_NOTIFCATION_DECAY,
+                            Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
                             mContext.getResources().getInteger(
                             R.integer.heads_up_notification_decay),
                             UserHandle.USER_CURRENT);
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_SHOW_UPDATE))) {
-                    mShowHeadsUpUpdates = Settings.System.getIntForUser(
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_SHOW_UPDATE))) {
+                    mShowHeadsUpUpdates = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_SHOW_UPDATE, 0,
+                            Settings.PAC.HEADS_UP_SHOW_UPDATE, 0,
                             UserHandle.USER_CURRENT) == 1;
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_GRAVITY_BOTTOM))) {
-                    mHeadsUpGravityBottom = Settings.System.getIntForUser(
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_GRAVITY_BOTTOM))) {
+                    mHeadsUpGravityBottom = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_GRAVITY_BOTTOM, 0,
+                            Settings.PAC.HEADS_UP_GRAVITY_BOTTOM, 0,
                             UserHandle.USER_CURRENT) == 1;
                     updateHeadsUpPosition(mStatusBarShows);
             } else {
@@ -582,8 +582,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // Pie controls
     private boolean isPieEnabled() {
-        return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 0,
+        return Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.PIE_CONTROLS, 0,
                 UserHandle.USER_CURRENT) == 1;
     }
 
@@ -594,8 +594,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private boolean noNavBar() {
-        return Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW, 0,
+        return Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.NAVIGATION_BAR_SHOW, 0,
                 UserHandle.USER_CURRENT) == 0;
     }
 
@@ -811,29 +811,29 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         mHeadsUpNotificationView.setVisibility(View.GONE);
         mHeadsUpNotificationView.setBar(this);
-        mHeadsUpNotificationDecay = Settings.System.getIntForUser(
+        mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HEADS_UP_NOTIFCATION_DECAY,
+                Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
                 res.getInteger(R.integer.heads_up_notification_decay),
                 UserHandle.USER_CURRENT);
-        mHeadsUpExpandedByDefault = Settings.System.getIntForUser(
+        mHeadsUpExpandedByDefault = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HEADS_UP_EXPANDED, 0,
+                Settings.PAC.HEADS_UP_EXPANDED, 0,
                 UserHandle.USER_CURRENT) == 1;
-        final int snoozeTime = Settings.System.getIntForUser(
+        final int snoozeTime = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HEADS_UP_SNOOZE_TIME,
+                Settings.PAC.HEADS_UP_SNOOZE_TIME,
                 DEFAULT_TIME_HEADS_UP_SNOOZE,
                 UserHandle.USER_CURRENT);
         setHeadsUpSnoozeTime(snoozeTime);
         mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
-        mShowHeadsUpUpdates = Settings.System.getIntForUser(
+        mShowHeadsUpUpdates = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HEADS_UP_SHOW_UPDATE, 0,
+                Settings.PAC.HEADS_UP_SHOW_UPDATE, 0,
                 UserHandle.USER_CURRENT) == 1;
-        mHeadsUpGravityBottom = Settings.System.getIntForUser(
+        mHeadsUpGravityBottom = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HEADS_UP_GRAVITY_BOTTOM, 0,
+                Settings.PAC.HEADS_UP_GRAVITY_BOTTOM, 0,
                 UserHandle.USER_CURRENT) == 1;
 
 
@@ -1093,8 +1093,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     }
                     public void onTextChanged(CharSequence s, int start, int before,
                             int count) {
-                            if (Settings.System.getInt(mContext.getContentResolver(),
-                                Settings.System.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
+                            if (Settings.PAC.getInt(mContext.getContentResolver(),
+                                Settings.PAC.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
                                 count > 0) {
                             mWifiView.setVisibility(View.VISIBLE);
                         } else {
@@ -1213,8 +1213,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void updateCustomHeaderStatus() {
         ContentResolver resolver = mContext.getContentResolver();
-        boolean customHeader = Settings.System.getInt(
-                resolver, Settings.System.STATUS_BAR_CUSTOM_HEADER, 0) == 1;
+        boolean customHeader = Settings.PAC.getInt(
+                resolver, Settings.PAC.STATUS_BAR_CUSTOM_HEADER, 0) == 1;
 
         if (mNotificationPanelHeader == null) return;
 
@@ -3551,8 +3551,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             animateCollapsePanels();
 
             // Toggle HALO
-            Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HALO_ACTIVE, mHaloActive ? 0 : 1);
+            Settings.PAC.putInt(mContext.getContentResolver(),
+                    Settings.PAC.HALO_ACTIVE, mHaloActive ? 0 : 1);
 
             updateHalo();
 
@@ -3716,8 +3716,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void recentsLongPress() {
-        int navbarRecentLongPress = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.NAVBAR_RECENT_LONG_PRESS, 0, mCurrentUserId);
+        int navbarRecentLongPress = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                Settings.PAC.NAVBAR_RECENT_LONG_PRESS, 0, mCurrentUserId);
         switch(navbarRecentLongPress) {
         case 0:
             break;
@@ -4269,8 +4269,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mPile == null || mNotificationData == null) {
             return;
         }
-        float notifAlpha = Settings.System.getFloatForUser(
-            mContext.getContentResolver(), Settings.System.NOTIFICATION_ALPHA,
+        float notifAlpha = Settings.PAC.getFloatForUser(
+            mContext.getContentResolver(), Settings.PAC.NOTIFICATION_ALPHA,
             0.0f, UserHandle.USER_CURRENT);
         int alpha = (int) ((1 - notifAlpha) * 255);
         int dataSize = mNotificationData.size();

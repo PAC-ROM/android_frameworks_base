@@ -90,34 +90,34 @@ public class NotificationViewManager {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_SHOW_ALWAYS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_POCKET_MODE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HIDE_LOW_PRIORITY), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HIDE_NON_CLEARABLE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_DISMISS_ALL), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HEIGHT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_DYNAMIC_WIDTH), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_COLOR), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_SHOW_ALWAYS), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_POCKET_MODE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HIDE_LOW_PRIORITY), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HIDE_NON_CLEARABLE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_DISMISS_ALL), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HEIGHT), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_DYNAMIC_WIDTH), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_COLOR), false, this);
         }
 
         @Override
@@ -126,36 +126,36 @@ public class NotificationViewManager {
         }
 
         private void updateSettings() {
-            showAlways = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_SHOW_ALWAYS, showAlways ? 1 : 0) == 1;
-            pocketMode = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_POCKET_MODE, pocketMode ? 1 : 0) == 1;
-            hideLowPriority = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HIDE_LOW_PRIORITY, hideLowPriority ? 1 : 0) == 1;
-            hideNonClearable = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HIDE_NON_CLEARABLE, hideNonClearable ? 1 : 0) == 1;
-            dismissAll = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_DISMISS_ALL, dismissAll ? 1 : 0) == 1;
-            privacyMode = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, privacyMode ? 1 : 0) == 1;
-            expandedView = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW, expandedView ? 1 : 0) == 1
+            showAlways = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_SHOW_ALWAYS, showAlways ? 1 : 0) == 1;
+            pocketMode = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_POCKET_MODE, pocketMode ? 1 : 0) == 1;
+            hideLowPriority = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HIDE_LOW_PRIORITY, hideLowPriority ? 1 : 0) == 1;
+            hideNonClearable = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HIDE_NON_CLEARABLE, hideNonClearable ? 1 : 0) == 1;
+            dismissAll = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_DISMISS_ALL, dismissAll ? 1 : 0) == 1;
+            privacyMode = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, privacyMode ? 1 : 0) == 1;
+            expandedView = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW, expandedView ? 1 : 0) == 1
                     && !privacyMode;
-            forceExpandedView = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW, forceExpandedView ? 1 : 0) == 1
+            forceExpandedView = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW, forceExpandedView ? 1 : 0) == 1
                     && !privacyMode;
-            wakeOnNotification = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION, wakeOnNotification ? 1 : 0) == 1;
-            notificationsHeight = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HEIGHT, notificationsHeight);
-            offsetTop = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP, offsetTop);
-            dynamicWidth = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_DYNAMIC_WIDTH, dynamicWidth ? 1 : 0) == 1;
-            String excludedApps = Settings.System.getString(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS);
-            notificationColor = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_COLOR, notificationColor);
+            wakeOnNotification = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION, wakeOnNotification ? 1 : 0) == 1;
+            notificationsHeight = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_HEIGHT, notificationsHeight);
+            offsetTop = Settings.PAC.getFloat(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP, offsetTop);
+            dynamicWidth = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_DYNAMIC_WIDTH, dynamicWidth ? 1 : 0) == 1;
+            String excludedApps = Settings.PAC.getString(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_EXCLUDED_APPS);
+            notificationColor = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_NOTIFICATIONS_COLOR, notificationColor);
 
             createExcludedAppsSet(excludedApps);
         }

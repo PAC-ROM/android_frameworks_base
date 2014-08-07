@@ -470,8 +470,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // next: Nav Bar toggle
-        boolean showNavBar = Settings.System.getBoolean(cr,
-                Settings.System.POWER_MENU_NAV_BAR_ENABLED, false);
+        boolean showNavBar = Settings.PAC.getBoolean(cr,
+                Settings.PAC.POWER_MENU_NAV_BAR_ENABLED, false);
 
         if (showNavBar) {
             mItems.add(mNavBarModeOn);
@@ -1279,8 +1279,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_SHOW), false, this,
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW), false, this,
                     UserHandle.USER_ALL);
 
         }
@@ -1288,8 +1288,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            if (uri.equals(Settings.System.getUriFor(
-                Settings.System.NAVIGATION_BAR_SHOW))) {
+            if (uri.equals(Settings.PAC.getUriFor(
+                Settings.PAC.NAVIGATION_BAR_SHOW))) {
                 onNavBarModeChanged();
             }
             mAdapter.notifyDataSetChanged();
@@ -1376,9 +1376,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private void onNavBarModeChanged() {
         boolean defaultValue = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar);
-        boolean navBarModeOn = Settings.System.getIntForUser(
+        boolean navBarModeOn = Settings.PAC.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW,
+                Settings.PAC.NAVIGATION_BAR_SHOW,
                 defaultValue ? 1 : 0, UserHandle.USER_CURRENT) == 1;
         mNavBarState = navBarModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mNavBarModeOn != null) {
