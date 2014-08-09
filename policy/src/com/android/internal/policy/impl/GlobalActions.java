@@ -93,8 +93,8 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.os.RemoteException;
 
-import com.android.internal.util.slim.ButtonsConstants;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.pac.ButtonsConstants;
+import com.android.internal.util.pac.SlimActions;
 
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that

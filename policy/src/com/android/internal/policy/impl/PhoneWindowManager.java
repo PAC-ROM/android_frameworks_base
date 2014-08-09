@@ -123,7 +123,7 @@ import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.util.gesture.EdgeGesturePosition;
 import com.android.internal.util.gesture.EdgeServiceConstants;
-import com.android.internal.util.slim.Converter;
+import com.android.internal.util.pac.Converter;
 import com.android.internal.widget.PointerLocationView;
 
 import java.io.File;

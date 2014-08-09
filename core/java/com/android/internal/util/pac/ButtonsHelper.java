@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.android.internal.util.slim;
+package com.android.internal.util.pac;
 
 import android.content.ContentResolver;
 import android.content.Context;

@@ -592,11 +592,11 @@ public final class PowerManagerService extends IPowerManager.Stub
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PROXIMITY_ON_WAKE),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.WAKELOCK_BLOCKING_ENABLED),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.WAKELOCK_BLOCKING_ENABLED),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.WAKELOCK_BLOCKING_LIST),
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.WAKELOCK_BLOCKING_LIST),
                     false, mSettingsObserver, UserHandle.USER_ALL);
 
             // Go.
@@ -650,12 +650,12 @@ public final class PowerManagerService extends IPowerManager.Stub
         mProximityWake = Settings.System.getInt(resolver,
                 Settings.System.PROXIMITY_ON_WAKE, 0) == 1;
 
-        mWakeLockBlockingEnabled = Settings.System.getIntForUser(resolver,
-                Settings.System.WAKELOCK_BLOCKING_ENABLED,
+        mWakeLockBlockingEnabled = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.WAKELOCK_BLOCKING_ENABLED,
                 0, UserHandle.USER_CURRENT);
 
-        String blockedWakelockList = Settings.System.getStringForUser(resolver,
-                Settings.System.WAKELOCK_BLOCKING_LIST,
+        String blockedWakelockList = Settings.PAC.getStringForUser(resolver,
+                Settings.PAC.WAKELOCK_BLOCKING_LIST,
                 UserHandle.USER_CURRENT);
         setBlockedWakeLocks(blockedWakelockList);
 
