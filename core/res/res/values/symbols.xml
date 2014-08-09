@@ -2030,4 +2030,7 @@
 
   <!-- Proximity check timeout -->
   <java-symbol type="integer" name="config_proximityCheckTimeout" />
+
+  <java-symbol type="bool" name="always_popup_usb_computer_connection" />
+
 </resources>
