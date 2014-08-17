@@ -16,8 +16,6 @@
 
 package com.android.keyguard;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.ActivityManagerNative;
@@ -137,14 +135,12 @@ public class NotificationHostView extends FrameLayout {
         private static final int CLICK_THRESHOLD = 10;
 
         private StatusBarNotification statusBarNotification;
-        private Runnable onActionUp;
         private Runnable onAnimationEnd;
         private VelocityTracker velocityTracker;
         private int animations = 0;
         private boolean swipeGesture = false;
         private boolean pointerDown = false;
         private boolean bigContentView;
-        private boolean switchView = false;
         private float initialX;
         private float delta;
         private boolean shown = false;
@@ -183,30 +179,25 @@ public class NotificationHostView extends FrameLayout {
 
         @Override
         public void onClick(View v) {
-            if (!swipeGesture) {
-                PendingIntent i = statusBarNotification.getNotification().contentIntent;
-                if (!longpress && i != null) {
-                    if ((statusBarNotification.getNotification().flags & Notification.FLAG_AUTO_CANCEL) != 0) {
-                        dismiss(statusBarNotification);
-                    }
-                    try {
-                        Intent intent = i.getIntent();
-                        intent.setFlags(
-                            intent.getFlags()
-                            | Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-                        i.send();
-                        hideAllNotifications();
-                        if ((statusBarNotification.getNotification().flags & Notification.FLAG_AUTO_CANCEL) != 0) {
-                            removeNotification(statusBarNotification);
-                        }
-                    } catch (CanceledException ex) {
-                        Log.e(TAG, "intent canceled!");
-                    } catch (RemoteException ex) {
-                        Log.e(TAG, "failed to dimiss keyguard!");
-                    }
+            PendingIntent i = statusBarNotification.getNotification().contentIntent;
+            if (!swipeGesture && !longpress && i != null) {
+                if ((statusBarNotification.getNotification().flags & Notification.FLAG_AUTO_CANCEL) != 0) {
+                    dismiss(statusBarNotification);
+                }
+                try {
+                    Intent intent = i.getIntent();
+                    intent.setFlags(
+                        intent.getFlags()
+                        | Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                    i.send();
+                    hideAllNotifications();
+                } catch (CanceledException ex) {
+                    Log.e(TAG, "intent canceled!");
+                } catch (RemoteException ex) {
+                    Log.e(TAG, "failed to dimiss keyguard!");
                 }
             }
         }
@@ -284,8 +275,7 @@ public class NotificationHostView extends FrameLayout {
         }
 
         public void runOnAnimationEnd(Runnable r) {
-            if (animations > 0) onAnimationEnd = r;
-            else if ((pointerDown && !switchView) || swipeGesture) onActionUp = r;
+            if (animations > 0 || swipeGesture) onAnimationEnd = r;
             else r.run();
         }
 
@@ -642,6 +632,7 @@ public class NotificationHostView extends FrameLayout {
             Log.w(TAG, "Failed to get statusbar service!");
             return;
         }
+
         if (statusBar != null) {
             try {
                 if (mNotifications.size() == 0) {
