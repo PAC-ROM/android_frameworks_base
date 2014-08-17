@@ -1571,19 +1571,6 @@ class MountService extends IMountService.Stub
         }
     }
 
-    private ArrayList<String> getShareableVolumes() {
-        // Sharable volumes have android:allowMassStorage="true" in storage_list.xml
-        ArrayList<String> volumesToMount = new ArrayList<String>();
-        synchronized (mVolumesLock) {
-            for (StorageVolume v : mVolumes) {
-                if (v.allowMassStorage()) {
-                    volumesToMount.add(v.getPath());
-                }
-            }
-        }
-        return volumesToMount;
-    }
-
     public void setUsbMassStorageEnabled(boolean enable) {
         waitForReady();
         validatePermission(android.Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS);
