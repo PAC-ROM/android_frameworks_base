@@ -73,14 +73,14 @@ public class NotificationViewManager {
         public boolean pocketMode = false;
         public boolean hideLowPriority = false;
         public boolean hideNonClearable = false;
-        public boolean dismissAll = true;
-        public boolean expandedView = true;
+        public boolean dismissAll = false;
+        public boolean expandedView = false;
         public boolean forceExpandedView = false;
         public boolean wakeOnNotification = false;
         public int notificationsHeight = 4;
         public float offsetTop = 0.3f;
         public boolean privacyMode = false;
-        public boolean dynamicWidth = true;
+        public boolean dynamicWidth = false;
         public int notificationColor = 0x55555555;
 
         public Configuration(Handler handler) {
