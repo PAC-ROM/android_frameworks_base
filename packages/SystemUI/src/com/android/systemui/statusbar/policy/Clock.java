@@ -63,7 +63,6 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
     private static final int AM_PM_STYLE_GONE    = 2;
 
     private static final int AM_PM_STYLE = AM_PM_STYLE_GONE;
-    private boolean mScreenOn = true;
 
     public Clock(Context context) {
         this(context, null);
