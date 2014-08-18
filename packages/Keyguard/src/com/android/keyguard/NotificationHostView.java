@@ -419,81 +419,82 @@ public class NotificationHostView extends FrameLayout {
         bigContentView &= NotificationViewManager.config.expandedView;
         RemoteViews rv = bigContentView ? sbn.getNotification().bigContentView : sbn.getNotification().contentView;
 
-        final View remoteView = rv.apply(mContext, null);
-        remoteView.setLayoutParams(new LayoutParams(mDynamicWidth ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
+        if (rv != null) {
+            final View remoteView = rv.apply(mContext, null);
+            remoteView.setLayoutParams(new LayoutParams(mDynamicWidth ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT));
 
-        remoteView.setX(mDisplayWidth - mNotificationMinHeight);
-        setBackgroundRecursive((ViewGroup) remoteView);
-        remoteView.setBackgroundColor(0x00FFFFFF & NotificationViewManager.config.notificationColor);
-        remoteView.setAlpha(1f);
+            remoteView.setX(mDisplayWidth - mNotificationMinHeight);
+            setBackgroundRecursive((ViewGroup) remoteView);
+            remoteView.setBackgroundColor(0x00FFFFFF & NotificationViewManager.config.notificationColor);
+            remoteView.setAlpha(1f);
 
-        View v = remoteView.findViewById(android.R.id.icon);
-        if (v instanceof ImageView) {
-            ImageView icon = (ImageView)v;
-            icon.setBackgroundColor(0);
-        }
-        remoteView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                NotificationView notifView = (NotificationView)v.getParent();
-                if (notifView.shown) {
-                    notifView.bigContentView = !notifView.bigContentView;
-                    addNotification(sbn, false, notifView.bigContentView);
-                }
-                notifView.longpress = true;
-                return true;
+            View v = remoteView.findViewById(android.R.id.icon);
+            if (v instanceof ImageView) {
+                ImageView icon = (ImageView)v;
+                icon.setBackgroundColor(0);
             }
-        });
-
-
-        if (oldView != null){
-            //The notification already exists, so it was just changed. Remove the old view and add the new one
-            Runnable replaceView = new Runnable() {
-                public void run() {
-                    Log.d(TAG, "Replacing view: " + describeNotification(sbn));
-                    oldView.removeAllViews();
-                    oldView.addView(remoteView);
-                    if (oldView.shown) {
-                        if (mDynamicWidth) {
-                            runOnLayoutChange(oldView,
-                               new Runnable() {
-                                    public void run() {
-                                        oldView.getChildAt(0).setX(mDisplayWidth - oldView.getChildAt(0).getWidth());
-                                    }
-                                });
-                        } else {
-                            oldView.getChildAt(0).setX(0);
-                        }
-                        oldView.getChildAt(0).setBackgroundColor(NotificationViewManager.config.notificationColor);
+            remoteView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    NotificationView notifView = (NotificationView)v.getParent();
+                    if (notifView.shown) {
+                        notifView.bigContentView = !notifView.bigContentView;
+                        addNotification(sbn, false, notifView.bigContentView);
                     }
-                    oldView.statusBarNotification = sbn;
+                    notifView.longpress = true;
+                    return true;
                 }
-            };
-            if (showNotification && !oldView.shown && showNotification && !oldView.pointerDown) showNotification(sbn);
-            oldView.runOnAnimationEnd(replaceView);
-            return;
-        }
+            });
 
-        nv.addView(remoteView);
-        nv.setPadding(0, 0, 0, mNotificationMinRowHeight - mNotificationMinHeight);
-
-        mNotifView.addView(nv, 0);
-        mNotifications.put(describeNotification(sbn), nv);
-        mNotifView.bringToFront();
-        if(showNotification) {
-            if (mDynamicWidth) {
-                // Wait for the layout to change so the notification width can be determined
-                runOnLayoutChange(nv, new Runnable() {
+            if (oldView != null){
+                //The notification already exists, so it was just changed. Remove the old view and add the new one
+                Runnable replaceView = new Runnable() {
                     public void run() {
-                        showNotification(nv);
+                        Log.d(TAG, "Replacing view: " + describeNotification(sbn));
+                        oldView.removeAllViews();
+                        oldView.addView(remoteView);
+                        if (oldView.shown) {
+                            if (mDynamicWidth) {
+                                runOnLayoutChange(oldView,
+                                   new Runnable() {
+                                        public void run() {
+                                            oldView.getChildAt(0).setX(mDisplayWidth - oldView.getChildAt(0).getWidth());
+                                        }
+                                    });
+                            } else {
+                                oldView.getChildAt(0).setX(0);
+                            }
+                            oldView.getChildAt(0).setBackgroundColor(NotificationViewManager.config.notificationColor);
+                        }
+                        oldView.statusBarNotification = sbn;
                     }
-                });
-            } else {
-                showNotification(nv);
+                };
+                if (showNotification && !oldView.shown && showNotification && !oldView.pointerDown) showNotification(sbn);
+                oldView.runOnAnimationEnd(replaceView);
+                return;
             }
+
+            nv.addView(remoteView);
+            nv.setPadding(0, 0, 0, mNotificationMinRowHeight - mNotificationMinHeight);
+
+            mNotifView.addView(nv, 0);
+            mNotifications.put(describeNotification(sbn), nv);
+            mNotifView.bringToFront();
+            if(showNotification) {
+                if (mDynamicWidth) {
+                    // Wait for the layout to change so the notification width can be determined
+                    runOnLayoutChange(nv, new Runnable() {
+                        public void run() {
+                            showNotification(nv);
+                        }
+                    });
+                } else {
+                    showNotification(nv);
+                }
+            }
+            setButtonDrawable();
         }
-        setButtonDrawable();
     }
 
     public void removeNotification(final StatusBarNotification sbn) {
