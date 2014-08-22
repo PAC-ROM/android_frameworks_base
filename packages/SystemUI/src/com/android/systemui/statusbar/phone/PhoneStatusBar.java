@@ -473,6 +473,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.HALO_ACTIVE), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR), false, this,
+                    UserHandle.USER_ALL);
 
             updateSettings();
             updateClockLocation();
@@ -552,6 +558,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 updateHalo();
                 // Switch off regular ticker
                 mTickerView.setVisibility(View.GONE);
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR))) {
+                rebuildRecentsScreen();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
+                rebuildRecentsScreen();
             } else {
                 updateSettings();
                 updateCustomHeaderStatus();
