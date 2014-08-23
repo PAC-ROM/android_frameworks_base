@@ -284,12 +284,12 @@
             </intent-filter>
         </activity>
 
-        <!-- also ... started from ... somewhere -->
+        <!-- PAC Easter Egg-->
         <activity
-            android:name=".UnicornSack"
+            android:name=".PACEasterEgg"
             android:exported="true"
-            android:label="UnicornSack"
-            android:icon="@drawable/redunicorn"
+            android:label="PACEasterEgg"
+            android:icon="@drawable/ghost"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
@@ -297,7 +297,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.android.internal.category.AOKPLOGO" />
+                <category android:name="com.android.internal.category.PACLOGO" />
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>

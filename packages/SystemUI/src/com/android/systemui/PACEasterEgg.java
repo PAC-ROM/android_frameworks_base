@@ -54,7 +54,7 @@ import android.widget.ImageView;
 import java.util.HashMap;
 import java.util.Random;
 
-public class UnicornSack extends Activity {
+public class PACEasterEgg extends Activity {
     final static boolean DEBUG = false;
 
     public static class Board extends FrameLayout
@@ -99,7 +99,7 @@ public class UnicornSack extends Activity {
             return array[sRNG.nextInt(array.length)];
         }
 
-        static int NUM_UNICORNS = 40;
+        static int NUM_GHOSTS = 40;
         static float MIN_SCALE = 0.2f;
         static float MAX_SCALE = 1f;
 
@@ -107,35 +107,19 @@ public class UnicornSack extends Activity {
 
         static int MAX_RADIUS = (int)(576 * MAX_SCALE);
 
-        static int UNICORNS[] = {
-          R.drawable.redunicorn0,
-          R.drawable.redunicorn0,
-          R.drawable.redunicorn0,
-          R.drawable.redunicorn0,
-          R.drawable.redunicorn1,
-          R.drawable.redunicorn1,
-          R.drawable.redunicorn2,
-          R.drawable.redunicorn2,
-          R.drawable.redunicorn,
+        static int GHOSTS[] = {
+          R.drawable.ghost0,
+          R.drawable.ghost0,
+          R.drawable.ghost0,
+          R.drawable.ghost0,
+          R.drawable.ghost1,
+          R.drawable.ghost1,
+          R.drawable.ghost2,
+          R.drawable.ghost2,
+          R.drawable.ghost,
         };
 
-        static int COLORS[] = {
-            0xFF00CC00,
-            0xFFCC0000,
-            0xFF0000CC,
-            0xFFFFFF00,
-            0xFFFF8000,
-            0xFF00CCFF,
-            0xFFFF0080,
-            0xFF8000FF,
-            0xFFFF8080,
-            0xFF8080FF,
-            0xFFB0C0D0,
-            0xFFDDDDDD,
-            0xFF333333,
-        };
-
-        public class Unicorn extends ImageView {
+        public class Ghost extends ImageView {
             public static final float VMAX = 1000.0f;
             public static final float VMIN = 100.0f;
 
@@ -155,44 +139,33 @@ public class UnicornSack extends Activity {
             public long grabtime;
             private float grabx_offset, graby_offset;
 
-            public Unicorn(Context context, AttributeSet as) {
+            public Ghost(Context context, AttributeSet as) {
                 super(context, as);
             }
 
             public String toString() {
-                return String.format("<unicorn (%.1f, %.1f) (%d x %d)>",
+                return String.format("<ghost (%.1f, %.1f) (%d x %d)>",
                     getX(), getY(), getWidth(), getHeight());
             }
 
-            private void pickUnicorn() {
-                int unicornId = pickInt(UNICORNS);
+            private void pickGhost() {
+                int ghostId = pickInt(GHOSTS);
                 if (randfrange(0,1) <= LUCKY) {
-                    unicornId = R.drawable.jandycane;
+                    ghostId = R.drawable.cherry;
                 }
-                BitmapDrawable unicorn = (BitmapDrawable) getContext().getResources().getDrawable(unicornId);
-                Bitmap unicornBits = unicorn.getBitmap();
-                h=unicornBits.getHeight();
-                w=unicornBits.getWidth();
+                BitmapDrawable ghost = (BitmapDrawable) getContext().getResources().getDrawable(ghostId);
+                Bitmap ghostBits = ghost.getBitmap();
+                h=ghostBits.getHeight();
+                w=ghostBits.getWidth();
 
                 if (DEBUG) {
-                    unicorn.setAlpha(0x80);
+                    ghost.setAlpha(0x80);
                 }
-                this.setImageDrawable(unicorn);
-
-                Paint pt = new Paint();
-                final int color = pickInt(COLORS);
-                ColorMatrix CM = new ColorMatrix();
-                float[] M = CM.getArray();
-                // we assume the color information is in the red channel
-                /* R */ M[0]  = (float)((color & 0x00FF0000) >> 16) / 0xFF;
-                /* G */ M[5]  = (float)((color & 0x0000FF00) >> 8)  / 0xFF;
-                /* B */ M[10] = (float)((color & 0x000000FF))       / 0xFF;
-                pt.setColorFilter(new ColorMatrixColorFilter(M));
-                setLayerType(View.LAYER_TYPE_HARDWARE, (unicornId == R.drawable.jandycane) ? null : pt);
+                this.setImageDrawable(ghost);
             }
 
             public void reset() {
-                pickUnicorn();
+                pickGhost();
 
                 final float scale = lerp(MIN_SCALE,MAX_SCALE,z);
                 setScaleX(scale); setScaleY(scale);
@@ -206,7 +179,7 @@ public class UnicornSack extends Activity {
                 vy = randfrange(-40,40) * z;
                 final float boardh = boardHeight;
                 final float boardw = boardWidth;
-                //android.util.Log.d("UnicornSack", "reset: w="+w+" h="+h);
+                //android.util.Log.d("PACEasterEgg", "reset: w="+w+" h="+h);
                 if (flip()) {
                     x=(vx < 0 ? boardw+2*r : -r*4f);
                     y=(randfrange(0, boardh-3*r)*0.5f + ((vy < 0)?boardh*0.5f:0));
@@ -230,7 +203,7 @@ public class UnicornSack extends Activity {
                 }
             }
 
-            public float overlap(Unicorn other) {
+            public float overlap(Ghost other) {
                 final float dx = (x - other.x);
                 final float dy = (y - other.y);
                 return mag(dx, dy) - r - other.r;
@@ -281,10 +254,10 @@ public class UnicornSack extends Activity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            for(int i=0; i<NUM_UNICORNS; i++) {
-                Unicorn nv = new Unicorn(getContext(), null);
+            for(int i=0; i<NUM_GHOSTS; i++) {
+                Ghost nv = new Ghost(getContext(), null);
                 addView(nv, wrap);
-                nv.z = ((float)i/NUM_UNICORNS);
+                nv.z = ((float)i/NUM_GHOSTS);
                 nv.z *= nv.z;
                 nv.reset();
                 nv.x = (randfrange(0, boardWidth));
@@ -301,20 +274,20 @@ public class UnicornSack extends Activity {
                     if (DEBUG && totalTime - lastPrint > 5000) {
                         lastPrint = totalTime;
                         for (int i=0; i<getChildCount(); i++) {
-                            android.util.Log.d("UnicornSack", "unicorn " + i + ": " + getChildAt(i));
+                            android.util.Log.d("PACEasterEgg", "ghost " + i + ": " + getChildAt(i));
                         }
                     }
 
                     for (int i=0; i<getChildCount(); i++) {
                         View v = getChildAt(i);
-                        if (!(v instanceof Unicorn)) continue;
-                        Unicorn nv = (Unicorn) v;
+                        if (!(v instanceof Ghost)) continue;
+                        Ghost nv = (Ghost) v;
                         nv.update(deltaTime / 1000f);
 
                         for (int j=i+1; j<getChildCount(); j++) {
                             View v2 = getChildAt(j);
-                            if (!(v2 instanceof Unicorn)) continue;
-                            Unicorn nv2 = (Unicorn) v2;
+                            if (!(v2 instanceof Ghost)) continue;
+                            Ghost nv2 = (Ghost) v2;
                             final float overlap = nv.overlap(nv2);
                         }
 
@@ -374,7 +347,7 @@ public class UnicornSack extends Activity {
         @Override
         public void onDraw(Canvas c) {
             if (DEBUG) {
-                //android.util.Log.d("UnicornSack", "onDraw");
+                //android.util.Log.d("PACEasterEgg", "onDraw");
                 Paint pt = new Paint();
                 pt.setAntiAlias(true);
                 pt.setStyle(Paint.Style.STROKE);
@@ -384,7 +357,7 @@ public class UnicornSack extends Activity {
                 pt.setColor(0xFFFFCC00);
                 pt.setStrokeWidth(1.0f);
                 for (int i=0; i<getChildCount(); i++) {
-                    Unicorn b = (Unicorn) getChildAt(i);
+                    Ghost b = (Ghost) getChildAt(i);
                     final float a = (360-b.a)/180f*3.14159f;
                     final float tx = b.getTranslationX();
                     final float ty = b.getTranslationY();

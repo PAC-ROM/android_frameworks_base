@@ -2673,7 +2673,7 @@
                 android:theme="@style/Theme.Wallpaper.NoTitleBar.Fullscreen"
                 android:process=":ui">
         </activity>
-        <activity android:name="com.android.internal.app.AOKPLogoActivity"
+        <activity android:name="com.android.internal.app.PACLogoActivity"
                 android:theme="@style/Theme.Wallpaper.NoTitleBar.Fullscreen"
                 android:process=":ui">
         </activity>
