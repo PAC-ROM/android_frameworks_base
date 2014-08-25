@@ -1766,7 +1766,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 || (isHeadsUpPackage
                 && !isOngoing
                 && mPowerManager.isScreenOn()
-                && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen())))
+                && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen())));
 
         try {
             interrupt = interrupt && !mDreamManager.isDreaming();
