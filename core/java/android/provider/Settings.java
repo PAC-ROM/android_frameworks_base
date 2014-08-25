@@ -8820,6 +8820,13 @@ public final class Settings {
         public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
 
         /**
+         * Heads up: Option to exclude from lockscreen, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_EXCLUDE_FROM_LOCK_SCREEN = "heads_up_exclude_from_lock_screen";
+
+        /**
          * HALO, should default to 0 (no, do not show)
          * @hide
          */
