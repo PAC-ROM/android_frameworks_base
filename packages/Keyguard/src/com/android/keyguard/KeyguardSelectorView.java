@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.PowerManager;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;

@@ -178,7 +178,6 @@ public class NavigationRingHelpers {
         final Drawable iconBgActivated = res.getDrawable(
                 com.android.internal.R.drawable.ic_navigation_ring_blank_activated);
 
-<<<<<<< HEAD
         // Get the size for the base icon and the activity icon
         int iconSize = (int) res.getDimension(
                 com.android.internal.R.dimen.navigation_ring_icon_size);
@@ -206,14 +205,6 @@ public class NavigationRingHelpers {
                 new Drawable[] { iconBg, scaledActivityIcon });
         LayerDrawable iconActivated = new LayerDrawable(
                 new Drawable[] { iconBgActivated, scaledActivityIcon });
-=======
-        final int margin = iconBg.getIntrinsicHeight() / 3;
-        LayerDrawable icon = new LayerDrawable (new Drawable[] { iconBg, activityIcon });
-        LayerDrawable iconActivated = new LayerDrawable (new Drawable[] { iconBgActivated, activityIcon });
-
-        icon.setLayerInset(1, margin, margin, margin, margin);
-        iconActivated.setLayerInset(1, margin, margin, margin, margin);
->>>>>>> 2e727f0... Base: huge cleanup
 
         StateListDrawable selector = new StateListDrawable();
         selector.addState(TargetDrawable.STATE_INACTIVE, icon);
