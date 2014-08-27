@@ -8331,12 +8331,6 @@ public final class Settings {
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
 
         /**
-         * Navigation recent long press
-         * @hide
-         */
-        public static final String NAVBAR_RECENT_LONG_PRESS = "navbar_recent_long_press";
-
-        /**
          * Wether navigation bar in power menu is enabled or not
          * @hide
          */
