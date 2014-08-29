@@ -1173,8 +1173,6 @@ class MountService extends IMountService.Stub
             if (getVolumeState(path).equals(Environment.MEDIA_SHARED))
                 mediaShared = true;
         }
-
-
         if (avail == false && mediaShared) {
             /*
              * USB mass storage disconnected while enabled
@@ -1188,11 +1186,10 @@ class MountService extends IMountService.Stub
                         for (String path : volumes) {
                             if (getVolumeState(path).equals(Environment.MEDIA_SHARED)) {
                                 doShareUnshareVolume(path, "ums", false);
-                                rc = doMountVolume(path);
-                                if (rc != StorageResultCode.OperationSucceeded) {
+                                if ((rc = doMountVolume(path)) != StorageResultCode.OperationSucceeded) {
                                     Slog.e(TAG, String.format(
-                                        "Failed to remount {%s} on UMS enabled-disconnect (%d)",
-                                                path, rc));
+                                            "Failed to remount {%s} on UMS enabled-disconnect (%d)",
+                                                    path, rc));
                                 }
                             }
                         }
@@ -1400,9 +1397,7 @@ class MountService extends IMountService.Stub
 
         // Watch for USB changes on primary volume
         final StorageVolume primary = getPrimaryPhysicalVolume();
-        if ((primary != null && primary.allowMassStorage()) ||
-            //ignore primary config, force to register if property is true
-            SystemProperties.getBoolean("persist.sys.ums", true)) {
+        if (primary != null && primary.allowMassStorage()) {
             mContext.registerReceiver(
                     mUsbReceiver, new IntentFilter(UsbManager.ACTION_USB_STATE), null, mHandler);
         }
@@ -1536,19 +1531,6 @@ class MountService extends IMountService.Stub
         }
     }
 
-    private ArrayList<String> getShareableVolumes() {
-        // Sharable volumes have android:allowMassStorage="true" in storage_list.xml
-        ArrayList<String> volumesToMount = new ArrayList<String>();
-        synchronized (mVolumes) {
-            for (StorageVolume v : mVolumes) {
-                if (v.allowMassStorage()) {
-                    volumesToMount.add(v.getPath());
-                }
-            }
-        }
-        return volumesToMount;
-    }
-
     public boolean isUsbMassStorageConnected() {
         waitForReady();
 
@@ -1571,11 +1553,28 @@ class MountService extends IMountService.Stub
         }
     }
 
+    private ArrayList<String> getShareableVolumes() {
+        // Sharable volumes have android:allowMassStorage="true" in storage_list.xml
+        ArrayList<String> volumesToMount = new ArrayList<String>();
+        synchronized (mVolumesLock) {
+            for (StorageVolume v : mVolumes) {
+                if (v.allowMassStorage()) {
+                    volumesToMount.add(v.getPath());
+                }
+            }
+        }
+        return volumesToMount;
+    }
+
     public void setUsbMassStorageEnabled(boolean enable) {
         waitForReady();
         validatePermission(android.Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS);
 
+        final StorageVolume primary = getPrimaryPhysicalVolume();
+        if (primary == null) return;
+
         // TODO: Add support for multiple share methods
+
         for (String path : getShareableVolumes()) {
             /*
              * If the volume is mounted and we're enabling then unmount it
@@ -1610,6 +1609,7 @@ class MountService extends IMountService.Stub
 
     public boolean isUsbMassStorageEnabled() {
         waitForReady();
+
         for (String path : getShareableVolumes()) {
             if (doGetVolumeShared(path, "ums"))
                 return true;
