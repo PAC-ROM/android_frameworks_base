@@ -338,7 +338,9 @@ public class SearchPanelView extends FrameLayout implements
         int shortSide = height > width ? width : height;
         int shortSideDp = shortSide * metrics.DENSITY_DEFAULT / metrics.densityDpi;
 
-        return shortSideDp > 600;
+        boolean sLargeScreen = shortSideDp >= 600;
+
+        return sLargeScreen;
     }
 
     private boolean isScreenPortrait() {
