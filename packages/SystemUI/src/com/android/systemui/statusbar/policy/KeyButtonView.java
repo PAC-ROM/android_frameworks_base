@@ -113,6 +113,7 @@ public class KeyButtonView extends ImageView {
         mDoubleTapTimeout = 200;
         mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
         setLongClickable(false);
+        mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
     public void setButtonActions(AwesomeButtonInfo actions) {

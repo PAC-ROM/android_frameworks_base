@@ -498,9 +498,18 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
 
         final boolean showSearch = disableHome && !disableSearch;
-        final boolean showCamera = showSearch && !mCameraDisabledByDpm;
-        setVisibleOrGone(getSearchLight(), showSearch);
+        final boolean showCamera = showSearch && !mCameraDisabledByDpm
+                && mLockUtils.getCameraEnabled();
+        final boolean showNotifs = showSearch &&
+                Settings.PAC.getInt(mContext.getContentResolver(),
+                        Settings.PAC.LOCKSCREEN_NOTIFICATIONS, 1) == 1 &&
+                Settings.PAC.getInt(mContext.getContentResolver(),
+                        Settings.PAC.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, 0) == 0;
+
+        setVisibleOrGone(getSearchLight(), showSearch && mModLockDisabled
+                && NavigationRingHelpers.hasLockscreenTargets(mContext));
         setVisibleOrGone(getCameraButton(), showCamera);
+        setVisibleOrGone(getNotifsButton(), showNotifs && mWasNotifsButtonVisible);
 
         mBarTransitions.applyBackButtonQuiescentAlpha(mBarTransitions.getMode(), true /*animate*/);
     }
