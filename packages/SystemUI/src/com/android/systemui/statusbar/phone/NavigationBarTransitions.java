@@ -142,7 +142,7 @@ public final class NavigationBarTransitions extends BarTransitions {
         }
 
         if (backAlpha > 0) {
-            setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_BACK, backAlpha, animate);
+            setKeyButtonViewQuiescentAlpha(mView.getBackButton(), backAlpha, animate);
         }
     }
 

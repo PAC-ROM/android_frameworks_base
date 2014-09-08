@@ -86,6 +86,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     // slippery nav bar when everything is disabled, e.g. during setup
     final static boolean SLIPPERY_WHEN_DISABLED = true;
 
+    private LockPatternUtils mLockUtils;
+
     final Display mDisplay;
     View mCurrentView = null;
     View[] mRotatedViews = new View[4];
@@ -371,51 +373,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         return mCurrentView.findViewById(R.id.show_notifs);
     }
 
-    private void getIcons(Resources res) {
-        mBackIcon = res.getDrawable(R.drawable.ic_sysbar_back);
-        mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
-        mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
-        mBackAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime_land);
-        mRecentIcon = res.getDrawable(R.drawable.ic_sysbar_recent);
-        mRecentLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_land);
-        mHomeIcon = res.getDrawable(R.drawable.ic_sysbar_home);
-        mHomeLandIcon = res.getDrawable(R.drawable.ic_sysbar_home_land);
-    }
-
-    public void updateResources(Resources res) {
-        mThemedResources = res;
-        getIcons(mThemedResources);
-        mBarTransitions.updateResources(res);
-        mStatusBarBlockerTransitions.updateResources(res);
-        for (int i = 0; i < mRotatedViews.length; i++) {
-            ViewGroup container = (ViewGroup) mRotatedViews[i];
-            if (container != null) {
-                updateKeyButtonViewResources(container);
-                updateLightsOutResources(container);
-            }
-        }
-    }
-
-    private void updateKeyButtonViewResources(ViewGroup container) {
-        ViewGroup midNavButtons = (ViewGroup) container.findViewById(R.id.mid_nav_buttons);
-        if (midNavButtons != null) {
-            final int nChildren = midNavButtons.getChildCount();
-            for (int i = 0; i < nChildren; i++) {
-                final View child = midNavButtons.getChildAt(i);
-                if (child instanceof KeyButtonView) {
-                    ((KeyButtonView) child).updateResources(mThemedResources);
-                }
-            }
-        }
-        KeyButtonView kbv = (KeyButtonView) findViewById(R.id.one);
-        if (kbv != null) {
-            kbv.updateResources(mThemedResources);
-        }
-        kbv = (KeyButtonView) findViewById(R.id.six);
-        if (kbv != null) {
-            kbv.updateResources(mThemedResources);
-        }
-    }
     public void updateResources() {
         for (int i = 0; i < mRotatedViews.length; i++) {
             ViewGroup container = (ViewGroup) mRotatedViews[i];
@@ -633,8 +590,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(System.NAVIGATION_BAR_BUTTONS),
+        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS),
                 false, mSettingsObserver);
+        mObserver.observe();
     }
 
     @Override
@@ -642,6 +600,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         super.onDetachedFromWindow();
 
         mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+        mObserver.unobserve();
     }
 
     private void readUserConfig() {
@@ -789,18 +748,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         invalidate();
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mObserver.observe();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mObserver.unobserve();
-    }
-
     private void watchForAccessibilityChanges() {
         final AccessibilityManager am =
                 (AccessibilityManager) mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -881,10 +828,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
 
         setNavigationIconHints(mNavigationIconHints, true);
-    }
-
-    View findButton(NavbarEditor.ButtonInfo info) {
-        return mCurrentView.findViewWithTag(info);
     }
 
     @Override

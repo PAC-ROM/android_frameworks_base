@@ -51,8 +51,6 @@ public class KeyButtonView extends ImageView {
 
     final float GLOW_MAX_SCALE_FACTOR = 1.8f;
     public static final float DEFAULT_QUIESCENT_ALPHA = 0.70f;
-    public static final int CURSOR_REPEAT_FLAGS = KeyEvent.FLAG_SOFT_KEYBOARD
-            | KeyEvent.FLAG_KEEP_TOUCH_MODE;
 
     private final int mDoubleTapTimeout;
     private final int mSinglePressTimeout;
@@ -145,7 +143,7 @@ public class KeyButtonView extends ImageView {
         }
     }
 
-        public void updateResources() {
+    public void updateResources() {
         if (mGlowBgId != 0) {
             mGlowBG = mContext.getResources().getDrawable(mGlowBgId);
         }
