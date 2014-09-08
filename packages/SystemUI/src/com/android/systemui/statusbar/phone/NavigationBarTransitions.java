@@ -26,8 +26,6 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
-import com.android.systemui.statusbar.phone.NavbarEditor;
-import com.android.systemui.statusbar.phone.NavbarEditor.ButtonInfo;
 import com.android.systemui.statusbar.policy.KeyButtonView;
 
 public final class NavigationBarTransitions extends BarTransitions {
@@ -104,11 +102,10 @@ public final class NavigationBarTransitions extends BarTransitions {
     private void applyMode(int mode, boolean animate, boolean force) {
         // apply to key buttons
         final float alpha = alphaForMode(mode);
-        setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_HOME, alpha, animate);
-        setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_RECENT, alpha, animate);
-        setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_CONDITIONAL_MENU, alpha, animate);
-        setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_ALWAYS_MENU, alpha, animate);
-        setKeyButtonViewQuiescentAlpha(NavbarEditor.NAVBAR_MENU_BIG, alpha, animate);
+        setKeyButtonViewQuiescentAlpha(mView.getBackButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
+        setKeyButtonViewQuiescentAlpha(mView.getHomeButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
+        setKeyButtonViewQuiescentAlpha(mView.getRecentsButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
+        setKeyButtonViewQuiescentAlpha(mView.getMenuButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
         setKeyButtonViewQuiescentAlpha(mView.getSearchLight(), KEYGUARD_QUIESCENT_ALPHA, animate);
         setKeyButtonViewQuiescentAlpha(mView.getCameraButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
         setKeyButtonViewQuiescentAlpha(mView.getNotifsButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
@@ -119,15 +116,6 @@ public final class NavigationBarTransitions extends BarTransitions {
 
         final boolean isTranslucent = mode != MODE_OPAQUE && mode != MODE_LIGHTS_OUT;
         fadeContent(mStatusBarBlocker, isTranslucent ? 1f : 0f);
-    }
-
-    private void setKeyButtonViewQuiescentAlpha(ButtonInfo info, float alpha, boolean animate) {
-        for (View v : mView.mRotatedViews) {
-            View button = v == null ? null : v.findViewWithTag(info);
-            if (button != null) {
-                setKeyButtonViewQuiescentAlpha(button, alpha, animate);
-            }
-        }
     }
 
     private float alphaForMode(int mode) {

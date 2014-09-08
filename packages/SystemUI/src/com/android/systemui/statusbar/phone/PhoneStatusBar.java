@@ -3665,9 +3665,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNotificationIcons();
         resetUserSetupObserver();
         updateSettings();
-        if (mNavigationBarView != null) {
-            mNavigationBarView.updateSettings();
-        }
         super.userSwitched(newUserId);
     }
 
@@ -3832,9 +3829,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         makeStatusBarView();
         repositionNavigationBar();
         addHeadsUpView();
-        if (mNavigationBarView != null) {
-            mNavigationBarView.updateResources(getNavbarThemedResources());
-        }
 
         rebuildRecentsScreen();
 
@@ -4026,7 +4020,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     protected boolean shouldDisableNavbarGestures() {
         return !isDeviceProvisioned()
                 || mExpandedVisible
-                || (mNavigationBarView != null && mNavigationBarView.isInEditMode())
                 || (mDisabled & StatusBarManager.DISABLE_SEARCH) != 0;
     }
 

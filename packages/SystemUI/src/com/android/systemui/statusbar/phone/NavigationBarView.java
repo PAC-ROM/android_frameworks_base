@@ -29,10 +29,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+<<<<<<< HEAD
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+=======
+>>>>>>> parent of 61941dd... NavigationBar : Customization
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Point;
@@ -42,8 +45,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+<<<<<<< HEAD
 import android.os.UserHandle;
 import android.provider.Settings;
+=======
+>>>>>>> parent of 61941dd... NavigationBar : Customization
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -67,7 +73,6 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
 import com.android.systemui.statusbar.policy.DeadZone;
-import com.android.systemui.statusbar.policy.KeyButtonView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -81,6 +86,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     // slippery nav bar when everything is disabled, e.g. during setup
     final static boolean SLIPPERY_WHEN_DISABLED = true;
 
+<<<<<<< HEAD
     final static String NAVBAR_EDIT_ACTION = "android.intent.action.NAVBAR_EDIT";
 
     private boolean mInEditMode;
@@ -92,6 +98,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private OnLongClickListener mRecentsLongClickListener;
     private OnTouchListener mHomeSearchActionListener;
 
+=======
+>>>>>>> parent of 61941dd... NavigationBar : Customization
     final Display mDisplay;
     View mCurrentView = null;
     View[] mRotatedViews = new View[4];
@@ -119,17 +127,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private boolean mHasCmKeyguard = false;
     private boolean mModLockDisabled = true;
-    private boolean mShowDpadArrowKeys = true;
     private SettingsObserver mObserver;
 
-    // Visibility of R.id.one view prior to swapping it for a left arrow key
-    public int mSlotOneVisibility = -1;
-
-    // Visibility of R.id.six view prior to swapping it for a right arrow key
-    public int mSlotSixVisibility = -1;
-
     private FrameLayout mFlayout;
-
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
     final static int MSG_CHECK_INVALID_LAYOUT = 8686;
@@ -271,10 +271,14 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mCameraDisabledByDpm = isCameraDisabledByDpm();
         watchForDevicePolicyChanges();
+<<<<<<< HEAD
 
         mNavBarReceiver = new NavBarReceiver();
         mContext.registerReceiverAsUser(mNavBarReceiver, UserHandle.ALL,
                 new IntentFilter(NAVBAR_EDIT_ACTION), null, null);
+=======
+    }
+>>>>>>> parent of 61941dd... NavigationBar : Customization
 
         mLockUtils = new LockPatternUtils(context);
 
@@ -341,6 +345,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         return mCurrentView;
     }
 
+<<<<<<< HEAD
     public boolean isInEditMode() {
         return mInEditMode;
     }
@@ -394,6 +399,22 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         } else {
             findView.setVisibility(visibility);
         }
+=======
+    public View getRecentsButton() {
+        return mCurrentView.findViewById(R.id.recent_apps);
+    }
+
+    public View getMenuButton() {
+        return mCurrentView.findViewById(R.id.menu);
+    }
+
+    public View getBackButton() {
+        return mCurrentView.findViewById(R.id.back);
+    }
+
+    public View getHomeButton() {
+        return mCurrentView.findViewById(R.id.home);
+>>>>>>> parent of 61941dd... NavigationBar : Customization
     }
 
     // for when home is disabled, but search isn't
@@ -457,6 +478,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
     }
 
+<<<<<<< HEAD
     private void updateLightsOutResources(ViewGroup container) {
         ViewGroup lightsOut = (ViewGroup) container.findViewById(R.id.lights_out);
         if (lightsOut != null) {
@@ -476,39 +498,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
     }
 
+=======
+>>>>>>> parent of 61941dd... NavigationBar : Customization
     @Override
     public void setLayoutDirection(int layoutDirection) {
         if (mThemedResources != null) getIcons(mThemedResources);
 
         super.setLayoutDirection(layoutDirection);
-    }
-
-    public class NavBarReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean edit = intent.getBooleanExtra("edit", false);
-            boolean save = intent.getBooleanExtra("save", false);
-            if (edit != mInEditMode) {
-                mInEditMode = edit;
-                if (edit) {
-                    removeButtonListeners();
-                    mEditBar.setEditMode(true);
-                } else {
-                    if (save) {
-                        mEditBar.saveKeys();
-                    }
-                    mEditBar.setEditMode(false);
-                    updateSettings();
-                }
-            }
-        }
-    }
-
-    public void updateSettings() {
-        mEditBar.updateKeys();
-        removeButtonListeners();
-        updateButtonListeners();
-        setDisabledFlags(mDisabledFlags, true /* force */);
     }
 
     public void notifyScreenOn(boolean screenOn) {
@@ -535,6 +531,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mNavigationIconHints = hints;
 
+<<<<<<< HEAD
         ImageView backView = (ImageView) findButton(NavbarEditor.NAVBAR_BACK);
         ImageView recentView = (ImageView) findButton(NavbarEditor.NAVBAR_RECENT);
         ImageView homeView = (ImageView) findButton(NavbarEditor.NAVBAR_HOME);
@@ -552,34 +549,23 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         if (homeView != null) {
             homeView.setImageDrawable(mVertical ? mHomeLandIcon : mHomeIcon);
         }
+=======
+        getBackButton().setAlpha(
+            (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_NOP)) ? 0.5f : 1.0f);
+        getHomeButton().setAlpha(
+            (0 != (hints & StatusBarManager.NAVIGATION_HINT_HOME_NOP)) ? 0.5f : 1.0f);
+        getRecentsButton().setAlpha(
+            (0 != (hints & StatusBarManager.NAVIGATION_HINT_RECENT_NOP)) ? 0.5f : 1.0f);
+
+        ((ImageView)getBackButton()).setImageDrawable(
+            (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT))
+                ? (mVertical ? mBackAltLandIcon : mBackAltIcon)
+                : (mVertical ? mBackLandIcon : mBackIcon));
+
+        ((ImageView)getRecentsButton()).setImageDrawable(mVertical ? mRecentLandIcon : mRecentIcon);
+>>>>>>> parent of 61941dd... NavigationBar : Customization
 
         setDisabledFlags(mDisabledFlags, true);
-
-        if (mShowDpadArrowKeys) {
-            final boolean showingIme = ((mNavigationIconHints
-                    & StatusBarManager.NAVIGATION_HINT_BACK_ALT) != 0);
-
-            setVisibleOrGone(getCurrentView().findViewById(R.id.dpad_left), showingIme);
-            setVisibleOrGone(getCurrentView().findViewById(R.id.dpad_right), showingIme);
-
-            View one = getCurrentView().findViewById(mVertical ? R.id.six : R.id.one);
-            View six = getCurrentView().findViewById(mVertical ? R.id.one : R.id.six);
-            if (showingIme) {
-                mSlotOneVisibility = one.getVisibility();
-                mSlotSixVisibility = six.getVisibility();
-                setVisibleOrGone(one, false);
-                setVisibleOrGone(six, false);
-            } else {
-                if (mSlotOneVisibility != -1) {
-                    one.setVisibility(mSlotOneVisibility);
-                    mSlotOneVisibility = -1;
-                }
-                if (mSlotSixVisibility != -1) {
-                    six.setVisibility(mSlotSixVisibility);
-                    mSlotSixVisibility = -1;
-                }
-            }
-        }
     }
 
     public void setButtonDrawable(int buttonId, final int iconId) {
@@ -634,6 +620,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             }
         }
 
+<<<<<<< HEAD
         setButtonVisibility(NavbarEditor.NAVBAR_BACK, !disableBack);
         setButtonVisibility(NavbarEditor.NAVBAR_HOME, !disableHome);
         setButtonVisibility(NavbarEditor.NAVBAR_RECENT, !disableRecent);
@@ -662,6 +649,18 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private void setVisibleOrGone(View view, boolean visible) {
         if (view != null) {
             view.setVisibility(visible ? VISIBLE : GONE);
+=======
+        getBackButton()   .setVisibility(disableBack       ? View.INVISIBLE : View.VISIBLE);
+        getHomeButton()   .setVisibility(disableHome       ? View.INVISIBLE : View.VISIBLE);
+        getRecentsButton().setVisibility(disableRecent     ? View.INVISIBLE : View.VISIBLE);
+
+        final boolean shouldShowSearch = disableHome && !disableSearch;
+        getSearchLight().setVisibility(shouldShowSearch ? View.VISIBLE : View.GONE);
+        final View cameraButton = getCameraButton();
+        if (cameraButton != null) {
+            cameraButton.setVisibility(
+                    shouldShowSearch && !mCameraDisabledByDpm ? View.VISIBLE : View.GONE);
+>>>>>>> parent of 61941dd... NavigationBar : Customization
         }
     }
 
@@ -709,14 +708,25 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mShowMenu = show;
 
+<<<<<<< HEAD
         setButtonVisibility(NavbarEditor.NAVBAR_CONDITIONAL_MENU, mShowMenu);
+=======
+        getMenuButton().setVisibility(mShowMenu ? View.VISIBLE : View.INVISIBLE);
+>>>>>>> parent of 61941dd... NavigationBar : Customization
     }
 
     @Override
     public void onFinishInflate() {
-        mRotatedViews[Configuration.ORIENTATION_PORTRAIT] = findViewById(R.id.rot0);
-        mRotatedViews[Configuration.ORIENTATION_LANDSCAPE] = findViewById(R.id.rot90);
-        mCurrentView = mRotatedViews[mContext.getResources().getConfiguration().orientation];
+        mRotatedViews[Surface.ROTATION_0] =
+        mRotatedViews[Surface.ROTATION_180] = findViewById(R.id.rot0);
+
+        mRotatedViews[Surface.ROTATION_90] = findViewById(R.id.rot90);
+
+        mRotatedViews[Surface.ROTATION_270] = NAVBAR_ALWAYS_AT_RIGHT
+                                                ? findViewById(R.id.rot90)
+                                                : findViewById(R.id.rot270);
+
+        mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
         mStatusBarBlockerTransitions = new StatusBarBlockerTransitions(
                 findViewById(R.id.status_bar_blocker));
@@ -761,10 +771,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         final OnTouchListener onTouchListener = touchEnabled ? null : mCameraTouchListener;
         boolean hasCamera = false;
         for (int i = 0; i < mRotatedViews.length; i++) {
-            if (mRotatedViews[i] == null) {
-                continue;
-            }
-
             final View cameraButton = mRotatedViews[i].findViewById(R.id.camera_button);
             final View notifsButton = mRotatedViews[i].findViewById(R.id.show_notifs);
             final View searchLight = mRotatedViews[i].findViewById(R.id.search_light);
@@ -798,6 +804,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     }
 
     public void reorient() {
+<<<<<<< HEAD
         int orientation = mContext.getResources().getConfiguration().orientation;
         mRotatedViews[Configuration.ORIENTATION_PORTRAIT].setVisibility(View.GONE);
         mRotatedViews[Configuration.ORIENTATION_LANDSCAPE].setVisibility(View.GONE);
@@ -809,9 +816,14 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             mDelegateHelper.setSwapXY(mVertical);
         } else {
             mVertical = getWidth() > 0 && getHeight() > getWidth();
+=======
+        final int rot = mDisplay.getRotation();
+        for (int i=0; i<4; i++) {
+            mRotatedViews[i].setVisibility(View.GONE);
+>>>>>>> parent of 61941dd... NavigationBar : Customization
         }
-        mEditBar = new NavbarEditor(mCurrentView, mVertical);
-        updateSettings();
+        mCurrentView = mRotatedViews[rot];
+        mCurrentView.setVisibility(View.VISIBLE);
 
         mDeadZone = (DeadZone) mCurrentView.findViewById(R.id.deadzone);
         mDeadZone.setStartFromRight(mLeftInLandscape);
@@ -836,16 +848,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-
-        ViewGroup midNavButtons = (ViewGroup) mCurrentView.findViewById(R.id.mid_nav_buttons);
-        int count = midNavButtons.getChildCount();
-        View buttons[] = new View[count];
-
-        for (int i = 0; i < count; i++) {
-            buttons[i] = midNavButtons.getChildAt(i);
-        }
-
-        mDelegateHelper.setInitialTouchRegion(buttons);
+        mDelegateHelper.setInitialTouchRegion(getHomeButton(), getBackButton(), getRecentsButton());
     }
 
     @Override
@@ -947,12 +950,36 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                         mVertical ? "true" : "false",
                         mShowMenu ? "true" : "false"));
 
+<<<<<<< HEAD
         dumpButton(pw, "back", findButton(NavbarEditor.NAVBAR_BACK));
         dumpButton(pw, "home", findButton(NavbarEditor.NAVBAR_HOME));
         dumpButton(pw, "rcnt", findButton(NavbarEditor.NAVBAR_RECENT));
         dumpButton(pw, "srch", getSearchLight());
         dumpButton(pw, "cmra", getCameraButton());
 
+=======
+        final View back = getBackButton();
+        final View home = getHomeButton();
+        final View recent = getRecentsButton();
+        final View menu = getMenuButton();
+
+        pw.println("      back: "
+                + PhoneStatusBar.viewInfo(back)
+                + " " + visibilityToString(back.getVisibility())
+                );
+        pw.println("      home: "
+                + PhoneStatusBar.viewInfo(home)
+                + " " + visibilityToString(home.getVisibility())
+                );
+        pw.println("      rcnt: "
+                + PhoneStatusBar.viewInfo(recent)
+                + " " + visibilityToString(recent.getVisibility())
+                );
+        pw.println("      menu: "
+                + PhoneStatusBar.viewInfo(menu)
+                + " " + visibilityToString(menu.getVisibility())
+                );
+>>>>>>> parent of 61941dd... NavigationBar : Customization
         pw.println("    }");
     }
 
@@ -1000,12 +1027,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             resolver.registerContentObserver(
                 Settings.System.getUriFor(Settings.System.LOCKSCREEN_MODLOCK_ENABLED),
                 false, this);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_MENU_ARROW_KEYS),
-                    false, this);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAV_BUTTONS),
-                    false, this);
 
             // intialize mModlockDisabled
             onChange(false);
@@ -1026,28 +1047,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             } else {
                 mModLockDisabled = true;
             }
-            mShowDpadArrowKeys = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_MENU_ARROW_KEYS, 1) != 0;
-
-            // hide dpad keys
-            setVisibleOrGone(getCurrentView().findViewById(R.id.dpad_left), false);
-            setVisibleOrGone(getCurrentView().findViewById(R.id.dpad_right), false);
-
-            // restore previous views in case the cursor keys WERE showing and
-            // are should now be hidden while the IME is up.
-            View one = getCurrentView().findViewById(mVertical ? R.id.six : R.id.one);
-            View six = getCurrentView().findViewById(mVertical ? R.id.one : R.id.six);
-            if (mSlotOneVisibility != -1 && one != null) {
-                one.setVisibility(mSlotOneVisibility);
-                mSlotOneVisibility = -1;
-            }
-            if (mSlotSixVisibility != -1 && six != null) {
-                six.setVisibility(mSlotSixVisibility);
-                mSlotSixVisibility = -1;
-            }
-
-            // propogate settings
-            setNavigationIconHints(mNavigationIconHints, true);
         }
     }
 
