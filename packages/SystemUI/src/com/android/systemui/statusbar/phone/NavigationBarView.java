@@ -747,13 +747,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTONS),
+        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_BUTTONS),
                 false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_DPAD_KEYS),
+        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_BAR_DPAD_KEYS),
                 false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_MENU),
+        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU),
                 false, mSettingsObserver);
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_MENU_FORCE),
+        mContext.getContentResolver().registerContentObserver(Settings.PAC.getUriFor(Settings.PAC.NAVIGATION_MENU_FORCE),
                 false, mSettingsObserver);
 
         mObserver.observe();
@@ -769,13 +769,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     }
 
     private void readUserConfig() {
-        mNavigationBarForceMenu = Settings.System.getBoolean(getContext().getContentResolver(),
-                Settings.System.NAVIGATION_MENU_FORCE, false);
-        mNavigationBarMenuLocation = Settings.System.getInt(getContext().getContentResolver(),
-                Settings.System.NAVIGATION_MENU, 0);
+        mNavigationBarForceMenu = Settings.PAC.getBoolean(getContext().getContentResolver(),
+                Settings.PAC.NAVIGATION_MENU_FORCE, false);
+        mNavigationBarMenuLocation = Settings.PAC.getInt(getContext().getContentResolver(),
+                Settings.PAC.NAVIGATION_MENU, 0);
 
         mNavButtons.clear();
-        String buttons = Settings.System.getString(getContext().getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTONS);
+        String buttons = Settings.PAC.getString(getContext().getContentResolver(), Settings.PAC.NAVIGATION_BAR_BUTTONS);
         if (buttons == null || buttons.isEmpty()) {
             // use default buttons
             mNavButtons.add(new AwesomeButtonInfo(
@@ -810,7 +810,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                 }
             }
         }
-        mShowDpadKeys = Settings.System.getBoolean(getContext().getContentResolver(), Settings.System.NAVIGATION_BAR_DPAD_KEYS, false);
+        mShowDpadKeys = Settings.PAC.getBoolean(getContext().getContentResolver(), Settings.PAC.NAVIGATION_BAR_DPAD_KEYS, false);
     }
 
     private void setupNavigationButtons() {

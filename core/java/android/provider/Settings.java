@@ -3697,27 +3697,6 @@ public final class Settings {
          */
         public static final String INCOMING_CALL_STYLE = "incoming_call_style";
 
-        /**
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_BUTTONS = "navigation_bar_buttons";
-
-        /**
-         * Show arrow buttons as left and right dpad keys
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_DPAD_KEYS = "navigation_bar_dpad_keys";
-
-        /**
-         * @hide
-         */
-        public static final String NAVIGATION_MENU = "navigation_menu";
-
-        /**
-         * @hide
-         */
-        public static final String NAVIGATION_MENU_FORCE = "navigation_menu_force";
-
         /** @hide */
         public static final int INCOMING_CALL_STYLE_CLASSIC = 0;
         /** @hide */
@@ -9272,10 +9251,30 @@ public final class Settings {
         public static final String CUSTOM_OVERFLING_DISTANCE = "custom_overfling_distance";
 
         /**
-         * Whether volume up/down can be long pressed to skip tracks
          * @hide
          */
         public static final String ANIMATION_TOAST = "animation_toast";
+
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_BUTTONS = "navigation_bar_buttons";
+
+        /**
+         * Show arrow buttons as left and right dpad keys
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_DPAD_KEYS = "navigation_bar_dpad_keys";
+
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU = "navigation_menu";
+
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU_FORCE = "navigation_menu_force";
 
     }
 
