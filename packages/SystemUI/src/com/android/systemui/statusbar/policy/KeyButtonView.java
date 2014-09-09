@@ -20,11 +20,11 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.os.SystemClock;
@@ -77,7 +77,7 @@ public class KeyButtonView extends ImageView {
 
     boolean mHasSingleAction = true, mHasDoubleAction, mHasLongAction;
 
-   Runnable mCheckLongPress = new Runnable() {
+    Runnable mCheckLongPress = new Runnable() {
         public void run() {
             if (isPressed()) {
                 removeCallbacks(mSingleTap);
@@ -107,12 +107,17 @@ public class KeyButtonView extends ImageView {
             mGlowHeight = mGlowBG.getIntrinsicHeight();
         }
 
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.KeyButtonView,
+                defStyle, 0);
+
+        mGlowBgId = a.getResourceId(R.styleable.KeyButtonView_glowBackground, 0);
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mSinglePressTimeout = 200;
         mDoubleTapTimeout = 200;
         mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
         setLongClickable(false);
+
         mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
@@ -248,10 +253,8 @@ public class KeyButtonView extends ImageView {
     public void setPressed(boolean pressed) {
         if (mGlowBG != null) {
             if (pressed != isPressed()) {
-
                 // A lot of stuff is about to happen. Lets get ready.
                 mPm.cpuBoost(750000);
-
                 if (mPressedAnim != null && mPressedAnim.isRunning()) {
                     mPressedAnim.cancel();
                 }
@@ -392,7 +395,6 @@ public class KeyButtonView extends ImageView {
     }
 
     public void setGlowBackground(int resId) {
-        mGlowBgId = resId;
         mGlowBG = getResources().getDrawable(resId);
         if (mGlowBG != null) {
             setDrawingAlpha(mDrawingAlpha);
@@ -410,17 +412,23 @@ public class KeyButtonView extends ImageView {
             this.longPressAction = longPress;
             this.iconUri = uri;
 
-            if (singleAction != null && (singleAction.isEmpty()
-                    || singleAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
-                singleAction = null;
+            if (singleAction != null) {
+                if ((singleAction.isEmpty()
+                        || singleAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
+                    singleAction = null;
+                }
             }
-            if (doubleTapAction != null && (doubleTapAction.isEmpty()
-                    || doubleTapAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
-                doubleTapAction = null;
+            if (doubleTapAction != null) {
+                if ((doubleTapAction.isEmpty()
+                        || doubleTapAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
+                    doubleTapAction = null;
+                }
             }
-            if (longPressAction != null && (longPressAction.isEmpty()
-                    || longPressAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
-                longPressAction = null;
+            if (longPressAction != null) {
+                if ((longPressAction.isEmpty()
+                        || longPressAction.equals(AwesomeConstant.ACTION_NULL.value()))) {
+                    longPressAction = null;
+                }
             }
         }
     }

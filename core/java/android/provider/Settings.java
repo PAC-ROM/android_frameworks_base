@@ -3708,6 +3708,16 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_DPAD_KEYS = "navigation_bar_dpad_keys";
 
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU = "navigation_menu";
+
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_MENU_FORCE = "navigation_menu_force";
+
         /** @hide */
         public static final int INCOMING_CALL_STYLE_CLASSIC = 0;
         /** @hide */
