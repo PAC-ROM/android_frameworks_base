@@ -46,6 +46,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.ThemeConfig;
@@ -873,6 +874,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNavigationBarView == null) {
             mNavigationBarView =
                 (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
+            mNavigationBarView.updateResources(getNavbarThemedResources());
         }
 
         mNavigationBarView.setDisabledFlags(mDisabled);
@@ -1521,6 +1523,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         lp.setTitle("NavigationBar");
         lp.windowAnimations = 0;
         return lp;
+    }
+
+    private Resources getNavbarThemedResources() {
+        String pkgName = mCurrentTheme.getOverlayPkgNameForApp(ThemeConfig.SYSTEMUI_NAVBAR_PKG);
+        Resources res = null;
+        try {
+            res = mContext.getPackageManager().getThemedResourcesForApplication(
+                    mContext.getPackageName(), pkgName);
+        } catch (PackageManager.NameNotFoundException e) {
+            res = mContext.getResources();
+        }
+        return res;
     }
 
     private void addHeadsUpView() {
@@ -3828,6 +3842,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addHeadsUpView();
 
+        if (mNavigationBarView != null) {
+            mNavigationBarView.updateResources(getNavbarThemedResources());
+        }
+
         // recreate StatusBarIconViews.
         for (int i = 0; i < nIcons; i++) {
             StatusBarIcon icon = icons.get(i);
@@ -3900,7 +3918,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mRibbonQS != null)
             mRibbonQS.updateResources();
         if (mNavigationBarView != null)  {
-            mNavigationBarView.updateResources();
+            mNavigationBarView.updateResources(getNavbarThemedResources());
             updateSearchPanel();
         }
     }

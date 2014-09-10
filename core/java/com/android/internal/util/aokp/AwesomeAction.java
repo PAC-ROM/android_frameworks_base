@@ -45,11 +45,11 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
-import android.view.KeyEvent;=
+import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
 import android.widget.Toast;
 
-import com.android.internal.R;=
+import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.net.URISyntaxException;
@@ -62,6 +62,7 @@ public class AwesomeAction {
 
     public final static String TAG = "AwesomeAction";
     private final static String SysUIPackage = "com.android.systemui";
+    public static final String NULL_ACTION = AwesomeConstant.ACTION_NULL.value();
 
     private static final int STANDARD_FLAGS = KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY;
     private static final int CURSOR_FLAGS = KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE;

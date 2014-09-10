@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -55,7 +56,6 @@ public class KeyButtonView extends ImageView {
     private final int mLongPressTimeout;
 
     public static final String NULL_ACTION = AwesomeConstant.ACTION_NULL.value();
-    public static final String BLANK_ACTION = AwesomeConstant.ACTION_BLANK.value();
 
     long mDownTime;
     long mUpTime;
@@ -77,7 +77,6 @@ public class KeyButtonView extends ImageView {
     AwesomeButtonInfo mActions;
 
     boolean mHasSingleAction = true, mHasDoubleAction, mHasLongAction;
-    boolean mHasBlankSingleAction = false;
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -131,9 +130,6 @@ public class KeyButtonView extends ImageView {
         mHasSingleAction = mActions != null && (mActions.singleAction != null);
         mHasLongAction = mActions != null && mActions.longPressAction != null;
         mHasDoubleAction = mActions != null && mActions.doubleTapAction != null;
-        mHasBlankSingleAction = mActions != null
-                && mActions.singleAction != null
-                && mActions.singleAction.equals(BLANK_ACTION);
 
         setLongClickable(mHasLongAction);
         Log.e(TAG, "Adding a navbar button in landscape or portrait");
@@ -154,9 +150,9 @@ public class KeyButtonView extends ImageView {
         }
     }
 
-    public void updateResources() {
+    public void updateResources(Resources res) {
         if (mGlowBgId != 0) {
-            mGlowBG = mContext.getResources().getDrawable(mGlowBgId);
+            mGlowBG = res.getDrawable(mGlowBgId);
         }
     }
 
@@ -294,8 +290,6 @@ public class KeyButtonView extends ImageView {
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mHasBlankSingleAction) return true;
-
         final int action = ev.getAction();
         int x, y;
 
@@ -308,7 +302,7 @@ public class KeyButtonView extends ImageView {
                 }
                 performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 long diff = mDownTime - mUpTime; // difference between last up and now
-                if (hasDoubleTapAction() && diff <= mDoubleTapTimeout) {
+                if (hasDoubleTapAction() && diff <= 200) {
                     doDoubleTap();
                 } else {
                     if (hasLongTapAction()) {
@@ -317,7 +311,7 @@ public class KeyButtonView extends ImageView {
                     }
 
                     if (hasSingleTapAction()) {
-                        postDelayed(mSingleTap, mSinglePressTimeout);
+                        postDelayed(mSingleTap, 200);
                     }
                 }
                 break;

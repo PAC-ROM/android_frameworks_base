@@ -1233,11 +1233,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KEY_ACTION_LAST_APP:
                 ActionUtils.switchToLastApp(mContext, mCurrentUserId);
                 break;
-<<<<<<< HEAD
-=======
-            case KEY_ACTION_POWERMENU:
-                showGlobalActionsDialog();
->>>>>>> 17264c9... Navbar: improve button response time
             default:
                 break;
         }
@@ -1904,74 +1899,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-<<<<<<< HEAD
-=======
-    @Override
-    public void updateRotationStateForImmersive() {
-
-        int orientation = mContext.getResources().getConfiguration().orientation;
-        boolean shouldEnable = false;
-
-        /**
-         * Boolean orientationImmersiveState:
-         * 0 - Both
-         * 1 - Landscape only
-         * 2 - Portrait only
-         */
-        switch (orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                if (orientationImmersiveState == 1) {
-                    shouldEnable = true;
-                }
-                if (orientationImmersiveState == 2) {
-                    shouldEnable = false;
-                }
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-                if (orientationImmersiveState == 2) {
-                    shouldEnable = true;
-                }
-                if (orientationImmersiveState == 1) {
-                    shouldEnable = false;
-                }
-                break;
-        }
-        forceUpdateImmersive(shouldEnable);
-    }
-
-    private void forceUpdateImmersive(boolean override) {
-        ContentResolver resolver = mContext.getContentResolver();
-
-        if (!immersiveState || !override) {
-            immersiveModeBehavior = 0;
-        } else {
-            immersiveModeBehavior = Settings.System.getIntForUser(resolver,
-                    Settings.System.GLOBAL_IMMERSIVE_MODE_STYLE, 2, UserHandle.USER_CURRENT);
-        }
-
-        if (mGlobalImmersiveModeStyle != immersiveModeBehavior) {
-            mGlobalImmersiveModeStyle = immersiveModeBehavior;
-        }
-        if (mImmersiveModeConfirmation != null) {
-            mImmersiveModeConfirmation.loadSetting();
-        }
-    }
-
     @Override
     public void sendHomeAction() {
         launchHomeFromHotKey();
     }
 
-    private void resetScreenHelper() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metrics);
-        int density = metrics.densityDpi;
-        if(mDisplay != null)
-            setInitialDisplaySize(mDisplay, mUnrestrictedScreenWidth, mUnrestrictedScreenHeight, density);
-    }
-
->>>>>>> 17264c9... Navbar: improve button response time
     private void enablePointerLocation() {
         if (mPointerLocationView == null) {
             mPointerLocationView = new PointerLocationView(mContext);
@@ -2880,16 +2812,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 // Go home!
-<<<<<<< HEAD
                 launchHomeFromHotKey();
-=======
-                if (mDeviceHardwareKeys != 0 && !virtualKey) {
-                    performKeyAction(mPressOnHomeBehavior);
-                } else {
-                    Log.i(TAG, "LAUNCHING KEY ACTION FROM PWM.");
-                    launchHomeFromHotKey();
-                }
->>>>>>> 17264c9... Navbar: improve button response time
                 return -1;
             }
 
