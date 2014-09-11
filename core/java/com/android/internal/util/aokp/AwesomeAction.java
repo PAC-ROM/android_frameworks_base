@@ -58,16 +58,25 @@ import java.util.List;
 import static com.android.internal.util.aokp.AwesomeConstants.AwesomeConstant;
 import static com.android.internal.util.aokp.AwesomeConstants.fromString;
 
+import com.android.internal.util.cm.ActionUtils;
+import com.android.internal.util.cm.TorchConstants;
+
 public class AwesomeAction {
 
     public final static String TAG = "AwesomeAction";
     private final static String SysUIPackage = "com.android.systemui";
     public static final String NULL_ACTION = AwesomeConstant.ACTION_NULL.value();
 
-    private static final int STANDARD_FLAGS = KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY;
+    private static final int STANDARD_FLAGS = KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_KEEP_TOUCH_MODE;
     private static final int CURSOR_FLAGS = KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE;
 
+    private static int mCurrentUserId = 0;
+
     private AwesomeAction() {
+    }
+
+    public static void setCurrentUser(int newUserId) {
+        mCurrentUserId = newUserId;
     }
 
     public static boolean launchAction(final Context mContext, final String action) {
@@ -113,8 +122,9 @@ public class AwesomeAction {
                         triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, STANDARD_FLAGS);
                         break;
                     case ACTION_KILL:
-                        KillTask mKillTask = new KillTask(mContext);
-                        mHandler.post(mKillTask);
+                        KillApp onKillApp = new KillApp(mCurrentUserId, mContext);
+                        mHandler.removeCallbacks(onKillApp);
+                        mHandler.post(onKillApp);
                         break;
                     case ACTION_VIB:
                         am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -184,12 +194,8 @@ public class AwesomeAction {
                                 "android.settings.SHOW_INPUT_METHOD_PICKER"));
                         break;
                     case ACTION_TORCH:
-                        Intent intentTorch = new Intent("android.intent.action.MAIN");
-                        intentTorch.setComponent(ComponentName
-                                .unflattenFromString("com.aokp.Torch/.TorchActivity"));
-                        intentTorch.addCategory("android.intent.category.LAUNCHER");
-                        intentTorch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intentTorch);
+                        Intent intentTorch = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
+                        mContext.sendBroadcast(intentTorch);
                         break;
                     case ACTION_TODAY:
                         long startMillis = System.currentTimeMillis();
@@ -223,7 +229,7 @@ public class AwesomeAction {
                         mContext.startActivity(intentAlarm);
                         break;
                     case ACTION_LAST_APP:
-                        toggleLastApp(mContext);
+                        ActionUtils.switchToLastApp(mContext, mCurrentUserId);
                         break;
                     case ACTION_NOTIFICATIONS:
                         try {
@@ -272,76 +278,66 @@ public class AwesomeAction {
         return list.size() > 0;
     }
 
-    private static void triggerVirtualKeypress(final int keyCode, int flags) {
-        InputManager im = InputManager.getInstance();
-        long now = SystemClock.uptimeMillis();
-
-        final KeyEvent downEvent = new KeyEvent(now, now, KeyEvent.ACTION_DOWN,
-                keyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
-                flags, InputDevice.SOURCE_KEYBOARD);
-        final KeyEvent upEvent = KeyEvent.changeAction(downEvent, KeyEvent.ACTION_UP);
-
-        im.injectInputEvent(downEvent, InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
-        im.injectInputEvent(upEvent, InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+    private static void triggerVirtualKeypress(int keycode, int flags) {
+        KeyUp onInjectKey_Up = new KeyUp(keycode, flags);
+        KeyDown onInjectKey_Down = new KeyDown(keycode, flags);
+        mHandler.removeCallbacks(onInjectKey_Down);
+        mHandler.removeCallbacks(onInjectKey_Up);
+        mHandler.post(onInjectKey_Down);
+        mHandler.postDelayed(onInjectKey_Up, 10);
     }
 
-    public static class KillTask implements Runnable {
+    public static class KillApp implements Runnable {
         private Context mContext;
+        private int mCurrentUserId;
 
-        public KillTask(Context context) {
+        public KillApp(int UserId, Context context) {
+            this.mCurrentUserId = UserId;
             this.mContext = context;
         }
 
         public void run() {
-            final Intent intent = new Intent(Intent.ACTION_MAIN);
-            final ActivityManager am = (ActivityManager) mContext
-                    .getSystemService(Activity.ACTIVITY_SERVICE);
-            String defaultHomePackage = "com.android.launcher";
-            intent.addCategory(Intent.CATEGORY_HOME);
-            final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
-            if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
-                defaultHomePackage = res.activityInfo.packageName;
-            }
-            RunningTaskInfo info = am.getRunningTasks(1).get(0);
-            String packageName = info.topActivity.getPackageName();
-            if (SysUIPackage.equals(packageName))
-                return; // don't kill SystemUI
-            if (!defaultHomePackage.equals(packageName)) {
-                // am.forceStopPackage(packageName);
-                am.removeTask(info.id, ActivityManager.REMOVE_TASK_KILL_PROCESS);
-                // Toast.makeText(mContext,
-                // com.android.internal.R.string.app_killed_message,
-                // Toast.LENGTH_SHORT).show();
+            if (ActionUtils.killForegroundApp(mContext, mCurrentUserId)) {
+                Toast.makeText(mContext, R.string.app_killed_message, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private static void toggleLastApp(Context mContext) {
-        int lastAppId = 0;
-        int looper = 1;
-        String packageName;
-        final Intent intent = new Intent(Intent.ACTION_MAIN);
-        final ActivityManager am = (ActivityManager) mContext
-                .getSystemService(Activity.ACTIVITY_SERVICE);
-        String defaultHomePackage = "com.android.launcher";
-        intent.addCategory(Intent.CATEGORY_HOME);
-        final ResolveInfo res = mContext.getPackageManager().resolveActivity(intent, 0);
-        if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
-            defaultHomePackage = res.activityInfo.packageName;
+    public static class KeyDown implements Runnable {
+        private int mInjectKeyCode;
+        private int mFlags;
+
+        public KeyDown(int keycode, int flags) {
+            this.mInjectKeyCode = keycode;
+            this.mFlags = flags;
         }
-        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
-        // lets get enough tasks to find something to switch to
-        // Note, we'll only get as many as the system currently has - up to 5
-        while ((lastAppId == 0) && (looper < tasks.size())) {
-            packageName = tasks.get(looper).topActivity.getPackageName();
-            if (!packageName.equals(defaultHomePackage)
-                    && !packageName.equals("com.android.systemui")) {
-                lastAppId = tasks.get(looper).id;
-            }
-            looper++;
+
+        public void run() {
+            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    KeyEvent.ACTION_DOWN, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                    0, mFlags, InputDevice.SOURCE_KEYBOARD);
+            InputManager.getInstance().injectInputEvent(ev,
+                    InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
         }
-        if (lastAppId != 0) {
-            am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
+    }
+
+    public static class KeyUp implements Runnable {
+        private int mInjectKeyCode;
+        private int mFlags;
+
+        public KeyUp(int keycode, int flags) {
+            this.mInjectKeyCode = keycode;
+            this.mFlags = flags;
+        }
+
+        public void run() {
+            final KeyEvent ev = new KeyEvent(SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    KeyEvent.ACTION_UP, mInjectKeyCode, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                    0, mFlags, InputDevice.SOURCE_KEYBOARD);
+            InputManager.getInstance().injectInputEvent(ev,
+                    InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
         }
     }
 
