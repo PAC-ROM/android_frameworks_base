@@ -134,8 +134,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private FrameLayout mFlayout;
 
-    private boolean mPrefNavring;
-    private boolean mPrefLockscreen;
     private String mUserButtons;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
