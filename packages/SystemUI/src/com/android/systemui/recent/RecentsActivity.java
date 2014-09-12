@@ -23,9 +23,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.BlurManager;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.view.MotionEvent;
@@ -53,8 +50,6 @@ public class RecentsActivity extends Activity {
     private boolean mShowing;
     private boolean mForeground;
     protected boolean mBackPressed;
-
-    private BlurManager mBlurManager;
 
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -247,25 +242,11 @@ public class RecentsActivity extends Activity {
                 if (mRecentsPanel.isShowing()) {
                     dismissAndGoBack();
                 } else {
-                    if (mBlurManager == null)
-                    mBlurManager = (BlurManager) getSystemService(Context.BLUR_SERVICE);
-
-                    mBlurManager.prepare();
-                    mBlurManager.setOnBitmapReady(new BlurManager.OnBitmapReady() {
-                        @Override
-                        public void onBitmapReady(Bitmap bitmap) {
-                            if (bitmap == null) return;
-                            getWindow().setBackgroundDrawable(new BitmapDrawable(bitmap));
-                        }
-                    });
-
                     final RecentTasksLoader recentTasksLoader = RecentTasksLoader.getInstance(this);
                     boolean waitingForWindowAnimation = checkWaitingForAnimationParam &&
                             intent.getBooleanExtra(WAITING_FOR_WINDOW_ANIMATION_PARAM, false);
                     mRecentsPanel.show(true, recentTasksLoader.getLoadedTasks(),
                             recentTasksLoader.isFirstScreenful(), waitingForWindowAnimation);
-
-                    mBlurManager.getFullBlurBmp(20);
                 }
             }
         }
