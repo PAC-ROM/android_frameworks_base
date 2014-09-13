@@ -266,11 +266,12 @@ public class RecentController implements RecentPanelView.OnExitListener,
                     R.drawable.recent_warning_bg_dropshadow);
             mEmptyRecentView.setImageResource(R.drawable.ic_empty_recent);
         }
+
         // Notify panel view about new main gravity.
         if (mRecentPanelView != null) {
             mRecentPanelView.setMainGravity(mMainGravity);
         }
-        
+
         // Set custom background color (or reset to default, as the case may be
         if (mRecentContent != null) {
             if (mPanelColor != 0x00ffffff) {
