@@ -361,8 +361,8 @@ public class ActiveDisplayView extends FrameLayout
                     Settings.PAC.ACTIVE_DISPLAY_EXCLUDED_APPS), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.ACTIVE_DISPLAY_PRIVACY_APPS), false, this);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.ACTIVE_DISPLAY_TIMEOUT), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
@@ -1243,7 +1243,7 @@ public class ActiveDisplayView extends FrameLayout
 
     private void restoreBrightness() {
         if (mUserBrightnessLevel < 0 || mBrightnessMode < 0
-                || mBrightnessMode == Settings.PAC.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                || mBrightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
             return;
         }
         final ContentResolver resolver = mContext.getContentResolver();
@@ -1251,8 +1251,8 @@ public class ActiveDisplayView extends FrameLayout
             mPM.setTemporaryScreenBrightnessSettingOverride(mUserBrightnessLevel);
         } catch (RemoteException e) {
         }
-        Settings.PAC.putInt(resolver,
-                Settings.PAC.SCREEN_BRIGHTNESS_MODE,
+        Settings.System.putInt(resolver,
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
                 mBrightnessMode);
     }
 
@@ -1853,7 +1853,7 @@ public class ActiveDisplayView extends FrameLayout
         PendingIntent sender = PendingIntent.getBroadcast(mContext,
                     0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         mAM.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, when, sender);
-	Log.i(TAG, "Shake timeout set.");
+        Log.i(TAG, "Shake timeout set.");
     }
 
     /**
