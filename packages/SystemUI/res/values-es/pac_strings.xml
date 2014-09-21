@@ -17,9 +17,9 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="default_folder_text">Carpeta</string>
-  <string name="title_activity_sidebar_configuration">Configuración de contenido Appbar</string>
+  <string name="title_activity_sidebar_configuration">Configurar el contenido de la barra de aplicaciones</string>
   <string name="action_save">Guardar</string>
-  <string name="toast_items_saved">Los elementos de Appbar han sido guardados.</string>
+  <string name="toast_items_saved">Los elementos de la barra de aplicaciones han sido guardados.</string>
   <string name="content_setup_instructions">Agregar elementos a la barra de la aplicación haciendo pulsación larga en cualquier elemento de la derecha y arrástralo a la barra de la aplicación.\n\ncombine los elementos en carpetas por goteo en cualquier elemento existente en la barra de la aplicación.\n\npara eliminar un elemento, simplemente arrástrelo fuera de la \@appbar.</string>
   <string name="content_setup_dismiss">Continuar</string>
   <string name="toast_not_installed">La aplicación no está instalada</string>

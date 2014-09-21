@@ -16,16 +16,16 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="lockscreen_gesture_instructions">Feloldáshoz rajzoljon gesztuszt</string>
-  <string name="lockscreen_gesture_correct">Rendben!</string>
-  <string name="lockscreen_gesture_wrong">Próbálja újra</string>
-  <string name="keyguard_accessibility_gesture_unlock">Feloldás gesztussal.</string>
-  <string name="keyguard_accessibility_gesture_area">Gesztus területe.</string>
-  <string name="kg_forgot_gesture_button_text">Elfelejtett gesztus</string>
-  <string name="kg_wrong_gesture">Hibás gesztus</string>
-  <string name="kg_gesture_instructions">Gesztus megrajzolása</string>
+  <string name="lockscreen_gesture_instructions">Desenhe o gesto para desbloquear</string>
+  <string name="lockscreen_gesture_correct">Correto!</string>
+  <string name="lockscreen_gesture_wrong">Tente novamente</string>
+  <string name="keyguard_accessibility_gesture_unlock">Gesto de desbloqueio.</string>
+  <string name="keyguard_accessibility_gesture_area">Área de gesto.</string>
+  <string name="kg_forgot_gesture_button_text">Esqueci o gesto</string>
+  <string name="kg_wrong_gesture">Gesto errado</string>
+  <string name="kg_gesture_instructions">Desenhe o seu gesto</string>
   <string name="kg_too_many_failed_gesture_attempts_dialog_message">
-       Feloldó gesztusát helytelenül rajzolta meg <xliff:g id="number">%d</xliff:g> alkalommal.
-        \n\nPróbálkozzon újra <xliff:g id="number">%d</xliff:g> másodperc múlva.
+        Você desenhou seu gesto de desbloqueio  <xliff:g id="number">%d</xliff:g> vezes.
+        \n\nTente novamente em <xliff:g id="number">%d</xliff:g> segundos.
     </string>
 </resources>
