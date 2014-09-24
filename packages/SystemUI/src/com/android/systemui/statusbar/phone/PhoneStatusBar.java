@@ -1614,7 +1614,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (SPEW) Log.d(TAG, "updateIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " old=" + old + " icon=" + icon);
         StatusBarIconView view = (StatusBarIconView)mStatusIcons.getChildAt(viewIndex);
+        if (view != null) {
         view.set(icon);
+        }
     }
 
     public void removeIcon(String slot, int index, int viewIndex) {
