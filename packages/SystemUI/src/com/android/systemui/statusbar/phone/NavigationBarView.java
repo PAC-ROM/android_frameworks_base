@@ -64,10 +64,10 @@ import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.Toast;
 
-import com.android.internal.util.aokp.AwesomeConstants.AwesomeConstant;
 import com.android.internal.util.cm.LockscreenTargetUtils;
 import com.android.internal.util.cm.NavigationRingConstants;
 import com.android.internal.util.cm.NavigationRingHelpers;
+import com.android.internal.util.pac.AwesomeConstants.AwesomeConstant;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;

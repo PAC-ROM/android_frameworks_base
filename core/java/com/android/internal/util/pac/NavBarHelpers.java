@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.aokp;
+package com.android.internal.util.pac;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +27,7 @@ import android.text.TextUtils;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import static com.android.internal.util.aokp.AwesomeConstants.AwesomeConstant;
+import static com.android.internal.util.pac.AwesomeConstants.AwesomeConstant;
 
 public class NavBarHelpers {
 
@@ -60,7 +60,7 @@ public class NavBarHelpers {
         }
         if (uri.startsWith("**")) {
             return AwesomeConstants.getActionIcon(mContext, uri);
-        } else {  // This must be an app 
+        } else {  // This must be an app
             try {
                 actionIcon = mContext.getPackageManager().getActivityIcon(Intent.parseUri(uri, 0));
             } catch (NameNotFoundException e) {
@@ -108,7 +108,7 @@ public class NavBarHelpers {
         }
         if (uri.startsWith("**")) {
             return AwesomeConstants.getProperName(mContext, uri);
-        } else {  // This must be an app 
+        } else {  // This must be an app
             try {
                 Intent intent = Intent.parseUri(uri, 0);
                 if (Intent.ACTION_MAIN.equals(intent.getAction())) {

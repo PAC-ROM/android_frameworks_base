@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.aokp;
+package com.android.internal.util.pac;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -55,8 +55,8 @@ import com.android.internal.statusbar.IStatusBarService;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static com.android.internal.util.aokp.AwesomeConstants.AwesomeConstant;
-import static com.android.internal.util.aokp.AwesomeConstants.fromString;
+import static com.android.internal.util.pac.AwesomeConstants.AwesomeConstant;
+import static com.android.internal.util.pac.AwesomeConstants.fromString;
 
 import com.android.internal.util.cm.ActionUtils;
 import com.android.internal.util.cm.TorchConstants;
