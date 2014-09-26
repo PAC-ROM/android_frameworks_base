@@ -186,6 +186,7 @@ public class BarTransitions {
                 mOpaque = res.getColor(opaqueColorResourceId);
                 mSemiTransparent = res.getColor(semiTransparentColorResourceId);
             }
+            mLastColor = mOpaque;
             mGradient = res.getDrawable(gradientResourceId);
             mInterpolator = new LinearInterpolator();
             mGradientResourceId = gradientResourceId;
@@ -279,12 +280,11 @@ public class BarTransitions {
         }
 
         public void setGradientAlphaDynamic(boolean force) {
-            /*if (force) {
+            if (force) {
                 mGradientAlpha = 0xff;
             } else {
                 mGradientAlpha = 0;
             }
-            forceRestartAnimation();*/
         }
 
         private void forceRestartAnimation() {
