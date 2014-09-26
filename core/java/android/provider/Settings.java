@@ -9451,6 +9451,12 @@ public final class Settings {
          */
         public static final String NFC_POLLING_MODE = "nfc_polling_mode";
 
+        /**
+         * Bypass insecure lock screen when opening a smartcover or physical keyboard
+         *
+         * @hide
+         */
+        public static final String BYPASS_INSECURE_LOCKSCREEN = "bypass_insecure_lockscreen";
     }
 
     /**
