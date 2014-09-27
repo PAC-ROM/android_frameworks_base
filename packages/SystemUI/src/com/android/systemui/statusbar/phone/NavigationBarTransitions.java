@@ -206,6 +206,14 @@ public final class NavigationBarTransitions extends BarTransitions {
     private void setColorButtonNavigationBar(int ic_color) {
         setKeyButtonViewButtonColor(mView.getSearchLight(), ic_color);
         setKeyButtonViewButtonColor(mView.getCameraButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getRecentsButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getLeftCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getRightCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getMenuButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getMenuButtonTwo(), ic_color);
+        setKeyButtonViewButtonColor(mView.getBackButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getHomeButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
     }
 
     /*private void setKeyButtonViewColor(ButtonInfo info, int ic_color) {

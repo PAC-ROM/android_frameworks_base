@@ -256,6 +256,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // [+>
     View mMoreIcon;
 
+    private BatteryMeterView mBattery;
+
     // expanded notifications
     NotificationPanelView mNotificationPanel; // the sliding/resizing panel within the notification window
     ScrollView mScrollView;
@@ -359,6 +361,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     VelocityTracker mVelocityTracker;
 
     int[] mAbsPos = new int[2];
+    Runnable mPostCollapseCleanup = null;
 
     // last theme that was applied in order to detect theme change (as opposed
     // to some other configuration change).
@@ -1344,6 +1347,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         // listen for USER_SETUP_COMPLETE setting (per-user)
         resetUserSetupObserver();
+
+        mBattery = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             mMSimNetworkController.setListener(this);
@@ -2814,10 +2819,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Close any "App info" popups that might have snuck on-screen
         dismissPopups();
 
-        /*if (mPostCollapseCleanup != null) {
+        if (mPostCollapseCleanup != null) {
             mPostCollapseCleanup.run();
             mPostCollapseCleanup = null;
-        } */
+        }
 
         mSystemUIOpaque = false;
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, false);
@@ -3177,6 +3182,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         boolean animateSb = shouldAnimateBarTransition(sbMode, mStatusBarWindowState);
         mStatusBarView.getBarTransitions().transitionTo(sbMode, animateSb);
         if (mNavigationBarView != null) {
+            mNavBackgroundMode = (mNavigationBarMode == MODE_OPAQUE);
             mNavigationBarView.getBarTransitions().transitionTo(mNavigationBarMode,
                     shouldAnimateBarTransition(mNavigationBarMode, mNavigationBarWindowState));
             // The status bar blocker is only needed if both
@@ -3645,7 +3651,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private View.OnClickListener mClearButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
             synchronized (mNotificationData) {
-                // animate-swipe all dismissable notifications
+                // animate-swipe all dismissable notifications, then animate the shade closed
                 int numChildren = mPile.getChildCount();
 
                 int scrollTop = mScrollView.getScrollY();
@@ -3658,41 +3664,64 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         snapshot.add(child);
                     }
                 }
-
                 if (snapshot.isEmpty()) {
-                    maybeCollapseAfterNotificationRemoval(true);
+                    animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                     return;
                 }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Decrease the delay for every row we animate to give the sense of
+                        // accelerating the swipes
+                        final int ROW_DELAY_DECREMENT = 10;
+                        int currentDelay = 140;
+                        int totalDelay = 0;
 
-                // Decrease the delay for every row we animate to give the sense of
-                // accelerating the swipes
-                final int ROW_DELAY_DECREMENT = 10;
-                int currentDelay = 140;
-                int totalDelay = 0;
+                        // Set the shade-animating state to avoid doing other work during
+                        // all of these animations. In particular, avoid layout and
+                        // redrawing when collapsing the shade.
+                        mPile.setViewRemoval(false);
 
-                // Set the shade-animating state to avoid doing other work, in
-                // particular layout and redrawing, during all of these animations.
-                mPile.setViewRemoval(false);
+                        mPostCollapseCleanup = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (DEBUG) {
+                                    Log.v(TAG, "running post-collapse cleanup");
+                                }
+                                try {
+                                    mPile.setViewRemoval(true);
+                                    mBarService.onClearAllNotifications();
+                                } catch (Exception ex) { }
+                            }
+                        };
 
-                View sampleView = snapshot.get(0);
-                int width = sampleView.getWidth();
-                final int dir = sampleView.isLayoutRtl() ? -1 : +1;
-                final int velocity = dir * width * 8; // 1000/8 = 125 ms duration
-                for (final View _v : snapshot) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mPile.dismissRowAnimated(_v, velocity);
+                        View sampleView = snapshot.get(0);
+                        int width = sampleView.getWidth();
+                        final int dir = sampleView.isLayoutRtl() ? -1 : +1;
+                        final int velocity = dir * width * 8; // 1000/8 = 125 ms duration
+                        for (final View _v : snapshot) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mPile.dismissRowAnimated(_v, velocity);
+                                }
+                            }, totalDelay);
+                            currentDelay = Math.max(50, currentDelay - ROW_DELAY_DECREMENT);
+                            totalDelay += currentDelay;
                         }
-                    }, totalDelay);
-                    currentDelay = Math.max(50, currentDelay - ROW_DELAY_DECREMENT);
-                    totalDelay += currentDelay;
-                }
-
-                // After ending all animations, tell the service to remove the
-                // notifications, which will trigger collapsing the shade
-                final View lastEntry = snapshot.get(snapshot.size() - 1);
-                mPile.runOnDismiss(lastEntry, mNotifyClearAll);
+                        // Delay the collapse animation until after all swipe animations have
+                        // finished. Provide some buffer because there may be some extra delay
+                        // before actually starting each swipe animation. Ideally, we'd
+                        // synchronize the end of those animations with the start of the collaps
+                        // exactly.
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
+                            }
+                        }, totalDelay + 225);
+                    }
+                }).start();
             }
         }
     };
@@ -3893,10 +3922,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if ((mCurrentTintedProgress == 1 || !mStatBackgroundMode) && !mStatusbarIsReset) {
              mStatusbarIsReset = true;
              mStatusBarView.getBarTransitions().changeColorIconBackground(-3, -3);
-             /*if (mBattery != null) {
+             if (mBattery != null) {
                  mBattery.updateSettings(-3);
              }
-             if (mCircleBattery != null) {
+             /*if (mCircleBattery != null) {
                  mCircleBattery.updateSettings();
              }
              if (mPercentBattery != null) {
@@ -3956,10 +3985,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNavigationBarView != null) {
             mNavigationBarView.getBarTransitions().changeColorIconBackground(mPackageNv, mPackageIcSt);
         }
-        /*if (mBattery != null) {
+        if (mBattery != null) {
             mBattery.updateSettings(mPackageIcSt);
         }
-        if (mCircleBattery != null) {
+        /*if (mCircleBattery != null) {
             mCircleBattery.updateSettings();
         }
         if (mPercentBattery != null) {
@@ -3990,10 +4019,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mStatusBarView.getBarTransitions().changeColorIconBackground(mPackageSt, mPackageIcSt);
             int colorFromStatusbar = mStatusBarView.getPhoneStatusBarTransitions().getCurrentIconColor();
             boolean shouldChange = (colorFromStatusbar != -3);
-            /*if (mBattery != null) {
+            if (mBattery != null) {
                 mBattery.updateSettings(shouldChange ? colorFromStatusbar : -3);
             }
-            if (mCircleBattery != null) {
+            /*if (mCircleBattery != null) {
                 if (shouldChange) {
                     mCircleBattery.updateSettings(colorFromStatusbar);
                 } else {

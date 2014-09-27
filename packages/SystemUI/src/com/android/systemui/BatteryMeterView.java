@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -309,6 +310,11 @@ public class BatteryMeterView extends View implements DemoMode {
         return color;
     }
 
+    public void updateSettings(int color) {
+        mChangeColor = color;
+        postInvalidate();
+    }
+
     public void setShowPercent(boolean show) {
         if (ENABLE_PERCENT) {
             mShowPercent = show;
@@ -544,6 +550,16 @@ public class BatteryMeterView extends View implements DemoMode {
 
             if (tracker.shouldIndicateCharging()) {
                 // draw the bolt
+                if (mChangeColor != -3) {
+                    int colorSt = Color.WHITE;
+                    if (ColorUtils.isBrightColor(mChangeColor)) {
+                        colorSt = Color.BLACK;
+                    }
+                    mBoltPaint.setColor(colorSt);
+                } else {
+                    mBoltPaint.setColor(mBoltColor);
+                }
+
                 final float bl = (int)(mFrame.left + mFrame.width() / (mHorizontal ? 9f : 4.5f));
                 final float bt = (int)(mFrame.top + mFrame.height() / (mHorizontal ? 4.5f : 6f));
                 final float br = (int)(mFrame.right - mFrame.width() / (mHorizontal ? 6f : 7f));
@@ -588,6 +604,12 @@ public class BatteryMeterView extends View implements DemoMode {
                         (SINGLE_DIGIT_PERCENT ? single
                                 : (tracker.level == 100 ? full : nofull)));
                 mTextHeight = -mTextPaint.getFontMetrics().ascent;
+
+                int textColor = 0xFFFFFFFF;
+                if (mChangeColor != -3) {
+                    textColor = mChangeColor;
+                }
+                mTextPaint.setColor(textColor);
 
                 final String str = String.valueOf(SINGLE_DIGIT_PERCENT ? (level/10) : level);
                 final float x  = mWidth * 0.5f;
