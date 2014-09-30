@@ -312,6 +312,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mShowClock = true;
     private int mClockStyle;
     private Clock mClockView;
+    private boolean showClockOnLockscreen = false;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -489,6 +490,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.HEADS_UP_TEXT_COLOR), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.STATUS_BAR_CLOCK_LOCKSCREEN), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -2133,7 +2137,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         if ((diff & StatusBarManager.DISABLE_CLOCK) != 0) {
-            boolean show = (state & StatusBarManager.DISABLE_CLOCK) == 0;
+            boolean show = ((state & StatusBarManager.DISABLE_CLOCK) == 0) || showClockOnLockscreen;
             showClock(show);
         }
         if ((diff & StatusBarManager.DISABLE_EXPAND) != 0) {
@@ -3792,6 +3796,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mDockBatteryController.onBatteryMeterModeChanged(mode);
         mDockBatteryView.setShowPercent(showPercent);
         mDockBatteryController.onBatteryMeterShowPercent(showPercent);
+
+        showClockOnLockscreen = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.STATUS_BAR_CLOCK_LOCKSCREEN, 0, mCurrentUserId) == 1;
 
         if (mNavigationBarView != null) {
             boolean navLeftInLandscape = Settings.System.getInt(resolver,
