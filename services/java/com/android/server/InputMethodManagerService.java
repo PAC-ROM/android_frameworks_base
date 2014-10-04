@@ -1050,12 +1050,38 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
                 }
             }
 
-            executeOrSendMessage(mCurClient.client, mCaller.obtainMessageIO(
-                    MSG_SET_ACTIVE, 0, mCurClient));
-            executeOrSendMessage(mCurClient.client, mCaller.obtainMessageIO(
-                    MSG_UNBIND_METHOD, mCurSeq, mCurClient.client));
-            mCurClient.sessionRequested = false;
-            mCurClient = null;
+            try {
+                executeOrSendMessage(mCurClient.client, mCaller.obtainMessageIO(
+                        MSG_SET_ACTIVE, 0, mCurClient));
+            } catch (NullPointerException e) {
+                Slog.e(TAG, "Failed call to executeOrSendMessage due to NPE", e);
+            }
+
+            if (mCurClient == null) {
+                Slog.w(TAG, "SIDE EFFECT ERROR: mCurClient was set to null via executeOrSendMessage(1)");
+            } else if (mCurClient.client == null) {
+                Slog.w(TAG, "SIDE EFFECT ERROR: mCurClient.client was set to null via executeOrSendMessage(1)");
+            } else {
+                try {
+                    executeOrSendMessage(mCurClient.client, mCaller.obtainMessageIO(
+                            MSG_UNBIND_METHOD, mCurSeq, mCurClient.client));
+                } catch (NullPointerException e) {
+                    String msg = "Exception: sending message failed: ";
+                    if (mCurClient == null) {
+                        msg += "mCurClient = null";
+                    } else if (mCurClient.client == null) {
+                        msg += "mCurClient.client = null";
+                        mCurClient.sessionRequested = false;
+                    } else {
+                        msg += "client = " + mCurClient.client.asBinder();
+                        mCurClient.sessionRequested = false;
+                    }
+                    Slog.e(TAG, msg, e);
+                }
+
+                // surperfluous in some cases, but no harm.
+                mCurClient = null;
+            }
 
             hideInputMethodMenuLocked();
         }
@@ -1701,9 +1727,20 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
                 if (mCurMethod != null) {
                     try {
                         refreshImeWindowVisibilityLocked();
+                    } catch (NullPointerException e) {
+                        Slog.w(TAG, "Failed to call refreshImeWindowVisibilityLocke due to NPE");
+                    }
+                }
+
+                if (mCurMethod == null) {
+                    Slog.w(TAG, "SIDE EFFECT ERROR: mCurMethod was set to null by refreshImeWindowVisibilityLocked()");
+                } else {
+                    try {
                         mCurMethod.changeInputMethodSubtype(newSubtype);
                     } catch (RemoteException e) {
                         Slog.w(TAG, "Failed to call changeInputMethodSubtype");
+                    } catch (NullPointerException e) {
+                        Slog.e(TAG, "Failed to call changeInputMethodSubtype due to NPE", e);
                     }
                 }
             }
