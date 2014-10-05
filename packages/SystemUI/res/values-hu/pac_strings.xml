@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
   <string name="default_folder_text">Mappa</string>
   <string name="title_activity_sidebar_configuration">Alkalmazássáv tartalmának beállítása</string>
   <string name="action_save">Mentés</string>

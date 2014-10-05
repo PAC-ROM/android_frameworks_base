@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
   <string name="default_folder_text">Pasta</string>
   <string name="title_activity_sidebar_configuration">Configurações de conteúdo do Appbar</string>
   <string name="action_save">Salvar</string>

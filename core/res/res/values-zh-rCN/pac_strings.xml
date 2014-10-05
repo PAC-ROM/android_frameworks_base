@@ -16,20 +16,22 @@
   limitations under the License.
 -->
 <resources>
+  <string name="permlab_revokePermissions">Allows view and edit of revoked permissions. Not for use by normal applications.</string>
+  <string name="permdesc_revokePermissions">Allows read and write for revoked permissions. Not for use by normal applications.</string>
   <string name="animation_default">默认</string>
   <string name="animation_fade">淡入淡出</string>
   <string name="animation_slide_right">右侧滑入</string>
   <string name="animation_slide_left">左侧滑入</string>
-  <string name="animation_slide_right_no_fade">右侧滑入（无淡入淡出）</string>
-  <string name="animation_slide_left_no_fade">左侧滑入（无淡入淡出）</string>
+  <string name="animation_slide_right_no_fade">Slide in right (No fade)</string>
+  <string name="animation_slide_left_no_fade">Slide in left (No fade)</string>
   <string name="animation_slide_up">底部滑入</string>
   <string name="animation_slide_down">顶部滑入</string>
   <string name="animation_translucent">半透明</string>
-  <string name="animation_grow_shrink">缩放（顶部）</string>
-  <string name="animation_grow_shrink_center">缩放（中心）</string>
-  <string name="animation_grow_shrink_bottom">缩放（底部）</string>
-  <string name="animation_grow_shrink_left">缩放（左侧）</string>
-  <string name="animation_grow_shrink_right">缩放（右侧）</string>
+  <string name="animation_grow_shrink">Grow in (Top)</string>
+  <string name="animation_grow_shrink_center">Grow in (Center)</string>
+  <string name="animation_grow_shrink_bottom">Grow in (Bottom)</string>
+  <string name="animation_grow_shrink_left">Grow in (Left)</string>
+  <string name="animation_grow_shrink_right">Grow in (Right)</string>
   <string name="animation_random">随机</string>
   <string name="global_actions_nav_bar_mode">导航栏</string>
   <string name="global_actions_nav_bar_mode_on_status">导航栏已开启</string>
@@ -72,5 +74,5 @@
   <string name="action_ribbon">AOKP 操作区</string>
   <string name="action_app">自定义应用/快捷方式</string>
   <string name="action_dpad_left">左箭头</string>
-  <string name="action_dpad_right">右箭头</string>
+  <string name="action_dpad_right">Arrow right</string>
 </resources>

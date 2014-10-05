@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="active_display_privacy_content">Contenido del mensaje no se muestra porque esta habilitado el modo de privacidad</string>
   <string name="default_folder_text">Carpeta</string>
   <string name="title_activity_sidebar_configuration">Configurar el contenido de la barra de aplicaciones</string>
   <string name="action_save">Guardar</string>

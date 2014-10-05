@@ -16,6 +16,8 @@
   limitations under the License.
 -->
 <resources>
+  <string name="permlab_revokePermissions">Allows view and edit of revoked permissions. Not for use by normal applications.</string>
+  <string name="permdesc_revokePermissions">Allows read and write for revoked permissions. Not for use by normal applications.</string>
   <string name="animation_default">Alapértelmezett</string>
   <string name="animation_fade">Halványuló</string>
   <string name="animation_slide_right">Beúszás jobbról</string>
