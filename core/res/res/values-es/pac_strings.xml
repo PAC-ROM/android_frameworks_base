@@ -16,6 +16,8 @@
   limitations under the License.
 -->
 <resources>
+  <string name="permlab_revokePermissions">Permite ver y editar permisos revocados. No usar en aplicaciones normales.</string>
+  <string name="permdesc_revokePermissions">Permite la lectura y escritura de permisos revocados. No usar en aplicaciones normales.</string>
   <string name="animation_default">Por defecto</string>
   <string name="animation_fade">Desvanecer</string>
   <string name="animation_slide_right">Deslizar desde la derecha</string>
