@@ -17,7 +17,7 @@
 
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- configurable width dimension for the app sidebar trigger area -->
     <dimen name="config_app_sidebar_trigger_width">8dip</dimen>

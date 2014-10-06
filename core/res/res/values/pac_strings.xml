@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Active Display -->
     <!-- Title of an application permission that lets an application view/edit revoked permissions. -->
@@ -39,32 +39,6 @@
     <string name="animation_grow_shrink_left">Grow in (Left)</string>
     <string name="animation_grow_shrink_right">Grow in (Right)</string>
     <string name="animation_random">Random</string>
-
-    <!-- label for nav bar item in phone options dialog -->
-    <string name="global_actions_nav_bar_mode">Navigation bar</string>
-    <!-- status message in phone options dialog for when navigation bar is on -->
-    <string name="global_actions_nav_bar_mode_on_status">Navigation bar is ON</string>
-    <!-- status message in phone options dialog for when navigation bar is off -->
-    <string name="global_actions_nav_bar_mode_off_status">Navigation bar is OFF</string>
-    <!-- Error message if user want to try to disable all navigation options -->
-    <string name="disable_navigation_pie_error">You cannot disable the navigation bar. No other navigation is enabled. Enable first pie controls to turn off the navigation bar.</string>
-
-    <!-- Heads up -->
-    <string name="permlab_changeHeadsUpState">enable or disable heads up</string>
-    <string name="permdesc_changeHeadsUpState">Allows the application to change whether another application is allowed to show normal notifications as heads up notification.</string>
-
-    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permlab_recordScreen">Record content being displayed</string>
-    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permdesc_recordScreen">Allows the app to record the users screen.</string>
-
-    <!-- label for screen record item in phone options dialog -->
-    <string name="global_action_screen_record">Screen record</string>
-
-    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permlab_fakePackageSignature">mimic package signature</string>
-    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permdesc_fakePackageSignature">Allows the app to use mimic another app\'s package signature.</string>
 
     <!-- Awesome Action Stuff-->
     <string name="action_home">Home</string>
@@ -96,7 +70,33 @@
     <string name="action_app_window">App Window</string>
     <string name="action_ribbon">AOKP Ribbon</string>
     <string name="action_app">Custom App/Shortcut</string>
-    <string name="action_dpad_left">Arrow left </string>
+    <string name="action_dpad_left">Arrow left</string>
     <string name="action_dpad_right">Arrow right</string>
+
+    <!-- label for nav bar item in phone options dialog -->
+    <string name="global_actions_nav_bar_mode">Navigation bar</string>
+    <!-- status message in phone options dialog for when navigation bar is on -->
+    <string name="global_actions_nav_bar_mode_on_status">Navigation bar is ON</string>
+    <!-- status message in phone options dialog for when navigation bar is off -->
+    <string name="global_actions_nav_bar_mode_off_status">Navigation bar is OFF</string>
+    <!-- Error message if user want to try to disable all navigation options -->
+    <string name="disable_navigation_pie_error">You cannot disable the navigation bar. No other navigation is enabled. Enable first pie controls to turn off the navigation bar.</string>
+
+    <!-- Heads up -->
+    <string name="permlab_changeHeadsUpState">enable or disable heads up</string>
+    <string name="permdesc_changeHeadsUpState">Allows the application to change whether another application is allowed to show normal notifications as heads up notification.</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_recordScreen">Record content being displayed</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_recordScreen">Allows the app to record the users screen.</string>
+
+    <!-- label for screen record item in phone options dialog -->
+    <string name="global_action_screen_record">Screen record</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">mimic package signature</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Allows the app to use mimic another app\'s package signature.</string>
 
 </resources>
