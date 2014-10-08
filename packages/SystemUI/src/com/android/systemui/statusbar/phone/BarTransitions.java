@@ -85,6 +85,10 @@ public class BarTransitions {
         mBarBackground.updateResources(res);
     }
 
+    public String getCurrentTag() {
+        return mTag;
+    }
+
     public int getMode() {
         return mMode;
     }
