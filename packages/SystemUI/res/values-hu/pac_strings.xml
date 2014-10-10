@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
+  <string name="active_display_privacy_content">Üzenet tartalma nem jelenik meg, mert az adatvédelmi mód engedélyezve van</string>
   <string name="default_folder_text">Mappa</string>
   <string name="title_activity_sidebar_configuration">Alkalmazássáv tartalmának beállítása</string>
   <string name="action_save">Mentés</string>
@@ -42,8 +42,6 @@
   <string name="heads_up_snooze_message">Lebegő értesítés kikapcsolva <xliff:g id="number">%d</xliff:g> percre.</string>
   <string name="quick_settings_powermenu_label">Kikapcsoló menü</string>
   <string name="memory">RAM</string>
-  <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> free</string>
-  <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>
   <string name="app_killed_message">Alkalmazás kilőve</string>
   <string name="pie_battery_status_charging">Töltés (<xliff:g id="percent">%d</xliff:g>%%)</string>
   <string name="pie_battery_status_full">Feltöltve</string>

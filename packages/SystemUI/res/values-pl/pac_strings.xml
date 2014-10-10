@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
+  <string name="active_display_privacy_content">Treść wiadomości jest ukryta, ponieważ włączony jest tryb prywatności</string>
   <string name="default_folder_text">Folder</string>
   <string name="title_activity_sidebar_configuration">Wybrane aplikacje</string>
   <string name="action_save">Zapisz</string>
@@ -33,7 +33,7 @@
   <string name="halo_dismiss">Odrzuć powiadomienie</string>
   <string name="halo_hide">Ukryj</string>
   <string name="halo_clear_all">Odrzuć wszystkie powiadomienia</string>
-  <string name="halo_silence">Ukryj &amp; wycisz do wybudzenia</string>
+  <string name="halo_silence">Ukryj &amp; wycisz, aż do wybudzenia</string>
   <string name="halo_tutorial1">To jest HALO</string>
   <string name="halo_tutorial2">Przenieś mnie: dotknij dwukrotnie &amp; przeciągnij</string>
   <string name="halo_tutorial3">Przeglądaj zadania: poziome przeciągnięcie</string>
@@ -55,6 +55,5 @@
   <string name="status_bar_recent_amazon_item_title">Sklep Amazon</string>
   <string name="status_bar_notification_floating_item_title">Tryb okienkowy</string>
   <string name="status_bar_floating_no_interface">Aplikacja nie posiada interfejsu</string>
-  <string name="weatherpanel_slash">/</string>
   <string name="update_weather">Aktualizowanie pogody</string>
 </resources>

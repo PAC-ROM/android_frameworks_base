@@ -15,35 +15,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
-  <string name="permlab_revokePermissions">Allows view and edit of revoked permissions. Not for use by normal applications.</string>
-  <string name="permdesc_revokePermissions">Allows read and write for revoked permissions. Not for use by normal applications.</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">允许查看并编辑已撤销的权限，非用于常规应用程序。</string>
+  <string name="permdesc_revokePermissions">允许读取和写入已撤销的权限，非用于常规应用程。</string>
   <string name="animation_default">默认</string>
   <string name="animation_fade">淡入淡出</string>
   <string name="animation_slide_right">右侧滑入</string>
   <string name="animation_slide_left">左侧滑入</string>
-  <string name="animation_slide_right_no_fade">Slide in right (No fade)</string>
-  <string name="animation_slide_left_no_fade">Slide in left (No fade)</string>
+  <string name="animation_slide_right_no_fade">右侧滑入（无淡入淡出）</string>
+  <string name="animation_slide_left_no_fade">左侧滑入（无淡入淡出）</string>
   <string name="animation_slide_up">底部滑入</string>
   <string name="animation_slide_down">顶部滑入</string>
   <string name="animation_translucent">半透明</string>
-  <string name="animation_grow_shrink">Grow in (Top)</string>
-  <string name="animation_grow_shrink_center">Grow in (Center)</string>
-  <string name="animation_grow_shrink_bottom">Grow in (Bottom)</string>
-  <string name="animation_grow_shrink_left">Grow in (Left)</string>
-  <string name="animation_grow_shrink_right">Grow in (Right)</string>
+  <string name="animation_grow_shrink">缩放（顶部）</string>
+  <string name="animation_grow_shrink_center">缩放（中心）</string>
+  <string name="animation_grow_shrink_bottom">缩放（底部）</string>
+  <string name="animation_grow_shrink_left">缩放（左侧）</string>
+  <string name="animation_grow_shrink_right">缩放（右侧）</string>
   <string name="animation_random">随机</string>
-  <string name="global_actions_nav_bar_mode">导航栏</string>
-  <string name="global_actions_nav_bar_mode_on_status">导航栏已开启</string>
-  <string name="global_actions_nav_bar_mode_off_status">导航栏已关闭</string>
-  <string name="disable_navigation_pie_error">您不能禁用导航栏，因为没有启用其他导航功能。请先启用 Pie 控制再关闭导航栏。</string>
-  <string name="permlab_changeHeadsUpState">启用或禁用浮动通知</string>
-  <string name="permdesc_changeHeadsUpState">允许应用更改是否允许另一应用将正常通知作为浮动通知显示。</string>
-  <string name="permlab_recordScreen">正在显示的记录内容</string>
-  <string name="permdesc_recordScreen">允许应用录制用户屏幕。</string>
-  <string name="global_action_screen_record">屏幕录像</string>
-  <string name="permlab_fakePackageSignature">模仿软件包签名</string>
-  <string name="permdesc_fakePackageSignature">允许应用使用模仿另一个应用的签名。</string>
   <string name="action_home">桌面</string>
   <string name="action_back">返回</string>
   <string name="action_recents">近期任务</string>
@@ -74,5 +63,16 @@
   <string name="action_ribbon">AOKP 操作区</string>
   <string name="action_app">自定义应用/快捷方式</string>
   <string name="action_dpad_left">左箭头</string>
-  <string name="action_dpad_right">Arrow right</string>
+  <string name="action_dpad_right">右箭头</string>
+  <string name="global_actions_nav_bar_mode">导航栏</string>
+  <string name="global_actions_nav_bar_mode_on_status">导航栏已开启</string>
+  <string name="global_actions_nav_bar_mode_off_status">导航栏已关闭</string>
+  <string name="disable_navigation_pie_error">您不能禁用导航栏，因为没有启用其他导航功能。请先启用 Pie 控制再关闭导航栏。</string>
+  <string name="permlab_changeHeadsUpState">启用或禁用浮动通知</string>
+  <string name="permdesc_changeHeadsUpState">允许应用更改是否允许另一应用将正常通知作为浮动通知显示。</string>
+  <string name="permlab_recordScreen">正在显示的记录内容</string>
+  <string name="permdesc_recordScreen">允许应用录制用户屏幕。</string>
+  <string name="global_action_screen_record">屏幕录像</string>
+  <string name="permlab_fakePackageSignature">模仿软件包签名</string>
+  <string name="permdesc_fakePackageSignature">允许应用使用模仿另一个应用的签名。</string>
 </resources>

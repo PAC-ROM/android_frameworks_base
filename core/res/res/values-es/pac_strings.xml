@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="permlab_revokePermissions">Permite ver y editar permisos revocados. No usar en aplicaciones normales.</string>
   <string name="permdesc_revokePermissions">Permite la lectura y escritura de permisos revocados. No usar en aplicaciones normales.</string>
   <string name="animation_default">Por defecto</string>
@@ -33,17 +33,6 @@
   <string name="animation_grow_shrink_left">Aparecer (desde la izquierda)</string>
   <string name="animation_grow_shrink_right">Aparecer (desde la derecha)</string>
   <string name="animation_random">Aleatorio</string>
-  <string name="global_actions_nav_bar_mode">Barra de navegación</string>
-  <string name="global_actions_nav_bar_mode_on_status">Barra de navegación está activada</string>
-  <string name="global_actions_nav_bar_mode_off_status">Barra de navegacion esta desactivada</string>
-  <string name="disable_navigation_pie_error">No puedes deshabilitar la barra de navegación si no hay otro método de navegación encendido. Primero Habilita el control pie para apagar la barra de navegación.</string>
-  <string name="permlab_changeHeadsUpState">habilitar y deshabilitar heads up</string>
-  <string name="permdesc_changeHeadsUpState">Permite que la aplicación cambie si otra aplicación muestra notificaciones normales como heaps up.</string>
-  <string name="permlab_recordScreen">Contenido grabado esta siendo mostrado</string>
-  <string name="permdesc_recordScreen">Permite que la aplicación grabe la pantalla de usuarios.</string>
-  <string name="global_action_screen_record">Grabación de pantalla</string>
-  <string name="permlab_fakePackageSignature">imitan la firma del paquete</string>
-  <string name="permdesc_fakePackageSignature">Permite que la aplicación utilice la firma de otro paquete de aplicación</string>
   <string name="action_home">Página de inicio</string>
   <string name="action_back">Atrás</string>
   <string name="action_recents">Recientes</string>
@@ -73,6 +62,17 @@
   <string name="action_app_window">Ventana de la aplicación</string>
   <string name="action_ribbon">Cinta AOKP</string>
   <string name="action_app">Aplicación Personalizada/Acceso Directo</string>
-  <string name="action_dpad_left">Flecha izquierda </string>
+  <string name="action_dpad_left">Flecha izquierda</string>
   <string name="action_dpad_right">Flecha derecha</string>
+  <string name="global_actions_nav_bar_mode">Barra de navegación</string>
+  <string name="global_actions_nav_bar_mode_on_status">Barra de navegación está activada</string>
+  <string name="global_actions_nav_bar_mode_off_status">Barra de navegacion esta desactivada</string>
+  <string name="disable_navigation_pie_error">No puedes deshabilitar la barra de navegación si no hay otro método de navegación encendido. Primero Habilita el control pie para apagar la barra de navegación.</string>
+  <string name="permlab_changeHeadsUpState">habilitar y deshabilitar heads up</string>
+  <string name="permdesc_changeHeadsUpState">Permite que la aplicación cambie si otra aplicación muestra notificaciones normales como heaps up.</string>
+  <string name="permlab_recordScreen">Contenido grabado esta siendo mostrado</string>
+  <string name="permdesc_recordScreen">Permite que la aplicación grabe la pantalla de usuarios.</string>
+  <string name="global_action_screen_record">Grabación de pantalla</string>
+  <string name="permlab_fakePackageSignature">imitan la firma del paquete</string>
+  <string name="permdesc_fakePackageSignature">Permite que la aplicación utilice la firma de otro paquete de aplicación</string>
 </resources>

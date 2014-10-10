@@ -16,45 +16,43 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
-  <string name="default_folder_text">Folder</string>
-  <string name="title_activity_sidebar_configuration">Appbar content setup</string>
-  <string name="action_save">Save</string>
-  <string name="toast_items_saved">Appbar items have been saved.</string>
-  <string name="content_setup_instructions">Add items to the Appbar by long pressing any item on the right and drag it over to the Appbar.\n\nCombine items into folders by droping an item onto any existing item in the Appbar.\n\nTo remove an item simply drag it out of the \@appbar.</string>
-  <string name="content_setup_dismiss">Continue</string>
-  <string name="toast_not_installed">App is not installed</string>
-  <string name="floating_mode_blacklisted_app">The current app is blacklisted as it may not work as expected in floating mode </string>
-  <string name="accessibility_halo">Create notification halo.</string>
-  <string name="cpufreq_max">Max CPU Freq</string>
-  <string name="cpufreq_min">Min CPU Freq</string>
-  <string name="halo_on">HALO ON</string>
-  <string name="halo_off">HALO OFF</string>
-  <string name="halo_dismiss">Dismiss notification</string>
-  <string name="halo_hide">Hide</string>
-  <string name="halo_clear_all">Dismiss all notifications</string>
-  <string name="halo_silence">Hide &amp; silence until woken</string>
-  <string name="halo_tutorial1">This is HALO</string>
-  <string name="halo_tutorial2">Move me: double tap &amp; drag</string>
-  <string name="halo_tutorial3">Browse tasks: Horizontal drag</string>
-  <string name="status_bar_notification_heads_up_enable_title">Enable heads up</string>
-  <string name="status_bar_notification_heads_up_disable_title">Disable heads up</string>
-  <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
-  <string name="quick_settings_powermenu_label">Power Menu</string>
+  <string name="active_display_privacy_content">Le contenu du message ne peut être affiché car le mode privé est activé</string>
+  <string name="default_folder_text">Dossier</string>
+  <string name="title_activity_sidebar_configuration">Réglages du contenu du barre d\'applications</string>
+  <string name="action_save">Enregistrer</string>
+  <string name="toast_items_saved">Éléments de la barre d\'applications ont été enregistrées.</string>
+  <string name="content_setup_instructions">Ajouter des éléments à l\'Appbar par un appui long sur n\'importe quel élément sur le côté droit et le glisser/déposer sur l\'Appbar.\n\nCombiner les éléments dans des dossiers en les déposant sur un élément existant dans l\'Appbar.\n\nPour supprimer un élément, déposer hors de l\' \@appbar.</string>
+  <string name="content_setup_dismiss">Continuer</string>
+  <string name="toast_not_installed">L\'application n\'est pas installée</string>
+  <string name="floating_mode_blacklisted_app">L\'application actuel est en liste noire car elle pourrait ne pas fonctionner correctement en mode flottant </string>
+  <string name="accessibility_halo">Créer une notification d\'halo.</string>
+  <string name="cpufreq_max">Fréquence maximale du processeur</string>
+  <string name="cpufreq_min">Fréquence minimale du processeur</string>
+  <string name="halo_on">HALO activé</string>
+  <string name="halo_off">HALO désactivé</string>
+  <string name="halo_dismiss">Effacer la notification</string>
+  <string name="halo_hide">Masquer</string>
+  <string name="halo_clear_all">Effacer toutes les notifications</string>
+  <string name="halo_silence">Cacher &amp; silence jusqu\'à ce qu\'il se réveille</string>
+  <string name="halo_tutorial1">Voici Halo</string>
+  <string name="halo_tutorial2">Déplacez-moi : touchez deux fois &amp; glissez</string>
+  <string name="halo_tutorial3">Parcourir les tâches: glissement horizontal</string>
+  <string name="status_bar_notification_heads_up_enable_title">Activer les notifications flottantes</string>
+  <string name="status_bar_notification_heads_up_disable_title">Désactiver les notifications flottantes</string>
+  <string name="heads_up_snooze_message">Les notifications flottantes sont désactivées pour <xliff:g id="number">%d</xliff:g> minutes.</string>
+  <string name="quick_settings_powermenu_label">Menu d\'alimentation</string>
   <string name="memory">RAM</string>
-  <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> free</string>
-  <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>
-  <string name="app_killed_message">App killed</string>
-  <string name="pie_battery_status_charging">Charging (<xliff:g id="percent">%d</xliff:g>%%)</string>
-  <string name="pie_battery_status_full">Charged</string>
-  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% remaining</string>
-  <string name="pie_phone_status_no_service">No service</string>
-  <string name="pie_phone_status_airplane_mode">Airplane mode on</string>
-  <string name="pie_phone_status_emergency_only">Emergency calls only</string>
-  <string name="status_bar_recent_playstore_item_title">Play Store</string>
-  <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
-  <string name="status_bar_notification_floating_item_title">Floating mode</string>
-  <string name="status_bar_floating_no_interface">App provides no interface</string>
+  <string name="app_killed_message">Application arrêtée</string>
+  <string name="pie_battery_status_charging">En charge (<xliff:g id="pourcent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Chargé</string>
+  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% restant</string>
+  <string name="pie_phone_status_no_service">Aucun service</string>
+  <string name="pie_phone_status_airplane_mode">Mode avion</string>
+  <string name="pie_phone_status_emergency_only">Appels d\'urgence uniquement</string>
+  <string name="status_bar_recent_playstore_item_title">Play Store</string>
+  <string name="status_bar_recent_amazon_item_title">Boutique Amazon</string>
+  <string name="status_bar_notification_floating_item_title">Mode flottant</string>
+  <string name="status_bar_floating_no_interface">App ne fournit aucun interface</string>
   <string name="weatherpanel_slash">/</string>
-  <string name="update_weather">Updating weather</string>
+  <string name="update_weather">Mise à jour de la météo</string>
 </resources>

@@ -15,15 +15,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
-  <string name="permlab_revokePermissions">Allows view and edit of revoked permissions. Not for use by normal applications.</string>
-  <string name="permdesc_revokePermissions">Allows read and write for revoked permissions. Not for use by normal applications.</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">Ermöglicht das Anzeigen und Bearbeiten von entzogenen Berechtigungen. Nicht für die Nutzung durch normale Apps vorgesehen.</string>
+  <string name="permdesc_revokePermissions">Ermöglicht das Lesen und Schreiben für entzogene Berechtigungen. Nicht für die Nutzung durch normale Apps vorgesehen.</string>
   <string name="animation_default">Standard</string>
   <string name="animation_fade">Ausblenden</string>
   <string name="animation_slide_right">Gleiten von rechts</string>
   <string name="animation_slide_left">Gleiten von links</string>
-  <string name="animation_slide_right_no_fade">Slide in right (No fade)</string>
-  <string name="animation_slide_left_no_fade">Slide in left (No fade)</string>
+  <string name="animation_slide_right_no_fade">Von rechts hereingleiten (ohne Verblassen)</string>
+  <string name="animation_slide_left_no_fade">Von links hereingleiten (ohne Verblassen)</string>
   <string name="animation_slide_up">Gleiten von unten</string>
   <string name="animation_slide_down">Von oben gleiten</string>
   <string name="animation_translucent">Durchsichtig</string>
@@ -33,21 +33,10 @@
   <string name="animation_grow_shrink_left">Einblenden (von links)</string>
   <string name="animation_grow_shrink_right">Einblenden (Rechts)</string>
   <string name="animation_random">Zufällig</string>
-  <string name="global_actions_nav_bar_mode">Navigationsleiste</string>
-  <string name="global_actions_nav_bar_mode_on_status">Navigationsleiste ist AN</string>
-  <string name="global_actions_nav_bar_mode_off_status">Navigationsbar ist AUS</string>
-  <string name="disable_navigation_pie_error">Navigationsleiste kann nicht deaktiviert werden. Keine andere Navigation ist aktiv. Aktiviere zuerst die pie Steuerung um die Navigationsleiste zu deaktivieren.</string>
-  <string name="permlab_changeHeadsUpState">heads up einschalten oder ausschalten</string>
-  <string name="permdesc_changeHeadsUpState">Ermöglicht einer App festzulegen, ob andere Apps Heads Up Benachrichtigungen zeigen dürfen.</string>
-  <string name="permlab_recordScreen">Aufgezeichneter Inhalt wird angezeigt</string>
-  <string name="permdesc_recordScreen">Erlaubt der Anwendung den Bildschirminhalt aufzuzeichnen.</string>
-  <string name="global_action_screen_record">Bildschirmaufnahme</string>
-  <string name="permlab_fakePackageSignature">mimic package signature</string>
-  <string name="permdesc_fakePackageSignature">Allows the app to use mimic another app\'s package signature.</string>
   <string name="action_home">Startseite</string>
   <string name="action_back">Zurück</string>
   <string name="action_recents">Letzte Apps</string>
-  <string name="action_recents_gb">Recents (GB style)</string>
+  <string name="action_recents_gb">Letzte Apps (GB-Stil)</string>
   <string name="action_search">Suche</string>
   <string name="action_screenshot">Screenshot</string>
   <string name="action_menu">Menü</string>
@@ -69,10 +58,21 @@
   <string name="action_unlock">Entsperren</string>
   <string name="action_camera">Kamera</string>
   <string name="action_null">Leer</string>
-  <string name="action_widgets">Nav Widgets</string>
+  <string name="action_widgets">Navigations-Widgets</string>
   <string name="action_app_window">Anwendungsfenster</string>
-  <string name="action_ribbon">AOKP Ribbon</string>
+  <string name="action_ribbon">AOKP-Ribbon</string>
   <string name="action_app">Benutzerdefinierte App/Verknüpfung</string>
-  <string name="action_dpad_left">Pfeil links </string>
+  <string name="action_dpad_left">Pfeil links</string>
   <string name="action_dpad_right">Pfeil rechts</string>
+  <string name="global_actions_nav_bar_mode">Navigationsleiste</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigationsleiste ist AN</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigationsleiste ist AUS</string>
+  <string name="disable_navigation_pie_error">Navigationsleiste kann nicht deaktiviert werden. Keine andere Navigation ist aktiv. Aktiviere zuerst die pie Steuerung um die Navigationsleiste zu deaktivieren.</string>
+  <string name="permlab_changeHeadsUpState">Heads Up einschalten oder ausschalten</string>
+  <string name="permdesc_changeHeadsUpState">Ermöglicht einer App festzulegen, ob andere Apps Heads Up Benachrichtigungen zeigen dürfen.</string>
+  <string name="permlab_recordScreen">Aufgezeichneter Inhalt wird angezeigt</string>
+  <string name="permdesc_recordScreen">Erlaubt der Anwendung den Bildschirminhalt aufzuzeichnen.</string>
+  <string name="global_action_screen_record">Bildschirmaufnahme</string>
+  <string name="permlab_fakePackageSignature">Signatur-Nachahmung</string>
+  <string name="permdesc_fakePackageSignature">Erlaubt der App die Paketsignatur einer anderen App zu imitieren.</string>
 </resources>

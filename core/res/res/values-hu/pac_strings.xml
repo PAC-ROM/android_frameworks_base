@@ -15,9 +15,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
-  <string name="permlab_revokePermissions">Allows view and edit of revoked permissions. Not for use by normal applications.</string>
-  <string name="permdesc_revokePermissions">Allows read and write for revoked permissions. Not for use by normal applications.</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">Lehetővé teszi, hogy megtekintse és módosítsa a visszavont engedélyeket. Nem használható normál alkalmazásokkal.</string>
+  <string name="permdesc_revokePermissions">Lehetővé teszi, hogy írja és olvassa a visszavont engedélyeket. Nem használható normál alkalmazásokkal.</string>
   <string name="animation_default">Alapértelmezett</string>
   <string name="animation_fade">Halványuló</string>
   <string name="animation_slide_right">Beúszás jobbról</string>
@@ -33,17 +33,6 @@
   <string name="animation_grow_shrink_left">Növekvő (bal)</string>
   <string name="animation_grow_shrink_right">Növekvő (jobb)</string>
   <string name="animation_random">Véletlenszerű</string>
-  <string name="global_actions_nav_bar_mode">Navigációs sáv</string>
-  <string name="global_actions_nav_bar_mode_on_status">Navigációs sáv BE</string>
-  <string name="global_actions_nav_bar_mode_off_status">Navigációs sáv KI</string>
-  <string name="disable_navigation_pie_error">A navigációs sáv nem kapcsolható ki, mert jelenleg nincs másik vezérlő engedélyezve. Először engedélyezze a pie vezérlőt a navigációs sáv kikapcsolásához.</string>
-  <string name="permlab_changeHeadsUpState">lebegő értesítések engedélyezése vagy tiltása</string>
-  <string name="permdesc_changeHeadsUpState">Lehetővé teszi az alkalmazás számára, hogy egy másik alkalmazás normál értesítéseit mint lebegő értesítéseket jelenítse meg.</string>
-  <string name="permlab_recordScreen">Megjelenített tartalom felvétele</string>
-  <string name="permdesc_recordScreen">Megengedi az alkalmazásnak a képernyőkép rögzítését.</string>
-  <string name="global_action_screen_record">Képernyő felvétel</string>
-  <string name="permlab_fakePackageSignature">utánozza a csomag aláírását</string>
-  <string name="permdesc_fakePackageSignature">Lehetővé teszi az alkalmazás számára, hogy egy másik alkalmazáscsomag aláírását utánozza.</string>
   <string name="action_home">Kezdőlap</string>
   <string name="action_back">Vissza</string>
   <string name="action_recents">Előzmények</string>
@@ -75,4 +64,15 @@
   <string name="action_app">Egyéni Alk./Parancsikon</string>
   <string name="action_dpad_left">Balra nyíl</string>
   <string name="action_dpad_right">Jobbra nyíl</string>
+  <string name="global_actions_nav_bar_mode">Navigációs sáv</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigációs sáv BE</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigációs sáv KI</string>
+  <string name="disable_navigation_pie_error">A navigációs sáv nem kapcsolható ki, mert jelenleg nincs másik vezérlő engedélyezve. Először engedélyezze a pie vezérlőt a navigációs sáv kikapcsolásához.</string>
+  <string name="permlab_changeHeadsUpState">lebegő értesítések engedélyezése vagy tiltása</string>
+  <string name="permdesc_changeHeadsUpState">Lehetővé teszi az alkalmazás számára, hogy egy másik alkalmazás normál értesítéseit mint lebegő értesítéseket jelenítse meg.</string>
+  <string name="permlab_recordScreen">Megjelenített tartalom felvétele</string>
+  <string name="permdesc_recordScreen">Megengedi az alkalmazásnak a képernyőkép rögzítését.</string>
+  <string name="global_action_screen_record">Képernyő felvétel</string>
+  <string name="permlab_fakePackageSignature">utánozza a csomag aláírását</string>
+  <string name="permdesc_fakePackageSignature">Lehetővé teszi az alkalmazás számára, hogy egy másik alkalmazáscsomag aláírását utánozza.</string>
 </resources>
