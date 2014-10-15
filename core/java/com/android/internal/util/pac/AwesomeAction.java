@@ -72,6 +72,8 @@ public class AwesomeAction {
 
     private static int mCurrentUserId = 0;
 
+    private static Handler mHandler = null;
+
     private AwesomeAction() {
     }
 
@@ -79,10 +81,23 @@ public class AwesomeAction {
         mCurrentUserId = newUserId;
     }
 
+    private static Handler getHandler() {
+        if (mHandler == null) {
+            mHandler = new Handler() {
+                public void handleMessage(Message msg) {
+                    switch (msg.what) {
+                    }
+                }
+            };
+        }
+        return mHandler;
+    }
+
     public static boolean launchAction(final Context mContext, final String action) {
         if (TextUtils.isEmpty(action) || action.equals(NULL_ACTION)) {
             return false;
         }
+        final Handler handler = getHandler();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -104,18 +119,18 @@ public class AwesomeAction {
                         }
                         break;
                     case ACTION_BACK:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_BACK, STANDARD_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_BACK, STANDARD_FLAGS);
                         break;
                     case ACTION_MENU:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_MENU, STANDARD_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_MENU, STANDARD_FLAGS);
                         break;
                     case ACTION_SEARCH:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, STANDARD_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_SEARCH, STANDARD_FLAGS);
                         break;
                     case ACTION_KILL:
                         KillApp onKillApp = new KillApp(mCurrentUserId, mContext);
-                        mHandler.removeCallbacks(onKillApp);
-                        mHandler.post(onKillApp);
+                        handler.removeCallbacks(onKillApp);
+                        handler.post(onKillApp);
                         break;
                     case ACTION_VIB:
                         am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -178,7 +193,7 @@ public class AwesomeAction {
                         }
                         break;
                     case ACTION_POWER:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, STANDARD_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_POWER, STANDARD_FLAGS);
                         break;
                     case ACTION_IME:
                         mContext.sendBroadcast(new Intent(
@@ -249,10 +264,10 @@ public class AwesomeAction {
                         mContext.startActivity(camera);
                         break;
                     case ACTION_DPAD_LEFT:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_LEFT, CURSOR_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_DPAD_LEFT, CURSOR_FLAGS);
                         break;
                     case ACTION_DPAD_RIGHT:
-                        triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_RIGHT, CURSOR_FLAGS);
+                        triggerVirtualKeypress(handler, KeyEvent.KEYCODE_DPAD_RIGHT, CURSOR_FLAGS);
                         break;
                 }
 
@@ -269,13 +284,13 @@ public class AwesomeAction {
         return list.size() > 0;
     }
 
-    private static void triggerVirtualKeypress(int keycode, int flags) {
+    private static void triggerVirtualKeypress(Handler handler, int keycode, int flags) {
         KeyUp onInjectKey_Up = new KeyUp(keycode, flags);
         KeyDown onInjectKey_Down = new KeyDown(keycode, flags);
-        mHandler.removeCallbacks(onInjectKey_Down);
-        mHandler.removeCallbacks(onInjectKey_Up);
-        mHandler.post(onInjectKey_Down);
-        mHandler.postDelayed(onInjectKey_Up, 10);
+        handler.removeCallbacks(onInjectKey_Down);
+        handler.removeCallbacks(onInjectKey_Up);
+        handler.post(onInjectKey_Down);
+        handler.postDelayed(onInjectKey_Up, 10);
     }
 
     public static class KillApp implements Runnable {
@@ -331,11 +346,4 @@ public class AwesomeAction {
                     InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
         }
     }
-
-    private static Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            }
-        }
-    };
 }
