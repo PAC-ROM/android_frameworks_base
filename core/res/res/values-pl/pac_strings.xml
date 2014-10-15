@@ -28,7 +28,7 @@
   <string name="animation_slide_down">Przesunięcie w górę</string>
   <string name="animation_translucent">Przeźroczysty</string>
   <string name="animation_grow_shrink">Powiększenie (od góry)</string>
-  <string name="animation_grow_shrink_center">Powiększenie (ze środka)</string>
+  <string name="animation_grow_shrink_center">Powiększenie (od środka)</string>
   <string name="animation_grow_shrink_bottom">Powiększenie (od dołu)</string>
   <string name="animation_grow_shrink_left">Powiększenie (od lewej)</string>
   <string name="animation_grow_shrink_right">Powiększenie (od prawej)</string>
@@ -36,14 +36,14 @@
   <string name="action_home">Ekran startowy</string>
   <string name="action_back">Wstecz</string>
   <string name="action_recents">Ostatnio używane</string>
-  <string name="action_recents_gb">Ostatnio używane (styl GB)</string>
+  <string name="action_recents_gb">Ostatnio używane (styl Android\'a 2.3)</string>
   <string name="action_search">Szukaj</string>
   <string name="action_screenshot">Zrzut ekranu</string>
   <string name="action_menu">Menu</string>
-  <string name="action_ime">Otwórz IME</string>
-  <string name="action_kill">Zabij proces</string>
+  <string name="action_ime">Otwórz IME (edytor metod wprowadzania)</string>
+  <string name="action_kill">Zakończ proces</string>
   <string name="action_lastapp">Ostatnia aplikacja</string>
-  <string name="action_power">Przycisk Power</string>
+  <string name="action_power">Przycisk zasilania</string>
   <string name="action_notifications">Powiadomienia</string>
   <string name="action_assist">Szukaj (Google Now)</string>
   <string name="action_clockoptions">Opcje zegara</string>
@@ -67,7 +67,7 @@
   <string name="global_actions_nav_bar_mode">Pasek nawigacji</string>
   <string name="global_actions_nav_bar_mode_on_status">Pasek nawigacji jest włączony</string>
   <string name="global_actions_nav_bar_mode_off_status">Pasek nawigacji jest wyłączony</string>
-  <string name="disable_navigation_pie_error">Nie można wyłączyć paska nawigacji. Aktywuj inny typ nawigacji np. PIE, aby móc wyłączyć ten.</string>
+  <string name="disable_navigation_pie_error">Nie można wyłączyć paska nawigacji. Aktywuj inny typ nawigacji np. PIE, aby móc wyłączyć aktualny.</string>
   <string name="permlab_changeHeadsUpState">włącz lub wyłącz wyskakujące powiadomienia</string>
   <string name="permdesc_changeHeadsUpState">Pozwala aplikacji zdecydować czy inna aplikacja będzie mogła wyświetlić normalne powiadomienia jako wyskakujące powiadomienia.</string>
   <string name="permlab_recordScreen">Nagrywanie ekranu</string>

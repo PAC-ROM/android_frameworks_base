@@ -70,4 +70,9 @@
   <string name="disable_navigation_pie_error">Vous ne pouvez pas désactiver la barre de navigation. Aucun autre moyen de navigation n\'est activé. Activez d\'abord le contrôle de PIE avant de désactiver celle-ci.</string>
   <string name="permlab_changeHeadsUpState">Activer ou désactiver le Heads-Up</string>
   <string name="permdesc_changeHeadsUpState">Autorise l\'application à choisir si une application sera autorisée à afficher ses notifications courantes dans la barre Heads-Up.</string>
+  <string name="permlab_recordScreen">Enregistrement du contenu afficher à l\'écran</string>
+  <string name="permdesc_recordScreen">Autoriser l\'application à enregistrer l\'écran du téléphone.</string>
+  <string name="global_action_screen_record">Enregistrement vidéo de l\'écran</string>
+  <string name="permlab_fakePackageSignature">imiter la signature de paquet</string>
+  <string name="permdesc_fakePackageSignature">Permet l\'application d\'imitateur la signature de paquet de l\'application une autre.</string>
 </resources>
