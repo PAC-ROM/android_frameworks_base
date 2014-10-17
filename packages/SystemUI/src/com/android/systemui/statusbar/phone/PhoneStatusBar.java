@@ -3314,6 +3314,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         return 0 == (mSystemUiVisibility & View.SYSTEM_UI_FLAG_LOW_PROFILE);
     }
 
+    private boolean isTickerEnabled() {
+        return Settings.PAC.getInt(mContext.getContentResolver(),
+                Settings.PAC.STATUS_BAR_TICKER_ENABLED, 1) == 1;
+    }
+
     public void setLightsOn(boolean on) {
         Log.v(TAG, "setLightsOn(" + on + ")");
         if (on) {
@@ -3367,6 +3372,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     protected void tick(IBinder key, StatusBarNotification n, boolean firstTime) {
         // no ticking in lights-out mode, except if halo is active
         if (!areLightsOn() && !mHaloActive) return;
+
+        // user has ticker disabled
+        if (!isTickerEnabled()) return;
 
         // no ticking in Setup
         if (!isDeviceProvisioned()) return;

@@ -9606,6 +9606,13 @@ public final class Settings {
          */
         public static final String STATUS_BAR_TINTED_NAVBAR_TRANSPARENT = "status_bar_tinted_navbar_transparent";
 
+        /**
+         * Whether to enable ticker animation
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_TICKER_ENABLED = "status_bar_ticker_enabled";
+
     }
 
     /**
