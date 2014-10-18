@@ -25,6 +25,8 @@ import android.view.View;
 
 import com.android.systemui.R;
 
+import java.util.ArrayList;
+
 public final class PhoneStatusBarTransitions extends BarTransitions {
     private static final float ICON_ALPHA_WHEN_NOT_OPAQUE = 1;
     private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_BATTERY_CLOCK = 0.5f;
@@ -63,6 +65,9 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     }
 
     public ObjectAnimator animateTransitionTo(View v, float toAlpha) {
+        if (v == null) {
+            return null;
+        }
         return ObjectAnimator.ofFloat(v, "alpha", v.getAlpha(), toAlpha);
     }
 
@@ -95,31 +100,80 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
             mCurrentAnimation.cancel();
         }
         if (animate) {
+            ArrayList<Animator> animList = new ArrayList<Animator>();
+
+            ObjectAnimator leftSideAnim = animateTransitionTo(mLeftSide, newAlpha);
+            if (leftSideAnim != null) {
+                animList.add(leftSideAnim);
+            }
+
+            ObjectAnimator statusIconsAnim = animateTransitionTo(mStatusIcons, newAlpha);
+            if (statusIconsAnim != null) {
+                animList.add(statusIconsAnim);
+            }
+
+            ObjectAnimator signalClusterAnim = animateTransitionTo(mSignalCluster, newAlpha);
+            if (signalClusterAnim != null) {
+                animList.add(signalClusterAnim);
+            }
+
+            ObjectAnimator netStatsAnim = animateTransitionTo(mNetStats, newAlpha);
+            if (netStatsAnim != null) {
+                animList.add(netStatsAnim);
+            }
+
+            ObjectAnimator dockBatteryAnim = animateTransitionTo(mDockBattery, newAlphaBC);
+            if (dockBatteryAnim != null) {
+                animList.add(dockBatteryAnim);
+            }
+
+            ObjectAnimator batteryAnim = animateTransitionTo(mBattery, newAlphaBC);
+            if (batteryAnim != null) {
+                animList.add(batteryAnim);
+            }
+
+            ObjectAnimator clockAnim = animateTransitionTo(mClock, newAlphaBC);
+            if (clockAnim != null) {
+                animList.add(clockAnim);
+            }
+
+            ObjectAnimator centerClockAnim = animateTransitionTo(mCenterClock, newAlphaBC);
+            if (centerClockAnim != null) {
+                animList.add(centerClockAnim);
+            }
+
             AnimatorSet anims = new AnimatorSet();
-            anims.playTogether(
-                    animateTransitionTo(mLeftSide, newAlpha),
-                    animateTransitionTo(mStatusIcons, newAlpha),
-                    animateTransitionTo(mSignalCluster, newAlpha),
-                    animateTransitionTo(mNetStats, newAlpha),
-                    animateTransitionTo(mDockBattery, newAlphaBC),
-                    animateTransitionTo(mBattery, newAlphaBC),
-                    animateTransitionTo(mClock, newAlphaBC),
-                    animateTransitionTo(mCenterClock, newAlphaBC)
-                    );
+            anims.playTogether(animList);
             if (mode == MODE_LIGHTS_OUT) {
                 anims.setDuration(LIGHTS_OUT_DURATION);
             }
             anims.start();
             mCurrentAnimation = anims;
         } else {
-            mLeftSide.setAlpha(newAlpha);
-            mStatusIcons.setAlpha(newAlpha);
-            mSignalCluster.setAlpha(newAlpha);
-            mNetStats.setAlpha(newAlpha);
-            mDockBattery.setAlpha(newAlphaBC);
-            mBattery.setAlpha(newAlphaBC);
-            mClock.setAlpha(newAlphaBC);
-            mCenterClock.setAlpha(newAlphaBC);
+            if (mLeftSide != null) {
+                mLeftSide.setAlpha(newAlpha);
+            }
+            if (mStatusIcons != null) {
+                mStatusIcons.setAlpha(newAlpha);
+            }
+            if (mSignalCluster != null) {
+                mSignalCluster.setAlpha(newAlpha);
+            }
+            if (mNetStats != null) {
+                mNetStats.setAlpha(newAlpha);
+            }
+            if (mDockBattery != null) {
+                mDockBattery.setAlpha(newAlphaBC);
+            }
+            if (mBattery != null) {
+                mBattery.setAlpha(newAlphaBC);
+            }
+            if (mClock != null) {
+                mClock.setAlpha(newAlphaBC);
+            }
+            if (mCenterClock != null) {
+                mCenterClock.setAlpha(newAlphaBC);
+            }
         }
     }
 }
