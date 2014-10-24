@@ -302,7 +302,7 @@ public class ActiveDisplayView extends FrameLayout
 
         public void onReleased(View v, int handle) {
             ObjectAnimator.ofFloat(mCurrentNotificationIcon, "alpha", 1f).start();
-            doTransition(mOverflowNotifications, 1.0f, 0);
+            doTransition(mOverflowNotifications, 1.0f, 100);
             if (mRemoteView != null) {
                 ObjectAnimator.ofFloat(mRemoteView, "alpha", 0f).start();
                 ObjectAnimator.ofFloat(mClock, "alpha", 1f).start();
@@ -317,7 +317,7 @@ public class ActiveDisplayView extends FrameLayout
             setUserActivity();
             restoreBrightness();
             ObjectAnimator.ofFloat(mCurrentNotificationIcon, "alpha", 0f).start();
-            doTransition(mOverflowNotifications, 0.0f, 0);
+            doTransition(mOverflowNotifications, 0.0f, 100);
             if (mRemoteView != null) {
                 ObjectAnimator.ofFloat(mRemoteView, "alpha", 1f).start();
                 ObjectAnimator.ofFloat(mClock, "alpha", 0f).start();
