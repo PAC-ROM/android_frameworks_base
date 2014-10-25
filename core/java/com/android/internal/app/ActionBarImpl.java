@@ -462,10 +462,14 @@ public class ActionBarImpl extends ActionBar {
 
         if (textColor != -3) {
             iconTint = textColor;
-        } else {
-            if (ColorUtils.isBrightColor(color)) {
-                iconTint = Color.BLACK;
-            }
+        }
+
+        if (ColorUtils.isBrightColor(color)) {
+            iconTint = Color.BLACK;
+        }
+
+        if (color == -3) {
+            iconTint = -3;
         }
 
         mActivity.sendActionColorBroadcast(color, iconTint);
@@ -509,10 +513,14 @@ public class ActionBarImpl extends ActionBar {
 
         if (textColor != -3) {
             iconTint = textColor;
-        } else {
-            if (ColorUtils.isBrightColor(color)) {
-                iconTint = Color.BLACK;
-            }
+        }
+
+        if (ColorUtils.isBrightColor(color)) {
+            iconTint = Color.BLACK;
+        }
+
+        if (color == -3) {
+            iconTint = -3;
         }
 
         mActivity.sendActionColorBroadcast(color, iconTint);

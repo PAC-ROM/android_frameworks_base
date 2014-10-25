@@ -48,6 +48,7 @@ public final class NavigationBarTransitions extends BarTransitions {
     private int mRequestedMode;
     private boolean mStickyTransparent;
     private int mCurrentColor;
+    private int mCurrentBg;
 
     public NavigationBarTransitions(NavigationBarView view) {
         super(view, R.drawable.nav_background, R.color.navigation_bar_background_opaque,
@@ -195,12 +196,20 @@ public final class NavigationBarTransitions extends BarTransitions {
 
     @Override
     public void changeColorIconBackground(int bg_color, int ic_color) {
+        if (mCurrentBg == bg_color) {
+            return;
+        }
+        mCurrentBg = bg_color;
         if (ColorUtils.isBrightColor(bg_color)) {
             ic_color = Color.BLACK;
         }
         mCurrentColor = ic_color;
         setColorButtonNavigationBar(ic_color);
         super.changeColorIconBackground(bg_color, ic_color);
+    }
+
+    public int getCurrentIconColor() {
+        return mCurrentColor;
     }
 
     private void setColorButtonNavigationBar(int ic_color) {
