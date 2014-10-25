@@ -239,4 +239,13 @@ public class NetworkStatsView extends LinearLayout {
             getString(com.android.internal.R.string.fileSizeSuffix,
                       value, mContext.getString(suffix));
     }
+
+        public void updateSettings(int defaultColor) {
+        if (mCurrentColor != defaultColor) {
+            mCurrentColor = defaultColor;
+            mTextViewTx.setTextColor(defaultColor);
+            mTextViewRx.setTextColor(defaultColor);
+            updateTrafficDrawable();
+        }
+    }
 }

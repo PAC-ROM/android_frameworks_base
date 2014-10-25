@@ -61,6 +61,7 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
     private static final int AM_PM_STYLE_NORMAL  = 0;
     private static final int AM_PM_STYLE_SMALL   = 1;
     private static final int AM_PM_STYLE_GONE    = 2;
+    private int mCurrentColor = -3;
 
     private static final int AM_PM_STYLE = AM_PM_STYLE_GONE;
 
@@ -232,6 +233,18 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
 
         return result;
 
+    }
+
+    public void updateSettings(int defaultColor) {
+        if (mCurrentColor != defaultColor) {
+            mCurrentColor = defaultColor;
+            updateSettings();
+        }
+        int clockColor = getResources().getColor(R.color.status_bar_clock_color);
+        int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
+        if (mAttached) {
+            setTextColor(nowColor);
+        }
     }
 
     private void collapseStartActivity(Intent what) {

@@ -390,6 +390,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mPackageSt = -3;
     private int mPackageNv = -3;
     private int mPackageIcSt = -3;
+    private int mPackageIcNv = -3;
     private boolean mStatBackgroundMode = false;
     private boolean mNavBackgroundMode = false;
     private boolean mIsImmersiveMode = false;
@@ -2158,6 +2159,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarView.getPhoneStatusBarTransitions().addIcon(iv);
     }
 
+    public void addIconToReverseColor(ImageView iv) {
+        mStatusBarView.getPhoneStatusBarTransitions().addIconReverse(iv);
+    }
+
     private void addNotificationIconToColor(ImageView iv) {
         mStatusBarView.getPhoneStatusBarTransitions().addNotificationIcon(iv);
     }
@@ -3916,6 +3921,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mCurrentColorProgress == 1) {
             mPackageNv = mPackageSt = mPackageActbar;
+            mPackageIcNv = mPackageIcSt;
         }
         if ((mStatBackgroundMode || mNavBackgroundMode) && mCurrentColorProgress == 2) {
             if (duration > 50) {
@@ -3928,15 +3934,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if ((mCurrentTintedProgress == 1 || !mStatBackgroundMode) && !mStatusbarIsReset) {
              mStatusbarIsReset = true;
              mStatusBarView.getBarTransitions().changeColorIconBackground(-3, -3);
-             if (mBattery != null) {
-                 mBattery.updateSettings(-3);
-             }
-             /*if (mCircleBattery != null) {
-                 mCircleBattery.updateSettings();
-             }
-             if (mPercentBattery != null) {
-                 mPercentBattery.updateSettings();
-             }*/
+             onBatteryColorChange(-3);
+             onTextColorChange(-3);
         }
         if ((mCurrentTintedProgress == 0 || !mNavBackgroundMode) && !mNavbarIsReset) {
              mNavbarIsReset = true;
@@ -3974,6 +3973,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private void onBatteryColorChange(int color) {
+        if (mBattery != null) {
+            mBattery.updateSettings(color);
+        }
+    }
+
+    private void onTextColorChange(int color) {
+        if (mClock != null) {
+            mClock.updateSettings(color);
+        }
+        if (mNetworkTraffic != null) {
+            mNetworkTraffic.updateSettings(color);
+        }
+    }
+
     private void resetSystemUIBackgroundColor() {
         if (!mTintedNeedReset) {
             return;
@@ -3982,23 +3996,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mTintedNeedReset = false;
         mHandler.removeCallbacks(mSetColorFromScreenShotRunnable);
         mHandler.removeCallbacks(mTintedStatusbarRunnable);
-        mPackageActbar = mPackageSt = mPackageNv = mPackageIcSt = -3;
+        mPackageActbar = mPackageSt = mPackageNv = mPackageIcSt = mPackageIcNv = -3;
         mStatusbarIsReset = mNavbarIsReset = true;
         if (mStatusBarView != null) {
             mStatusBarView.getBarTransitions().changeColorIconBackground(mPackageSt, mPackageIcSt);
         }
         if (mNavigationBarView != null) {
-            mNavigationBarView.getBarTransitions().changeColorIconBackground(mPackageNv, mPackageIcSt);
+            mNavigationBarView.getBarTransitions().changeColorIconBackground(mPackageNv, mPackageIcNv);
         }
-        if (mBattery != null) {
-            mBattery.updateSettings(mPackageIcSt);
+        onBatteryColorChange(mPackageIcSt);
+        onTextColorChange(mPackageIcSt);
+    }
+
+    private void onConfigurationChange() {
+        if (mCurrentColorProgress != 0) {
+            tintedStatusbarProgress();
         }
-        /*if (mCircleBattery != null) {
-            mCircleBattery.updateSettings();
-        }
-        if (mPercentBattery != null) {
-            mPercentBattery.updateSettings();
-        } */
     }
 
     private void setSystemUIBackgroundGradient(boolean force) {
@@ -4020,25 +4033,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mPackageSt = ColorUtils.changeColorTransparency(mPackageSt, mStatusbarTransparent);
             }
             mStatusBarView.getBarTransitions().changeColorIconBackground(mPackageSt, mPackageIcSt);
-            int colorFromStatusbar = mStatusBarView.getPhoneStatusBarTransitions().getCurrentIconColor();
-            boolean shouldChange = (colorFromStatusbar != -3);
-            if (mBattery != null) {
-                mBattery.updateSettings(shouldChange ? colorFromStatusbar : -3);
-            }
-            /*if (mCircleBattery != null) {
-                if (shouldChange) {
-                    mCircleBattery.updateSettings(colorFromStatusbar);
-                } else {
-                    mCircleBattery.updateSettings();
-                }
-            }
-            if (mPercentBattery != null) {
-                if (shouldChange) {
-                    mPercentBattery.updateSettings(colorFromStatusbar);
-                } else {
-                    mPercentBattery.updateSettings();
-                }
-            } */
+            int currentIconColor = mStatusBarView.getPhoneStatusBarTransitions().getCurrentIconColor();
+            onBatteryColorChange(currentIconColor);
+            onTextColorChange(currentIconColor);
         }
         if (mNavigationBarView != null && mNavBackgroundMode
              && (mCurrentTintedProgress == 1 || mCurrentTintedProgress == 2)) {
@@ -4049,7 +4046,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (mNavbarTransparent < 100) {
                 mPackageNv = ColorUtils.changeColorTransparency(mPackageNv, mNavbarTransparent);
             }
-            mNavigationBarView.getBarTransitions().changeColorIconBackground(mPackageNv, mPackageIcSt);
+            mNavigationBarView.getBarTransitions().changeColorIconBackground(mPackageNv, mPackageIcNv);
         }
         if (mStatBackgroundMode || mNavBackgroundMode) {
             mTintedNeedReset = true;
@@ -4077,6 +4074,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         repositionNavigationBar();
         updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
         updateShowSearchHoldoff();
+        onConfigurationChange();
     }
 
     @Override
