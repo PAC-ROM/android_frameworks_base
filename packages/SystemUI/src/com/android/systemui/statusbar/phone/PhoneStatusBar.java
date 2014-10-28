@@ -54,11 +54,13 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -132,6 +134,7 @@ import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.SignalClusterTextView;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
+import com.android.systemui.statusbar.phone.PhoneStatusBarTransitions;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.Clock;
@@ -277,7 +280,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     QuickSettingsContainerView mSettingsContainer;
     int mSettingsPanelGravity;
     private TilesChangedObserver mTilesChangedObserver;
-    private SettingsObserver mSettingsObserver;
     // private DevForceNavbarObserver mDevForceNavbarObserver;
 
     // Ribbon settings
@@ -693,6 +695,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
     private TintedStatusbarObserver mTintedStatusbarObserver = new TintedStatusbarObserver(mHandler);
 
     private void forceAddNavigationBar() {
@@ -801,8 +804,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addNavigationBar();
 
-        SettingsObserver observer = new SettingsObserver(mHandler);
-        observer.observe();
+        mSettingsObserver.observe();
 
         /* // Developer options - Force Navigation bar
         try {
@@ -814,6 +816,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } catch (RemoteException ex) {
             // no window manager? good luck with that
         }*/
+
         mTintedStatusbarObserver.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
@@ -3935,9 +3938,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                      public void run() {
                          mImeStatusShow = altBack;
                      }
-                }, 1000);
+                }, 1);
             }
-            setSystemUIBackgroundColor(500);
+            setSystemUIBackgroundColor(1);
         }
     }
 

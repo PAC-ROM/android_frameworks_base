@@ -1437,7 +1437,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                     @Override
                     public void onTouchUpCancel() {
-                        sendAppColorBroadcast(300);
+                        sendAppColorBroadcast(1);
                     }
                     @Override
                     public void onDebug() {
@@ -1783,7 +1783,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0) == 1;
 
             final boolean useEdgeService = Settings.System.getIntForUser(resolver,
-                    Settings.System.USE_EDGE_SERVICE_FOR_GESTURES, 1, UserHandle.USER_CURRENT) == 1;
+                    Settings.System.USE_EDGE_SERVICE_FOR_GESTURES, 0, UserHandle.USER_CURRENT) == 1;
             if (useEdgeService ^ mUsingEdgeGestureServiceForGestures && mSystemReady) {
                 if (!mUsingEdgeGestureServiceForGestures && useEdgeService) {
                     mUsingEdgeGestureServiceForGestures = true;
@@ -4629,7 +4629,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         updateEdgeGestureListenerState();
 
         // update tinted color after layout changes
-        sendAppColorBroadcast(500);
+        sendAppColorBroadcast(1);
         return changes;
     }
 
