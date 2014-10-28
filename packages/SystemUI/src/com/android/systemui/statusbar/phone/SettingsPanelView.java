@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -86,9 +87,10 @@ public class SettingsPanelView extends PanelView {
 
     public void setHandleViewColor(int color) {
         if (color != -3) {
-            Drawable drawable = getStateListDrawable(color);
-            mHandleView.setBackground(drawable);
-            mHandleBar = drawable;
+            Rect bounds = mHandleBar.getBounds();
+            mHandleBar = getStateListDrawable(color);
+            mHandleBar.setBounds(bounds);
+            mHandleView.setBackground(mHandleBar);
         } else {
             mHandleView.setBackgroundResource(R.drawable.status_bar_close);
             resetHandleBar(getContext().getResources());
