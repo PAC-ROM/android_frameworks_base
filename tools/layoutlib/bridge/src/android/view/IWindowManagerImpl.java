@@ -524,5 +524,32 @@ public class IWindowManagerImpl implements IWindowManager {
     /* @hide */
     @Override
     public void toggleStatusBar() {
+
+    @Override
+    public Bitmap getScreenshotFromApplications() {
+        return null;
+    }
+
+    @Override
+    public Bitmap getScaledScreenshotFromApplications() {
+        return null;
+    }
+
+    @Override
+    public int[] getColorFromTopBottomApplication() {
+        return new int[] {0,0};
+    }
+
+    @Override
+    public Bitmap getBlurBitmapBackground(int radius) {
+        return null;
+    }
+
+    @Override
+    public void sendActionColorBroadcast(int st_color, int ic_color) {
+    }
+
+    @Override
+    public void sendAppColorBroadcast(int duration) {
     }
 }

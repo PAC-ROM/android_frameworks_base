@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.android.internal.telephony.MSimConstants;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.MSimNetworkController;
+import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import com.android.systemui.R;
 
@@ -62,6 +63,7 @@ public class MSimSignalClusterView
     private int mAirplaneIconId = 0;
     private String mWifiDescription, mMobileTypeDescription;
     private String[] mMobileDescription;
+    private PhoneStatusBar mStatusBar;
 
     ViewGroup mWifiGroup;
     ViewGroup[] mMobileGroup;
@@ -116,6 +118,10 @@ public class MSimSignalClusterView
         }
     }
 
+    public void setStatusBar(PhoneStatusBar phoneStatusBar) {
+        mStatusBar = phoneStatusBar;
+    }
+
     public void setNetworkController(MSimNetworkController nc) {
         if (DEBUG) Slog.d(TAG, "MSimNetworkController=" + nc);
         mMSimNC = nc;
@@ -138,7 +144,17 @@ public class MSimSignalClusterView
             mMobileActivity[i] = (ImageView) findViewById(mMobileActResourceId[i]);
             mMobileType[i]     = (ImageView) findViewById(mMobileTypeResourceId[i]);
             mNoSimSlot[i]      = (ImageView) findViewById(mNoSimSlotResourceId[i]);
+
+
+            mStatusBar.addIconToColor(mMobile[i]);
+            mStatusBar.addIconToColor(mMobileActivity[i]);
+            mStatusBar.addIconToColor(mMobileType[i]);
         }
+
+        mStatusBar.addIconToColor(mWifi);
+        mStatusBar.addIconToColor(mWifiActivity);
+        mStatusBar.addIconToColor(mAirplane);
+
         applySubscription(MSimTelephonyManager.getDefault().getDefaultSubscription());
     }
 

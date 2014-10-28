@@ -48,6 +48,7 @@ public abstract class Ticker {
     private TextSwitcher mTextSwitcher;
     private float mIconScale;
     private TickerCallback mEvent;
+    private PhoneStatusBar mStatusBar;
 
     public interface TickerCallback {
         public void updateTicker(StatusBarNotification notification, String text);
@@ -56,6 +57,7 @@ public abstract class Ticker {
     public void setUpdateEvent(TickerCallback event) {
         mEvent = event;
     }
+
 
     public static boolean isGraphicOrEmoji(char c) {
         int gc = Character.getType(c);
@@ -187,6 +189,11 @@ public abstract class Ticker {
         mPaint = text.getPaint();
     }
 
+    public void setStatusBar(PhoneStatusBar phoneStatusBar) {
+        mStatusBar = phoneStatusBar;
+        mStatusBar.setColorToAllTextSwitcherChildren(mTextSwitcher);
+        mStatusBar.setColorToAllImageSwitcherChildren(mIconSwitcher);
+    }
 
     public void addEntry(StatusBarNotification n) {
         int initialCount = mSegments.size();
@@ -242,6 +249,8 @@ public abstract class Ticker {
             tickerStarting();
             scheduleAdvance();
         }
+        mStatusBar.setColorToAllTextSwitcherChildren(mTextSwitcher);
+        mStatusBar.setColorToAllImageSwitcherChildren(mIconSwitcher);
     }
 
     private static boolean charSequencesEqual(CharSequence a, CharSequence b) {
@@ -282,6 +291,7 @@ public abstract class Ticker {
     }
 
     private Runnable mAdvanceTicker = new Runnable() {
+        @Override
         public void run() {
             while (mSegments.size() > 0) {
                 Segment seg = mSegments.get(0);

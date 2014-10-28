@@ -38,6 +38,8 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
+import com.android.internal.util.omni.ColorUtils;
+
 public class BatteryMeterView extends View implements DemoMode {
     public static final String TAG = BatteryMeterView.class.getSimpleName();
     public static final String ACTION_LEVEL_TEST = "com.android.systemui.BATTERY_LEVEL_TEST";
@@ -162,6 +164,8 @@ public class BatteryMeterView extends View implements DemoMode {
 
     private String mWarningString;
     private final int mChargeColor;
+    private int mChangeColor = -3;
+    private int mBoltColor = -3;
 
     protected boolean mDemoMode;
     protected BatteryTracker mDemoTracker = new BatteryTracker();
@@ -291,7 +295,16 @@ public class BatteryMeterView extends View implements DemoMode {
         for (int i=0; i<mColors.length; i+=2) {
             thresh = mColors[i];
             color = mColors[i+1];
-            if (percent <= thresh) return color;
+            if (percent <= thresh) {
+                if (mChangeColor != -3) {
+                    return mChangeColor;
+                } else {
+                    return color;
+                }
+            }
+        }
+        if (mChangeColor != -3) {
+            return mChangeColor;
         }
         return color;
     }
@@ -434,7 +447,8 @@ public class BatteryMeterView extends View implements DemoMode {
 
             mBoltPaint = new Paint();
             mBoltPaint.setAntiAlias(true);
-            mBoltPaint.setColor(res.getColor(R.color.batterymeter_bolt_color));
+            mBoltColor = res.getColor(R.color.batterymeter_bolt_color);
+            mBoltPaint.setColor(mBoltColor);
             mBoltPoints = loadBoltPoints(res);
         }
 
@@ -496,7 +510,16 @@ public class BatteryMeterView extends View implements DemoMode {
             c.drawRect(mFrame, mFramePaint);
 
             // fill 'er up
-            final int color = tracker.plugged ? mChargeColor : getColorForLevel(level);
+            int color = 0;
+            if (tracker.plugged) {
+                if (mChangeColor != -3) {
+                    color = mChangeColor;
+                } else {
+                    color = mChargeColor;
+                }
+            } else {
+                color = getColorForLevel(level);
+            }
             mBatteryPaint.setColor(color);
 
             if (level >= FULL) {

@@ -86,6 +86,10 @@ public class PhoneStatusBarView extends PanelBar {
         return mBarTransitions;
     }
 
+    public PhoneStatusBarTransitions getPhoneStatusBarTransitions() {
+        return mBarTransitions;
+    }
+
     public void setBar(PhoneStatusBar bar) {
         mBar = bar;
     }

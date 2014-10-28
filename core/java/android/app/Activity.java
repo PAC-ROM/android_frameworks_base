@@ -39,6 +39,7 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -51,6 +52,7 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -69,6 +71,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.IWindowManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -654,7 +657,7 @@ public class Activity extends ContextThemeWrapper
     private static final boolean DEBUG_LIFECYCLE = false;
 
     /** Standard activity result: operation canceled. */
-    public static final int RESULT_CANCELED    = 0;
+    public static final int RESULT_CANCELED     = 0;
     /** Standard activity result: operation succeeded. */
     public static final int RESULT_OK           = -1;
     /** Start of user-defined activity results. */
@@ -672,6 +675,7 @@ public class Activity extends ContextThemeWrapper
         Dialog mDialog;
         Bundle mArgs;
     }
+
     private SparseArray<ManagedDialog> mManagedDialogs;
 
     // set by the thread after the constructor and before onCreate(Bundle savedInstanceState) is called.
@@ -709,6 +713,7 @@ public class Activity extends ContextThemeWrapper
         ArrayList<Fragment> fragments;
         ArrayMap<String, LoaderManagerImpl> loaders;
     }
+
     /* package */ NonConfigurationInstances mLastNonConfigurationInstances;
 
     private Window mWindow;
@@ -746,6 +751,7 @@ public class Activity extends ContextThemeWrapper
         private boolean mReleased;
         private boolean mUpdated;
     }
+
     private final ArrayList<ManagedCursor> mManagedCursors =
         new ArrayList<ManagedCursor>();
 
@@ -1025,7 +1031,7 @@ public class Activity extends ContextThemeWrapper
     /**
      * Called after {@link #onCreate} &mdash; or after {@link #onRestart} when
      * the activity had been stopped, but is now again being displayed to the
-	 * user.  It will be followed by {@link #onResume}.
+     * user.  It will be followed by {@link #onResume}.
      *
      * <p><em>Derived classes must call through to the super class's
      * implementation of this method.  If they do not, an exception will be
@@ -1037,6 +1043,7 @@ public class Activity extends ContextThemeWrapper
      */
     protected void onStart() {
         if (DEBUG_LIFECYCLE) Slog.v(TAG, "onStart " + this);
+        setupColorActionBar(false, 0);
         mCalled = true;
 
         if (!mLoadersStarted) {
@@ -1050,6 +1057,26 @@ public class Activity extends ContextThemeWrapper
         }
 
         getApplication().dispatchActivityStarted(this);
+    }
+
+    private void setupColorActionBar(boolean reload, int duration) {
+        if (getAppColorEnabled()) {
+            if (mActionBar != null) {
+                if (reload && mActionBar.isShowing()) {
+                    mActionBar.changeColorFromActionBar();
+                }
+            }
+            if (reload) {
+                sendAppColorBroadcast(duration);
+            }
+        }
+    }
+
+    private boolean getAppColorEnabled() {
+        int enabled = Settings.PAC.getIntForUser(
+                    getContentResolver(), Settings.PAC.STATUS_BAR_TINTED_COLOR, 0
+                    , UserHandle.USER_CURRENT_OR_SELF);
+        return (enabled != 0);
     }
 
     /**
@@ -1118,6 +1145,7 @@ public class Activity extends ContextThemeWrapper
         final Window win = getWindow();
         if (win != null) win.makeActive();
         if (mActionBar != null) mActionBar.setShowHideAnimationEnabled(true);
+        setupColorActionBar(true, 1000);
         mCalled = true;
     }
 
@@ -2253,7 +2281,6 @@ public class Activity extends ContextThemeWrapper
             finish();
             return true;
         }
-
         return false;
     }
 
@@ -2369,6 +2396,9 @@ public class Activity extends ContextThemeWrapper
      * @see View#onWindowFocusChanged(boolean)
      */
     public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            setupColorActionBar(true, 300);
+        }
     }
 
     /**
@@ -2462,10 +2492,35 @@ public class Activity extends ContextThemeWrapper
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             onUserInteraction();
         }
+
         if (getWindow().superDispatchTouchEvent(ev)) {
             return true;
         }
+
         return onTouchEvent(ev);
+    }
+
+    /**
+     * @hide
+     */
+    public void sendActionColorBroadcast(int st_color, int ic_color) {
+        final IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
+
+        try {
+             wm.sendActionColorBroadcast(st_color, ic_color);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Could not perform get action bar color", e);
+        }
+    }
+
+    private void sendAppColorBroadcast(int duration) {
+        final IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
+
+        try {
+             wm.sendAppColorBroadcast(duration);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Could not perform get app color", e);
+        }
     }
 
     /**

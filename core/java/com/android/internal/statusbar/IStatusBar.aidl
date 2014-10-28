@@ -50,5 +50,8 @@ oneway interface IStatusBar
     void toggleScreenshot();
     void toggleLastApp();
     void toggleKillApp();
+    void sendActionColorBroadcast(int st_color, int ic_color);
+    void sendAppColorBroadcast(int duration);
+    void sendAppImmersiveMode(int whats);
 }
 
