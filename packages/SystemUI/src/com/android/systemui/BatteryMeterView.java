@@ -161,6 +161,7 @@ public class BatteryMeterView extends View implements DemoMode {
     protected BatteryMeterMode mMeterMode = null;
     protected boolean mShowPercent = false;
     protected boolean mAttached;
+    private boolean mActivated; 
 
     private int mHeight;
     private int mWidth;
@@ -169,8 +170,8 @@ public class BatteryMeterView extends View implements DemoMode {
 
     private String mWarningString;
     private final int mChargeColor;
+    private int mBoltColor;
     private int mChangeColor = -3;
-    private int mBoltColor = -3;
     private final int mGrayColor;
     private final int mDarkGrayColor;
 
@@ -187,7 +188,6 @@ public class BatteryMeterView extends View implements DemoMode {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         if (!mAttached) {
             mAttached = true;
             IntentFilter filter = new IntentFilter();
@@ -204,7 +204,6 @@ public class BatteryMeterView extends View implements DemoMode {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
         if (mAttached) {
             mAttached = false;
             getContext().unregisterReceiver(mTracker);
@@ -222,7 +221,6 @@ public class BatteryMeterView extends View implements DemoMode {
     public BatteryMeterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mHandler = new Handler();
-
         Resources res = context.getResources();
         TypedArray levels = res.obtainTypedArray(R.array.batterymeter_color_levels);
         TypedArray colors = res.obtainTypedArray(R.array.batterymeter_color_values);
@@ -528,15 +526,16 @@ public class BatteryMeterView extends View implements DemoMode {
             mFrame.bottom -= SUBPIXEL;
 
             // first, draw the battery shape
+            int color = 0;
             if (mChangeColor != -3) {
-                mFramePaint.setColor(mDarkGrayColor);
+                color = ColorUtils.changeColorTransparency(mDarkGrayColor, 85);
             } else {
-                mFramePaint.setColor(mFrameColor);
+                color = mFrameColor;
             }
+            mFramePaint.setColor(color);
             c.drawRect(mFrame, mFramePaint);
 
             // fill 'er up
-            int color = 0;
             if (tracker.plugged) {
                 if (mChangeColor != -3) {
                     color = mChangeColor;
@@ -568,18 +567,23 @@ public class BatteryMeterView extends View implements DemoMode {
             c.drawRect(mFrame, mBatteryPaint);
             c.restore();
 
+        if (mChangeColor != -3) {
+            if (ColorUtils.isBrightColor(mChangeColor)) {
+                color = Color.BLACK;
+            } else {
+                color = Color.WHITE;
+            }
+        } else {
+            color = Color.WHITE;
+        }
+
             if (tracker.shouldIndicateCharging()) {
                 // draw the bolt
                 if (mChangeColor != -3) {
-                    int colorSt = Color.WHITE;
-                    if (ColorUtils.isBrightColor(mChangeColor)) {
-                        colorSt = Color.BLACK;
-                    }
-                    mBoltPaint.setColor(colorSt);
+                    mBoltPaint.setColor(color);
                 } else {
                     mBoltPaint.setColor(mBoltColor);
                 }
-
                 final float bl = (int)(mFrame.left + mFrame.width() / (mHorizontal ? 9f : 4.5f));
                 final float bt = (int)(mFrame.top + mFrame.height() / (mHorizontal ? 4.5f : 6f));
                 final float br = (int)(mFrame.right - mFrame.width() / (mHorizontal ? 6f : 7f));
@@ -630,7 +634,7 @@ public class BatteryMeterView extends View implements DemoMode {
                     if (ColorUtils.isBrightColor(mChangeColor)) {
                         colorSt = Color.BLACK;
                     }
-                    mTextPaint.setColor(colorSt);
+                    mTextPaint.setColor(color);
                 } else {
                     mTextPaint.setColor(mBoltColor);
                 }

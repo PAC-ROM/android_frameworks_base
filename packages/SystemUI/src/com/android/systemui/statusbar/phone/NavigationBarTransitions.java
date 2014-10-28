@@ -47,8 +47,8 @@ public final class NavigationBarTransitions extends BarTransitions {
     private boolean mLeftIfVertical;
     private int mRequestedMode;
     private boolean mStickyTransparent;
-    private int mCurrentColor;
-    private int mCurrentBg;
+    private int mCurrentColor = -3;
+    private boolean mColorEnabled = false;
 
     public NavigationBarTransitions(NavigationBarView view) {
         super(view, R.drawable.nav_background, R.color.navigation_bar_background_opaque,
@@ -196,16 +196,26 @@ public final class NavigationBarTransitions extends BarTransitions {
 
     @Override
     public void finishAnimations() {
-        setColorButtonNavigationBar(-3);
+        if (mColorEnabled) {
+            changeColorIconBackground(-3, -3);
+        }
         super.finishAnimations();
     }
 
     @Override
-    public void changeColorIconBackground(int bg_color, int ic_color) {
-        if (mCurrentBg == bg_color) {
-            return;
+    public void setBackgroundColorEnabled(boolean force) {
+        mColorEnabled = force;
+    }
+
+    @Override
+    protected void resetColorWhenTransient(boolean resets) {
+        if (mColorEnabled && resets) {
+            changeColorIconBackground(-3, -3);
         }
-        mCurrentBg = bg_color;
+    }
+
+    @Override
+    public void changeColorIconBackground(int bg_color, int ic_color) {
         if (ColorUtils.isBrightColor(bg_color)) {
             ic_color = Color.BLACK;
         }
@@ -214,6 +224,7 @@ public final class NavigationBarTransitions extends BarTransitions {
         super.changeColorIconBackground(bg_color, ic_color);
     }
 
+    @Override
     public int getCurrentIconColor() {
         return mCurrentColor;
     }
@@ -252,7 +263,7 @@ public final class NavigationBarTransitions extends BarTransitions {
             if (ic_color == -3) {
                 ((KeyButtonView) button).clearColorFilterBg();
             } else {
-                ((KeyButtonView) button).setColorFilterBg(ic_color, PorterDuff.Mode.SRC_ATOP);
+                ((KeyButtonView) button).setColorFilterBg(ic_color, PorterDuff.Mode.MULTIPLY);
             }
         }
     }

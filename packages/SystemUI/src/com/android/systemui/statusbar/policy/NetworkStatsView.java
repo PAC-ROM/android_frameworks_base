@@ -118,6 +118,8 @@ public class NetworkStatsView extends LinearLayout {
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
             mIsScreenOn = pm.isScreenOn();
 
+            updateTextColor();
+
             mActivated = (Settings.PAC.getInt(mContext.getContentResolver(),
                     Settings.PAC.STATUS_BAR_NETWORK_STATS, 0)) == 1
                     && networkAvailable;
@@ -251,12 +253,16 @@ public class NetworkStatsView extends LinearLayout {
     }
 
     public void updateSettings(int defaultColor) {
-        if (mCurrentColor != defaultColor) {
-            mCurrentColor = defaultColor;
-            mTextViewTx.setTextColor(defaultColor);
-            mTextViewRx.setTextColor(defaultColor);
-            updateTrafficDrawable();
-        }
+        mCurrentColor = defaultColor;
+        updateTextColor();
+        updateTrafficDrawable();
+    }
+
+    private void updateTextColor() {
+        int clockColor = getResources().getColor(R.color.status_bar_clock_color);
+        int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
+            mTextViewTx.setTextColor(nowColor);
+            mTextViewRx.setTextColor(nowColor);
     }
 
     private void updateTrafficDrawable() {

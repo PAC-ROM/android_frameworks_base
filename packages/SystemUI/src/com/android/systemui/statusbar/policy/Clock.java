@@ -237,16 +237,15 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
     }
 
     public void updateSettings(int defaultColor) {
-        if (mCurrentColor != defaultColor) {
-            mCurrentColor = defaultColor;
-        }
-        int clockColor = getResources().getColor(R.color.status_bar_clock_color);
-        int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
-        if (mAttached) {
-            setTextColor(nowColor);
-        }
+        mCurrentColor = defaultColor;
+        updateTextColor();
     }
 
+    private void updateTextColor() {
+        int clockColor = getResources().getColor(R.color.status_bar_clock_color);
+        int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
+        setTextColor(nowColor);
+    }
     private void collapseStartActivity(Intent what) {
         // don't do anything if the activity can't be resolved (e.g. app disabled)
         if (getContext().getPackageManager().resolveActivity(what, 0) == null) {
@@ -310,4 +309,3 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
         }
     }
 }
-
