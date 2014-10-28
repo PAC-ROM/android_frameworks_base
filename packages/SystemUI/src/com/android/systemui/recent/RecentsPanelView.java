@@ -402,12 +402,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     case Constants.CLEAR_ALL_BUTTON_TOP_RIGHT:
                         layoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
                         break;
-                    case Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT:
-                        layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                        break;
                     case Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT:
-                    default:
                         layoutParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+                        break;
+                    case Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT:
+                    default:
+                        layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                         break;
                 }
                 mClearRecents.setLayoutParams(layoutParams);
