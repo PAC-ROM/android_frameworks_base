@@ -389,11 +389,16 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
 
-            boolean showClearAllButton = Settings.PAC.getInt(mContext.getContentResolver(), Settings.PAC.SHOW_CLEAR_RECENTS_BUTTON, 1) == 1;
+            boolean showClearAllButton = Settings.PAC.getInt(mContext.getContentResolver(),
+                    Settings.PAC.SHOW_CLEAR_RECENTS_BUTTON, 1) == 1;
 
             if (showClearAllButton) {
                 mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
-                int clearAllButtonLocation = Settings.PAC.getInt(mContext.getContentResolver(), Settings.PAC.CLEAR_RECENTS_BUTTON_LOCATION, Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
+
+                int clearAllButtonLocation = Settings.PAC.getInt(mContext.getContentResolver(),
+                        Settings.PAC.CLEAR_RECENTS_BUTTON_LOCATION,
+                        Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
+
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mClearRecents.getLayoutParams();
                 switch (clearAllButtonLocation) {
                     case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
@@ -402,12 +407,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     case Constants.CLEAR_ALL_BUTTON_TOP_RIGHT:
                         layoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
                         break;
-                    case Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT:
-                        layoutParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
-                        break;
                     case Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT:
-                    default:
                         layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                        break;
+                    case Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT:
+                    default:
+                        layoutParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
                         break;
                 }
                 mClearRecents.setLayoutParams(layoutParams);
