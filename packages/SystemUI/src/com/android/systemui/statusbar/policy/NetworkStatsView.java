@@ -21,7 +21,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
@@ -30,6 +34,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.systemui.R;
@@ -46,11 +51,14 @@ public class NetworkStatsView extends LinearLayout {
 
     private TextView mTextViewTx;
     private TextView mTextViewRx;
+    private ImageView mNetIn;
+    private ImageView mNetOut;
     private long mLastTx;
     private long mLastRx;
     private long mRefreshInterval;
     private long mLastUpdateTime;
     private boolean mIsScreenOn;
+    private int mCurrentColor = Color.WHITE;
 
     SettingsObserver mSettingsObserver;
 
@@ -138,6 +146,8 @@ public class NetworkStatsView extends LinearLayout {
         super.onFinishInflate();
         mTextViewTx = (TextView) findViewById(R.id.bytes_tx);
         mTextViewRx = (TextView) findViewById(R.id.bytes_rx);
+        mNetOut = (ImageView) findViewById(R.id.image_tx);
+        mNetIn = (ImageView) findViewById(R.id.image_rx);
     }
 
     @Override
@@ -240,12 +250,31 @@ public class NetworkStatsView extends LinearLayout {
                       value, mContext.getString(suffix));
     }
 
-        public void updateSettings(int defaultColor) {
+    public void updateSettings(int defaultColor) {
         if (mCurrentColor != defaultColor) {
             mCurrentColor = defaultColor;
             mTextViewTx.setTextColor(defaultColor);
             mTextViewRx.setTextColor(defaultColor);
             updateTrafficDrawable();
         }
+    }
+
+    private void updateTrafficDrawable() {
+        int intTrafficDrawableOut = R.drawable.stat_sys_net_out;
+        int intTrafficDrawableIn = R.drawable.stat_sys_net_in;
+
+        Drawable drwOut = null;
+        Drawable drwIn = null;
+
+        final Resources resources = getContext().getResources();
+
+        drwOut = resources.getDrawable(intTrafficDrawableOut);
+        drwOut.setColorFilter(mCurrentColor, PorterDuff.Mode.SRC_ATOP);
+
+        drwIn = resources.getDrawable(intTrafficDrawableIn);
+        drwIn.setColorFilter(mCurrentColor, PorterDuff.Mode.SRC_ATOP);
+
+        mNetIn.setImageDrawable(drwIn);
+        mNetOut.setImageDrawable(drwOut);
     }
 }

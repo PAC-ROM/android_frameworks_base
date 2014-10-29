@@ -229,14 +229,23 @@ public final class NavigationBarTransitions extends BarTransitions {
         setKeyButtonViewButtonColor(mView.getBackButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getHomeButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
+        setKeyButtonViewColor(ic_color);
     }
 
-    /*private void setKeyButtonViewColor(ButtonInfo info, int ic_color) {
-        View button = mView.findViewWithTag(info);
-        if (button != null) {
-            setKeyButtonViewButtonColor(button, ic_color);
+    private void setKeyButtonViewColor(int ic_color) {
+        if (mView == null) return;
+        for (final AwesomeConstant k : AwesomeConstant.values()) {
+            final View child = mView.findViewWithTag(k.value());
+
+            if (child instanceof KeyButtonView) {
+                if (ic_color == -3) {
+                    ((KeyButtonView) child).clearColorFilterBg();
+                } else {
+                    ((KeyButtonView) child).setColorFilterBg(ic_color, PorterDuff.Mode.SRC_ATOP);
+                }
+            }
         }
-    }*/
+    }
 
     private void setKeyButtonViewButtonColor(View button, int ic_color) {
         if (button instanceof KeyButtonView) {

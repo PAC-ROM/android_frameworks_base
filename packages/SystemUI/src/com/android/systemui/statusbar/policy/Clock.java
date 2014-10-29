@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.provider.Settings;
@@ -38,7 +39,7 @@ import android.widget.TextView;
 
 import com.android.systemui.DemoMode;
 
-import com.android.internal.R;
+import com.android.systemui.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

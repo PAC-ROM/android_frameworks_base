@@ -141,6 +141,7 @@ import com.android.systemui.statusbar.policy.HeadsUpNotificationView;
 import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.MSimNetworkController;
 import com.android.systemui.statusbar.policy.NetworkController;
+import com.android.systemui.statusbar.policy.NetworkStatsView;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.WeatherPanel;
@@ -323,6 +324,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mClockStyle;
     private Clock mClockView;
     private boolean showClockOnLockscreen = false;
+
+    // network stats
+    private NetworkStatsView mNetStats;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -1350,6 +1354,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         resetUserSetupObserver();
 
         mBattery = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
+
+        mNetStats = (NetworkStatsView) mStatusBarView.findViewById(R.id.network_stats);
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             mMSimNetworkController.setListener(this);
@@ -4006,11 +4012,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void onTextColorChange(int color) {
-        if (mClock != null) {
-            mClock.updateSettings(color);
+        if (mClockView != null) {
+            mClockView.updateSettings(color);
         }
-        if (mNetworkTraffic != null) {
-            mNetworkTraffic.updateSettings(color);
+        if (mNetStats != null) {
+            mNetStats.updateSettings(color);
         }
     }
 
