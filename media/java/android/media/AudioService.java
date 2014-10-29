@@ -3102,16 +3102,16 @@ public class AudioService extends IAudioService.Stub {
             List<BluetoothDevice> deviceList;
             switch(profile) {
             case BluetoothProfile.A2DP:
-                synchronized (mA2dpAvrcpLock) {
-                    mA2dp = (BluetoothA2dp) proxy;
-                    deviceList = mA2dp.getConnectedDevices();
-                    if (deviceList.size() > 0) {
-                        btDevice = deviceList.get(0);
-                        synchronized (mConnectedDevices) {
+                synchronized (mConnectedDevices) {
+                    synchronized (mA2dpAvrcpLock) {
+                        mA2dp = (BluetoothA2dp) proxy;
+                        deviceList = mA2dp.getConnectedDevices();
+                        if (deviceList.size() > 0) {
+                            btDevice = deviceList.get(0);
                             int state = mA2dp.getConnectionState(btDevice);
                             int delay = checkSendBecomingNoisyIntent(
-                                                AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
-                                                (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
+                                    AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
+                                    (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
                             queueMsgUnderWakeLock(mAudioHandler,
                                     MSG_SET_A2DP_SINK_CONNECTION_STATE,
                                     state,
@@ -3199,22 +3199,22 @@ public class AudioService extends IAudioService.Stub {
             Log.d(TAG, "onServiceDisconnected: Bluetooth profile: " + profile);
             switch(profile) {
             case BluetoothProfile.A2DP:
-                synchronized (mA2dpAvrcpLock) {
-                    mA2dp = null;
-                    synchronized (mConnectedDevices) {
+                synchronized (mConnectedDevices) {
+                    synchronized (mA2dpAvrcpLock) {
+                        mA2dp = null;
                         if (mConnectedDevices.containsKey(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP)) {
                             Log.d(TAG, "A2dp service disconnects, pause music player");
                             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
                             BluetoothDevice btDevice = adapter.getRemoteDevice
                                     (mConnectedDevices.get(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP));
                             int delay = checkSendBecomingNoisyIntent(
-                                                AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, 0);
+                                    AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, 0);
                             queueMsgUnderWakeLock(mAudioHandler,
-                                                MSG_SET_A2DP_SRC_CONNECTION_STATE,
-                                                BluetoothA2dp.STATE_DISCONNECTED,
-                                                0,
-                                                btDevice,
-                                                delay);
+                                    MSG_SET_A2DP_SRC_CONNECTION_STATE,
+                                    BluetoothA2dp.STATE_DISCONNECTED,
+                                    0,
+                                    btDevice,
+                                    delay);
                         }
                     }
                 }
