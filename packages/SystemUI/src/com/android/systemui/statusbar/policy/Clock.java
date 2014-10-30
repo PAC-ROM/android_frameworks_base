@@ -239,7 +239,6 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
     public void updateSettings(int defaultColor) {
         if (mCurrentColor != defaultColor) {
             mCurrentColor = defaultColor;
-            updateSettings();
         }
         int clockColor = getResources().getColor(R.color.status_bar_clock_color);
         int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
