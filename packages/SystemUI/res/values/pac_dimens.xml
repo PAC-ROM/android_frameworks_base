@@ -112,6 +112,6 @@
     <dimen name="recent_thumbnail_bottom_padding">4dp</dimen>
 
     <!-- Height of carrier label + close handle -->
-    <dimen name="weather_text_margin">56dp</dimen>
+    <dimen name="weather_text_margin">12dp</dimen>
 
 </resources>

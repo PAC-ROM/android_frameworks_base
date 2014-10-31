@@ -148,6 +148,7 @@ import com.android.systemui.statusbar.policy.NetworkStatsView;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.WeatherPanel;
+import com.android.systemui.statusbar.policy.WeatherText;
 import com.android.systemui.pac.StatusHeaderMachine;
 import com.android.internal.util.omni.ColorUtils;
 
@@ -297,7 +298,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Weatherpanel
     private Intent intent;
     boolean mWeatherPanelEnabled;
-    WeatherPanel mWeatherPanel;
+    private WeatherPanel mWeatherPanel;
+    private WeatherText mWeatherText;
+    private ImageView mWeatherHeaderImage;
     private String mShortClickWeather;
     private String mLongClickWeather;
 
@@ -925,6 +928,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Weather
         final ContentResolver cr = mContext.getContentResolver();
         mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherText = (WeatherText) mStatusBarWindow.findViewById(R.id.weather);
+        mWeatherHeaderImage = (ImageView) mStatusBarWindow.findViewById(R.id.weather_background_image);
         mWeatherPanel.setOnClickListener(mWeatherPanelListener);
         mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);
         mWeatherPanelEnabled = (Settings.PAC.getInt(cr,
@@ -4078,6 +4083,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (!mCustomHeader) {
                     mStatusHeaderImage.setImageDrawable(mStatusHeaderMachine.getDefault());
                 }
+                if (mWeatherHeaderImage != null) {
+                    mWeatherHeaderImage.setImageDrawable(mStatusHeaderMachine.getDefault());
+                }
             }
             if (mSettingsPanel != null) {
                 mSettingsPanel.setBackgroundResource(R.drawable.notification_panel_bg);
@@ -4170,11 +4178,42 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mCarrierLabel.setTextColor(carrierColor);
             }
         }
+        if (mWifiLabel != null) {
+            if (color != -3) {
+                mWifiLabel.setTextColor(color);
+            } else {
+                int carrierColor = mContext.getResources().getColor(R.color.status_bar_expanded_carrier_color);
+                mWifiLabel.setTextColor(carrierColor);
+            }
+        }
+        if (mWeatherText != null) {
+            if (color != -3) {
+                mWeatherText.setTextColor(color);
+            } else {
+                int carrierColor = mContext.getResources().getColor(R.color.status_bar_expanded_carrier_color);
+                mWeatherText.setTextColor(carrierColor);
+            }
+        }
         if (mEmergencyCallLabel != null) {
             if (color != -3) {
                 mEmergencyCallLabel.setTextColor(color);
             } else {
                 mEmergencyCallLabel.setTextColor(Color.WHITE);
+            }
+        }
+        if (mWeatherPanel != null) {
+            if (color != -3) {
+                mWeatherPanel.updateSettings(color);
+            } else {
+                mWeatherPanel.updateSettings(Color.WHITE);
+            }
+        }
+        if (mQS != null) {
+            if (color != -3) {
+                mQS.updateSettings(color);
+            } else {
+                int qsColor = mContext.getResources().getColor(R.color.qs_textview_color);
+                mQS.updateSettings(qsColor);
             }
         }
     }
@@ -4249,6 +4288,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     changePanelUiColor();
                     if ((mNotificationPanelHeader != null) && !mCustomHeader && (mPackageSt != -3)) {
                         mStatusHeaderImage.setImageDrawable(new ColorDrawable(mPackageSt));
+                        if (mWeatherHeaderImage != null) {
+                            mWeatherHeaderImage.setImageDrawable(new ColorDrawable(mPackageSt));
+                        }
                     }
                     int colorBg = ColorUtils.changeColorTransparency(mPackageSt, 95);
                     if (mSettingsContainer != null) {

@@ -246,6 +246,7 @@ public class Clock extends TextView implements DemoMode, OnClickListener, OnLong
         int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
         setTextColor(nowColor);
     }
+
     private void collapseStartActivity(Intent what) {
         // don't do anything if the activity can't be resolved (e.g. app disabled)
         if (getContext().getPackageManager().resolveActivity(what, 0) == null) {

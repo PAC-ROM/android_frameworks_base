@@ -90,6 +90,7 @@ public final class NavigationBarTransitions extends BarTransitions {
             setGradientResourceId(R.drawable.nav_background);
         }
         transitionTo(mRequestedMode, false /*animate*/);
+        setColorButtonNavigationBar(getCurrentIconColor());
     }
 
     @Override
@@ -230,37 +231,23 @@ public final class NavigationBarTransitions extends BarTransitions {
     }
 
     private void setColorButtonNavigationBar(int ic_color) {
+        View[] views = mView.getAllButtons();
+
+        for(View v : views) {
+            setKeyButtonViewButtonColor(v, ic_color);
+        }
         setKeyButtonViewButtonColor(mView.getSearchLight(), ic_color);
         setKeyButtonViewButtonColor(mView.getCameraButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getRecentsButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getLeftCursorButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getRightCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getMenuButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getMenuButtonTwo(), ic_color);
-        setKeyButtonViewButtonColor(mView.getBackButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getHomeButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
-        setKeyButtonViewColor(ic_color);
-    }
-
-    private void setKeyButtonViewColor(int ic_color) {
-        if (mView == null) return;
-        for (final AwesomeConstant k : AwesomeConstant.values()) {
-            final View child = mView.findViewWithTag(k.value());
-
-            if (child instanceof KeyButtonView) {
-                if (ic_color == -3) {
-                    ((KeyButtonView) child).clearColorFilterBg();
-                } else {
-                    ((KeyButtonView) child).setColorFilterBg(ic_color, PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        }
+        setKeyButtonViewButtonColor(mView.getRightCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getLeftCursorButton(), ic_color);
     }
 
     private void setKeyButtonViewButtonColor(View button, int ic_color) {
         if (button instanceof KeyButtonView) {
-            if (ic_color == -3) {
+            if (ic_color == -3 || mVertical) {
                 ((KeyButtonView) button).clearColorFilterBg();
             } else {
                 ((KeyButtonView) button).setColorFilterBg(ic_color, PorterDuff.Mode.MULTIPLY);

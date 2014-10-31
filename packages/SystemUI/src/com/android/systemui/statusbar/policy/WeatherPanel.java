@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.graphics.PorterDuff;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
@@ -46,6 +47,7 @@ public class WeatherPanel extends FrameLayout {
     private ContentObserver mContentObserver;
     private ContentResolver mContentResolver;
     private boolean mShowLocation;
+    private int mCurrentColor = -3;
 
     BroadcastReceiver weatherReceiver = new BroadcastReceiver() {
         @Override
@@ -98,6 +100,17 @@ public class WeatherPanel extends FrameLayout {
         updateCityVisibility();
     }
 
+    public void updateSettings(int defaultColor) {
+        mCurrentColor = defaultColor;
+        updateTextColor();
+    }
+
+    private void updateTextColor() {
+        int clockColor = getResources().getColor(R.color.status_bar_clock_color);
+        int nowColor = mCurrentColor != -3 ? mCurrentColor : clockColor;
+        setTextColor(nowColor);
+    }
+
     public void setTextColor(int color)
     {
         if (mCurrentTemp != null)
@@ -116,6 +129,8 @@ public class WeatherPanel extends FrameLayout {
             mCondition.setTextColor(color);
         if (mSlash != null)
             mSlash.setTextColor(color);
+        if (mConditionImage != null)
+            mConditionImage.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     }
 
     public WeatherPanel(Context context, AttributeSet attrs) {

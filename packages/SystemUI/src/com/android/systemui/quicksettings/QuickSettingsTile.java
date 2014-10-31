@@ -25,6 +25,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -59,6 +60,7 @@ public class QuickSettingsTile implements View.OnClickListener {
     protected PhoneStatusBar mStatusbarService;
     protected QuickSettingsController mQsc;
     protected SharedPreferences mPrefs;
+    private int mCurrentColor = -3;
 
     private Handler mHandler = new Handler();
 
@@ -141,6 +143,24 @@ public class QuickSettingsTile implements View.OnClickListener {
     public void updateResources() {
         if (mTile != null) {
             updateQuickSettings();
+        }
+    }
+
+    public void updateSettings(int defaultColor) {
+        mCurrentColor = defaultColor;
+        updateColor();
+    }
+
+    private void updateColor() {
+        int tilesColor = mContext.getResources().getColor(R.color.qs_textview_color);
+        int nowColor = mCurrentColor != -3 ? mCurrentColor : tilesColor;
+        TextView tv = getLabelView();
+        View image = getImageView();
+        if (tv != null) {
+            tv.setTextColor(nowColor);
+        }
+        if (image != null && image instanceof ImageView) {
+            ((ImageView) image).setColorFilter(nowColor, PorterDuff.Mode.MULTIPLY);
         }
     }
 

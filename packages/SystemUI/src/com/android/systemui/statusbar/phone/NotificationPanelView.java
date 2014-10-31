@@ -101,9 +101,8 @@ public class NotificationPanelView extends PanelView {
 
     public void setHandleViewColor(int color) {
         if (color != -3) {
-            Rect bounds = mHandleBar.getBounds();
-            mHandleBar = getStateListDrawable(color);
-            mHandleBar.setBounds(bounds);
+            Drawable drawable = getStateListDrawable(color);
+            mHandleBar = drawable;
             mHandleView.setBackground(mHandleBar);
         } else {
             mHandleView.setBackgroundResource(R.drawable.status_bar_close);
