@@ -355,6 +355,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mDelegateHelper.setBar(phoneStatusBar);
     }
 
+    public void setPhoneStatusBar(PhoneStatusBar bar) {
+        mBarTransitions.setBar(bar);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mDeadZone != null && event.getAction() == MotionEvent.ACTION_OUTSIDE) {

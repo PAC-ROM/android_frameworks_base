@@ -52,6 +52,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
@@ -120,6 +121,7 @@ public class ActionBarImpl extends ActionBar {
     private boolean mShowingForMode;
 
     private boolean mNowShowing = true;
+    private boolean mAppColorEnabled = false;
 
     private Animator mCurrentShowAnim;
     private boolean mShowHideAnimationEnabled;
@@ -415,7 +417,19 @@ public class ActionBarImpl extends ActionBar {
     /**
      * @hide
      */
+    public void setEnabledAppColor(boolean enabled) {
+        mAppColorEnabled = enabled;
+    }
+
+    /**
+     * @hide
+     */
     public void changeColorFromActionBar(Drawable drawable) {
+        if (!mAppColorEnabled) {
+            mActivity.sendActionColorBroadcast(-3, -3);
+            return;
+        }
+
         int textColor = -3;
         int iconTint = Color.WHITE;
 
@@ -458,16 +472,12 @@ public class ActionBarImpl extends ActionBar {
         }
 
         int color = ColorUtils.getMainColorFromDrawable(drawable);
-
+        color = ColorUtils.changeColorTransparency(color, 100);
         if (textColor != -3) {
             iconTint = textColor;
-        }
-
-        if (ColorUtils.isBrightColor(color)) {
+        } else if (ColorUtils.isBrightColor(color)) {
             iconTint = Color.BLACK;
-        }
-
-        if (color == -3) {
+        } else if ((color == -3) || (color == Color.TRANSPARENT)) {
             iconTint = -3;
         }
 
@@ -973,17 +983,19 @@ public class ActionBarImpl extends ActionBar {
         }
 
         public boolean dispatchOnCreate() {
-            int[] attributes = new int [] {android.R.attr.actionModeBackground,
+            if (mAppColorEnabled) {
+                int[] attributes = new int [] {android.R.attr.actionModeBackground,
                               android.R.attr.actionModeSplitBackground};
-            TypedArray styledAttributes = getThemedContext().obtainStyledAttributes(attributes);
-            Drawable drawable = null;
-            if (mContextDisplayMode == CONTEXT_DISPLAY_NORMAL) {
-                drawable = styledAttributes.getDrawable(0);
-            } else {
-                drawable = styledAttributes.getDrawable(1);
+                TypedArray styledAttributes = getThemedContext().obtainStyledAttributes(attributes);
+                Drawable drawable = null;
+                if (mContextDisplayMode == CONTEXT_DISPLAY_NORMAL) {
+                    drawable = styledAttributes.getDrawable(0);
+                } else {
+                    drawable = styledAttributes.getDrawable(1);
+                }
+                styledAttributes.recycle();
+                changeColorFromActionBar(drawable);
             }
-            styledAttributes.recycle();
-            changeColorFromActionBar(drawable);
             mMenu.stopDispatchingItemsChanged();
             try {
                 return mCallback.onCreateActionMode(this, mMenu);

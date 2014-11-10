@@ -47,8 +47,8 @@ public final class NavigationBarTransitions extends BarTransitions {
     private boolean mLeftIfVertical;
     private int mRequestedMode;
     private boolean mStickyTransparent;
-    private int mCurrentColor;
-    private int mCurrentBg;
+    private int mCurrentColor = -3;
+    private boolean mColorEnabled = false;
 
     public NavigationBarTransitions(NavigationBarView view) {
         super(view, R.drawable.nav_background, R.color.navigation_bar_background_opaque,
@@ -90,6 +90,7 @@ public final class NavigationBarTransitions extends BarTransitions {
             setGradientResourceId(R.drawable.nav_background);
         }
         transitionTo(mRequestedMode, false /*animate*/);
+        setColorButtonNavigationBar(getCurrentIconColor());
     }
 
     @Override
@@ -196,16 +197,26 @@ public final class NavigationBarTransitions extends BarTransitions {
 
     @Override
     public void finishAnimations() {
-        setColorButtonNavigationBar(-3);
+        if (mColorEnabled) {
+            changeColorIconBackground(-3, -3);
+        }
         super.finishAnimations();
     }
 
     @Override
-    public void changeColorIconBackground(int bg_color, int ic_color) {
-        if (mCurrentBg == bg_color) {
-            return;
+    public void setBackgroundColorEnabled(boolean force) {
+        mColorEnabled = force;
+    }
+
+    @Override
+    protected void resetColorWhenTransient(boolean resets) {
+        if (mColorEnabled && resets) {
+            changeColorIconBackground(-3, -3);
         }
-        mCurrentBg = bg_color;
+    }
+
+    @Override
+    public void changeColorIconBackground(int bg_color, int ic_color) {
         if (ColorUtils.isBrightColor(bg_color)) {
             ic_color = Color.BLACK;
         }
@@ -214,45 +225,32 @@ public final class NavigationBarTransitions extends BarTransitions {
         super.changeColorIconBackground(bg_color, ic_color);
     }
 
+    @Override
     public int getCurrentIconColor() {
         return mCurrentColor;
     }
 
     private void setColorButtonNavigationBar(int ic_color) {
+        View[] views = mView.getAllButtons();
+
+        for(View v : views) {
+            setKeyButtonViewButtonColor(v, ic_color);
+        }
         setKeyButtonViewButtonColor(mView.getSearchLight(), ic_color);
         setKeyButtonViewButtonColor(mView.getCameraButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getRecentsButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getLeftCursorButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getRightCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getMenuButton(), ic_color);
         setKeyButtonViewButtonColor(mView.getMenuButtonTwo(), ic_color);
-        setKeyButtonViewButtonColor(mView.getBackButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getHomeButton(), ic_color);
-        setKeyButtonViewButtonColor(mView.getNotifsButton(), ic_color);
-        setKeyButtonViewColor(ic_color);
-    }
-
-    private void setKeyButtonViewColor(int ic_color) {
-        if (mView == null) return;
-        for (final AwesomeConstant k : AwesomeConstant.values()) {
-            final View child = mView.findViewWithTag(k.value());
-
-            if (child instanceof KeyButtonView) {
-                if (ic_color == -3) {
-                    ((KeyButtonView) child).clearColorFilterBg();
-                } else {
-                    ((KeyButtonView) child).setColorFilterBg(ic_color, PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        }
+        setKeyButtonViewButtonColor(mView.getRightCursorButton(), ic_color);
+        setKeyButtonViewButtonColor(mView.getLeftCursorButton(), ic_color);
     }
 
     private void setKeyButtonViewButtonColor(View button, int ic_color) {
         if (button instanceof KeyButtonView) {
-            if (ic_color == -3) {
+            if (ic_color == -3 || mVertical) {
                 ((KeyButtonView) button).clearColorFilterBg();
             } else {
-                ((KeyButtonView) button).setColorFilterBg(ic_color, PorterDuff.Mode.SRC_ATOP);
+                ((KeyButtonView) button).setColorFilterBg(ic_color, PorterDuff.Mode.MULTIPLY);
             }
         }
     }

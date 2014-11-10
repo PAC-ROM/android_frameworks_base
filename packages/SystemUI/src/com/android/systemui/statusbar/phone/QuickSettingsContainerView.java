@@ -111,6 +111,16 @@ public class QuickSettingsContainerView extends FrameLayout {
         requestLayout();
     }
 
+    public void changeColorIconBackground(int bg_color, int ic_color) {
+        for (int i = 0; i < getChildCount(); i++) {
+             View v = getChildAt(i);
+             if (v instanceof QuickSettingsTileView) {
+                 QuickSettingsTileView qs = (QuickSettingsTileView) v;
+                 qs.changeColorIconBackground(bg_color, ic_color);
+             }
+        }
+    }
+    
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Calculate the cell width dynamically

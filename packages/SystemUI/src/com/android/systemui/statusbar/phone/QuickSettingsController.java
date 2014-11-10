@@ -513,6 +513,12 @@ public class QuickSettingsController {
         }
     }
 
+    public void updateSettings(int defaultColor) {
+        for (QuickSettingsTile t : mQuickSettingsTiles) {
+            t.updateSettings(defaultColor);
+        }
+    }
+
     public void updateResources() {
         updateSize();
         mContainerView.updateResources();

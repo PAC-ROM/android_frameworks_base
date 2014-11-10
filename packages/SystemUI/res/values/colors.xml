@@ -39,4 +39,9 @@
     <color name="batterymeter_low">#FFFF3300</color>
     <color name="batterymeter_full">#FFFFFFFF</color>
     <color name="status_bar_clock_color">#FFFFFFFF</color>
+    <color name="status_bar_expanded_clock_color">#ffffff</color>
+    <color name="status_bar_expanded_date_color">#cccccc</color>
+    <color name="status_bar_expanded_carrier_color">#999999</color>
+    <color name="qs_textview_color">#CCCCCC</color>
+    <color name="qs_background_pressed_color">#FF212121</color>
 </resources>
