@@ -15,4 +15,42 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="default_folder_text">Папка</string>
+  <string name="title_activity_sidebar_configuration">Налаштування вмісту панелі програм</string>
+  <string name="action_save">Зберегти</string>
+  <string name="toast_items_saved">Предмети панелі програм були збережені.</string>
+  <string name="content_setup_instructions">Додайте елементи в панель програм, натиснувши на будь-який елемент праворуч і перетягніть його на панель програм.\n\nОб\'єднайте елементи у папки, перетягуючи елемент на будь-який існуючий елемент в панелі програм.\n\n Щоб видалити елемент, просто перетягніть його за межі \@панелі програм.</string>
+  <string name="content_setup_dismiss">Продовжити</string>
+  <string name="toast_not_installed">Додаток не встановлено</string>
+  <string name="floating_mode_blacklisted_app">Цей додаток занесений в чорний список, так як він може не працювати належним чином в плаваючому режимі </string>
+  <string name="accessibility_halo">Створити повідомлення halo.</string>
+  <string name="cpufreq_max">Максимальна частота процесора</string>
+  <string name="cpufreq_min">Мінімальна частота процесора</string>
+  <string name="halo_on">HALO увімкнено</string>
+  <string name="halo_off">HALO вимкнено</string>
+  <string name="halo_dismiss">Відхилити сповіщення</string>
+  <string name="halo_hide">Сховати</string>
+  <string name="halo_clear_all">Відхилити всі сповіщення</string>
+  <string name="halo_silence">Сховати &amp; тиша, поки не прокинувся</string>
+  <string name="halo_tutorial1">Це HALO</string>
+  <string name="halo_tutorial2">Перемісти мене: двічі торкніться &amp; перетягніть</string>
+  <string name="halo_tutorial3">Перегляд завдань: горизонтальне перетягування</string>
+  <string name="status_bar_notification_heads_up_enable_title">Увімкнути heads up</string>
+  <string name="status_bar_notification_heads_up_disable_title">Вимкнути heads up</string>
+  <string name="heads_up_snooze_message">Heads up відключенo на <xliff:g id="number"> %d </xliff:g> хвилин.</string>
+  <string name="quick_settings_powermenu_label">Меню вимкнення</string>
+  <string name="memory">Оперативна Пам\'ять</string>
+  <string name="app_killed_message">Програму вбито</string>
+  <string name="pie_battery_status_charging">Зарядка (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Заряджено</string>
+  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% залишилось</string>
+  <string name="pie_phone_status_no_service">Немає служби</string>
+  <string name="pie_phone_status_airplane_mode">Режим “У літаку” активний</string>
+  <string name="pie_phone_status_emergency_only">Тільки екстрені дзвінки</string>
+  <string name="status_bar_recent_playstore_item_title">Play Маркет</string>
+  <string name="status_bar_recent_amazon_item_title">Магазин Amazon</string>
+  <string name="status_bar_notification_floating_item_title">Плаваючий режим</string>
+  <string name="status_bar_floating_no_interface">Додаток не надає ніякого інтерфейсу</string>
+  <string name="update_weather">Оновлення погоди</string>
+</resources>

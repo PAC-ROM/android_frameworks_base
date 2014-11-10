@@ -15,4 +15,49 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">Staat lezen en bewerken van ingenomen permissies toe. Niet voor gebruik van normale apps.</string>
+  <string name="permdesc_revokePermissions">Staat het lezen en bewerken van ingenomen permissies toe. Niet voor gebruik van normale apps.</string>
+  <string name="animation_default">Standaard</string>
+  <string name="animation_fade">Vervagen</string>
+  <string name="animation_slide_right">Rechts inschuiven</string>
+  <string name="animation_slide_left">Links inschuiven</string>
+  <string name="animation_slide_right_no_fade">Rechts inschuiven (geen vervaging)</string>
+  <string name="animation_slide_left_no_fade">Links inschuiven (geen vervaging)</string>
+  <string name="animation_slide_up">Van onder inschuiven</string>
+  <string name="animation_slide_down">Van boven inschuiven</string>
+  <string name="animation_translucent">Doorschijnend</string>
+  <string name="animation_grow_shrink">Ingroeien (van boven)</string>
+  <string name="animation_grow_shrink_center">Ingroeien (vanuit het midden)</string>
+  <string name="animation_grow_shrink_bottom">Ingroeien (van onder)</string>
+  <string name="animation_grow_shrink_left">Ingroeien (van links)</string>
+  <string name="animation_grow_shrink_right">Ingroeien (van Rechts)</string>
+  <string name="animation_random">Willekeurig</string>
+  <string name="action_home">Thuis</string>
+  <string name="action_back">Terug</string>
+  <string name="action_recents">Recente apps</string>
+  <string name="action_recents_gb">Recente apps (GB stijl)</string>
+  <string name="action_search">Zoeken</string>
+  <string name="action_screenshot">Schermafbeelding</string>
+  <string name="action_menu">Menu</string>
+  <string name="action_ime">Open invoer methode keuze scherm</string>
+  <string name="action_kill">Stop taak</string>
+  <string name="action_lastapp">Laatste app</string>
+  <string name="action_notifications">Meldingen</string>
+  <string name="action_assist">Zoeken (Google Now)</string>
+  <string name="action_clockoptions">Klok instellingen</string>
+  <string name="action_voiceassist">Spraakgestuurd zoeken</string>
+  <string name="action_torch">Zaklamp</string>
+  <string name="action_silent">Geluid/stil</string>
+  <string name="global_actions_nav_bar_mode">Navigatie balk</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigatie balk aan</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigatie balk uit</string>
+  <string name="disable_navigation_pie_error">U kan de navigatie balk niet uitschakelen, Er is geen andere navigatie manier geactiveerd. Activeer eerst pie besturing zodat u de navigatie balk kunt uitschakelen.</string>
+  <string name="permlab_changeHeadsUpState">activeer of deactiveer heads up</string>
+  <string name="permdesc_changeHeadsUpState">Hiermee kan de toepassing wijzigen of het een andere toepassing is toegestaan om een normale meldingen als heads-up melding weer te geven.</string>
+  <string name="permlab_recordScreen">Opnemen van getoonde inhoud</string>
+  <string name="permdesc_recordScreen">Staat toe dat een app het scherm opneemt.</string>
+  <string name="global_action_screen_record">Scherm opnemen</string>
+  <string name="permlab_fakePackageSignature">pakket handtekening nabootsen</string>
+  <string name="permdesc_fakePackageSignature">Hiermee kan een app de pakket handtekening van een andere app nabootsen.</string>
+</resources>

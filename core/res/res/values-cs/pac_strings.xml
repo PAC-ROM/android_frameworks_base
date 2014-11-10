@@ -15,4 +15,50 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">Umožňuje zobrazit a upravit předělaná oprávnění. Toto není určeno pro běžné aplikace.</string>
+  <string name="permdesc_revokePermissions">Umožňuje čtení a zápis pro předělané/zrušené oprávnění. Není určeno pro běžné aplikace.</string>
+  <string name="animation_default">Výchozí</string>
+  <string name="animation_fade">Fade</string>
+  <string name="animation_slide_right">Posunutí vpravo</string>
+  <string name="animation_slide_left">Posunutí vlevo</string>
+  <string name="animation_slide_right_no_fade">Posunutí vpravo (bez slábnutí)</string>
+  <string name="animation_slide_left_no_fade">Posunutí vlevo (bez slábnutí)</string>
+  <string name="animation_slide_up">Posunutí dolů</string>
+  <string name="animation_slide_down">Posunutí nahoru</string>
+  <string name="animation_translucent">Průhlednost</string>
+  <string name="animation_grow_shrink">Růst (nahoru)</string>
+  <string name="animation_grow_shrink_center">Růst (uprostřed)</string>
+  <string name="animation_grow_shrink_bottom">Růst (dole)</string>
+  <string name="animation_grow_shrink_left">Růst (vlevo)</string>
+  <string name="animation_grow_shrink_right">Růst (vpravo)</string>
+  <string name="animation_random">Náhodný</string>
+  <string name="action_home">Domů</string>
+  <string name="action_back">Zpět</string>
+  <string name="action_recents">Nedávné</string>
+  <string name="action_search">Hledat</string>
+  <string name="action_screenshot">Screenshot</string>
+  <string name="action_menu">Menu</string>
+  <string name="action_kill">Ukončit aplikaci/e</string>
+  <string name="action_lastapp">Poslední aplikace</string>
+  <string name="action_notifications">Oznámení/uporornění</string>
+  <string name="action_assist">Hledat (Google Now)</string>
+  <string name="action_clockoptions">Nastavení hodin</string>
+  <string name="action_voiceassist">Hlasové vyhledávání</string>
+  <string name="action_torch">Svítilna</string>
+  <string name="action_silent">Hlasitě/Potichu</string>
+  <string name="action_vib">Hlasitě/Vibrace</string>
+  <string name="action_silent_vib">Hlasitě/Vibrace/Potichu</string>
+  <string name="action_event">Událost</string>
+  <string name="action_today">Dnes</string>
+  <string name="action_alarm">Alarm</string>
+  <string name="action_unlock">Odemknout</string>
+  <string name="action_camera">Fotoaparát</string>
+  <string name="action_null">Prázdný</string>
+  <string name="action_app_window">Okno aplikace</string>
+  <string name="action_ribbon">AOKP Ribbon</string>
+  <string name="global_actions_nav_bar_mode">Navigační panel</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigační panel je zapnutý</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigační panel je vypnutý</string>
+  <string name="global_action_screen_record">Videozáznam obrazovky</string>
+</resources>

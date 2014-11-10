@@ -15,4 +15,49 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="permlab_revokePermissions">يتيح عرض وتحرير الصلاحيات الملغاة. لا يستخدم من قبل التطبيقات العادية.</string>
+  <string name="permdesc_revokePermissions">يتيح القراءة والكتابة للصلاحيات الملغاة . لا يستخدم من قبل التطبيقات العادية.</string>
+  <string name="animation_default">الافتراضي</string>
+  <string name="animation_fade">التلاشي</string>
+  <string name="animation_slide_right">انزلاق إلى اليمين</string>
+  <string name="animation_slide_left">انزلاق إلى اليسار</string>
+  <string name="animation_slide_right_no_fade">انزلاق إلى اليمين (بدون تلاشي)</string>
+  <string name="animation_slide_left_no_fade">انزلاق إلى اليسار (بدون تلاشي)</string>
+  <string name="animation_slide_up">انزلاق إلى الأسفل</string>
+  <string name="animation_slide_down">الانزلاق إلى الأعلى</string>
+  <string name="animation_translucent">شبه شفاف</string>
+  <string name="animation_random">عشوائى</string>
+  <string name="action_home">الصفحة الرئيسية</string>
+  <string name="action_back">إلى الخلف</string>
+  <string name="action_search">البحث</string>
+  <string name="action_screenshot">لقطة للشاشة</string>
+  <string name="action_menu">القائمة</string>
+  <string name="action_ime">فتح مبدل IME</string>
+  <string name="action_kill">قتل المهمة</string>
+  <string name="action_power">الطاقة</string>
+  <string name="action_notifications">التنبيهات</string>
+  <string name="action_assist">البحث (جوجل الآن)</string>
+  <string name="action_clockoptions">خيارات الساعة</string>
+  <string name="action_voiceassist">البحث الصوتي</string>
+  <string name="action_torch">مصباح</string>
+  <string name="action_silent">رنة/صامت</string>
+  <string name="action_vib">رنة/إهتزاز</string>
+  <string name="action_silent_vib">رنة/إهتزاز/صامت</string>
+  <string name="action_event">حدث</string>
+  <string name="action_today">اليوم</string>
+  <string name="action_alarm">المنبه</string>
+  <string name="action_unlock">فك القفل</string>
+  <string name="action_camera">الكاميرا</string>
+  <string name="action_null">فارغة</string>
+  <string name="action_app_window">نافذة التطبيق</string>
+  <string name="action_ribbon">شريط AOKP</string>
+  <string name="action_app">تطبيق/إختصار مخصص</string>
+  <string name="global_actions_nav_bar_mode">شريط التصفح</string>
+  <string name="global_actions_nav_bar_mode_on_status">شريط التنقل مفعّل</string>
+  <string name="global_actions_nav_bar_mode_off_status">شريط التنقل غير مفعّل</string>
+  <string name="disable_navigation_pie_error">لا يمكنك تعطيل شريط التنقل. لم يتم تفعيل أي طريقة أخرى للتنقل. قم بتفعيل باي كنترول أولا حتى تتمكن من تعطيل شريط التنقل.</string>
+  <string name="permlab_changeHeadsUpState">تفعيل أو تعطيل تنبيهات Heads up</string>
+  <string name="permdesc_recordScreen">يسمح للتطبيق بتسجيل شاشة المستخدمين.</string>
+  <string name="global_action_screen_record">تسجيل الشاشة</string>
+</resources>

@@ -15,4 +15,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="default_folder_text">Složka</string>
+  <string name="action_save">Uložit</string>
+  <string name="content_setup_dismiss">Pokračovat</string>
+  <string name="toast_not_installed">Aplikace není nainstalována</string>
+  <string name="cpufreq_max">Max frekvence CPU</string>
+  <string name="cpufreq_min">Min frekvence CPU</string>
+  <string name="halo_on">HALO ON</string>
+  <string name="halo_off">HALO OFF</string>
+  <string name="halo_hide">Skrýt</string>
+  <string name="halo_tutorial1">Tohle je HALO</string>
+  <string name="memory">Paměť RAM</string>
+  <string name="app_killed_message">Aplikace byla ukončena</string>
+  <string name="pie_battery_status_full">Nabito</string>
+  <string name="pie_phone_status_no_service">Žádná služba</string>
+  <string name="pie_phone_status_airplane_mode">Režim letadlo zapnuto</string>
+  <string name="pie_phone_status_emergency_only">Pouze tísňová volání</string>
+  <string name="status_bar_recent_playstore_item_title">Play Store</string>
+  <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
+  <string name="update_weather">Aktualizace počasí</string>
+</resources>

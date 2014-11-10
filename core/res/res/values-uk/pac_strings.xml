@@ -15,4 +15,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="animation_default">За замовчуванням</string>
+  <string name="animation_fade">Затухання</string>
+  <string name="animation_slide_right">Зсунути праворуч</string>
+  <string name="animation_slide_left">Зсунути ліворуч</string>
+  <string name="animation_slide_right_no_fade">Зсунути праворуч (без затухання)</string>
+  <string name="animation_slide_left_no_fade">Зсунути ліворуч (без затухання)</string>
+  <string name="animation_slide_up">Зсунути вниз</string>
+  <string name="animation_slide_down">Зсунути вверх</string>
+  <string name="animation_translucent">Прозорість</string>
+  <string name="global_actions_nav_bar_mode">Панель навігації</string>
+  <string name="global_actions_nav_bar_mode_on_status">Панель навігації увiмкнена</string>
+  <string name="global_actions_nav_bar_mode_off_status">Панель навігації вимкнена</string>
+  <string name="disable_navigation_pie_error">Ви не можете вимкнути навігаційну панель. Ніякої інша не увімкнена. Спочатку включіть PIE Controls аби вимкнути навігаційну панель.</string>
+  <string name="permlab_changeHeadsUpState">Увімкнути або вимкнути спливаючі сповіщення</string>
+  <string name="permdesc_changeHeadsUpState">Дозволити програмі змінювати вигляд сповіщень: показувати сповіщення як звичайні або спливаючі.</string>
+</resources>

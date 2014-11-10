@@ -15,4 +15,42 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="default_folder_text">Sıralaç</string>
+  <string name="title_activity_sidebar_configuration">Uygulama Çubuğu içerik kurulumu</string>
+  <string name="action_save">Kaydet</string>
+  <string name="toast_items_saved">Uygulama Çubuğu öğeleri kaydedildi.</string>
+  <string name="content_setup_instructions">Uygulama Çubuğuna öğe eklemek için sağdaki herhangi bir öğeye basılı tutun ve uygulama çubuğuna sürükleyin.\n\nÖğeleri klasörlerde birleştirmek için Uygulama Çubuğundaki varolan öğelerin üzerine sürükleyin.\n\nBir öğeyi kaldırmak için onu Uygulama Çubuğu\'nun dışına sürükleyin.</string>
+  <string name="content_setup_dismiss">Devam et</string>
+  <string name="toast_not_installed">Uygulama yüklenmedi</string>
+  <string name="floating_mode_blacklisted_app">Geçerli uygulama, yüzer kipte beklendiği gibi çalışmadığı için kara listeye alındı </string>
+  <string name="accessibility_halo">Bilgilendirme halesi oluştur.</string>
+  <string name="cpufreq_max">En yüksek işlemci frekansı</string>
+  <string name="cpufreq_min">En düşük ana işlemci frekansı</string>
+  <string name="halo_on">HALE AÇIK</string>
+  <string name="halo_off">HALE KAPALI</string>
+  <string name="halo_dismiss">Bildirimi yoksay</string>
+  <string name="halo_hide">Gizle</string>
+  <string name="halo_clear_all">Tüm bildirimleri yoksay</string>
+  <string name="halo_silence">Uyanana kadar &amp;\'ı gizle</string>
+  <string name="halo_tutorial1">Bu HALO\'dur</string>
+  <string name="halo_tutorial2">Taşımak için: çift tıklayın &amp; ve sürükleyin</string>
+  <string name="halo_tutorial3">Görevlere göz atmak için : Yatay sürükleyin</string>
+  <string name="status_bar_notification_heads_up_enable_title">Beliren bildirimleri etkinleştir</string>
+  <string name="status_bar_notification_heads_up_disable_title">Beliren bildirimleri devre dışı bırak</string>
+  <string name="heads_up_snooze_message">Beliren bildirimler <xliff:g id="number">%d</xliff:g> dakikalığına devre dışı.</string>
+  <string name="quick_settings_powermenu_label">Güç Menüsü</string>
+  <string name="memory">RAM</string>
+  <string name="app_killed_message">Uygulama sonlandırıldı</string>
+  <string name="pie_battery_status_charging">Dolduruyor (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Dolu</string>
+  <string name="pie_battery_status_discharging">Kalan <xliff:g id="percent">%d</xliff:g>%%</string>
+  <string name="pie_phone_status_no_service">Hizmet yok</string>
+  <string name="pie_phone_status_airplane_mode">Uçak kipi açık</string>
+  <string name="pie_phone_status_emergency_only">Sadece acil  çağrılar</string>
+  <string name="status_bar_recent_playstore_item_title">Play Store</string>
+  <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
+  <string name="status_bar_notification_floating_item_title">Yüzer kip</string>
+  <string name="status_bar_floating_no_interface">Uygulama arayüz sağlamıyor</string>
+  <string name="update_weather">Hava durumu güncelleştiriliyor</string>
+</resources>

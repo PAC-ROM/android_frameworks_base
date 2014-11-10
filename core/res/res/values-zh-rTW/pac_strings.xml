@@ -70,6 +70,7 @@
   <string name="disable_navigation_pie_error">您無法關閉虛擬按鍵欄，因為尚未開啟其他的虛擬按鍵。請先開啟Pie虛擬按鍵再關閉虛擬按鍵欄。</string>
   <string name="permlab_changeHeadsUpState">開啟或關閉抬頭顯示器。</string>
   <string name="permdesc_changeHeadsUpState">允許應用程式更改另一應用程式是否以抬頭顯示器通知來取代正常通知。</string>
+  <string name="permlab_recordScreen">正在顯示的記錄內容</string>
   <string name="permdesc_recordScreen">允許應用程式紀錄螢幕內容。</string>
   <string name="global_action_screen_record">螢幕錄影。</string>
   <string name="permlab_fakePackageSignature">模仿應用程式簽名。</string>

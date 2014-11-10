@@ -15,4 +15,32 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="default_folder_text">مجلّد</string>
+  <string name="action_save">حفظ</string>
+  <string name="toast_items_saved">تمّ حفظ عناصر شريط التّطبيقات.</string>
+  <string name="content_setup_instructions">يمكن إضافة العناصر إلى شريط التّطبيقات عن طريق الضغط طويلا ً على العنصر على الجهة اليمنى وسحبه إلى شريط التّطبيقات. \n\n يمكن جمع العناصر في مجلّدات عن طريق إسقاط العنصر فوق عنصر آخر موجود في شريط التّطبيقات. \n\n لإزالة عنصر، قم بسحبه خارج الـ \@appbar.</string>
+  <string name="content_setup_dismiss">متابعة</string>
+  <string name="toast_not_installed">التطبيق غير مثبّت</string>
+  <string name="cpufreq_max">الحدّ الأعلى لتردّد المعالج</string>
+  <string name="cpufreq_min">الحدّ الأدنى لتردّد المعالج</string>
+  <string name="halo_on">تمّ تشغيل HALO</string>
+  <string name="halo_off">تمّ إيقاف HALO</string>
+  <string name="halo_dismiss">إبعاد الإشعار</string>
+  <string name="halo_hide">إخفاء</string>
+  <string name="halo_clear_all">إبعاد كلّ الإشعارات</string>
+  <string name="halo_tutorial1">هذا هو HALO</string>
+  <string name="halo_tutorial3">تصفّح المهام: إسحب أفقيا ً</string>
+  <string name="quick_settings_powermenu_label">قائمة التشغيل</string>
+  <string name="memory">ذاكرة الوصول العشوائي</string>
+  <string name="app_killed_message">تمّ إيقاف التّطبيق</string>
+  <string name="pie_battery_status_charging">جاري الشحن (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">تمّ الشّحن</string>
+  <string name="pie_battery_status_discharging">متبقّي <xliff:g id="percent">%d</xliff:g>%%</string>
+  <string name="pie_phone_status_no_service">لا يوجد خدمة متوفّرة</string>
+  <string name="pie_phone_status_airplane_mode">تمّ تشغيل وضع الطّيران</string>
+  <string name="pie_phone_status_emergency_only">مكالمات الطّوارئ فقط</string>
+  <string name="status_bar_recent_playstore_item_title">متجر غوغل بلاي</string>
+  <string name="status_bar_recent_amazon_item_title">متجر أمازون</string>
+  <string name="update_weather">جاري تحديث الطّقس</string>
+</resources>

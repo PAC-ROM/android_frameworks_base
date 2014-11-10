@@ -17,8 +17,43 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="default_folder_text">Map</string>
+  <string name="title_activity_sidebar_configuration">Appbar inhoud setup</string>
   <string name="action_save">Opslaan</string>
+  <string name="toast_items_saved">Appbar items zijn opgeslagen.</string>
+  <string name="content_setup_instructions">Voeg items toe aan de Appbar door een item aan de rechterkant lang in te druk en in de Appbar te slapen.\n\nCombineer items in een map door een item op een bestaand item los te laten in de Appbar.\n\nOm een item te verwijderen sleep het simpelweg uit de Appbar.</string>
   <string name="content_setup_dismiss">Doorgaan</string>
   <string name="toast_not_installed">Applicatie is niet geïnstalleerd</string>
   <string name="floating_mode_blacklisted_app">De huige app staat op de zwarte lijst en werkt misschien niet naar behoren in zwevende modus</string>
+  <string name="accessibility_halo">Creëer notificatie halo.</string>
+  <string name="cpufreq_max">Max CPU Freq</string>
+  <string name="cpufreq_min">Min CPU Freq</string>
+  <string name="halo_on">HALO AAN</string>
+  <string name="halo_off">HALO UIT</string>
+  <string name="halo_dismiss">Verwijder notificatie</string>
+  <string name="halo_hide">Verbergen</string>
+  <string name="halo_clear_all">Verwijder alle notificaties</string>
+  <string name="halo_silence">Verberg &amp; demp</string>
+  <string name="halo_tutorial1">Dit is HALO</string>
+  <string name="halo_tutorial2">Verplaats me: Dubbel tappen &amp; slepen</string>
+  <string name="halo_tutorial3">Blader door taken: Horizontaal slepen</string>
+  <string name="status_bar_notification_heads_up_enable_title">Activeer heads up</string>
+  <string name="status_bar_notification_heads_up_disable_title">Deactiveer heads up</string>
+  <string name="heads_up_snooze_message">Heads up is gedeactiveerd voot <xliff:g id="number">%d</xliff:g> minuten.</string>
+  <string name="quick_settings_powermenu_label">Afsluitmenu</string>
+  <string name="memory">RAM</string>
+  <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> vrij</string>
+  <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> in gebruik</string>
+  <string name="app_killed_message">Applicatie gestopt</string>
+  <string name="pie_battery_status_charging">Opladen (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Opgeladen</string>
+  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% overblijvend</string>
+  <string name="pie_phone_status_no_service">Geen verbinding</string>
+  <string name="pie_phone_status_airplane_mode">Vliegtuig modus aan</string>
+  <string name="pie_phone_status_emergency_only">Alleen noodoproepen</string>
+  <string name="status_bar_recent_playstore_item_title">Play Store</string>
+  <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
+  <string name="status_bar_notification_floating_item_title">Zwevende modus</string>
+  <string name="status_bar_floating_no_interface">Applicatie heeft geen interface</string>
+  <string name="weatherpanel_slash">/</string>
+  <string name="update_weather">Weer bijwerken</string>
 </resources>
