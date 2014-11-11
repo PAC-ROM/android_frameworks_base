@@ -20,9 +20,15 @@ import android.graphics.Rect;
 import com.android.internal.R;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff.Mode;
+import android.os.Handler;
+import android.provider.Settings;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -122,7 +128,7 @@ public class EdgeEffect {
     private int mState = STATE_IDLE;
 
     private float mPullDistance;
-    
+
     private final Rect mBounds = new Rect();
 
     private final int mEdgeHeight;
@@ -138,6 +144,11 @@ public class EdgeEffect {
         final Resources res = context.getResources();
         mEdge = res.getDrawable(R.drawable.overscroll_edge);
         mGlow = res.getDrawable(R.drawable.overscroll_glow);
+
+        ContentResolver resolver = context.getContentResolver();
+        int mOverscrollGlowColor = Settings.PAC.getInt(resolver, Settings.PAC.OVERSCROLL_GLOW_COLOR, -2);
+        mGlow.setColorFilter(mOverscrollGlowColor, Mode.MULTIPLY);
+        mEdge.setColorFilter(mOverscrollGlowColor, Mode.MULTIPLY);
 
         mEdgeHeight = mEdge.getIntrinsicHeight();
         mGlowHeight = mGlow.getIntrinsicHeight();
@@ -165,7 +176,7 @@ public class EdgeEffect {
     /**
      * Set the position of this edge effect in pixels. This position is
      * only used by {@link #getBounds(boolean)}.
-     * 
+     *
      * @param x The position of the edge effect on the X axis
      * @param y The position of the edge effect on the Y axis
      */
@@ -368,7 +379,7 @@ public class EdgeEffect {
 
     /**
      * Returns the bounds of the edge effect.
-     * 
+     *
      * @hide
      */
     public Rect getBounds(boolean reverse) {
