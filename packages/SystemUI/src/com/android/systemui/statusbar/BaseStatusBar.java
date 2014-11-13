@@ -1956,6 +1956,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean isFullscreen = notification.fullScreenIntent != null;
         int asHeadsUp = notification.extras.getInt(Notification.EXTRA_AS_HEADS_UP,
                 Notification.HEADS_UP_NEVER);
+        boolean hasTicker = !TextUtils.isEmpty(notification.tickerText);
         boolean isAllowed = asHeadsUp != Notification.HEADS_UP_NEVER;
         boolean isRequested = asHeadsUp == Notification.HEADS_UP_REQUESTED;
         boolean isOngoing = sbn.isOngoing();
@@ -1967,9 +1968,17 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean keyguardVisibleNotSecure =
                 keyguard.isShowingAndNotHidden() && !keyguard.isSecure();
 
+        boolean isDreamShowing = false;
+        try {
+            isDreamShowing = mDreamManager.isDreaming();
+        } catch (RemoteException e) {
+            Log.d(TAG, "failed to query dream manager", e);
+        }
+
         // Possibly a heads up from an app with native support.
-        boolean interrupt = (isFullscreen || (isHighPriority && isNoisy) || isRequested)
+        boolean interrupt = (isFullscreen || (isHighPriority && isNoisy) || isRequested || hasTicker)
                 && isAllowed
+                && !isDreamShowing
                 && mPowerManager.isScreenOn()
                 && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen()));
 
@@ -1980,11 +1989,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 && mPowerManager.isScreenOn()
                 && (keyguardNotVisible || (keyguardVisibleNotSecure && !excludeHeadsUpFromLockScreen())));
 
-        try {
-            interrupt = interrupt && !mDreamManager.isDreaming();
-        } catch (RemoteException e) {
-            Log.d(TAG, "failed to query dream manager", e);
-        }
         if (DEBUG) Log.d(TAG, "interrupt: " + interrupt);
         return interrupt;
     }
