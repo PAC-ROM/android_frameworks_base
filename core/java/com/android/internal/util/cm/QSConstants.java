@@ -36,6 +36,7 @@ public class QSConstants {
         public static final String TILE_CPUFREQ = "toggleCPUFreq";
         public static final String TILE_POWER = "togglePowerMenu";
         public static final String TILE_HALO = "toggleHalo";
+        public static final String TILE_THEMES = "toggleThemes";
 
         public static final String TILE_DELIMITER = "|";
         public static ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
