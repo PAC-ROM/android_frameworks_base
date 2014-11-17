@@ -666,7 +666,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         // TODO(): Ideally we should integrate with DevicePolicyManager for application widget too.
         final boolean showApplicationWidget = showSearch &&
-                mApplicationWidgetPackageName != null && mLockUtils.getApplicationWidgetEnabled();
+                mApplicationWidgetPackageName != null;
 
         setVisibleOrGone(getSearchLight(), showSearch && mModLockDisabled
                 && NavigationRingHelpers.hasLockscreenTargets(mContext));
