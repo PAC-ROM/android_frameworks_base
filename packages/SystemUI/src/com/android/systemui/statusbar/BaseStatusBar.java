@@ -1314,6 +1314,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         private String mTag;
         private int mId;
         private boolean mFloat;
+        private boolean mProtected;
+
+        private BroadcastReceiver mProtectedAppReceiver;
 
         public static final String ACTION_BROADCAST_RESULT =
                 "com.android.settings.applications.LockPatternActivity.ACTION_BROADCAST_RESULT";
