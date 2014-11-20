@@ -80,7 +80,7 @@ public class LightsService {
 
         public void setColor(int color) {
             synchronized (this) {
-                setLightLocked(color, LIGHT_FLASH_NONE, 0, 0, BRIGHTNESS_MODE_USER);
+                setLightLocked(color, LIGHT_FLASH_NONE, 0, 0, 0);
             }
         }
 
@@ -116,9 +116,6 @@ public class LightsService {
                         + Integer.toHexString(color));
                 mColor = color;
                 mMode = mode;
-
-                mFlashing = (mode != LIGHT_FLASH_NONE);
-
                 mOnMS = onMS;
                 mOffMS = offMS;
                 setLight_native(mNativePointer, mId, color, mode, onMS, offMS, brightnessMode);
