@@ -16,5 +16,33 @@
   limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="animation_default">Predefinito</string>
   <string name="animation_fade">Dissolvenza</string>
+  <string name="animation_slide_right">Scorrimento da destra</string>
+  <string name="animation_slide_left">Scorrimento da sinistra</string>
+  <string name="animation_translucent">Traslucido</string>
+  <string name="animation_random">Casuale</string>
+  <string name="action_home">Home</string>
+  <string name="action_back">Indietro</string>
+  <string name="action_recents">Recenti</string>
+  <string name="action_recents_gb">Recenti (stile GB)</string>
+  <string name="action_screenshot">Screenshot</string>
+  <string name="action_menu">Menu</string>
+  <string name="action_kill">Termina processo</string>
+  <string name="action_lastapp">Ultima app</string>
+  <string name="action_notifications">Notifiche</string>
+  <string name="action_voiceassist">Ricerca vocale</string>
+  <string name="action_torch">Torcia</string>
+  <string name="action_silent">Suoneria/Silenzioso</string>
+  <string name="action_vib">Suoneria/Vibrazione</string>
+  <string name="action_silent_vib">Suoneria/Vibrazione/Silenzioso</string>
+  <string name="action_event">Evento</string>
+  <string name="action_today">Oggi</string>
+  <string name="action_alarm">Sveglia</string>
+  <string name="action_camera">Fotocamera</string>
+  <string name="action_null">Vuoto</string>
+  <string name="action_app">App personalizzata/Scelta rapida</string>
+  <string name="action_dpad_left">Freccia sinistra</string>
+  <string name="action_dpad_right">Freccia destra</string>
+  <string name="global_actions_nav_bar_mode">Barra di navigazione</string>
 </resources>

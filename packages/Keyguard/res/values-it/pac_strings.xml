@@ -15,4 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="lockscreen_gesture_wrong">Prova ancora!</string>
+  <string name="keyguard_accessibility_gesture_unlock">Sblocco con un gesto.</string>
+</resources>
