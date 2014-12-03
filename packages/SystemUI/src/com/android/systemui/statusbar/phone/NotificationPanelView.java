@@ -39,6 +39,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
 import android.view.Display;
@@ -242,6 +244,7 @@ public class NotificationPanelView extends PanelView implements
     private SettingsObserver mSettingsObserver;
 
     private int mOneFingerQuickSettingsIntercept;
+    private int mQsSmartPullDown;
     private boolean mDoubleTapToSleepEnabled;
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
@@ -1132,6 +1135,13 @@ public class NotificationPanelView extends PanelView implements
                 break;
         }
         showQsOverride &= mStatusBarState == StatusBarState.SHADE;
+
+        if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 && !mStatusBar.hasActiveVisibleNotifications()
+                || (mQsSmartPullDown == 3 && !mStatusBar.hasActiveVisibleNotifications()
+                        && !mStatusBar.hasActiveClearableNotifications())) {
+                showQsOverride = true;
+        }
 
         return twoFingerDrag || showQsOverride || stylusButtonClickDrag || mouseButtonClickDrag;
     }
@@ -2742,6 +2752,9 @@ public class NotificationPanelView extends PanelView implements
                     CMSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN), false, this);
             resolver.registerContentObserver(CMSettings.System.getUriFor(
                     CMSettings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SMART_PULLDOWN),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -2769,6 +2782,10 @@ public class NotificationPanelView extends PanelView implements
 
             boolean liveLockScreenEnabled = CMSettings.Secure.getInt(
                     resolver, CMSettings.Secure.LIVE_LOCK_SCREEN_ENABLED, 0) == 1;
+
+            mQsSmartPullDown = Settings.System.getIntForUser(
+                    resolver, Settings.System.QS_SMART_PULLDOWN, 0,
+                    UserHandle.USER_CURRENT);
         }
     }
 
