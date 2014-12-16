@@ -3279,7 +3279,7 @@ public final class Settings {
             STATUS_BAR_SHOW_BATTERY_PERCENT,
             INCREASING_RING,
             INCREASING_RING_START_VOLUME,
-            INCREASING_RING_RAMP_UP_TIME
+            INCREASING_RING_RAMP_UP_TIME,
         };
 
         /**
@@ -8251,6 +8251,55 @@ public final class Settings {
          * @hide
          */
         public static final String HEADS_UP_NOTIFCATION_DECAY = "heads_up_notification_decay";
+
+        /**
+         * The number of voume steps for alarms, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_ALARM = "volume_steps_alarm";
+
+        /**
+         * The number of voume steps for DTMF sounds, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_DTMF = "volume_steps_dtmf";
+
+        /**
+         * The number of voume steps for music, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_MUSIC = "volume_steps_music";
+
+        /**
+         * The number of voume steps for notifications, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_NOTIFICATION = "volume_steps_notification";
+
+        /**
+         * The number of voume steps for the ringer, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_RING = "volume_steps_ring";
+
+        /**
+         * The number of voume steps for system sounds, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_SYSTEM = "volume_steps_system";
+
+        /**
+         * The number of voume steps for voice in calls, one of:
+         *    5, 7, 15, 30, 45, 60
+         * @hide
+         */
+        public static final String VOLUME_STEPS_VOICE_CALL = "volume_steps_voice_call";
 
     }
 
