@@ -63,6 +63,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_LAST_APP            = 21 << MSG_SHIFT;
     private static final int MSG_TOGGLE_KILL_APP            = 22 << MSG_SHIFT;
     private static final int MSG_TOGGLE_SCREENSHOT          = 23 << MSG_SHIFT;
+    private static final int MSG_SET_AUTOROTATE_STATUS      = 24 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -111,6 +112,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void toggleLastApp();
         public void toggleKillApp();
         public void toggleScreenshot();
+        public void setAutoRotate(boolean enabled);
     }
 
     public CommandQueue(Callbacks callbacks, StatusBarIconList list) {
@@ -279,6 +281,14 @@ public class CommandQueue extends IStatusBar.Stub {
         m.sendToTarget();
     }
 
+    public void setAutoRotate(boolean enabled) {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SET_AUTOROTATE_STATUS);
+            mHandler.obtainMessage(MSG_SET_AUTOROTATE_STATUS,
+                enabled ? 1 : 0, 0, null).sendToTarget();
+        }
+    }
+
     public void toggleLastApp() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_LAST_APP);
@@ -400,6 +410,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_TOGGLE_SCREENSHOT:
                     mCallbacks.toggleScreenshot();
+                    break;
+                case MSG_SET_AUTOROTATE_STATUS:
+                    mCallbacks.setAutoRotate(msg.arg1 != 0);
                     break;
             }
         }
