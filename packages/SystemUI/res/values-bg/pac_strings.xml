@@ -15,4 +15,43 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"/>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="active_display_privacy_content">Съдържанието на съобщението не се показва, защото е включен режим за поверителност</string>
+  <string name="default_folder_text">Папка</string>
+  <string name="title_activity_sidebar_configuration">Appbar настройка на съдържане</string>
+  <string name="action_save">Запазване</string>
+  <string name="toast_items_saved">Appbar елементите са запазени.</string>
+  <string name="content_setup_instructions">Добавяне на елементи в Appbar, като задържите върху всеки елемент от дясно и го плъзнете върху Appbar.\n\nКомбинирайте елементи в папки като пускате елемент върху всеки съществуващ елемент в Appbar.\n\nЗа да премахнете елемент, просто го плъзнете извън \@appbar.</string>
+  <string name="content_setup_dismiss">Продължи</string>
+  <string name="toast_not_installed">Приложение не е инсталирано</string>
+  <string name="floating_mode_blacklisted_app">Текущото приложение е в черния списък тъй като може да не работи нормално в плаващ режим </string>
+  <string name="accessibility_halo">Създаване на известие halo.</string>
+  <string name="cpufreq_max">Макс честота на Процесора</string>
+  <string name="cpufreq_min">Мин. честота на Процесора</string>
+  <string name="halo_on">HALO ВКЛ</string>
+  <string name="halo_off">HALO ИЗКЛ</string>
+  <string name="halo_dismiss">Отхвърли известие</string>
+  <string name="halo_hide">Скрий</string>
+  <string name="halo_clear_all">Отхвърли всички известия</string>
+  <string name="halo_silence">Скрий &amp; заглуши до събуждане</string>
+  <string name="halo_tutorial1">Това е HALO</string>
+  <string name="halo_tutorial2">За да ме преместиш: почукай два пъти &amp; придърпай</string>
+  <string name="halo_tutorial3">Преглед на задачи: хоризонтално плъзгане</string>
+  <string name="status_bar_notification_heads_up_enable_title">Включване на heads up</string>
+  <string name="status_bar_notification_heads_up_disable_title">Изключване на heads up</string>
+  <string name="heads_up_snooze_message">Heads up е изключен за <xliff:g id="number">%d</xliff:g> минути.</string>
+  <string name="quick_settings_powermenu_label">Меню за изключване</string>
+  <string name="memory">РАМ</string>
+  <string name="app_killed_message">Приложението затворено</string>
+  <string name="pie_battery_status_charging">Зареждане (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Зареден</string>
+  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% остават</string>
+  <string name="pie_phone_status_no_service">Няма сигнал</string>
+  <string name="pie_phone_status_airplane_mode">Включен самолетен режим</string>
+  <string name="pie_phone_status_emergency_only">Само спешни повиквания</string>
+  <string name="status_bar_recent_playstore_item_title">Play Store</string>
+  <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
+  <string name="status_bar_notification_floating_item_title">Плаващ режим</string>
+  <string name="status_bar_floating_no_interface">Приложението няма интерфейс</string>
+  <string name="update_weather">Актуализация на времето</string>
+</resources>
