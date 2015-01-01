@@ -3254,6 +3254,7 @@ public final class Settings {
          * 6 - Launch Camera
          * 7 - Action Sleep
          * 8 - Last app
+         * 9 - OmniSwitch Recents
          * @hide
          */
         public static final String KEY_HOME_LONG_PRESS_ACTION = "key_home_long_press_action";
