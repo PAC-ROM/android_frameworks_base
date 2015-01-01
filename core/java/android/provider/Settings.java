@@ -9238,6 +9238,18 @@ public final class Settings {
          *
          * @hide
          */
+        public static final String ANIMATION_CONTROLS_EXIT_ONLY = "animation_controls_exit_only";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String ANIMATION_CONTROLS_REVERSE_EXIT = "animation_controls_reverse_exit";
+
+        /**
+         *
+         * @hide
+         */
         public static final String ANIMATION_CONTROLS_NO_SCROLL = "animation_controls_no_scroll";
 
         /**
