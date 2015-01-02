@@ -592,7 +592,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mVolumeUpKeyConsumedByScreenrecordChord;
     private boolean mVolumeUpKeyTriggered;
     private boolean mPowerKeyTriggered;
-    private long mVolumeUpKeyTime;
     private boolean mVolumeUpKeyConsumedByScreenshotChord;
     private long mPowerKeyTime;
 
