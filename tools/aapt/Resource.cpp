@@ -29,6 +29,13 @@
 // Number of threads to use for preprocessing images.
 static const size_t MAX_THREADS = 4;
 
+#ifdef SHOW_EXTENDED_WARNINGS
+#define SHOW_MANIFEST_WARNING
+#define SHOW_UNCOMMENTED_SYMBOL_WARNING
+#define SHOW_LOCALIZATION_WARNINGS
+#define SHOW_DEFAULT_TRANSLATION_WARNINGS
+#endif
+
 // ==========================================================================
 // ==========================================================================
 // ==========================================================================
@@ -527,7 +534,7 @@ static int validateAttr(const String8& path, const ResTable& table,
                     String8(parser.getElementName(&len)).string(), attr);
             return ATTR_LEADING_SPACES;
         }
-        if (str[len-1] == ' ') {
+        if (len != 0 && str[len-1] == ' ') {
             fprintf(stderr, "%s:%d: Tag <%s> attribute %s can not end with a space.\n",
                     path.string(), parser.getLineNumber(),
                     String8(parser.getElementName(&len)).string(), attr);
@@ -632,7 +639,7 @@ static bool applyFileOverlay(Bundle *bundle,
                             baseGroup->removeFile(baseFileIndex);
                         } else {
                             // didn't find a match fall through and add it..
-                            if (true || bundle->getVerbose()) {
+                            if (bundle->getVerbose()) {
                                 printf("nothing matches overlay file %s, for flavor %s\n",
                                         overlayGroup->getLeaf().string(),
                                         overlayFiles.keyAt(overlayGroupIndex).toString().string());
@@ -704,9 +711,11 @@ bool addTagAttribute(const sp<XMLNode>& node, const char* ns8,
             return false;
         }
 
+#ifdef SHOW_MANIFEST_WARNING
         fprintf(stderr, "Warning: AndroidManifest.xml already defines %s (in %s);"
                         " using existing value in manifest.\n",
                 String8(attr).string(), String8(ns).string());
+#endif
 
         // don't stop the build.
         return true;
@@ -2411,9 +2420,11 @@ static status_t writeSymbolClass(
                     "%s/** %s\n",
                     getIndentSpace(indent), cmt.string());
         } else if (sym.isPublic && !includePrivate) {
+#ifdef SHOW_UNCOMMENTED_SYMBOL_WARNING
             sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
                 assets->getPackage().string(), className.string(),
                 String8(sym.name).string());
+#endif
         }
         String16 typeComment(sym.typeComment);
         if (typeComment.size() > 0) {
@@ -2457,9 +2468,11 @@ static status_t writeSymbolClass(
                     getIndentSpace(indent), cmt.string(),
                     getIndentSpace(indent));
         } else if (sym.isPublic && !includePrivate) {
+#ifdef SHOW_UNCOMMENTED_SYMBOL_WARNING
             sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
                 assets->getPackage().string(), className.string(),
                 String8(sym.name).string());
+#endif
         }
         ann.printAnnotations(fp, getIndentSpace(indent));
         fprintf(fp, "%spublic static final String %s=\"%s\";\n",

@@ -3094,6 +3094,7 @@ public class WindowManagerService extends IWindowManager.Stub
                     winAnimator.mEnterAnimationPending = true;
                 }
                 if (toBeDisplayed) {
+                    win.mLayoutNeeded = true;
                     if (win.isDrawnLw() && okToDisplay()) {
                         winAnimator.applyEnterAnimationLocked();
                     }
@@ -6128,6 +6129,10 @@ public class WindowManagerService extends IWindowManager.Stub
                     if (ws.mAppToken != null && ws.mAppToken.token == appToken &&
                             ws.isDisplayedLw() && winAnim.mSurfaceShown) {
                         screenshotReady = true;
+                    }
+
+                    if (ws.isFullscreen(dw, dh) && ws.isOpaqueDrawn()){
+                        break;
                     }
                 }
 

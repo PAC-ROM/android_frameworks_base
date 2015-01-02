@@ -4940,9 +4940,11 @@ public final class ActivityManagerService extends ActivityManagerNative
             stats.noteProcessDiedLocked(app.info.uid, pid);
         }
 
-        Process.killProcessQuiet(pid);
-        Process.killProcessGroup(app.info.uid, pid);
-        app.killed = true;
+        if (!app.killed) {
+            Process.killProcessQuiet(pid);
+            Process.killProcessGroup(app.info.uid, pid);
+            app.killed = true;
+        }
 
         // Clean up already done if the process has been re-started.
         if (app.pid == pid && app.thread != null &&
@@ -6094,6 +6096,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             // Take care of any services that are waiting for the process.
             mServices.processStartTimedOutLocked(app);
             app.kill("start timeout", true);
+            removeLruProcessLocked(app);
             if (mBackupTarget != null && mBackupTarget.app.pid == pid) {
                 Slog.w(TAG, "Unattached app died before backup, skipping");
                 try {
@@ -10128,10 +10131,9 @@ public final class ActivityManagerService extends ActivityManagerNative
             } finally {
                 // Ensure that whatever happens, we clean up the identity state
                 sCallerIdentity.remove();
+                // Ensure we're done with the provider.
+                removeContentProviderExternalUnchecked(name, null, userId);
             }
-
-            // We've got the fd now, so we're done with the provider.
-            removeContentProviderExternalUnchecked(name, null, userId);
         } else {
             Slog.d(TAG, "Failed to get provider for authority '" + name + "'");
         }

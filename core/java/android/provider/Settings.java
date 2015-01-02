@@ -1226,6 +1226,7 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
+            MOVED_TO_SECURE.add(Secure.LOCK_NUMPAD_RANDOM);
             MOVED_TO_SECURE.add(Secure.LOGGING_ID);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_LAST_UPDATE);
@@ -3566,6 +3567,8 @@ public final class Settings {
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_GESTURE_ENABLED);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_GESTURE_VISIBLE);
 
             MOVED_TO_GLOBAL = new HashSet<String>();
             MOVED_TO_GLOBAL.add(Settings.Global.ADB_ENABLED);
@@ -4271,6 +4274,15 @@ public final class Settings {
         public static final String LOCK_PATTERN_VISIBLE = "lock_pattern_visible_pattern";
 
         /**
+         * Whether the NumKeyPad will change the orders of numbers
+         * in a PIN locked lockscreen
+         * 0 = off | 1 = always | 2 = only on request
+         * @hide
+          */
+
+        public static final String LOCK_NUMPAD_RANDOM = "lock_numpad_random";
+
+        /**
          * Whether lock pattern will vibrate as user enters (0 = false, 1 =
          * true)
          *
@@ -4281,6 +4293,18 @@ public final class Settings {
         @Deprecated
         public static final String
                 LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+
+        /**
+         * Whether autolock is enabled (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_GESTURE_ENABLED = "lock_gesture_autolock";
+
+        /**
+         * Whether lock gesture is visible as user enters (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_GESTURE_VISIBLE = "lock_gesture_visible_pattern";
 
         /**
          * This preference allows the device to be locked given time after screen goes off,
@@ -7094,6 +7118,11 @@ public final class Settings {
          * Control whether the process CPU usage meter should be shown.
          */
         public static final String SHOW_PROCESSES = "show_processes";
+
+        /**
+         * Control whether the process CPU info meter should be shown.
+         */
+        public static final String SHOW_CPU = "show_cpu";
 
         /**
          * If 1 low power mode is enabled.
