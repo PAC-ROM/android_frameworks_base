@@ -272,16 +272,16 @@ public class AudioService extends IAudioService.Stub {
 
    /** @hide Maximum volume index values for audio streams */
     private static int[] MAX_STREAM_VOLUME = new int[] {
-        5,  // STREAM_VOICE_CALL
-        7,  // STREAM_SYSTEM
-        7,  // STREAM_RING
-        15, // STREAM_MUSIC
-        7,  // STREAM_ALARM
-        7,  // STREAM_NOTIFICATION
-        15, // STREAM_BLUETOOTH_SCO
-        7,  // STREAM_SYSTEM_ENFORCED
-        15, // STREAM_DTMF
-        15  // STREAM_TTS
+        0,  // STREAM_VOICE_CALL
+        1,  // STREAM_SYSTEM
+        1,  // STREAM_RING
+        2, // STREAM_MUSIC
+        1,  // STREAM_ALARM
+        1,  // STREAM_NOTIFICATION
+        2, // STREAM_BLUETOOTH_SCO
+        1,  // STREAM_SYSTEM_ENFORCED
+        2, // STREAM_DTMF
+        2  // STREAM_TTS
     };
 
     private static int[] DEFAULT_STREAM_VOLUME = new int[] {
@@ -761,23 +761,23 @@ public class AudioService extends IAudioService.Stub {
             case 5:
                 return 60;
             default:
-                throw new IllegalArgumentException();
+                return value;
         }
     }
 
     private void initVolumeSteps(){
 
         //Defaults for reference
-        //5,  // STREAM_VOICE_CALL
-        //7,  // STREAM_SYSTEM
-        //7,  // STREAM_RING
-        //15, // STREAM_MUSIC
-        //7,  // STREAM_ALARM
-        //7,  // STREAM_NOTIFICATION
-        //15, // STREAM_BLUETOOTH_SCO
-        //7,  // STREAM_SYSTEM_ENFORCED
-        //15, // STREAM_DTMF
-        //15  // STREAM_TTS
+        //0   // STREAM_VOICE_CALL
+        //1,  // STREAM_SYSTEM
+        //1,  // STREAM_RING
+        //2, // STREAM_MUSIC
+        //1,  // STREAM_ALARM
+        //1,  // STREAM_NOTIFICATION
+        //2, // STREAM_BLUETOOTH_SCO
+        //1,  // STREAM_SYSTEM_ENFORCED
+        //2, // STREAM_DTMF
+        //2  // STREAM_TTS
 
         MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL] = volSteps(
                         Settings.PAC.getInt(mContentResolver, Settings.PAC.VOLUME_STEPS_DTMF,
