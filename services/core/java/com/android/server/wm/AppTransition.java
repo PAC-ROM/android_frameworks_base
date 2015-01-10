@@ -1300,10 +1300,7 @@ public class AppTransition implements Dump {
         for (int i = 0; i < 11; i++) {
             mActivityAnimations[i] = Settings.PAC.getInt(resolver, Settings.PAC.ACTIVITY_ANIMATION_CONTROLS[i], 0);
         }
-
         mNoOverrides = Settings.PAC.getBoolean(resolver, Settings.PAC.ANIMATION_CONTROLS_NO_OVERRIDE, false);
-
-        int temp = Settings.PAC.getInt(resolver, Settings.PAC.ANIMATION_CONTROLS_DURATION, 0);
-        mAnimationDuration = temp * 15;
+        mAnimationDuration = Settings.PAC.getInt(resolver, Settings.PAC.ANIMATION_CONTROLS_DURATION, 25);
     }
 }
