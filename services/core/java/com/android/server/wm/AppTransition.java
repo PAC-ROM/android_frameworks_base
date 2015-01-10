@@ -1337,7 +1337,7 @@ public class AppTransition implements Dump {
         mReverseExit = Settings.PAC.getBoolean(resolver,
                 Settings.PAC.ANIMATION_CONTROLS_REVERSE_EXIT, false);
 
-        mAnimationDuration = Settings.PAC.getInt(resolver,
+        mAnimationDuration = 15 * Settings.PAC.getInt(resolver,
                 Settings.PAC.ANIMATION_CONTROLS_DURATION, 25);
     }
 }
