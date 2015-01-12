@@ -23,6 +23,12 @@ Project: android_frameworks_base
 Branch: refs/heads/pac-4.4
 
 Submitted-by: Lokesh Chamane <lokesh.c703@gmail.com>
+Submitted-at: Fri, 25 Jul 2014 18:06:50 -0500
+Reviewed-on: http://review.pac-rom.com/345
+Project: android_frameworks_base
+Branch: refs/heads/pac-4.4
+
+Submitted-by: Lokesh Chamane <lokesh.c703@gmail.com>
 Submitted-at: Fri, 25 Jul 2014 19:06:50 -0400
 Reviewed-on: http://review.pac-rom.com/345
 Project: android_frameworks_base

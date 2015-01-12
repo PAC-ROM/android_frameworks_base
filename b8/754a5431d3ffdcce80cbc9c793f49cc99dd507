@@ -48,6 +48,17 @@ Code-Review+1: Gregory Wong <g.wuwong20@gmail.com>
 Code-Review+2: Lokesh Chamane <lokesh.c703@gmail.com>
 Verified+1: Lokesh Chamane <lokesh.c703@gmail.com>
 Submitted-by: Lokesh Chamane <lokesh.c703@gmail.com>
+Submitted-at: Thu, 24 Jul 2014 23:58:24 -0500
+Reviewed-on: http://review.pac-rom.com/304
+Project: android_frameworks_base
+Branch: refs/heads/pac-4.4
+
+Code-Review+1: Andrew Sterling <my95z34@gmail.com>
+Code-Review+1: Austin Quach <austinquachh@gmail.com>
+Code-Review+1: Gregory Wong <g.wuwong20@gmail.com>
+Code-Review+2: Lokesh Chamane <lokesh.c703@gmail.com>
+Verified+1: Lokesh Chamane <lokesh.c703@gmail.com>
+Submitted-by: Lokesh Chamane <lokesh.c703@gmail.com>
 Submitted-at: Fri, 25 Jul 2014 00:58:24 -0400
 Reviewed-on: http://review.pac-rom.com/304
 Project: android_frameworks_base
