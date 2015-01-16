@@ -294,7 +294,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private UnlockMethodCache mUnlockMethodCache;
     private DozeServiceHost mDozeServiceHost;
     private boolean mScreenOnComingFromTouch;
-    private boolean mHeadsUpViewAttached;
 
     int mPixelFormat;
     Object mQueueLock = new Object();
@@ -1554,7 +1553,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void addHeadsUpView() {
-        if (!mHeadsUpViewAttached) {
+        if (!mHeadsUpNotificationView.isAttachedToWindow()) {
             int headsUpHeight = mContext.getResources()
                     .getDimensionPixelSize(R.dimen.heads_up_window_height);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
@@ -1574,7 +1573,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             lp.windowAnimations = R.style.Animation_StatusBar_HeadsUp;
 
             mWindowManager.addView(mHeadsUpNotificationView, lp);
-            mHeadsUpViewAttached = true;
         }
     }
 
