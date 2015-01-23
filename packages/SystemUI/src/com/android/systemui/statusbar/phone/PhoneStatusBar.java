@@ -465,9 +465,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             R.integer.heads_up_snooze_time),
                             UserHandle.USER_CURRENT);
                     setHeadsUpSnoozeTime(snoozeTime);
-                    if (mHeadsUpNotificationView != null) {
-                        mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
-                    }
             } else if (uri.equals(Settings.PAC.getUriFor(
                     Settings.PAC.HEADS_UP_NOTIFCATION_DECAY))) {
                     mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
@@ -872,7 +869,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 res.getInteger(R.integer.heads_up_snooze_time),
                 UserHandle.USER_CURRENT);
         setHeadsUpSnoozeTime(snoozeTime);
-        mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
 
         if (MULTIUSER_DEBUG) {
             mNotificationPanelDebugText = (TextView) mNotificationPanel.findViewById(
