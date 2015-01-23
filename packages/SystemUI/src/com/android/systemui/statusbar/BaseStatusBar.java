@@ -2103,11 +2103,13 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     public void snoozeHeadsUp() {
-        scheduleHeadsUpClose();
-        mHeadsUpSnoozeStartTime = System.currentTimeMillis();
-        Toast.makeText(mContext,
-                mContext.getString(R.string.heads_up_snooze_message,
-                mHeadsUpSnoozeTime / 60 / 1000), Toast.LENGTH_LONG).show();
+        if (mHeadsUpSnoozeTime != 0) {
+            scheduleHeadsUpClose();
+            mHeadsUpSnoozeStartTime = System.currentTimeMillis();
+            Toast.makeText(mContext,
+                    mContext.getString(R.string.heads_up_snooze_message,
+                    mHeadsUpSnoozeTime / 60 / 1000), Toast.LENGTH_LONG).show();
+        }
     }
 
     protected boolean isHeadsUpInSnooze() {
