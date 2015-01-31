@@ -27,6 +27,9 @@
     <string name="notification_inspect_heads_up_title_enabled">Enable heads up for this application</string>
     <string name="notification_inspect_heads_up_title_disabled">Disable heads up for this application</string>
 
+    <!-- Quick settings -->
+    <string name="quick_settings_screenshot">Screenshot</string>
+
     <!-- Screenrecord Notification Ticker -->
     <string name="screenrecord_notif_ticker">Screen is being recorded</string>
 
