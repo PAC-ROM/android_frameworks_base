@@ -8943,6 +8943,12 @@ public final class Settings {
          */
         public static final String DOZE_TIMEOUT = "doze_timeout";
 
+        /**
+         * Whether to show four tiles per row.
+         * @hide
+         */
+        public static final String QS_USE_FOUR_COLUMNS = "qs_use_four_columns";
+
     }
 
     /**
