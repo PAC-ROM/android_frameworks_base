@@ -136,6 +136,7 @@ import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
+import com.android.systemui.cm.UserContentObserver;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.keyguard.KeyguardViewMediator;
@@ -417,21 +418,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    class SettingsObserver extends ContentObserver {
+    class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
-        void observe() {
+        @Override
+        protected void observe() {
+            super.observe();
+
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
+                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
-            //resolver.registerContentObserver(Settings.System.getUriFor(
-            //        Settings.System.STATUS_BAR_BATTERY_STYLE), false, this);
-            //resolver.registerContentObserver(Settings.System.getUriFor(
-            //        Settings.System.STATUS_BAR_SHOW_BATTERY_PERCENT), false, this);
+                    Settings.System.SCREEN_BRIGHTNESS_MODE),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.HEADS_UP_NOTIFCATION_DECAY),
                     false, this, UserHandle.USER_ALL);
@@ -442,29 +444,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.HEADS_UP_SNOOZE_TIME))) {
-                    final int snoozeTime = Settings.PAC.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.PAC.HEADS_UP_SNOOZE_TIME,
-                            mContext.getResources().getInteger(
-                            R.integer.heads_up_snooze_time),
-                            UserHandle.USER_CURRENT);
-                    setHeadsUpSnoozeTime(snoozeTime);
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.HEADS_UP_NOTIFCATION_DECAY))) {
-                    mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
-                            mContext.getResources().getInteger(
-                            R.integer.heads_up_notification_decay),
-                            UserHandle.USER_CURRENT);
-                    resetHeadsUpDecayTimer();
-            }
-            update();
+        protected void unobserve() {
+            super.unobserve();
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
         }
 
+        @Override
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             int mode = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -472,8 +458,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                             UserHandle.USER_CURRENT);
             mAutomaticBrightness = mode != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
-            mBrightnessControl = Settings.System.getInt(
-                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
+            mBrightnessControl = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
+                            UserHandle.USER_CURRENT) == 1;
+
+            int snoozeTime = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                            Settings.PAC.HEADS_UP_SNOOZE_TIME,
+                            mContext.getResources().getInteger(
+                            R.integer.heads_up_snooze_time),
+                            UserHandle.USER_CURRENT);
+            setHeadsUpSnoozeTime(snoozeTime);
+
+            mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                            Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
+                            mContext.getResources().getInteger(
+                            R.integer.heads_up_notification_decay),
+                            UserHandle.USER_CURRENT);
+            resetHeadsUpDecayTimer();
 
             if (mNavigationBarView != null) {
                 boolean navLeftInLandscape = Settings.System.getInt(resolver,
@@ -483,26 +484,34 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    class DevForceNavbarObserver extends ContentObserver {
+    class DevForceNavbarObserver extends UserContentObserver {
         DevForceNavbarObserver(Handler handler) {
             super(handler);
         }
 
-        void observe() {
+        @Override
+        protected void observe() {
+            super.observe();
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DEV_FORCE_SHOW_NAVBAR), false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.DEV_FORCE_SHOW_NAVBAR), false, this, UserHandle.USER_ALL);
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            boolean visible = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
+        public void update() {
+            boolean visible = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.DEV_FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) == 1;
+
             if (visible) {
                 forceAddNavigationBar();
             } else {
                 removeNavigationBar();
             }
+
+            // Send a broadcast to Settings to update Key disabling when user changes
+            Intent intent = new Intent("com.cyanogenmod.action.UserChanged");
+            intent.setPackage("com.android.settings");
+            mContext.sendBroadcastAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
         }
     }
 
