@@ -20,6 +20,7 @@
     <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
     <!-- Quick settings -->
+    <string name="quick_settings_brightness">Brightness</string>
     <string name="quick_settings_screenshot">Screenshot</string>
     <string name="quick_settings_sync">Sync</string>
     <string name="quick_settings_sync_off">Sync off</string>
