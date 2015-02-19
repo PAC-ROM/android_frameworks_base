@@ -9004,12 +9004,6 @@ public final class Settings {
         public static final String APP_CIRCLE_BAR_SHOW_TRIGGER = "app_circle_bar_show_trigger";
 
         /**
-         * Timeout for ambient display notification
-         * @hide
-         */
-        public static final String DOZE_TIMEOUT = "doze_timeout";
-
-        /**
          * Whether to show four tiles per row.
          * @hide
          */
