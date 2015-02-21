@@ -34,6 +34,8 @@
     <!-- Quick settings -->
     <string name="quick_settings_brightness">Brightness</string>
     <string name="quick_settings_screenshot">Screenshot</string>
+    <string name="quick_settings_reboot_label">Reboot</string>
+    <string name="quick_settings_reboot_recovery_label">Recovery</string>
 
     <!-- Task manager -->
     <string name="tasklistview_title">Task manager</string>
