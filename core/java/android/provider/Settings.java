@@ -3486,7 +3486,7 @@ public final class Settings {
             STATUS_BAR_SHOW_BATTERY_PERCENT,
             INCREASING_RING,
             INCREASING_RING_START_VOLUME,
-            INCREASING_RING_RAMP_UP_TIME,
+            INCREASING_RING_RAMP_UP_TIME
         };
 
         /**
