@@ -29,7 +29,8 @@ public class LLandActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final boolean isCM = getIntent().getBooleanExtra("is_cm", false);
-        setContentView(isCM ? R.layout.cmland : R.layout.lland);
+        final boolean isPAC = getIntent().getBooleanExtra("is_pac", false);
+        setContentView(isPAC ? R.layout.pacland : R.layout.lland);
         mLand = (LLand) findViewById(R.id.world);
         mLand.setScoreField((TextView) findViewById(R.id.score));
         mLand.setSplash(findViewById(R.id.welcome));

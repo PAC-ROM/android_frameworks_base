@@ -66,6 +66,9 @@
     <java-symbol type="anim" name="slide_out_right_no_fade" />
     <java-symbol type="array" name="anim_controls_entries" />
 
+    <!-- PAC Platlogo -->
+    <java-symbol type="drawable" name="pac_platlogo" />
+
     <!-- Toast Animation -->
     <java-symbol type="style" name="Animation.Toast.Fade" />
     <java-symbol type="style" name="Animation.Toast.SlideRight" />
