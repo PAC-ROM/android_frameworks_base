@@ -64,6 +64,9 @@
     <java-symbol type="anim" name="slide_out_right_no_fade" />
     <java-symbol type="array" name="anim_controls_entries" />
 
+    <!-- PAC Platlogo -->
+    <java-symbol type="drawable" name="pac_platlogo" />
+
     <!-- Screen Record -->
     <java-symbol type="bool" name="config_enableScreenrecordChord" />
 

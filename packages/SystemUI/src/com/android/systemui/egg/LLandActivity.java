@@ -28,12 +28,19 @@ public class LLandActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final boolean isCM = getIntent().getBooleanExtra("is_cm", false);
+        final boolean isPAC = getIntent().getBooleanExtra("is_pac", false);
         if (isCM) {
             setContentView(R.layout.cmland);
             CMLand world = (CMLand) findViewById(R.id.world);
             world.setScoreField((TextView) findViewById(R.id.score));
             world.setSplash(findViewById(R.id.welcome));
             Log.v(CMLand.TAG, "focus: " + world.requestFocus());
+        } else if (isPAC) {
+            setContentView(R.layout.pacland);
+            PACLand world = (PACLand) findViewById(R.id.world);
+            world.setScoreField((TextView) findViewById(R.id.score));
+            world.setSplash(findViewById(R.id.welcome));
+            Log.v(PACLand.TAG, "focus: " + world.requestFocus());
         } else {
             setContentView(R.layout.lland);
             LLand world = (LLand) findViewById(R.id.world);
