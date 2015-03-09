@@ -2389,20 +2389,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mLeftClockLayout.animate().cancel();
             if ((state & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) {
                 animateStatusBarHide(mSystemIconArea, animate);
-                if (mShowClock && mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                    animateStatusBarHide(mCenterClockLayout, animate);
-                }
-                if (mShowClock && mClockLocation == Clock.STYLE_CLOCK_LEFT) {
-                    animateStatusBarHide(mLeftClockLayout, animate);
-                }
+                animateStatusBarHide(mCenterClockLayout, animate);
+                animateStatusBarHide(mLeftClockLayout, animate);
             } else {
                 animateStatusBarShow(mSystemIconArea, animate);
-                if (mShowClock && mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                    animateStatusBarShow(mCenterClockLayout, animate);
-                }
-                if (mShowClock && mClockLocation == Clock.STYLE_CLOCK_LEFT) {
-                    animateStatusBarShow(mLeftClockLayout, animate);
-                }
+                animateStatusBarShow(mCenterClockLayout, animate);
+                animateStatusBarShow(mLeftClockLayout, animate);
             }
         }
 
