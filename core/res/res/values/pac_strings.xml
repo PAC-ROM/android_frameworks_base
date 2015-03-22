@@ -38,7 +38,7 @@
     <string name="default_string">Default</string>
 
     <!-- Heads up -->
-    <string name="permlab_changeHeadsUpState">enable or disable heads up</string>
-    <string name="permdesc_changeHeadsUpState">Allows the application to change whether another application is allowed to show normal notifications as heads up notification.</string>
+    <string name="permlab_changeHeadsUpState">Enable or disable heads up</string>
+    <string name="permdesc_changeHeadsUpState">Allows the application to change its permission to allow it to show normal notifications as heads up notification.</string>
 
 </resources>
