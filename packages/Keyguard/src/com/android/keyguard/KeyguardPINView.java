@@ -77,10 +77,6 @@ public class KeyguardPINView extends KeyguardPinBasedInputView {
 
         boolean quickUnlock = (Settings.System.getInt(getContext().getContentResolver(),
                 Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL, 0) == 1);
-        if (quickUnlock) {
-            View v = findViewById(R.id.key_enter);
-            v.setVisibility(View.INVISIBLE);
-        }
 
         if (quickUnlock) {
             mPasswordEntry.setQuickUnlockListener(new QuickUnlockListener() {
