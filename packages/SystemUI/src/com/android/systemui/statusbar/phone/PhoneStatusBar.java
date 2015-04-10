@@ -96,6 +96,11 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.renderscript.Allocation;
+import android.renderscript.Allocation.MipmapControl;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.RankingMap;
 import android.service.notification.StatusBarNotification;
@@ -469,6 +474,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // - The custom Recents Long Press, if selected.  When null, use default (switch last app).
     private ComponentName mCustomRecentsLongPressHandler = null;
 
+    private int mBlurRadius;
+    private Bitmap mBlurredImage = null;
+
     class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -561,6 +569,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.POLICY_CONTROL), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.LOCKSCREEN_BLUR_RADIUS), false, this,
                     UserHandle.USER_ALL);
             update();
         }
@@ -697,6 +708,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             // This method reads Settings.Secure.RECENTS_LONG_PRESS_ACTIVITY
             updateCustomRecentsLongPressHandler(false);
+
+            mBlurRadius = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.LOCKSCREEN_BLUR_RADIUS,
+                    14, UserHandle.USER_CURRENT);
+
         }
     }
 
@@ -2610,6 +2626,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (backdropBitmap == null) {
                 backdropBitmap = mMediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
                 // might still be null
+            }
+        }
+
+        // apply blurred image
+        if (backdropBitmap == null) {
+            backdropBitmap = mBlurredImage;
+            // might still be null
+        }
+
+        // apply user lockscreen image
+        if (mMediaMetadata == null && backdropBitmap == null) {
+            WallpaperManager wm = (WallpaperManager)
+                    mContext.getSystemService(Context.WALLPAPER_SERVICE);
+            if (wm != null) {
+                backdropBitmap = wm.getKeyguardBitmap();
             }
         }
 
@@ -5574,6 +5605,44 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     public VisualizerView getVisualizer() {
         return mVisualizerView;
+    }
+
+    public void setBackgroundBitmap(Bitmap bmp) {
+        if (bmp != null) {
+            if (mBlurRadius != 0) {
+                mBlurredImage = blurBitmap(bmp, mBlurRadius);
+            } else {
+                mBlurredImage = bmp;
+            }
+        } else {
+            mBlurredImage = null;
+        }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateMediaMetaData(true);
+            }
+        });
+    }
+
+    private Bitmap blurBitmap(Bitmap bmp, int radius) {
+        Bitmap out = Bitmap.createBitmap(bmp);
+        RenderScript rs = RenderScript.create(mContext);
+
+        Allocation input = Allocation.createFromBitmap(
+                rs, bmp, MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        script.setInput(input);
+        script.setRadius(radius);
+        script.forEach(output);
+
+        output.copyTo(out);
+
+        rs.destroy();
+        return out;
     }
 
     private final class ShadeUpdates {
