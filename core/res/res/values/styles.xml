@@ -2538,4 +2538,7 @@ please see styles_device_defaults.xml.
         <item name="android:textColor">#80ffffff</item>
     </style>
 
+    <style name="AccountPreference" parent="@android:style/Theme.Holo">
+    </style>
+
 </resources>
