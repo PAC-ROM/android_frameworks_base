@@ -312,10 +312,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         public void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.HEADS_UP_CUSTOM_VALUES),
+                    Settings.PAC.getUriFor(Settings.PAC.HEADS_UP_CUSTOM_VALUES),
                     false, this);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.HEADS_UP_BLACKLIST_VALUES),
+                    Settings.PAC.getUriFor(Settings.PAC.HEADS_UP_BLACKLIST_VALUES),
                     false, this);
             update();
         }
@@ -327,10 +327,10 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         private void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            final String dndString = Settings.System.getString(mContext.getContentResolver(),
-                    Settings.System.HEADS_UP_CUSTOM_VALUES);
-            final String blackString = Settings.System.getString(mContext.getContentResolver(),
-                    Settings.System.HEADS_UP_BLACKLIST_VALUES);
+            final String dndString = Settings.PAC.getString(mContext.getContentResolver(),
+                    Settings.PAC.HEADS_UP_CUSTOM_VALUES);
+            final String blackString = Settings.PAC.getString(mContext.getContentResolver(),
+                    Settings.PAC.HEADS_UP_BLACKLIST_VALUES);
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
         }
