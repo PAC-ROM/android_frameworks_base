@@ -467,7 +467,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.RECENTS_LONG_PRESS_ACTIVITY), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.HEADS_UP_NOTIFCATION_DECAY), false, this, UserHandle.USER_ALL);
+                    Settings.PAC.HEADS_UP_NOTIFICATION_DECAY), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -492,7 +492,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
                             mContext.getContentResolver(),
-                            Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
+                            Settings.PAC.HEADS_UP_NOTIFICATION_DECAY,
                             mContext.getResources().getInteger(
                             R.integer.heads_up_notification_decay),
                             UserHandle.USER_CURRENT);
@@ -986,7 +986,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
                     mContext.getContentResolver(),
-                    Settings.PAC.HEADS_UP_NOTIFCATION_DECAY,
+                    Settings.PAC.HEADS_UP_NOTIFICATION_DECAY,
                     res.getInteger(R.integer.heads_up_notification_decay),
                     UserHandle.USER_CURRENT);
         }
