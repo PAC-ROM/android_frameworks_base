@@ -70,29 +70,29 @@ public class DozeParameters {
 
     public boolean getOverwriteValue() {
         final int values = Settings.PAC.getIntForUser(mContext.getContentResolver(),
-               Settings.PAC.DOZE_OVERWRITE_VALUE, 0,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_OVERWRITE_VALUE, 0,
+                UserHandle.USER_CURRENT);
         return values != 0;
     }
 
     public boolean getPocketMode() {
         final int values = Settings.PAC.getIntForUser(mContext.getContentResolver(),
-               Settings.PAC.DOZE_POCKET_MODE, 0,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_POCKET_MODE, 0,
+                UserHandle.USER_CURRENT);
         return values != 0;
     }
 
     public boolean getShakeMode() {
         final int values = Settings.PAC.getIntForUser(mContext.getContentResolver(),
-               Settings.PAC.DOZE_SHAKE_MODE, 0,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_SHAKE_MODE, 0,
+                UserHandle.USER_CURRENT);
         return values != 0;
     }
 
     public boolean getTimeMode() {
         final int values = Settings.PAC.getIntForUser(mContext.getContentResolver(),
-               Settings.PAC.DOZE_TIME_MODE, 0,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_TIME_MODE, 0,
+                UserHandle.USER_CURRENT);
         return values != 0;
     }
 
@@ -113,9 +113,17 @@ public class DozeParameters {
     }
 
     public int getPulseInDuration(boolean pickup) {
-        return pickup
-                ? getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup)
-                : getInt("doze.pulse.duration.in", R.integer.doze_pulse_duration_in);
+        if (getOverwriteValue()) {
+            return pickup
+                    ? getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup)
+                    : Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.DOZE_PULSE_DURATION_IN, 900,
+                    UserHandle.USER_CURRENT);
+        } else {
+            return pickup
+                    ? getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup)
+                    : getInt("doze.pulse.duration.in", R.integer.doze_pulse_duration_in);
+        }
     }
 
     public int getPulseInDelay(boolean pickup) {
@@ -127,19 +135,21 @@ public class DozeParameters {
     public int getPulseVisibleDuration() {
         if (getOverwriteValue()) {
             return Settings.PAC.getIntForUser(mContext.getContentResolver(),
-                Settings.PAC.DOZE_PULSE_DURATION_VISIBLE, R.integer.doze_pulse_duration_visible,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_PULSE_DURATION_VISIBLE, 3000,
+                UserHandle.USER_CURRENT);
+        } else {
+            return getInt("doze.pulse.duration.visible", R.integer.doze_pulse_duration_visible);
         }
-        return getInt("doze.pulse.duration.visible", R.integer.doze_pulse_duration_visible);
     }
 
     public int getPulseOutDuration() {
         if (getOverwriteValue()) {
             return Settings.PAC.getIntForUser(mContext.getContentResolver(),
-                Settings.PAC.DOZE_PULSE_DURATION_OUT, R.integer.doze_pulse_duration_out,
-                    UserHandle.USER_CURRENT);
+                Settings.PAC.DOZE_PULSE_DURATION_OUT, 600,
+                UserHandle.USER_CURRENT);
+        } else {
+            return getInt("doze.pulse.duration.out", R.integer.doze_pulse_duration_out);
         }
-        return getInt("doze.pulse.duration.out", R.integer.doze_pulse_duration_out);
     }
 
     public boolean getPulseOnSigMotion() {
@@ -169,7 +179,7 @@ public class DozeParameters {
     public boolean getPulseOnNotifications() {
         if (getOverwriteValue() || setUsingAccelerometerAsSensorPickUp()) {
             final int values = Settings.PAC.getIntForUser(mContext.getContentResolver(),
-                   Settings.PAC.DOZE_PULSE_ON_NOTIFICATIONS, 1,
+                    Settings.PAC.DOZE_PULSE_ON_NOTIFICATIONS, 1,
                     UserHandle.USER_CURRENT);
             return values != 0;
         }
@@ -195,7 +205,7 @@ public class DozeParameters {
     public int getShakeAccelerometerThreshold() {
         if (getOverwriteValue()) {
             return Settings.PAC.getIntForUser(mContext.getContentResolver(),
-                Settings.PAC.DOZE_SHAKE_ACC_THRESHOLD, R.integer.doze_shake_accelerometer_threshold,
+                    Settings.PAC.DOZE_SHAKE_ACC_THRESHOLD, R.integer.doze_shake_accelerometer_threshold,
                     UserHandle.USER_CURRENT);
         }
         return getInt("doze.shake.acc.threshold", R.integer.doze_shake_accelerometer_threshold);
