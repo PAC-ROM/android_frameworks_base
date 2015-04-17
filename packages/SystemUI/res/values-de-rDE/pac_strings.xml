@@ -29,7 +29,6 @@
   <string name="quick_settings_screenshot">Screenshot</string>
   <string name="quick_settings_sync">Synchronisierung</string>
   <string name="quick_settings_sync_off">Synchronisieren aus</string>
-  <string name="quick_settings_usb_tether">USB-Tethering</string>
   <string name="quick_settings_screenrecord">Bildschirmaufnahme</string>
   <string name="quick_settings_screenrecord_on">Aufnahme</string>
   <string name="screenrecord_notif_ticker">Bildschirminhalt wird aufgezeichnet</string>

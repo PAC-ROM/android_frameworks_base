@@ -29,7 +29,6 @@
   <string name="quick_settings_screenshot">Screenshot</string>
   <string name="quick_settings_sync">Sincronização</string>
   <string name="quick_settings_sync_off">Sincronização desligada</string>
-  <string name="quick_settings_usb_tether">USB Tethering</string>
   <string name="quick_settings_screenrecord">Gravar tela</string>
   <string name="quick_settings_screenrecord_on">Gravando</string>
   <string name="screenrecord_notif_ticker">A tela está sendo gravada</string>
