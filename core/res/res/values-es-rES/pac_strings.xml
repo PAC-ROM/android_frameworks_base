@@ -19,8 +19,8 @@
   <string name="animation_fade">Desvanecer</string>
   <string name="animation_slide_right">Deslizar desde la derecha</string>
   <string name="animation_slide_left">Deslizar desde la izquierda</string>
-  <string name="animation_slide_right_no_fade">Deslizar desde la derecha (Sin desvanecimiento)</string>
-  <string name="animation_slide_left_no_fade">Deslizar desde la izquierda (Sin desvanecimiento)</string>
+  <string name="animation_slide_right_no_fade">Deslizar desde la derecha (sin desvanecimiento)</string>
+  <string name="animation_slide_left_no_fade">Deslizar desde la izquierda (sin desvanecimiento)</string>
   <string name="animation_slide_up">Deslizar desde abajo</string>
   <string name="animation_slide_down">Deslizar desde arriba</string>
   <string name="animation_default">Por defecto</string>
@@ -32,4 +32,7 @@
   <string name="animation_grow_shrink_right">Aparecer (desde la derecha)</string>
   <string name="action_null">En blanco</string>
   <string name="animation_random">Aleatorio</string>
+  <string name="default_string">Por defecto</string>
+  <string name="permlab_changeHeadsUpState">Habilitar o deshabilitar heads up</string>
+  <string name="permdesc_changeHeadsUpState">Permite que la aplicación cambie sus permisos para permitir que se muestren notificaciones normales como notificaciones heads up.</string>
 </resources>
