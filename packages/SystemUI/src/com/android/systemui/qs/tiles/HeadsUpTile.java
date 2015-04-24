@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 The CyanogenMod Project
+ * This code has been modified. Portions copyright (C) 2015 The PAC-ROM Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +20,9 @@ package com.android.systemui.qs.tiles;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
-import android.provider.Settings.Global;
+import android.provider.Settings.PAC;
 
-import com.android.systemui.qs.GlobalSetting;
+import com.android.systemui.qs.PACSetting;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.R;
 
@@ -30,12 +31,12 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
 
     private static final Intent NOTIFICATION_SETTINGS = new Intent("android.settings.NOTIFICATION_MANAGER");
 
-    private final GlobalSetting mSetting;
+    private final PACSetting mSetting;
 
     public HeadsUpTile(Host host) {
         super(host);
 
-        mSetting = new GlobalSetting(mContext, mHandler, Global.HEADS_UP_NOTIFICATIONS_ENABLED) {
+        mSetting = new PACSetting(mContext, mHandler, PAC.HEADS_UP_USER_ENABLED) {
             @Override
             protected void handleValueChanged(int value) {
                 handleRefreshState(value);
@@ -60,8 +61,8 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
     }
 
     private void setEnabled(boolean enabled) {
-        Settings.Global.putInt(mContext.getContentResolver(),
-                Settings.Global.HEADS_UP_NOTIFICATIONS_ENABLED,
+        Settings.PAC.putInt(mContext.getContentResolver(),
+                Settings.PAC.HEADS_UP_USER_ENABLED,
                 enabled ? 1 : 0);
     }
 
