@@ -37,7 +37,6 @@ import com.android.systemui.R;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
-import com.android.systemui.qs.tiles.AmbientDisplayTile;
 import com.android.systemui.qs.tiles.ApnTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.BrightnessTile;
@@ -339,8 +338,6 @@ public class QSTileHost implements QSTile.Host {
                 return new BrightnessTile(this);
             case QSConstants.TILE_USB_TETHER:
                 return new UsbTetherTile(this);
-            case QSConstants.TILE_AMBIENT_DISPLAY:
-                return new AmbientDisplayTile(this);
             case QSConstants.TILE_HEADS_UP:
                 return new HeadsUpTile(this);
             default:

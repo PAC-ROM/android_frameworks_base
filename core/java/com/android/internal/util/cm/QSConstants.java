@@ -50,7 +50,6 @@ public class QSConstants {
     public static final String TILE_SYNC = "sync";
     public static final String TILE_BRIGHTNESS = "brightness";
     public static final String TILE_USB_TETHER = "usb_tether";
-    public static final String TILE_AMBIENT_DISPLAY = "ambient_display";
     public static final String TILE_HEADS_UP = "heads_up";
 
     // Order matters
@@ -92,7 +91,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_SYNC);
         TILES_AVAILABLE.add(TILE_BRIGHTNESS);
         TILES_AVAILABLE.add(TILE_USB_TETHER);
-        TILES_AVAILABLE.add(TILE_AMBIENT_DISPLAY);
         TILES_AVAILABLE.add(TILE_HEADS_UP);
     }
 }
