@@ -9090,6 +9090,18 @@ public final class Settings {
         public static final String DOZE_PULSE_DURATION_IN = "doze_pulse_duration_in";
 
         /**
+         * Duration in on pickup for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_IN_PICKUP = "doze_pulse_duration_in_pickup";
+
+        /**
+         * Duration in on intent for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_IN_INTENT = "doze_pulse_duration_in_intent";
+
+        /**
          * Duration visible for ambient display
          * @hide
          */

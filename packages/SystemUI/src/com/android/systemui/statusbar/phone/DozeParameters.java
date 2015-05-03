@@ -120,9 +120,21 @@ public class DozeParameters {
     public int getPulseInDuration(int reason) {
         switch(reason) {
         case DozeLog.PULSE_REASON_SENSOR_PICKUP:
+            if (getOverwriteValue()) {
+                return Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                        Settings.PAC.DOZE_PULSE_DURATION_IN_PICKUP, R.integer.doze_pulse_duration_in_pickup,
+                        UserHandle.USER_CURRENT);
+            } else {
                 return getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup);
+            }
         case DozeLog.PULSE_REASON_INTENT:
+            if (getOverwriteValue()) {
+                return Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                        Settings.PAC.DOZE_PULSE_DURATION_IN_INTENT, R.integer.doze_pulse_duration_in_intent,
+                        UserHandle.USER_CURRENT);
+            } else {
                 return getInt("doze.pulse.duration.in.intent", R.integer.doze_pulse_duration_in_intent);
+            }
         default:
             if (getOverwriteValue()) {
                 return Settings.PAC.getIntForUser(mContext.getContentResolver(),
