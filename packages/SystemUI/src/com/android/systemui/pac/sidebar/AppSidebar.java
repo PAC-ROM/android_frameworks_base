@@ -54,7 +54,6 @@ import android.widget.Toast;
 
 import com.android.systemui.R;
 import com.android.systemui.pac.TriggerOverlayView;
-import com.android.systemui.pac.sidebar.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;

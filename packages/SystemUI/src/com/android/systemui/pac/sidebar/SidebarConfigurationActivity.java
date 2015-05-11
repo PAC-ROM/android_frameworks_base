@@ -66,7 +66,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.systemui.R;
-import com.android.systemui.pac.sidebar.AppSidebar;
 
 public class SidebarConfigurationActivity extends Activity {
     private static final String TAG = "SidebarConfiguration";
