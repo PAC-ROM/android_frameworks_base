@@ -66,8 +66,20 @@
     <java-symbol type="anim" name="slide_out_right_no_fade" />
     <java-symbol type="array" name="anim_controls_entries" />
 
+    <!-- Navigation bar -->
+    <java-symbol type="string" name="global_actions_nav_bar_mode_on_status" />
+    <java-symbol type="string" name="global_actions_nav_bar_mode_off_status" />
+    <java-symbol type="drawable" name="ic_lock_navbar" />
+    <java-symbol type="string" name="disable_navigation_pie_error" />
+
     <!-- PAC Platlogo -->
     <java-symbol type="drawable" name="pac_platlogo" />
+
+    <!-- Pie controls -->
+    <java-symbol type="string" name="global_actions_pie_mode_on_status" />
+    <java-symbol type="string" name="global_actions_pie_mode_off_status" />
+    <java-symbol type="drawable" name="ic_lock_pie" />
+    <java-symbol type="string" name="disable_pie_navigation_error" />
 
     <!-- Shortcut actions -->
     <java-symbol type="drawable" name="ic_shortcut_action_silent" />
