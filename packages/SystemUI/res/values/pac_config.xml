@@ -26,8 +26,4 @@
     <!-- App sidebar configurable dimension for the trigger area -->
     <dimen name="config_app_sidebar_trigger_width">8dp</dimen>
 
-    <!-- Task manager -->
-    <!-- Whether to enable to show task manager or not -->
-    <bool name="config_showTaskManagerSwitcher">false</bool>
-
 </resources>
