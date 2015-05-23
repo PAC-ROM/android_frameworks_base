@@ -391,7 +391,9 @@ public class DozeService extends DreamService implements ProximitySensorManager.
     }
 
     private void finishNow() {
-        listenForSignalsSensor(false);
+        if (mUseAccelerometer)
+            listenForSignalsSensor(false);
+
         finish();
     }
 
