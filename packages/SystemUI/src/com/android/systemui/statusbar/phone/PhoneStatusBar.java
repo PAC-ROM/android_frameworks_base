@@ -508,6 +508,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.PAC.getUriFor(
                     Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
                 rebuildRecentsScreen();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.ENABLE_TASK_MANAGER))) {
+                    mShowTaskManager = Settings.PAC.getIntForUser(
+                            mContext.getContentResolver(),
+                            Settings.PAC.ENABLE_TASK_MANAGER,
+                            0, UserHandle.USER_CURRENT) == 1;
+                    recreateStatusBar();
             }
         }
 
