@@ -34,6 +34,7 @@ public class KeyguardSecurityModel {
     public enum SecurityMode {
         Invalid, // NULL state
         None, // No security enabled
+        ThirdParty, // Insecure 3rd party
         Pattern, // Unlock by drawing a pattern.
         Password, // Unlock by entering an alphanumeric password
         PIN, // Strictly numeric password
@@ -103,7 +104,6 @@ public class KeyguardSecurityModel {
                     mode = mLockPatternUtils.isLockPasswordEnabled() ?
                             SecurityMode.Password : SecurityMode.None;
                     break;
-
                 case DevicePolicyManager.PASSWORD_QUALITY_SOMETHING:
                 case DevicePolicyManager.PASSWORD_QUALITY_UNSPECIFIED:
                     if (mLockPatternUtils.isLockPatternEnabled()) {
@@ -116,6 +116,10 @@ public class KeyguardSecurityModel {
                         mode = mLockPatternUtils.isPermanentlyLocked() ?
                             SecurityMode.Account : SecurityMode.Gesture;
                     }
+                    break;
+                case DevicePolicyManager.PASSWORD_THIRD_PARTY_UNSECURED:
+                        // currently set this to none and let systemui handle the rest
+                        mode = SecurityMode.ThirdParty;
                     break;
 
                 default:
