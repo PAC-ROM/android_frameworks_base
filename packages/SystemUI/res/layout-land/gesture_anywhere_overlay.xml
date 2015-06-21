@@ -1,5 +1,5 @@
 <!-- ChaosLab: GestureAnywhere - BEGIN -->
-<com.android.systemui.chaos.lab.gestureanywhere.GestureAnywhereView
+<com.android.systemui.pac.gestureanywhere.GestureAnywhereView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="20dp"
     android:layout_height="40dp"
@@ -45,5 +45,5 @@
             android:src="@drawable/btn_ga_cancel_gesturing" />
     </FrameLayout>
 
-</com.android.systemui.chaos.lab.gestureanywhere.GestureAnywhereView>
+</com.android.systemui.pac.gestureanywhere.GestureAnywhereView>
 <!-- ChaosLab: GestureAnywhere - END -->
