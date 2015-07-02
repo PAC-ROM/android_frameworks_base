@@ -132,7 +132,6 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -355,13 +354,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private QSPanel mQSPanel;
     private DevForceNavbarObserver mDevForceNavbarObserver;
 
-    // task manager
-    private TaskManager mTaskManager;
-    private LinearLayout mTaskManagerPanel;
-    private ImageButton mTaskManagerButton;
-    private boolean showTaskList = false;
-    private boolean mShowTaskManager;
-
     // top bar
     StatusBarHeaderView mHeader;
     KeyguardStatusBarView mKeyguardStatusBar;
@@ -482,8 +474,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.HEADS_UP_NOTIFICATION_DECAY), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.ENABLE_TASK_MANAGER), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.USE_SLIM_RECENTS), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.RECENT_CARD_BG_COLOR), false, this, UserHandle.USER_ALL);
@@ -509,17 +499,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.PAC.getUriFor(
                     Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
                 rebuildRecentsScreen();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.ENABLE_TASK_MANAGER))) {
-                    mShowTaskManager = Settings.PAC.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.PAC.ENABLE_TASK_MANAGER,
-                            0, UserHandle.USER_CURRENT) == 1;
-                    recreateStatusBar();
-                    updateRowStates();
-                    updateSpeedbump();
-                    updateClearAll();
-                    updateEmptyShadeView();
             }
         }
 
@@ -542,10 +521,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             R.integer.heads_up_notification_decay),
                             UserHandle.USER_CURRENT);
             resetHeadsUpDecayTimer();
-
-            mShowTaskManager = Settings.PAC.getIntForUser(
-                    resolver, Settings.PAC.ENABLE_TASK_MANAGER, 0,
-                    UserHandle.USER_CURRENT) == 1;
 
             final int oldClockLocation = mClockLocation;
             final View oldClockView = mClockView;
@@ -1307,20 +1282,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         mQSPanel.getHost().setCustomTileListenerService(mCustomTileListenerService);
-
-        // task manager
-        mTaskManagerPanel =
-                (LinearLayout) mStatusBarWindowContent.findViewById(R.id.task_manager_panel);
-        mTaskManagerButton = (ImageButton) mHeader.findViewById(R.id.task_manager_button);
-        mTaskManager = new TaskManager(mContext, mTaskManagerPanel);
-        mTaskManager.setActivityStarter(this);
-        mTaskManagerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                showTaskList = !showTaskList;
-                mNotificationPanel.setTaskManagerVisibility(showTaskList);
-            }
-        });
 
         // User info. Trigger first load.
         mHeader.setUserInfoController(mUserInfoController);
@@ -2825,8 +2786,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWaitingForKeyguardExit = false;
         disable(mDisabledUnmodified, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);
-        if (mShowTaskManager)
-            mTaskManager.refreshTaskManagerView();
     }
 
     public void animateCollapsePanels() {

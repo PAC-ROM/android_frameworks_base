@@ -9223,12 +9223,6 @@ public final class Settings {
         public static final String APP_SIDEBAR_SHOW_TRIGGER = "app_sidebar_show_trigger";
 
         /**
-         * Enable built in CAF task manager
-         * @hide
-         */
-        public static final String ENABLE_TASK_MANAGER = "enable_task_manager";
-
-        /**
          * AOKP Custom System Animations
          * @hide
          */
