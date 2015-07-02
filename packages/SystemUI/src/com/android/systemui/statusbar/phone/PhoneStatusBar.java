@@ -473,12 +473,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.Secure.RECENTS_LONG_PRESS_ACTIVITY), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.HEADS_UP_NOTIFICATION_DECAY), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.USE_SLIM_RECENTS), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_BG_COLOR), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_TEXT_COLOR), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -487,19 +481,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             super.unobserve();
             ContentResolver resolver = mContext.getContentResolver();
             resolver.unregisterContentObserver(this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.USE_SLIM_RECENTS))) {
-                updateRecents();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_BG_COLOR))
-                    || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
-                rebuildRecentsScreen();
-            }
         }
 
         @Override

@@ -333,11 +333,29 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.APP_SIDEBAR_POSITION),
                     false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.USE_SLIM_RECENTS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.USE_SLIM_RECENTS))) {
+                updateRecents();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR))
+                    || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
+                rebuildRecentsScreen();
+            }
             update();
         }
 
