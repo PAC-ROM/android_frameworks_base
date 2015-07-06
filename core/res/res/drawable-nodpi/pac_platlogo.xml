@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2015 The PAC-ROM Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="560dp"
+    android:height="560dp"
+    android:viewportWidth="560"
+    android:viewportHeight="560">
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 20.6 244.3 L 18 244.3 L 5.5 244.3 L 5.5 315.7 L 11.6 315.7 L 11.6 253.7 L 11.6 250.9 L 14.7 250.9 L 70.3 250.9 L 72.9 250.9 L 72.9 253.7 L 72.9 278.5 L 72.9 281.8 L 70.3 281.8 L 14.7 281.8 L 14.7 315.7 L 20.6 315.7 L 20.6 287.9 L 79.7 287.9 L 79.7 244.3 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70.3,253.7H14.7v24.8h55.6V253.7z M63.4,272.3H21.1v-13.1h42.3V272.3z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 102.8 244.3 L 100.3 244.3 L 87.7 244.3 L 87.7 315.7 L 93.9 315.7 L 93.9 253.7 L 93.9 250.9 L 96.9 250.9 L 152.6 250.9 L 155.1 250.9 L 155.1 253.7 L 155.1 278.5 L 155.1 281.8 L 155.1 315.7 L 161.9 315.7 L 161.9 287.9 L 161.9 281.8 L 161.9 244.3 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M152.6,253.7H96.9v24.8h55.6V253.7z M145.6,272.3h-42.3v-13.1h42.3V272.3z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 152.6 281.8 L 96.9 281.8 L 96.9 315.7 L 102.8 315.7 L 102.8 287.9 L 145.6 287.9 L 145.6 315.7 L 152.6 315.7 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 243.3 259.3 L 243.3 253.7 L 184.7 253.7 L 182.9 253.7 L 178.9 253.7 L 178.9 306.5 L 182.9 306.5 L 184.7 306.5 L 243.3 306.5 L 243.3 300.5 L 184.7 300.5 L 184.7 259.3 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 169.2 301.2 L 169.2 303.7 L 169.2 315.7 L 243.3 315.7 L 243.3 309.8 L 178.9 309.8 L 176 309.8 L 176 306.9 L 176 253.5 L 176 251 L 178.9 251 L 204.7 251 L 208.1 251 L 243.3 251 L 243.3 244.5 L 214.5 244.5 L 208.2 244.5 L 169.2 244.5 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M365.6,253.6h-34h-5.8v5.5v19h2.9h2.9h40.2v-4.6v-1V259v-5.5H365.6z M365.6,272.4h-34V259h34 V272.4z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 381 272.4 L 381 250.4 L 381 244.4 L 374.8 244.4 L 323 244.4 L 316.6 244.4 L 316.6 250.4 L 316.6 315.6 L 323 315.6 L 323 250.4 L 374.8 250.4 L 374.8 272.4 L 374.8 278 L 381 278 L 384.2 278 L 384.2 315.6 L 390.4 315.6 L 390.4 278 L 390.4 273.8 L 390.4 272.4 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 374.6 281.8 L 331.6 281.8 L 325.8 281.8 L 325.8 287.4 L 325.8 315.6 L 331.6 315.6 L 331.6 287.4 L 374.6 287.4 L 374.6 315.6 L 381 315.6 L 381 287.4 L 381 281.8 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M466.7,244.4h-61.2H399v6v59v6.1h6.4h61.2h6.6v-6.1v-59v-6H466.7z M466.7,309.4h-61.2v-59h61.2 V309.4z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M457.7,253.6H414h-5.6v5.5v47.2h2.8h2.8h43.6h5.6v-5.4V259v-5.5H457.7z M457.7,300.8H414V259 h43.6V300.8z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 486.5 244.4 L 480.5 244.4 L 480.5 250.4 L 480.5 315.6 L 486.5 315.6 L 486.5 250.4 L 548.5 250.4 L 548.5 315.6 L 554.5 315.6 L 554.5 250.4 L 554.5 245.7 L 554.5 244.4 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 509.7 253.6 L 495.5 253.6 L 489.9 253.6 L 489.9 259 L 489.9 315.6 L 495.5 315.6 L 495.5 259 L 509.7 259 L 509.7 315.6 L 515.5 315.6 L 515.5 259 L 515.5 253.6 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 539.1 253.6 L 524.9 253.6 L 519.3 253.6 L 519.3 259 L 519.3 315.6 L 524.9 315.6 L 524.9 259 L 539.1 259 L 539.1 315.6 L 544.9 315.6 L 544.9 259 L 544.9 253.6 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 265.1 277 H 294.8 V 283 H 265.1 V 277 Z" />
+</vector>

@@ -43,6 +43,6 @@ public class PACLand extends LLand {
 
     @Override
     protected int getEggPlayerColor() {
-        return 0xFFFFFF00;
+        return 0xFFFFCC00;
     }
 }
