@@ -2679,6 +2679,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             loadHeadsUpSetting(stmt);
 
+            loadBooleanSetting(stmt, Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION,
+                    R.bool.def_swap_volume_keys_on_rotation);
+
         } finally {
             if (stmt != null) stmt.close();
         }
