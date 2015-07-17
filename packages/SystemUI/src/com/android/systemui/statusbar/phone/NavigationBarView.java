@@ -154,6 +154,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private boolean mIsAnimating = false;
     private boolean mDimNavButtonsAnimate;
     private int mDimNavButtonsAnimateDuration;
+    private boolean mDimNavButtonsTouchAnywhere;
 
     private ArrayList<ActionConfig> mButtonsConfig;
     private List<Integer> mButtonIdList;
@@ -345,6 +346,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         initDownStates(event);
+        if (mDimNavButtonsTouchAnywhere) {
+            onNavButtonTouched();
+        }
         if (!mDelegateIntercepted && mTaskSwitchHelper.onTouchEvent(event)) {
             return true;
         }
@@ -1229,6 +1233,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                     Settings.PAC.DIM_NAV_BUTTONS_ANIMATE), false, this);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION), false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE), false, this);
 
             onChange(false);
         }
@@ -1267,6 +1273,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             mDimNavButtonsAnimateDuration = Settings.PAC.getIntForUser(resolver,
                     Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION, 2000,
                     UserHandle.USER_CURRENT);
+            mDimNavButtonsTouchAnywhere = (Settings.PAC.getIntForUser(resolver,
+                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE, 0,
+                    UserHandle.USER_CURRENT) == 1);
         }
     }
 
