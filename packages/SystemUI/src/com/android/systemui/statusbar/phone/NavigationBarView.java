@@ -408,6 +408,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             ViewGroup container = (ViewGroup) mRotatedViews[i];
             if (container != null) {
                 updateLightsOutResources(container);
+                recreateNavigationBar();
             }
         }
     }
@@ -433,7 +434,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     @Override
     public void setLayoutDirection(int layoutDirection) {
-        getIcons(getContext().getResources());
+        getIcons(mThemedResources != null ? mThemedResources : getContext().getResources());
         updateSettings();
 
         super.setLayoutDirection(layoutDirection);
@@ -1117,6 +1118,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             default:
                 return "VISIBLE";
         }
+    }
+
+    protected void updateResources() {
+        getIcons(mContext.getResources());
     }
 
     private void updateSettings() {
