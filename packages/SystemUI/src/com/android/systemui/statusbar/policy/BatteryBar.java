@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.os.BatteryManager;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
@@ -77,16 +78,40 @@ public class BatteryBar extends View {
         public void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STYLE), false, this);
+                    Settings.System.STATUS_BAR_BATTERY_STYLE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.BATTERY_BAR_HIGH_COLOR), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.BATTERY_BAR_LOW_COLOR), false, this,
+                    UserHandle.USER_ALL);
             onChange(true);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            int batteryStyle = (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_BATTERY_STYLE, 0));
+            int batteryStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_BATTERY_STYLE, 0,
+                    UserHandle.USER_CURRENT);
 
             mActivated = (batteryStyle == BatteryController.STYLE_BAR);
+
+            mHighColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.BATTERY_BAR_HIGH_COLOR, -2,
+                    UserHandle.USER_CURRENT);
+
+            if (mHighColor == -2) {
+                mHighColor = mContext.getResources().getColor(R.color.holo_green_light);
+            }
+
+            mLowColor = Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.BATTERY_BAR_LOW_COLOR, -2,
+                    UserHandle.USER_CURRENT);
+
+            if (mLowColor == -2) {
+                mLowColor = mContext.getResources().getColor(R.color.holo_red_light);
+            }
 
             setVisibility(mActivated && isBatteryPresent() ? View.VISIBLE : View.GONE);
             if (mBatteryReceiver != null) {
@@ -179,8 +204,6 @@ public class BatteryBar extends View {
 
         mHeight = res.getDimensionPixelSize(com.android.systemui.R.dimen.battery_bar_height);
 
-        mLowColor = res.getColor(R.color.holo_red_light);
-        mHighColor = res.getColor(R.color.holo_green_light);
         mPaint.setColor(mHighColor);
 
         mGradientColors = new int[2];

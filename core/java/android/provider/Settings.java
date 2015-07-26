@@ -9388,6 +9388,18 @@ public final class Settings {
         public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS =
                 "lockscreen_shortcuts_longpress";
 
+        /**
+         * Battery bar high level color
+         * @hide
+         */
+        public static final String BATTERY_BAR_HIGH_COLOR = "battery_bar_high_color";
+
+        /**
+         * Battery bar low level color
+         * @hide
+         */
+        public static final String BATTERY_BAR_LOW_COLOR = "battery_bar_low_color";
+
     }
 
     /**
