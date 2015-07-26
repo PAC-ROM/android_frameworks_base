@@ -118,30 +118,29 @@ public class DozeParameters {
     }
 
     public int getPulseInDuration(int reason) {
+        if (getOverwriteValue()) {
+            return Settings.PAC.getIntForUser(mContext.getContentResolver(),
+                    Settings.PAC.DOZE_PULSE_DURATION_IN, R.integer.doze_pulse_duration_in,
+                    UserHandle.USER_CURRENT);
+        }
         switch(reason) {
-        case DozeLog.PULSE_REASON_SENSOR_PICKUP:
-                return getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup);
-        case DozeLog.PULSE_REASON_INTENT:
-                return getInt("doze.pulse.duration.in.intent", R.integer.doze_pulse_duration_in_intent);
-        default:
-            if (getOverwriteValue()) {
-                return Settings.PAC.getIntForUser(mContext.getContentResolver(),
-                        Settings.PAC.DOZE_PULSE_DURATION_IN, R.integer.doze_pulse_duration_in,
-                        UserHandle.USER_CURRENT);
-            } else {
-                return getInt("doze.pulse.duration.in", R.integer.doze_pulse_duration_in);
-            }
+            case DozeLog.PULSE_REASON_SENSOR_PICKUP:
+                    return getInt("doze.pulse.duration.in.pickup", R.integer.doze_pulse_duration_in_pickup);
+            case DozeLog.PULSE_REASON_INTENT:
+                    return getInt("doze.pulse.duration.in.intent", R.integer.doze_pulse_duration_in_intent);
+            default:
+                    return getInt("doze.pulse.duration.in", R.integer.doze_pulse_duration_in);
         }
     }
 
     public int getPulseInDelay(int reason) {
         switch(reason) {
-        case DozeLog.PULSE_REASON_SENSOR_PICKUP:
-                return getInt("doze.pulse.delay.in.pickup", R.integer.doze_pulse_delay_in_pickup);
-        case DozeLog.PULSE_REASON_INTENT:
-                return getInt("doze.pulse.delay.in.intent", R.integer.doze_pulse_delay_in_intent);
-        default:
-                return getInt("doze.pulse.delay.in", R.integer.doze_pulse_delay_in);
+            case DozeLog.PULSE_REASON_SENSOR_PICKUP:
+                    return getInt("doze.pulse.delay.in.pickup", R.integer.doze_pulse_delay_in_pickup);
+            case DozeLog.PULSE_REASON_INTENT:
+                    return getInt("doze.pulse.delay.in.intent", R.integer.doze_pulse_delay_in_intent);
+            default:
+                    return getInt("doze.pulse.delay.in", R.integer.doze_pulse_delay_in);
         }
     }
 
@@ -181,12 +180,12 @@ public class DozeParameters {
 
     public boolean getProxCheckBeforePulse(int reason) {
         switch(reason) {
-        case DozeLog.PULSE_REASON_SENSOR_PICKUP:
-                return getBoolean("doze.pulse.proxcheck.pickup", R.bool.doze_proximity_check_before_pulse);
-        case DozeLog.PULSE_REASON_INTENT:
-                return getBoolean("doze.pulse.proxcheck.intent", R.bool.doze_proximity_check_before_pulse_intent);
-        default:
-                return getBoolean("doze.pulse.proxcheck", R.bool.doze_proximity_check_before_pulse);
+            case DozeLog.PULSE_REASON_SENSOR_PICKUP:
+                    return getBoolean("doze.pulse.proxcheck.pickup", R.bool.doze_proximity_check_before_pulse);
+            case DozeLog.PULSE_REASON_INTENT:
+                    return getBoolean("doze.pulse.proxcheck.intent", R.bool.doze_proximity_check_before_pulse_intent);
+            default:
+                    return getBoolean("doze.pulse.proxcheck", R.bool.doze_proximity_check_before_pulse);
         }
     }
 
