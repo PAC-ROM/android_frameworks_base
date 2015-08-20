@@ -25,6 +25,6 @@
   <string name="kg_wrong_gesture">ジェスチャーが間違っています</string>
   <string name="kg_gesture_instructions">ジェスチャーを描いてください</string>
   <string name="kg_too_many_failed_gesture_attempts_dialog_message">        <xliff:g id="number">%d</xliff:g>回ジェスチャーを間違えました。
-        \n\n<xliff:g id="number">%d</xliff:g>秒後に再実行して下さい。
+        \n\n<xliff:g id="number">%d</xliff:g>秒後に再実行して下さい。        
     </string>
 </resources>
