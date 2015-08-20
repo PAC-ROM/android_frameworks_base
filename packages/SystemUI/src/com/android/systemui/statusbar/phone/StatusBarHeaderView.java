@@ -994,7 +994,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void doUpdateStatusBarCustomHeader(final Drawable next, final boolean force) {
         if (next != null) {
             if (next != mCurrentBackground) {
-                Log.i(TAG, "Updating status bar header background");
+                //Log.i(TAG, "Updating status bar header background");
                 mBackgroundImage.setVisibility(View.VISIBLE);
                 setNotificationPanelHeaderBackground(next, force);
                 mCurrentBackground = next;
