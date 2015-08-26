@@ -178,7 +178,7 @@ class LockSettingsStorage {
         File storeFile = new File(getLockGestureFilename(userId));
 
         GestureLibrary store = GestureLibraries.fromFile(storeFile);
-        int minPredictionScore = 4;
+        int minPredictionScore = 2;
         store.setOrientationStyle(GestureStore.ORIENTATION_SENSITIVE);
         store.load();
 
