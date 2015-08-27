@@ -1002,13 +1002,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mRecreating) {
             removeSidebarView();
+            removeGestureAnywhereView();
         } else {
-            /* ChaosLab: GestureAnywhere - BEGIN */
             addGestureAnywhereView();
-            /* ChaosLab: GestureAnywhere - END */
+            addSidebarView();
         }
-
-        addSidebarView();
 
         try {
             boolean showNav = mWindowManagerService.hasNavigationBar();

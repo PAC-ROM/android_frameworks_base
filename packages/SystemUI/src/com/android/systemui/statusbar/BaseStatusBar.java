@@ -368,7 +368,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
             int sidebarPosition = Settings.PAC.getInt(
-                resolver, Settings.PAC.APP_SIDEBAR_POSITION,AppSidebar.SIDEBAR_POSITION_LEFT);
+                resolver, Settings.PAC.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
                 removeSidebarView();

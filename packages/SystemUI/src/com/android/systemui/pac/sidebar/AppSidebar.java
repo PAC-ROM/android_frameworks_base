@@ -100,7 +100,7 @@ public class AppSidebar extends TriggerOverlayView {
     private boolean mFirstTouch = false;
     private boolean mHideTextLabels = false;
     private boolean mUseTab = false;
-    private int mPosition = SIDEBAR_POSITION_RIGHT;
+    private int mPosition = SIDEBAR_POSITION_LEFT;
 
     private TranslateAnimation mSlideIn;
     private TranslateAnimation mSlideOut;
@@ -119,7 +119,6 @@ public class AppSidebar extends TriggerOverlayView {
 
     public AppSidebar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mTriggerWidth = context.getResources().getDimensionPixelSize(R.dimen.config_app_sidebar_trigger_width);
         mContext = context;
         Resources resources = context.getResources();
         mItemTextSize = resources.getDimensionPixelSize(R.dimen.item_title_text_size);
@@ -565,7 +564,7 @@ public class AppSidebar extends TriggerOverlayView {
             }
 
             int width = Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH, 10);
+                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH, 20);
             if (mTriggerWidth != width)
                 setTriggerWidth(width);
             setTopPercentage(Settings.PAC.getInt(

@@ -124,7 +124,7 @@ public class GestureAnywhereView extends TriggerOverlayView implements GestureOv
             }
 
             int width = Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH, 10);
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH, 20);
             if (mTriggerWidth != width)
                 setTriggerWidth(width);
             setTopPercentage(Settings.PAC.getInt(
