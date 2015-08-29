@@ -36,7 +36,9 @@ import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -59,7 +61,10 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_CLASS)
 public class GestureAnywhereView extends TriggerOverlayView implements GestureOverlayView.OnGestureListener {
     private static final String TAG = "GestureAnywhere";
-    private final File mStoreFile = new File("/data/system", "ga_gestures");
+    private static final String gestureFile = "ga_gestures";
+    private final File gesturePath = new File(Environment.getExternalStorageDirectory() +
+                File.separator + ".pac" + File.separator + "gestureanywhere");
+    private final File mStoreFile = new File(gesturePath, gestureFile);
     State mState = State.Collapsed;
     private View mContent;
     private GestureOverlayView mGestureView;
@@ -81,19 +86,26 @@ public class GestureAnywhereView extends TriggerOverlayView implements GestureOv
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_ENABLED), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_ENABLED), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_POSITION), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_POSITION), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_CHANGED), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_CHANGED), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.GESTURE_ANYWHERE_SHOW_TRIGGER), false, this);
+                    Settings.PAC.GESTURE_ANYWHERE_SHOW_TRIGGER), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -109,30 +121,37 @@ public class GestureAnywhereView extends TriggerOverlayView implements GestureOv
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
 
-            boolean enabled = Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_ENABLED, 0) == 1;
+            boolean enabled = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_ENABLED, 0,
+                    UserHandle.USER_CURRENT) == 1;
             setVisibility(enabled ? View.VISIBLE : View.GONE);
 
-            int position = Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_POSITION, Gravity.LEFT);
+            int position = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_POSITION, Gravity.LEFT,
+                    UserHandle.USER_CURRENT);
             setPosition(position);
 
-            long gestureChangedTime = Settings.PAC.getLong(resolver,
-                    Settings.PAC.GESTURE_ANYWHERE_CHANGED, System.currentTimeMillis());
+            long gestureChangedTime = Settings.PAC.getLongForUser(resolver,
+                    Settings.PAC.GESTURE_ANYWHERE_CHANGED, System.currentTimeMillis(),
+                    UserHandle.USER_CURRENT);
             if (mGestureLoadedTime < gestureChangedTime) {
                 reloadGestures();
             }
 
-            int width = Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH, 20);
+            int width = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_WIDTH, 20,
+                    UserHandle.USER_CURRENT);
             if (mTriggerWidth != width)
                 setTriggerWidth(width);
-            setTopPercentage(Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP, 0) / 100f);
-            setBottomPercentage(Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT, 100) / 100f);
-            mTriggerVisible = Settings.PAC.getInt(
-                    resolver, Settings.PAC.GESTURE_ANYWHERE_SHOW_TRIGGER, 0) == 1;
+            setTopPercentage(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP, 0,
+                    UserHandle.USER_CURRENT) / 100f);
+            setBottomPercentage(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT, 100,
+                    UserHandle.USER_CURRENT) / 100f);
+            mTriggerVisible = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_SHOW_TRIGGER, 0,
+                    UserHandle.USER_CURRENT) == 1;
             if (mTriggerVisible)
                 showTriggerRegion();
             else
@@ -234,10 +253,12 @@ public class GestureAnywhereView extends TriggerOverlayView implements GestureOv
     private void reposition() {
         mViewHeight = getWindowHeight();
         final ContentResolver resolver = mContext.getContentResolver();
-        setTopPercentage(Settings.PAC.getInt(
-                resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP, 0) / 100f);
-        setBottomPercentage(Settings.PAC.getInt(
-                resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT, 100) / 100f);
+        setTopPercentage(Settings.PAC.getIntForUser(
+                resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_TOP, 0,
+                UserHandle.USER_CURRENT) / 100f);
+        setBottomPercentage(Settings.PAC.getIntForUser(
+                resolver, Settings.PAC.GESTURE_ANYWHERE_TRIGGER_HEIGHT, 100,
+                UserHandle.USER_CURRENT) / 100f);
     }
 
     public void setStatusBar(BaseStatusBar bar) {

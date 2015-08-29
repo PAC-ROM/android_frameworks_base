@@ -267,9 +267,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
     protected GestureAnywhereView mGestureAnywhereView;
+    private boolean mGestureAnywhereViewEnabled;
 
     protected AppSidebar mAppSidebar;
     protected int mSidebarPosition;
+    private boolean mAppSidebarEnabled;
 
     private ArrayList<String> mDndList;
     private ArrayList<String> mBlacklist;
@@ -334,51 +336,57 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         public void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(
-                    Settings.PAC.getUriFor(Settings.PAC.HEADS_UP_CUSTOM_VALUES),
-                    false, this);
-            resolver.registerContentObserver(
-                    Settings.PAC.getUriFor(Settings.PAC.HEADS_UP_BLACKLIST_VALUES),
-                    false, this);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_CUSTOM_VALUES),
+                    false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_BLACKLIST_VALUES),
+                    false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.APP_SIDEBAR_POSITION),
-                    false, this);
+                    false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.USE_SLIM_RECENTS),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.PAC.GESTURE_ANYWHERE_ENABLED),
+                    false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_BG_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_TEXT_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.PAC.APP_SIDEBAR_ENABLED),
+                    false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.USE_SLIM_RECENTS))) {
-                updateRecents();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_BG_COLOR))
-                    || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
-                rebuildRecentsScreen();
-            }
             update();
         }
 
         private void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            final String dndString = Settings.PAC.getString(mContext.getContentResolver(),
-                    Settings.PAC.HEADS_UP_CUSTOM_VALUES);
-            final String blackString = Settings.PAC.getString(mContext.getContentResolver(),
-                    Settings.PAC.HEADS_UP_BLACKLIST_VALUES);
+
+            final String dndString = Settings.PAC.getStringForUser(mContext.getContentResolver(),
+                    Settings.PAC.HEADS_UP_CUSTOM_VALUES,
+                    UserHandle.USER_CURRENT);
+            final String blackString = Settings.PAC.getStringForUser(mContext.getContentResolver(),
+                    Settings.PAC.HEADS_UP_BLACKLIST_VALUES,
+                    UserHandle.USER_CURRENT);
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
-            int sidebarPosition = Settings.PAC.getInt(
-                resolver, Settings.PAC.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
+
+            mAppSidebarEnabled = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_ENABLED, 0,
+                    UserHandle.USER_CURRENT) == 1;
+
+            mGestureAnywhereViewEnabled = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.GESTURE_ANYWHERE_ENABLED, 0,
+                    UserHandle.USER_CURRENT) == 1;
+
+            int sidebarPosition = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_POSITION,
+                    AppSidebar.SIDEBAR_POSITION_LEFT, UserHandle.USER_CURRENT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
                 removeSidebarView();
@@ -2473,8 +2481,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
     protected void removeGestureAnywhereView() {
-        if (mGestureAnywhereView != null)
-            mWindowManager.removeView(mGestureAnywhereView);
+        if (mGestureAnywhereViewEnabled) {
+            if (mGestureAnywhereView != null) {
+                mWindowManager.removeView(mGestureAnywhereView);
+            }
+        }
     }
 
     @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
@@ -2503,10 +2514,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected void removeSidebarView() {
-        ContentResolver resolver = mContext.getContentResolver();
-        boolean enabled = Settings.PAC.getInt(
-                resolver, Settings.PAC.APP_SIDEBAR_ENABLED, 0) == 1;
-        if (enabled) {
+        if (mAppSidebarEnabled) {
             if (mAppSidebar != null) {
                 mWindowManager.removeView(mAppSidebar);
             }

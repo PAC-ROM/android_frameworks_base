@@ -36,6 +36,7 @@ import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -100,6 +101,7 @@ public class AppSidebar extends TriggerOverlayView {
     private boolean mFirstTouch = false;
     private boolean mHideTextLabels = false;
     private boolean mUseTab = false;
+    private boolean mTriggerVisible = false;
     private int mPosition = SIDEBAR_POSITION_LEFT;
 
     private TranslateAnimation mSlideIn;
@@ -507,21 +509,29 @@ public class AppSidebar extends TriggerOverlayView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_ENABLED), false, this);
+                    Settings.PAC.APP_SIDEBAR_ENABLED), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_TRANSPARENCY), false, this);
+                    Settings.PAC.APP_SIDEBAR_TRANSPARENCY), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_POSITION), false, this);
+                    Settings.PAC.APP_SIDEBAR_POSITION), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_DISABLE_LABELS), false, this);
+                    Settings.PAC.APP_SIDEBAR_DISABLE_LABELS), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH), false, this);
+                    Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_TRIGGER_TOP), false, this);
+                    Settings.PAC.APP_SIDEBAR_TRIGGER_TOP), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_TRIGGER_HEIGHT), false, this);
+                    Settings.PAC.APP_SIDEBAR_TRIGGER_HEIGHT), false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC.getUriFor(
-                    Settings.PAC.APP_SIDEBAR_SHOW_TRIGGER), false, this);
+                    Settings.PAC.APP_SIDEBAR_SHOW_TRIGGER), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -536,43 +546,52 @@ public class AppSidebar extends TriggerOverlayView {
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            boolean enabled = Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_ENABLED, 0) == 1;
+            boolean enabled = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_ENABLED, 0,
+                    UserHandle.USER_CURRENT) == 1;
             setVisibility(enabled ? View.VISIBLE : View.GONE);
 
-            float barAlpha = (float)(100 - Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_TRANSPARENCY, 0)) / 100f;
+            float barAlpha = (float)(100 - Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_TRANSPARENCY, 0,
+                    UserHandle.USER_CURRENT)) / 100f;
             if (barAlpha != mBarAlpha) {
                 if (mScrollView != null)
                     mScrollView.setAlpha(barAlpha);
                 mBarAlpha = barAlpha;
             }
 
-            int position = Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_POSITION, SIDEBAR_POSITION_LEFT);
+            int position = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_POSITION, SIDEBAR_POSITION_LEFT,
+                    UserHandle.USER_CURRENT);
             if (position != mPosition) {
                 mPosition = position;
                 createSidebarAnimations(position);
             }
 
-            boolean hideLabels = Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_DISABLE_LABELS, 0) == 1;
+            boolean hideLabels = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_DISABLE_LABELS, 0,
+                    UserHandle.USER_CURRENT) == 1;
             if (hideLabels != mHideTextLabels) {
                 mHideTextLabels = hideLabels;
                 if (mScrollView != null)
                     setupAppContainer();
             }
 
-            int width = Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH, 20);
+            int width = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_WIDTH, 20,
+                    UserHandle.USER_CURRENT);
             if (mTriggerWidth != width)
                 setTriggerWidth(width);
-            setTopPercentage(Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_TOP, 0) / 100f);
-            setBottomPercentage(Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_HEIGHT, 100) / 100f);
-            if (Settings.PAC.getInt(
-                    resolver, Settings.PAC.APP_SIDEBAR_SHOW_TRIGGER, 0) == 1)
+            setTopPercentage(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_TOP, 0,
+                    UserHandle.USER_CURRENT) / 100f);
+            setBottomPercentage(Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_TRIGGER_HEIGHT, 100,
+                    UserHandle.USER_CURRENT) / 100f);
+            mTriggerVisible = Settings.PAC.getIntForUser(
+                    resolver, Settings.PAC.APP_SIDEBAR_SHOW_TRIGGER, 0,
+                    UserHandle.USER_CURRENT) == 1;
+            if (mTriggerVisible)
                 showTriggerRegion();
             else
                 hideTriggerRegion();
