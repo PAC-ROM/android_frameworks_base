@@ -170,8 +170,8 @@ public class NetworkTraffic extends TextView {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            Uri uri = Settings.PAC.getUriFor(Settings.PAC.NETWORK_TRAFFIC_STATE);
-            resolver.registerContentObserver(uri, false,
+            resolver.registerContentObserver(Settings.PAC
+                    .getUriFor(Settings.PAC.NETWORK_TRAFFIC_STATE), false,
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.PAC
                     .getUriFor(Settings.PAC.NETWORK_TRAFFIC_AUTOHIDE), false,
@@ -270,13 +270,17 @@ public class NetworkTraffic extends TextView {
                 Settings.PAC.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD, 10,
                 UserHandle.USER_CURRENT);
 
-        mState = Settings.PAC.getInt(resolver, Settings.PAC.NETWORK_TRAFFIC_STATE, 0);
+        mState = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.NETWORK_TRAFFIC_STATE, 0,
+                UserHandle.USER_CURRENT);
 
-        int defaultColor = Settings.PAC.getInt(resolver,
-                Settings.PAC.NETWORK_TRAFFIC_COLOR, 0xFFFFFFFF);
+        int defaultColor = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.NETWORK_TRAFFIC_COLOR, 0xFFFFFFFF,
+                UserHandle.USER_CURRENT);
 
-        int mNetworkTrafficColor = Settings.PAC.getInt(resolver,
-                Settings.PAC.NETWORK_TRAFFIC_COLOR, -2);
+        int mNetworkTrafficColor = Settings.PAC.getIntForUser(resolver,
+                Settings.PAC.NETWORK_TRAFFIC_COLOR, -2,
+                UserHandle.USER_CURRENT);
 
         if (mNetworkTrafficColor == Integer.MIN_VALUE
                 || mNetworkTrafficColor == -2) {
