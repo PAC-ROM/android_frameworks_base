@@ -25,6 +25,7 @@
   <string name="toast_not_installed">Alkalmazás nincs telepítve</string>
   <string name="gestures_message">Rajzolja meg gesztusát itt</string>
   <string name="heads_up_snooze_message">Lebegő értesítés kikapcsolva <xliff:g id="number">%d</xliff:g> percre.</string>
+  <string name="app_killed_message">Alkalmazás kilőve</string>
   <string name="quick_settings_brightness">Fényerő</string>
   <string name="quick_settings_screenshot">Képernyőmentés</string>
   <string name="quick_settings_reboot_label">Újraindítás</string>

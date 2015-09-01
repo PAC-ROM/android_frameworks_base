@@ -25,6 +25,7 @@
   <string name="toast_not_installed">Aplikace není nainstalována</string>
   <string name="gestures_message">Zde nakreslete své gesto</string>
   <string name="heads_up_snooze_message">Plovoucí upozornění jsou zakázána na <xliff:g id="number">%d</xliff:g> minut.</string>
+  <string name="app_killed_message">Aplikace ukončena</string>
   <string name="quick_settings_brightness">Jas</string>
   <string name="quick_settings_screenshot">Snímek displeje</string>
   <string name="quick_settings_reboot_label">Restart</string>
