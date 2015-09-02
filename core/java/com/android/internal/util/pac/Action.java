@@ -195,9 +195,9 @@ public class Action {
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                Settings.Secure.putIntForUser(
+                Settings.PAC.putIntForUser(
                         context.getContentResolver(),
-                        Settings.Secure.DEV_FORCE_SHOW_NAVBAR,
+                        Settings.PAC.NAVIGATION_BAR_SHOW,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
@@ -367,8 +367,8 @@ public class Action {
     }
 
     public static boolean isNavBarEnabled(Context context) {
-        return Settings.Secure.getIntForUser(context.getContentResolver(),
-                Settings.Secure.DEV_FORCE_SHOW_NAVBAR,
+        return Settings.PAC.getIntForUser(context.getContentResolver(),
+                Settings.PAC.NAVIGATION_BAR_SHOW,
                 isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
     }
 
