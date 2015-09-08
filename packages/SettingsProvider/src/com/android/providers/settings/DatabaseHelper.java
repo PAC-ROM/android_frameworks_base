@@ -2567,8 +2567,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.System.QS_QUICK_PULLDOWN,
                     R.integer.def_qs_quick_pulldown);
 
-            loadHeadsUpSetting(stmt);
-
             loadBooleanSetting(stmt, Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION,
                     R.bool.def_swap_volume_keys_on_rotation);
 
@@ -2618,6 +2616,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             stmt = db.compileStatement("INSERT OR IGNORE INTO pac(name,value)"
                     + " VALUES(?,?);");
+
+            loadBooleanSetting(stmt, Settings.PAC.NAVIGATION_BAR_SHOW,
+                    com.android.internal.R.bool.config_showNavigationBar);
+
+            loadHeadsUpSetting(stmt);
+
         } finally {
             if (stmt != null) stmt.close();
         }
