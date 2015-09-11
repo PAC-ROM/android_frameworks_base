@@ -33,4 +33,10 @@
   <string name="action_null">Üres</string>
   <string name="animation_random">Véletlenszerű</string>
   <string name="default_string">Alapértelmezett</string>
+  <string name="global_actions_pie_mode_on_status">SlimPie BE</string>
+  <string name="global_actions_pie_mode_off_status">SlimPie KI</string>
+  <string name="disable_pie_navigation_error">A pie vezérlő nem kapcsolható ki, mert jelenleg nincs másik vezérlő engedélyezve. Először engedélyezze a navigációs sávot a pie vezérlő kikapcsolásához.</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigációs sáv BE</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigációs sáv KI</string>
+  <string name="disable_navigation_pie_error">A navigációs sáv nem kapcsolható ki, mert jelenleg nincs másik vezérlő engedélyezve. Először engedélyezze a pie vezérlőt a navigációs sáv kikapcsolásához.</string>
 </resources>

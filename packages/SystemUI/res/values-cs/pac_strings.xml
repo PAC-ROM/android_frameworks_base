@@ -26,6 +26,12 @@
   <string name="gestures_message">Zde nakreslete své gesto</string>
   <string name="heads_up_snooze_message">Plovoucí upozornění jsou zakázána na <xliff:g id="number">%d</xliff:g> minut.</string>
   <string name="app_killed_message">Aplikace ukončena</string>
+  <string name="pie_battery_status_charging">Nabíjení (<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">Nabito</string>
+  <string name="pie_battery_status_discharging">Zbývá <xliff:g id="percent">%d</xliff:g>%%</string>
+  <string name="pie_phone_status_no_service">Žádná síť</string>
+  <string name="pie_phone_status_airplane_mode">Režim letadlo zapnut</string>
+  <string name="pie_phone_status_emergency_only">Pouze tísňová volání</string>
   <string name="quick_settings_brightness">Jas</string>
   <string name="quick_settings_screenshot">Snímek displeje</string>
   <string name="quick_settings_reboot_label">Restart</string>

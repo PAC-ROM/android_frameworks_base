@@ -33,4 +33,10 @@
   <string name="action_null">空白</string>
   <string name="animation_random">ランダム</string>
   <string name="default_string">デフォルト</string>
+  <string name="global_actions_pie_mode_on_status">SlimPieはオンです</string>
+  <string name="global_actions_pie_mode_off_status">SlimPieはオフです</string>
+  <string name="disable_pie_navigation_error">Pieコントロールを無効にすることはできません。その他のナビゲーションが有効ではありません。ナビゲーションバーを有効にしてからPieコントロールをオフにします。</string>
+  <string name="global_actions_nav_bar_mode_on_status">ナビゲーションバーはオン</string>
+  <string name="global_actions_nav_bar_mode_off_status">ナビゲーションバーはオフ</string>
+  <string name="disable_navigation_pie_error">ナビゲーションバーを無効にすることはできません。その他のナビゲーションが有効ではありません。Pieコントロールを有効にしてからナビゲーションバーをオフにします。</string>
 </resources>

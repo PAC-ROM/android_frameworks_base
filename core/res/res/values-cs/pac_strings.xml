@@ -33,4 +33,10 @@
   <string name="action_null">Prázdné</string>
   <string name="animation_random">Náhodně</string>
   <string name="default_string">Výchozí</string>
+  <string name="global_actions_pie_mode_on_status">SlimPie je zapnuto</string>
+  <string name="global_actions_pie_mode_off_status">SlimPie je vypnuto</string>
+  <string name="disable_pie_navigation_error">Nelze vypnout kruhovou nabídku. Žádný jiný způsob navigace není povolen. Nejprve povolte navigační panel pro vypnuti kruhové nabídky.</string>
+  <string name="global_actions_nav_bar_mode_on_status">Navigační panel je zapnutý</string>
+  <string name="global_actions_nav_bar_mode_off_status">Navigační panel je vypnutý</string>
+  <string name="disable_navigation_pie_error">Nelze vypnout navigační panel. Žádný jiný způsob navigace není povolen. Nejprve povolte kruhovou nabídku pro vypnutí navigačního panelu.</string>
 </resources>

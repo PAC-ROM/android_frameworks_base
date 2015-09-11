@@ -26,6 +26,12 @@
   <string name="gestures_message">ここにジェスチャーを描いて下さい</string>
   <string name="heads_up_snooze_message">Heads upは<xliff:g id="number">%d</xliff:g>分無効です。</string>
   <string name="app_killed_message">アプリを強制終了しました</string>
+  <string name="pie_battery_status_charging">充電中(<xliff:g id="percent">%d</xliff:g>%%)</string>
+  <string name="pie_battery_status_full">充電完了</string>
+  <string name="pie_battery_status_discharging">残り<xliff:g id="percent">%d</xliff:g>%%</string>
+  <string name="pie_phone_status_no_service">サービスがありません</string>
+  <string name="pie_phone_status_airplane_mode">機内モードオン</string>
+  <string name="pie_phone_status_emergency_only">緊急通報のみ</string>
   <string name="quick_settings_brightness">画面の明るさ</string>
   <string name="quick_settings_screenshot">スクリーンショット</string>
   <string name="quick_settings_reboot_label">再起動</string>

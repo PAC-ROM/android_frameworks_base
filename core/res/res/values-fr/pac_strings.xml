@@ -33,4 +33,10 @@
   <string name="action_null">Vide</string>
   <string name="animation_random">Aléatoirement</string>
   <string name="default_string">Défaut</string>
+  <string name="global_actions_pie_mode_on_status">SlimPie est activé</string>
+  <string name="global_actions_pie_mode_off_status">SlimPie est désactivé</string>
+  <string name="disable_pie_navigation_error">Vous ne pouvez pas désactiver le SlimPie car aucun autre moyen de navigation n\'est activé. Activez d\'abord la barre de navigation pour désactiver le SlimPie.</string>
+  <string name="global_actions_nav_bar_mode_on_status">La barre de navigation est activée</string>
+  <string name="global_actions_nav_bar_mode_off_status">La barre de navigation est désactivée</string>
+  <string name="disable_navigation_pie_error">Vous ne pouvez pas désactiver la barre de navigation car aucun autre moyen de navigation n\'est activé. Activez d\'abord le SlimPie pour désactiver la barre de navigation.</string>
 </resources>

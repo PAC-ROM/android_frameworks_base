@@ -33,4 +33,10 @@
   <string name="action_null">En blanco</string>
   <string name="animation_random">Al azar</string>
   <string name="default_string">Predeterminado</string>
+  <string name="global_actions_pie_mode_on_status">Controles PIE activados</string>
+  <string name="global_actions_pie_mode_off_status">Controles PIE desactivados</string>
+  <string name="disable_pie_navigation_error">No puedes deshabilitar el control pie si no hay otro metodo de navegacion encendido. Primero Habilita la barra de navegacion para apagar el control pie.</string>
+  <string name="global_actions_nav_bar_mode_on_status">Barra de navegación activada</string>
+  <string name="global_actions_nav_bar_mode_off_status">Barra de navegación desactivada</string>
+  <string name="disable_navigation_pie_error">No puedes deshabilitar la barra de navegación si no hay otro método de navegación encendido. Primero Habilita el control pie para apagar la barra de navegación.</string>
 </resources>
