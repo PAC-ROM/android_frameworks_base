@@ -74,7 +74,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
     private long mStartTouchTime;
     private ViewGroup mContentHolder;
     private int mSnoozeLengthMs;
-    private boolean mAttached = false;
     private SettingsObserver mSettingsObserver;
 
     private NotificationData.Entry mHeadsUp;
@@ -297,45 +296,40 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
 
     @Override
     public void onAttachedToWindow() {
-        if (!mAttached) {
-            mAttached = true;
+        super.onAttachedToWindow();
+        final ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
+        float touchSlop = viewConfiguration.getScaledTouchSlop();
+        mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
+        mSwipeHelper.setMaxSwipeProgress(mMaxAlpha);
+        mEdgeSwipeHelper = new EdgeSwipeHelper(touchSlop);
 
-            final ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
-            float touchSlop = viewConfiguration.getScaledTouchSlop();
-            mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
-            mSwipeHelper.setMaxSwipeProgress(mMaxAlpha);
-            mEdgeSwipeHelper = new EdgeSwipeHelper(touchSlop);
+        int minHeight = getResources().getDimensionPixelSize(R.dimen.notification_min_height);
+        int maxHeight = getResources().getDimensionPixelSize(R.dimen.notification_max_height);
 
-            int minHeight = getResources().getDimensionPixelSize(R.dimen.notification_min_height);
-            int maxHeight = getResources().getDimensionPixelSize(R.dimen.notification_max_height);
+        mContentHolder = (ViewGroup) findViewById(R.id.content_holder);
+        mContentHolder.setOutlineProvider(CONTENT_HOLDER_OUTLINE_PROVIDER);
 
-            mContentHolder = (ViewGroup) findViewById(R.id.content_holder);
-            mContentHolder.setOutlineProvider(CONTENT_HOLDER_OUTLINE_PROVIDER);
-
-            if (mSettingsObserver == null) {
-                mSettingsObserver = new SettingsObserver(new Handler());
-            }
-            mSettingsObserver.observe();
-
-            if (DEBUG) Log.v(TAG, "mSnoozeLengthMs = " + mSnoozeLengthMs);
-
-            if (mHeadsUp != null) {
-                // whoops, we're on already!
-                showNotification(mHeadsUp);
-            }
-
-            getViewTreeObserver().addOnComputeInternalInsetsListener(this);
-
-            mTouchOutside = false;
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
         }
+        mSettingsObserver.observe();
+
+        if (DEBUG) Log.v(TAG, "mSnoozeLengthMs = " + mSnoozeLengthMs);
+
+        if (mHeadsUp != null) {
+            // whoops, we're on already!
+            showNotification(mHeadsUp);
+        }
+
+        getViewTreeObserver().addOnComputeInternalInsetsListener(this);
+
+        mTouchOutside = false;
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        if (mAttached) {
-            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
-            mAttached = false;
-        }
+        super.onDetachedFromWindow();
+        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
     }
 
     @Override
