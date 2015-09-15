@@ -50,5 +50,7 @@
     <string name="quick_settings_reboot_label">Reboot</string>
     <string name="quick_settings_reboot_recovery_label">Recovery</string>
 
+    <!-- Screen pinning -->
+    <string name="screen_pinning_description_pac">This keeps it in view until you unpin. Touch and hold the two 3-dot menu buttons at the same time to unpin.</string>
 
 </resources>

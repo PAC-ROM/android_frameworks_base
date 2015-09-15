@@ -235,7 +235,7 @@ public class ScreenPinningRequest implements View.OnClickListener {
             if (hasNavigationBar()) {
                 description = mAccessibilityService.isEnabled()
                     ? R.string.screen_pinning_description_accessible
-                    : R.string.screen_pinning_description;
+                    : R.string.screen_pinning_description_pac;
                 final int backBgVis =
                         mAccessibilityService.isEnabled() ? View.INVISIBLE : View.VISIBLE;
                 mLayout.findViewById(R.id.screen_pinning_back_bg).setVisibility(backBgVis);

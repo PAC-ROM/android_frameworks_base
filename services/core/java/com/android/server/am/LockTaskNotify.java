@@ -66,7 +66,7 @@ public class LockTaskNotify {
             textResId = R.string.lock_to_app_toast_accessible;
         } else {
             textResId = (mPolicy.hasNavigationBar() || mDevForceNavbar)
-                    ? R.string.lock_to_app_toast : R.string.lock_to_app_toast_no_navbar;
+                    ? R.string.lock_to_app_toast_pac : R.string.lock_to_app_toast_no_navbar;
         }
         if (mLastToast != null) {
             mLastToast.cancel();

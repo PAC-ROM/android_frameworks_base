@@ -51,4 +51,7 @@
     <!-- Error message if user want to try to disable all navigation options -->
     <string name="disable_navigation_pie_error">You cannot disable the navigation bar. No other navigation is enabled. Enable first pie controls to turn off the navigation bar.</string>
 
+    <!-- Screen pinning -->
+    <string name="lock_to_app_toast_pac">To unpin this screen, touch and hold the two 3-dot menu buttons at the same time.</string>
+
 </resources>
