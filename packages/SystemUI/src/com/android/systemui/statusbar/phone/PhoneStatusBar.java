@@ -5199,6 +5199,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         || v.getId() == mNavigationBarView.getRightMenuButton().getId()) {
                         sendBackLongPress = true;
                     }
+                } else if (v.getId() == R.id.recent_apps && !activityManager.isInLockTaskMode()) {
+                    hijackRecentsLongPress = true;
                 } else if (isAccessiblityEnabled && activityManager.isInLockTaskMode()) {
                     // When in accessibility mode a long press that is recents (not back)
                     // should stop lock task.
