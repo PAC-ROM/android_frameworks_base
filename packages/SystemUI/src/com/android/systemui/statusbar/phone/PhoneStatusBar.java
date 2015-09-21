@@ -531,6 +531,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.PIE_CONTROLS), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -627,6 +630,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.PAC.NAVIGATION_BAR_CAN_MOVE))) {
                 prepareNavigationBarView(false);
             } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW))) {
+                forceAddNavigationBar();
+            } else if (uri.equals(Settings.PAC.getUriFor(
                     Settings.PAC.USE_SLIM_RECENTS))) {
                 updateRecents();
             } else if (uri.equals(Settings.PAC.getUriFor(
@@ -722,6 +728,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mNavigationBarView.setDisabledFlags(mDisabled);
         mNavigationBarView.setBar(this);
+        addNavigationBarCallback(mNavigationBarView);
         mNavigationBarView.updateResources(ActionHelper.getNavbarThemedResources(mContext));
         addNavigationBar(true); // dynamically adding nav bar, reset System UI visibility!
     }
@@ -1109,31 +1116,38 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Setup pie container if enabled
         attachPieContainer(isPieEnabled());
 
-        if (mNavigationBarView == null) {
-            mNavigationBarView =
-                (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
-            mNavigationBarView.updateResources(ActionHelper.getNavbarThemedResources(mContext));
-        }
+        try {
+            boolean showNav = mWindowManagerService.hasNavigationBar();
+            if (DEBUG) Log.v(TAG, "hasNavigationBar=" + showNav);
+            if (showNav && !mRecreating) {
+                mNavigationBarView =
+                    (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
+                mNavigationBarView.updateResources(ActionHelper.getNavbarThemedResources(mContext));
 
-        mNavigationBarView.setDisabledFlags(mDisabled);
-        mNavigationBarView.setBar(this);
-        addNavigationBarCallback(mNavigationBarView);
-        mNavigationBarView.setOnVerticalChangedListener(
-                new NavigationBarView.OnVerticalChangedListener() {
-            @Override
-            public void onVerticalChanged(boolean isVertical) {
-                if (mSearchPanelView != null) {
-                    mSearchPanelView.setHorizontal(isVertical);
-                }
-                mNotificationPanel.setQsScrimEnabled(!isVertical);
+                mNavigationBarView.setDisabledFlags(mDisabled);
+                mNavigationBarView.setBar(this);
+                addNavigationBarCallback(mNavigationBarView);
+                mNavigationBarView.setOnVerticalChangedListener(
+                        new NavigationBarView.OnVerticalChangedListener() {
+                    @Override
+                    public void onVerticalChanged(boolean isVertical) {
+                        if (mSearchPanelView != null) {
+                            mSearchPanelView.setHorizontal(isVertical);
+                        }
+                        mNotificationPanel.setQsScrimEnabled(!isVertical);
+                    }
+                });
+                mNavigationBarView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        checkUserAutohide(v, event);
+                        return false;
+                    }
+                });
             }
-        });
-        mNavigationBarView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                checkUserAutohide(v, event);
-                return false;
-            }});
+        } catch (RemoteException ex) {
+            // no window manager? good luck with that
+        }
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
@@ -1701,7 +1715,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             new ScreenPinningRequest.ScreenPinningCallback() {
         @Override
         public void onStartLockTask() {
-            mNavigationBarView.setOverrideMenuKeys(true);
+            if( mNavigationBarView != null) {
+                mNavigationBarView.setOverrideMenuKeys(true);
+            }
         }
     };
 
@@ -2716,7 +2732,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         | StatusBarManager.DISABLE_SEARCH)) != 0) {
 
             // All navigation bar listeners will take care of these
-            propagateDisabledFlags(state);
+            if (mNavigationBarView != null) {
+                propagateDisabledFlags(state);
+            }
 
             if ((state & StatusBarManager.DISABLE_RECENT) != 0) {
                 // close recents if it's visible
@@ -3303,7 +3321,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void setNavigationIconHints(int hints) {
-        if (hints == mNavigationIconHints) return;
+        if (hints == mNavigationIconHints || mNavigationBarView == null) return;
 
         mNavigationIconHints = hints;
 
