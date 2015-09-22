@@ -536,6 +536,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.PAC.getUriFor(
                     Settings.PAC.NAVIGATION_BAR_SHOW), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_IME_ARROWS), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TIMEOUT), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ALPHA), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Global.getUriFor(
+                    Settings.Global.POLICY_CONTROL), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -645,6 +669,29 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.PAC.getUriFor(
                     Settings.PAC.PIE_CONTROLS))) {
                 attachPieContainer(isPieEnabled());
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_IME_ARROWS))) {
+                if (mNavigationBarView != null) {
+                    mNavigationBarView.updateNavigationBarSettings();
+                }
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TIMEOUT))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ALPHA))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE))
+                || uri.equals(Settings.Global.getUriFor(
+                    Settings.Global.POLICY_CONTROL))) {
+                if (mNavigationBarView != null) {
+                    mNavigationBarView.updateNavigationBarSettings();
+                    mNavigationBarView.onNavButtonTouched();
+                }
             }
             update();
         }
