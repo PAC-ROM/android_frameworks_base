@@ -4170,6 +4170,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNotifications(true);
         resetUserSetupObserver();
         setControllerUsers();
+        updateRecents();
 
         mKeyguardWallpaper = wm.getKeyguardBitmap();
         updateMediaMetaData(true);
