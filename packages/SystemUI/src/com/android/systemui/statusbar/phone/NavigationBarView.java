@@ -1325,16 +1325,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             }
         }
 
-        if (backIconUri.equals(ActionConstants.ICON_EMPTY)) {
-            backIcon = mContext.getResources().getDrawable(
-                    R.drawable.ic_sysbar_back);
-            backIconLand = mContext.getResources().getDrawable(
-                    R.drawable.ic_sysbar_back_land);
-        } else {
-            backIcon = ActionHelper.getActionIconImage(mContext,
-                    ActionConstants.ACTION_BACK, backIconUri);
-            backIconLand = backIcon;
-        }
+        backIcon = ActionHelper.getActionIconImage(mContext,
+                ActionConstants.ACTION_BACK, backIconUri);
+        backIconLand = backIcon;
+
         boolean shouldColor = true;
         if (backIconUri != null && !backIconUri.equals(ActionConstants.ICON_EMPTY)
                 && !backIconUri.startsWith(ActionConstants.SYSTEM_ICON_IDENTIFIER)

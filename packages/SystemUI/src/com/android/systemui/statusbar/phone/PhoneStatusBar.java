@@ -573,6 +573,68 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_BUTTON_TINT))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_BUTTON_TINT_MODE))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_CONFIG))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_GLOW_TINT))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.MENU_LOCATION))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.MENU_VISIBILITY))) {
+                if (mNavigationBarView != null) {
+                    mNavigationBarView.recreateNavigationBar();
+                    prepareNavigationBarView(false);
+                }
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_CAN_MOVE))) {
+                prepareNavigationBarView(false);
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_SHOW))) {
+                forceAddNavigationBar();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.USE_SLIM_RECENTS))) {
+                updateRecents();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_BG_COLOR))
+                    || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
+                rebuildRecentsScreen();
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.PIE_CONTROLS))) {
+                attachPieContainer(isPieEnabled());
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.NAVIGATION_BAR_IME_ARROWS))) {
+                if (mNavigationBarView != null) {
+                    mNavigationBarView.updateNavigationBarSettings();
+                }
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TIMEOUT))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ALPHA))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION))
+                || uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE))
+                || uri.equals(Settings.Global.getUriFor(
+                    Settings.Global.POLICY_CONTROL))) {
+                if (mNavigationBarView != null) {
+                    mNavigationBarView.updateNavigationBarSettings();
+                    mNavigationBarView.onNavButtonTouched();
+                }
+            }
+            update();
+        }
+
+        @Override
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             int mode = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -634,68 +696,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             // This method reads Settings.Secure.RECENTS_LONG_PRESS_ACTIVITY
             updateCustomRecentsLongPressHandler(false);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_BUTTON_TINT))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_BUTTON_TINT_MODE))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_CONFIG))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_GLOW_TINT))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.MENU_LOCATION))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.MENU_VISIBILITY))) {
-                if (mNavigationBarView != null) {
-                    mNavigationBarView.recreateNavigationBar();
-                    prepareNavigationBarView(false);
-                }
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_CAN_MOVE))) {
-                prepareNavigationBarView(false);
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_SHOW))) {
-                forceAddNavigationBar();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.USE_SLIM_RECENTS))) {
-                updateRecents();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_BG_COLOR))
-                    || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.RECENT_CARD_TEXT_COLOR))) {
-                rebuildRecentsScreen();
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.PIE_CONTROLS))) {
-                attachPieContainer(isPieEnabled());
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.NAVIGATION_BAR_IME_ARROWS))) {
-                if (mNavigationBarView != null) {
-                    mNavigationBarView.updateNavigationBarSettings();
-                }
-            } else if (uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS_TIMEOUT))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS_ALPHA))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS_ANIMATE_DURATION))
-                || uri.equals(Settings.PAC.getUriFor(
-                    Settings.PAC.DIM_NAV_BUTTONS_TOUCH_ANYWHERE))
-                || uri.equals(Settings.Global.getUriFor(
-                    Settings.Global.POLICY_CONTROL))) {
-                if (mNavigationBarView != null) {
-                    mNavigationBarView.updateNavigationBarSettings();
-                    mNavigationBarView.onNavButtonTouched();
-                }
-            }
-            update();
         }
     }
 
@@ -1530,6 +1530,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarHeaderMachine = new StatusBarHeaderMachine(mContext);
         mStatusBarHeaderMachine.addObserver(mHeader);
         mStatusBarHeaderMachine.updateEnablement();
+
         return mStatusBarView;
     }
 
@@ -4175,6 +4176,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         resetUserSetupObserver();
         setControllerUsers();
         updateRecents();
+        mStatusBarHeaderMachine.updateEnablement();
 
         mKeyguardWallpaper = wm.getKeyguardBitmap();
         updateMediaMetaData(true);
@@ -4295,6 +4297,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         makeStatusBarView();
         repositionNavigationBar();
         addHeadsUpView();
+
+        if (mNavigationBarView != null) {
+            mNavigationBarView.updateResources(ActionHelper.getNavbarThemedResources(mContext));
+        }
 
         // recreate StatusBarIconViews.
         for (int i = 0; i < nIcons; i++) {
