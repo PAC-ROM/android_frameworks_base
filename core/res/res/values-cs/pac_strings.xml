@@ -39,4 +39,5 @@
   <string name="global_actions_nav_bar_mode_on_status">Navigační panel je zapnutý</string>
   <string name="global_actions_nav_bar_mode_off_status">Navigační panel je vypnutý</string>
   <string name="disable_navigation_pie_error">Nelze vypnout navigační panel. Žádný jiný způsob navigace není povolen. Nejprve povolte kruhovou nabídku pro vypnutí navigačního panelu.</string>
+  <string name="lock_to_app_toast_pac">Chcete-li odebrat tuto obrazovku, stiskněte a držte obě dvě tlačítka menu ve stejnou dobu.</string>
 </resources>

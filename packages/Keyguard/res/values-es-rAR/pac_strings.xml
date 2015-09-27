@@ -16,15 +16,16 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="lockscreen_gesture_instructions">Zum Entsperren Geste zeichnen</string>
-  <string name="lockscreen_gesture_correct">Richtig!</string>
-  <string name="lockscreen_gesture_wrong">Erneut versuchen</string>
-  <string name="keyguard_accessibility_gesture_unlock">Entsperrungsgeste.</string>
-  <string name="keyguard_accessibility_gesture_area">Gestenbereich.</string>
-  <string name="kg_forgot_gesture_button_text">Geste vergessen</string>
-  <string name="kg_wrong_gesture">Falsche Geste</string>
-  <string name="kg_gesture_instructions">Geste zeichnen</string>
+  <string name="lockscreen_gesture_instructions">Dibuje el gesto para desbloquear</string>
+  <string name="lockscreen_gesture_correct">¡Correcto!</string>
+  <string name="lockscreen_gesture_wrong">Inténtalo de nuevo</string>
+  <string name="keyguard_accessibility_gesture_unlock">Gesto de desbloqueo.</string>
+  <string name="keyguard_accessibility_gesture_area">Área de gesto.</string>
+  <string name="kg_forgot_gesture_button_text">¿Olvidó el gesto?</string>
+  <string name="kg_wrong_gesture">Gesto erróneo</string>
+  <string name="kg_gesture_instructions">Dibuje su gesto</string>
   <string name="kg_too_many_failed_gesture_attempts_dialog_message">
-        Du hast das Entsperrmuster <xliff:g id="Number_0">%d</xliff:g>-mal falsch gezeichnet. "\n\n"Bitte versuche es in <xliff:g id="Number_1">%d</xliff:g> Sekunden erneut.
+        Usted ha dibujado incorrectamente el gesto de desbloqueo <xliff:g id="number">%d</xliff:g> veces.
+        \n\nInténtalo de nuevo en <xliff:g id="number">%d</xliff:g> segundos.
     </string>
 </resources>

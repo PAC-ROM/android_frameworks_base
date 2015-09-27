@@ -25,6 +25,13 @@
   <string name="toast_not_installed">应用未安装</string>
   <string name="gestures_message">请在此画出您的手势</string>
   <string name="heads_up_snooze_message">浮动通知已被禁用 <xliff:g id="number">%d</xliff:g> 分钟。</string>
+  <string name="app_killed_message">应用程序已结束</string>
+  <string name="pie_battery_status_charging">充电 (<xliff:g id="percent"> %d </xliff:g> %%)</string>
+  <string name="pie_battery_status_full">充电完成</string>
+  <string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% 剩余</string>
+  <string name="pie_phone_status_no_service">无服务</string>
+  <string name="pie_phone_status_airplane_mode">飞行模式已开启</string>
+  <string name="pie_phone_status_emergency_only">只能拨打紧急电话</string>
   <string name="quick_settings_brightness">亮度</string>
   <string name="quick_settings_screenshot">屏幕截图</string>
   <string name="quick_settings_reboot_label">重启</string>

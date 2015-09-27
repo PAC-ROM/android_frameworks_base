@@ -39,4 +39,5 @@
   <string name="global_actions_nav_bar_mode_on_status">ナビゲーションバーはオン</string>
   <string name="global_actions_nav_bar_mode_off_status">ナビゲーションバーはオフ</string>
   <string name="disable_navigation_pie_error">ナビゲーションバーを無効にすることはできません。その他のナビゲーションが有効ではありません。Pieコントロールを有効にしてからナビゲーションバーをオフにします。</string>
+  <string name="lock_to_app_toast_pac">画面の固定を解除するには、2つの3ドットメニューボタンを同時に押してください</string>
 </resources>

@@ -39,4 +39,5 @@
   <string name="global_actions_nav_bar_mode_on_status">Navigációs sáv BE</string>
   <string name="global_actions_nav_bar_mode_off_status">Navigációs sáv KI</string>
   <string name="disable_navigation_pie_error">A navigációs sáv nem kapcsolható ki, mert jelenleg nincs másik vezérlő engedélyezve. Először engedélyezze a pie vezérlőt a navigációs sáv kikapcsolásához.</string>
+  <string name="lock_to_app_toast_pac">Ezen képernyő rögzítésének megszüntetéséhez érintse meg és tartsa nyomva a két hárompontos menü gombot egyidejűleg.</string>
 </resources>

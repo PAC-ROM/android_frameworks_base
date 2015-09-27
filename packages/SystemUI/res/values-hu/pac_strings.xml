@@ -36,4 +36,5 @@
   <string name="quick_settings_screenshot">Képernyőmentés</string>
   <string name="quick_settings_reboot_label">Újraindítás</string>
   <string name="quick_settings_reboot_recovery_label">Recovery</string>
+  <string name="screen_pinning_description_pac">Rögzítve marad a rögzítés feloldásáig. A rögzítés megszüntetéséhez érintse meg és tartsa nyomva a két hárompontos menü gombot egyidejűleg.</string>
 </resources>
