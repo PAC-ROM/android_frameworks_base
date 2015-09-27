@@ -630,6 +630,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mNavigationBarView.updateNavigationBarSettings();
                     mNavigationBarView.onNavButtonTouched();
                 }
+            } else if (uri.equals(Settings.PAC.getUriFor(
+                    Settings.PAC.HEADS_UP_NOTIFICATION_DECAY))) {
+                mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
+                            mContext.getContentResolver(),
+                            Settings.PAC.HEADS_UP_NOTIFICATION_DECAY,
+                            mContext.getResources().getInteger(
+                            R.integer.heads_up_notification_decay),
+                            UserHandle.USER_CURRENT);
+                resetHeadsUpDecayTimer();
             }
             update();
         }
@@ -649,14 +658,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.Secure.getIntForUser(resolver,
                         Settings.Secure.LOCKSCREEN_HIDE_TILES_WITH_SENSITIVE_DATA, 0,
                             UserHandle.USER_CURRENT) != 0);
-
-            mHeadsUpNotificationDecay = Settings.PAC.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.PAC.HEADS_UP_NOTIFICATION_DECAY,
-                            mContext.getResources().getInteger(
-                            R.integer.heads_up_notification_decay),
-                            UserHandle.USER_CURRENT);
-            resetHeadsUpDecayTimer();
 
             final int oldClockLocation = mClockLocation;
             final View oldClockView = mClockView;
