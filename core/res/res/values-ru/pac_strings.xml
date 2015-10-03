@@ -33,4 +33,11 @@
   <string name="action_null">Пусто</string>
   <string name="animation_random">Случайно</string>
   <string name="default_string">По умолчанию</string>
+  <string name="global_actions_pie_mode_on_status">SlimPie ВКЛ</string>
+  <string name="global_actions_pie_mode_off_status">SlimPie ВЫКЛ</string>
+  <string name="disable_pie_navigation_error">Невозможно отключить веерное меню. Не включены другие способы навигации. Сначала включите панель навигации, чтобы отключить веерное меню.</string>
+  <string name="global_actions_nav_bar_mode_on_status">Панель навигации ВКЛ</string>
+  <string name="global_actions_nav_bar_mode_off_status">Панель навигации ВЫКЛ</string>
+  <string name="disable_navigation_pie_error">Невозможно отключить панель навигации. Не включены другие способы навигации. Сначала включите веерное меню, чтобы отключить панель навигации.</string>
+  <string name="lock_to_app_toast_pac">Чтобы открепить экран, нажмите и удержите два 3-точечных меню одновременно.</string>
 </resources>

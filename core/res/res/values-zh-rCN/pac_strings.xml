@@ -33,4 +33,11 @@
   <string name="action_null">空</string>
   <string name="animation_random">随机</string>
   <string name="default_string">默认</string>
+  <string name="global_actions_pie_mode_on_status">SlimPie 已开启</string>
+  <string name="global_actions_pie_mode_off_status">SlimPie 已关闭</string>
+  <string name="disable_pie_navigation_error">您不能禁用Pie 控制。因为没有开启其他导航功能。请先开启导航栏再关闭Pie 控制</string>
+  <string name="global_actions_nav_bar_mode_on_status">导航栏已开启</string>
+  <string name="global_actions_nav_bar_mode_off_status">导航栏已关闭</string>
+  <string name="disable_navigation_pie_error">您不能禁用导航栏，因为没有启用其他导航功能。请先启用 Pie 控制再关闭导航栏。</string>
+  <string name="lock_to_app_toast_pac">若要取消固定此屏幕，触摸同时按住两个 3 点菜单按钮。</string>
 </resources>
