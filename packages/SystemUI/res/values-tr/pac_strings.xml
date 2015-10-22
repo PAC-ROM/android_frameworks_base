@@ -18,7 +18,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="default_folder_text">Dosya</string>
   <string name="title_activity_sidebar_configuration">Uygulama Çubuğu içerik kurulumu</string>
-  <string name="action_save">kaydet</string>
   <string name="toast_items_saved">Uygulama Çubuğu ayarları kaydedildi.</string>
   <string name="content_setup_dismiss">Devam et</string>
   <string name="toast_not_installed">Uygulama yüklü değil</string>
