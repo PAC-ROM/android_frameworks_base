@@ -608,8 +608,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             handledOnClick = true;
         } else if (v == mAlarmStatus && mNextAlarm != null) {
             PendingIntent showIntent = mNextAlarm.getShowIntent();
-            if (showIntent != null && showIntent.isActivity()) {
-                mActivityStarter.startActivity(showIntent.getIntent(), true /* dismissShade */);
+            if (showIntent != null) {
+                mActivityStarter.startPendingIntentDismissingKeyguard(showIntent);
             }
             handledOnClick = true;
         } else if (v == mClock) {
