@@ -20,7 +20,6 @@
   <string name="title_activity_sidebar_configuration">应用栏内容设置</string>
   <string name="action_save">保存</string>
   <string name="toast_items_saved">应用栏项目已保存。</string>
-  <string name="content_setup_instructions">要添加项目，长按项目拖拽到应用栏上。\n\n要合并项目到文件夹中，把一个项目拖拽到应用栏上任意一个已存在的项目。\n\n要删除一个项目，把它拖拽出应用栏。</string>
   <string name="content_setup_dismiss">继续</string>
   <string name="toast_not_installed">应用未安装</string>
   <string name="gestures_message">请在此画出您的手势</string>

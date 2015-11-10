@@ -20,7 +20,6 @@
   <string name="title_activity_sidebar_configuration">アプリバーコンテンツのセットアップ</string>
   <string name="action_save">保存</string>
   <string name="toast_items_saved">アプリバーのアイテムが保存されました。</string>
-  <string name="content_setup_instructions">右の項目をロングタップし、アプリバーへドラックをして追加します。\n\nアプリバーの既存の項目に他の項目を重ねてフォルダーの中にまとめる事ができます。\n\n項目を削除するにはアプリバーの外へドラックします。</string>
   <string name="content_setup_dismiss">続ける</string>
   <string name="toast_not_installed">アプリがインストールされていません</string>
   <string name="gestures_message">ここにジェスチャーを描いて下さい</string>

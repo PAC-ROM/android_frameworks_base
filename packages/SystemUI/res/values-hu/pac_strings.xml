@@ -20,7 +20,6 @@
   <string name="title_activity_sidebar_configuration">Alkalmazássáv tartalmának beállítása</string>
   <string name="action_save">Mentés</string>
   <string name="toast_items_saved">Alkalmazássáv elemei mentésre kerültek.</string>
-  <string name="content_setup_instructions">Alkalmazássáv elemeinek hozzáadásához nyomjon hosszan bármely elemre a jobb oldalon, majd húzza át az Alkalmazássávba.\n\nElemek mappákba csoportosításához húzza egyik elemet egy létező elemre az Alkalmazássávon.\n\nEltávolításhoz egyszerűen húzza ki az Alkalmazássávból.</string>
   <string name="content_setup_dismiss">Folytatás</string>
   <string name="toast_not_installed">Alkalmazás nincs telepítve</string>
   <string name="gestures_message">Rajzolja meg gesztusát itt</string>

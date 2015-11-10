@@ -20,7 +20,6 @@
   <string name="title_activity_sidebar_configuration">Réglages du contenu d\'Appbar</string>
   <string name="action_save">Sauvegarder</string>
   <string name="toast_items_saved">Éléments d\'Appbar enregistrés.</string>
-  <string name="content_setup_instructions">Ajouter des éléments à l\'Appbar par un appui long sur n\'importe quel élément sur le côté droit et le glisser/déposer sur l\'Appbar.\n\nCombine les éléments dans des dossiers par un déposer sur un élément existant dans l\'Appbar.\n\nPour supprimer un élément simplement traîner le hors de l\' Appbar.</string>
   <string name="content_setup_dismiss">Continuer</string>
   <string name="toast_not_installed">L\'application n\'est pas installée</string>
   <string name="gestures_message">Dessinez votre geste ici</string>

@@ -20,7 +20,6 @@
   <string name="title_activity_sidebar_configuration">Настройка содержимого панели приложений</string>
   <string name="action_save">Сохранить</string>
   <string name="toast_items_saved">Были сохранены элементы панели приложений.</string>
-  <string name="content_setup_instructions">Добавляйте элементы на панель приложений путем долгого нажатия любого элемента справа и перетаскивания его на панель.\n\nОбъединяйте элементы в папки, сбрасывая их на любые другие существующие элементы в панели.\n\nЧтобы удалить элемент, просто перетащите его из панели приложений.</string>
   <string name="content_setup_dismiss">Продолжить</string>
   <string name="toast_not_installed">Приложение не установлено</string>
   <string name="gestures_message">Нарисуйте ваш жест здесь</string>
