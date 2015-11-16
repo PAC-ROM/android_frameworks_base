@@ -16,16 +16,11 @@
 -->
 <resources>
 
-    <!-- Pac Logo Swooosh Effect -->
-    <color name="pac_logo_black">#000000</color>
-    <color name="pac_logo_red">#F34235</color>
-    <color name="pac_logo_yellow">#FFC006</color>
-    <color name="pac_logo_blue">#4184F3</color>
-    <color name="pac_logo_green">#4CAF50</color>
-    <color name="pac_logo_white">#FFFFFF</color>
-
     <!-- Floating action button -->
-    <color name="fab_color">#ff009688</color>
-    <color name="floating_action_button_icon_color">#ffffff</color>
+    <dimen name="floating_action_button_height">54dp</dimen>
+    <dimen name="floating_action_button_width">54dp</dimen>
+    <dimen name="floating_action_button_translation_z">12dp</dimen>
+    <dimen name="floating_action_button_margin_side">78dp</dimen>
+    <dimen name="floating_action_button_margin_bottom">42dp</dimen>
 
 </resources>
