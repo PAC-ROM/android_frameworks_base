@@ -179,24 +179,6 @@ public class ActionHelper {
                     config);
     }
 
-    public static String getNavbarThemePkgName(Context context) {
-        if (context == null) return null;
-        String res = null;
-        ThemeConfig themeConfig = context.getResources().getConfiguration().themeConfig;
-        if (themeConfig == null) return res;
-        try {
-            final String navbarThemePkgName = themeConfig.getOverlayForNavBar();
-            final String sysuiThemePkgName = themeConfig.getOverlayForStatusBar();
-            if (navbarThemePkgName != null) {
-                res = navbarThemePkgName;
-            } else {
-                res = sysuiThemePkgName;
-            }
-        } catch (Exception e) {
-        }
-        return res;
-    }
-
     public static Resources getNavbarThemedResources(Context context) {
         if (context == null) return null;
         ThemeConfig themeConfig = context.getResources().getConfiguration().themeConfig;
