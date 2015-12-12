@@ -20,6 +20,7 @@
   <string name="title_activity_sidebar_configuration">Nastavení obsahu panelu aplikací</string>
   <string name="action_save">Uložit</string>
   <string name="toast_items_saved">Položky v panelu aplikací byly uloženy.</string>
+  <string name="content_setup_instructions">Položku lze přidat do panelu aplikací na pravé straně dlouhým stiskem a přetáhnutím.\n\nKombinovat položky do složek lze položením na libovolnou existující položku v panelu aplikací.\n\nOdebrat ji lze přetáhnutím ven z panelu aplikací.</string>
   <string name="content_setup_dismiss">Pokračovat</string>
   <string name="toast_not_installed">Aplikace není nainstalována</string>
   <string name="gestures_message">Zde nakreslete své gesto</string>

@@ -20,6 +20,7 @@
   <string name="title_activity_sidebar_configuration">Ustawienia zawartości paska aplikacji</string>
   <string name="action_save">Zapisz</string>
   <string name="toast_items_saved">Elementy paska aplikacji zostały zapisane.</string>
+  <string name="content_setup_instructions">Dodaj elementy poprzez długie przytrzymanie danej aplikacji po prawej stronie i przeciągnięcie jej do paska aplikacji.\n\nTwórz foldery poprzez przeciąganie jednej aplikacji na drugą.\n\nAby usunąć dany element, po prostu przeciągnij go poza obszar paska aplikacji.</string>
   <string name="content_setup_dismiss">Kontynuuj</string>
   <string name="toast_not_installed">Aplikacja nie jest zainstalowana</string>
   <string name="gestures_message">Narysuj swój gest tutaj</string>

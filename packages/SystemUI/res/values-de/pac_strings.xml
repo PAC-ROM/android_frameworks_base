@@ -20,6 +20,7 @@
   <string name="title_activity_sidebar_configuration">Appbar Inhalt einrichten</string>
   <string name="action_save">Speichern</string>
   <string name="toast_items_saved">Appbar Elemente wurden gespeichert.</string>
+  <string name="content_setup_instructions">Füge Elemente auf der rechten Seite durch langes Drücken und auf die Appbar ziehen hinzu.\n\nKombiniere durch Ablegen eines Elements auf ein vorhandenes Element in der Appbar Elemente zu Ordnern.\n\nUm ein Element zu entfernen ziehe es einfach aus der Appbar.</string>
   <string name="content_setup_dismiss">Weiter</string>
   <string name="toast_not_installed">Die Anwendung ist nicht installiert</string>
   <string name="gestures_message">Hier die Geste zeichnen</string>

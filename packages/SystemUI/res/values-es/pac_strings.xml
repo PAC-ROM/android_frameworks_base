@@ -20,6 +20,7 @@
   <string name="title_activity_sidebar_configuration">Configurar el contenido de la barra de aplicaciones</string>
   <string name="action_save">Guardar</string>
   <string name="toast_items_saved">Los elementos de la barra de aplicaciones han sido guardados.</string>
+  <string name="content_setup_instructions">Para agregar elementos a la barra de la aplicaciones, haga pulsación larga en cualquier elemento de la derecha y arrástralo a la barra de la aplicación.\n\ncombine los elementos en carpetas arrastrándolo hacia cualquier elemento existente en la barra de la aplicaciones.\n\npara eliminar un elemento, simplemente arrástrelo fuera de la barra de aplicaciones.</string>
   <string name="content_setup_dismiss">Continuar</string>
   <string name="toast_not_installed">La aplicación no está instalada</string>
   <string name="gestures_message">Dibuja aquí tu gesto</string>
