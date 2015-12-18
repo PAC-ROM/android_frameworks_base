@@ -22,6 +22,7 @@ import android.app.ActivityOptions;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -366,8 +367,18 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
                     mFloatingButton.getLayoutParams();
-            params.topMargin = taskStackBounds.top + mContext.getResources().
+            boolean isPortrait = mContext.getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_PORTRAIT;
+            if (mSearchBar == null && isPortrait) {
+                params.topMargin = mContext.getResources().
+                    getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height)
+                        + mContext.getResources().
+                            getDimensionPixelSize(R.dimen.floating_action_button_margin_top);
+            } else {
+                params.topMargin = taskStackBounds.top + mContext.getResources().
                     getDimensionPixelSize(R.dimen.floating_action_button_margin_top);
+            }
+
             switch (clearRecentsLocation) {
                 case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_TOP_LEFT:
                     params.gravity = Gravity.TOP | Gravity.LEFT;
