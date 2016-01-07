@@ -21,10 +21,10 @@
     <string name="battery_saver_notification_action_text_short">Turn off</string>
 
     <!-- Navigation Bar -->
-    <!-- Dialog title for navigation bar button selection -->
-    <string name="navbar_power_button">Power button</string>
-    <!-- Content description of the power button for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_power">Power</string>
+    <string name="accessibility_notifications">Notifications</string>
+    <string name="navbar_power_button">Power button</string>
+    <string name="navbar_notifications_button">Notifications button</string>
 
     <!-- QuickSettings: KernelAdiutor -->
     <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
