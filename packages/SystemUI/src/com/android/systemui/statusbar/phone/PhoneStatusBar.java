@@ -139,6 +139,7 @@ import com.android.systemui.doze.DozeLog;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.pac.StatusBarHeaderMachine;
 import com.android.systemui.qs.QSDragPanel;
+import com.android.systemui.recents.RecentsActivity;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.screenshot.TakeScreenshotService;
 import com.android.systemui.statusbar.ActivatableNotificationView;
@@ -3532,7 +3533,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void setImeWindowStatus(IBinder token, int vis, int backDisposition,
             boolean showImeSwitcher) {
         boolean imeShown = (vis & InputMethodService.IME_VISIBLE) != 0;
-        int flags = mNavigationIconHints;
+        int flags = mNavigationBarView != null ?
+                mNavigationBarView.getNavigationIconHints() : mNavigationIconHints;
         if ((backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS) || imeShown) {
             flags |= NAVIGATION_HINT_BACK_ALT;
         } else {
@@ -5325,16 +5327,20 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
 
             if (hijackRecentsLongPress) {
-                // If there is a user-selected, registered handler for the
-                // recents long press, start the Intent.  Otherwise,
-                // perform the default action, which is last app switching.
-
-                // Copy it so the value doesn't change between now and when the activity is started.
-                ComponentName customRecentsLongPressHandler = mCustomRecentsLongPressHandler;
-                if (customRecentsLongPressHandler != null) {
-                    startCustomRecentsLongPressActivity(customRecentsLongPressHandler);
+                if (isRecentAppsVisible() && hasRecentApps()) {
+                    clearRecentApps();
                 } else {
-                    ActionUtils.switchToLastApp(mContext, mCurrentUserId);
+                    // If there is a user-selected, registered handler for the
+                    // recents long press, start the Intent.  Otherwise,
+                    // perform the default action, which is last app switching.
+
+                    // Copy it so the value doesn't change between now and when the activity is started.
+                    ComponentName customRecentsLongPressHandler = mCustomRecentsLongPressHandler;
+                    if (customRecentsLongPressHandler != null) {
+                        startCustomRecentsLongPressActivity(customRecentsLongPressHandler);
+                    } else {
+                        ActionUtils.switchToLastApp(mContext, mCurrentUserId);
+                    }
                 }
             }
         } catch (RemoteException e) {
