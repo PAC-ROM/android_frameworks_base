@@ -3272,7 +3272,12 @@ public final class Settings {
         public static final Validator LOCKSCREEN_SOUNDS_ENABLED_VALIDATOR = sBooleanValidator;
 
         /**
-         * Whether the lockscreen should be completely disabled.
+         * Whether to show four tiles per row.
+         * @hide
+         */
+        public static final String QS_USE_FOUR_COLUMNS = "qs_use_four_columns";
+
+        /**
          * @hide
          */
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
