@@ -133,6 +133,7 @@ import com.android.internal.util.gesture.EdgeGesturePosition;
 import com.android.internal.util.gesture.EdgeServiceConstants;
 import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.PointerLocationView;
+import com.android.server.am.ActivityStackSupervisor;
 import com.android.server.GestureLauncherService;
 import com.android.server.LocalServices;
 import com.android.server.policy.keyguard.KeyguardServiceDelegate;
@@ -321,6 +322,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     WindowManagerFuncs mWindowManagerFuncs;
     WindowManagerInternal mWindowManagerInternal;
     PowerManager mPowerManager;
+    ActivityManager mActivityManager;
     ActivityManagerInternal mActivityManagerInternal;
     DreamManagerInternal mDreamManagerInternal;
     PowerManagerInternal mPowerManagerInternal;
@@ -1694,6 +1696,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mDeskDockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
+        mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         mPowerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
         mBroadcastWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "PhoneWindowManager.mBroadcastWakeLock");
@@ -3521,7 +3524,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (down) {
                 mPendingMetaAction = true;
             } else if (mPendingMetaAction) {
-                launchAssistAction(Intent.EXTRA_ASSIST_INPUT_HINT_KEYBOARD, event.getDeviceId());
+                invokeSearchOverlay(event);
             }
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -3674,6 +3677,23 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
         return false;
+    }
+
+    private void invokeSearchOverlay(KeyEvent event) {
+        String intentString = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
+
+        // If we're in GEL, use the GEL search box. Otherwise, use the search overlay.
+        final List<ActivityManager.RecentTaskInfo> tasks =
+                mActivityManager.getRecentTasksForUser(
+                        1, ActivityManager.RECENT_WITH_EXCLUDED, UserHandle.USER_CURRENT_OR_SELF);
+        if (tasks != null && !tasks.isEmpty()) {
+            if (tasks.get(0).stackId == ActivityStackSupervisor.HOME_STACK_ID) {
+                intentString = "android.search.action.GLOBAL_SEARCH";
+            }
+        }
+
+        Intent searchIntent = new Intent(intentString);
+        startActivityAsUser(searchIntent, UserHandle.CURRENT_OR_SELF);
     }
 
     /** {@inheritDoc} */
