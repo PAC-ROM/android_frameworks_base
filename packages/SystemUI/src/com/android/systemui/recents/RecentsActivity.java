@@ -25,6 +25,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.UserHandle;
@@ -32,6 +34,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.Prefs;
@@ -245,6 +248,13 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 mEmptyView = mEmptyViewStub.inflate();
             }
             mEmptyView.setVisibility(View.VISIBLE);
+            ImageView iv = (ImageView) mEmptyView.findViewById(R.id.iv_pac_logo);
+            if (iv != null) {
+                Drawable dbl = iv.getDrawable();
+                if (dbl instanceof Animatable) {
+                    ((Animatable) dbl).start();
+                }
+            }
             mEmptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
