@@ -22,5 +22,6 @@
     <color name="pac_logo_yellow">#FFC006</color>
     <color name="pac_logo_blue">#4184F3</color>
     <color name="pac_logo_green">#4CAF50</color>
+    <color name="pac_logo_white">#FFFFFF</color>
 
 </resources>
