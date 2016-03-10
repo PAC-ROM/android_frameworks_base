@@ -21,7 +21,7 @@
         android:duration="@integer/pac_logo_duration"
         android:startOffset="@integer/pac_logo_offset_2"
         android:propertyName="fillColor"
-        android:valueFrom="@color/pac_logo_black"
+        android:valueFrom="@color/pac_logo_white"
         android:valueTo="@color/pac_logo_green"
         />
     <objectAnimator
@@ -46,6 +46,6 @@
         android:duration="@integer/pac_logo_duration"
         android:propertyName="fillColor"
         android:valueFrom="@color/pac_logo_blue"
-        android:valueTo="@color/pac_logo_black"
+        android:valueTo="@color/pac_logo_white"
         />
 </set>
