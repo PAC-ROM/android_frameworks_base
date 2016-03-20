@@ -1901,15 +1901,10 @@ public class UserManagerService extends IUserManager.Stub {
      * Create new {@code /data/user/[id]} directory and sets default
      * permissions.
      */
-    public static void prepareUserDirectory(Context context, String volumeUuid, int userId)
-            throws IOException {
+    public static void prepareUserDirectory(Context context, String volumeUuid, int userId) {
         final StorageManager storage = context.getSystemService(StorageManager.class);
         final File userDir = Environment.getDataUserDirectory(volumeUuid, userId);
-        try {
-            storage.createNewUserDir(userId, userDir);
-        } catch (IllegalStateException e) {
-            throw new IOException(e);
-        }
+        storage.createNewUserDir(userId, userDir);
     }
 
     /**

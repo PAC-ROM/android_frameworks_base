@@ -16,7 +16,6 @@
 
 package com.android.systemui.recents.views;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -26,7 +25,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IRemoteCallback;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -37,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManagerGlobal;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import com.android.internal.logging.MetricsLogger;
@@ -163,7 +160,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
     /** Gets the next task in the stack - or if the last - the top task */
     public Task getNextTaskOrTopTask(Task taskToSearch) {
-        Task returnTask = null;
+        Task returnTask = null; 
         boolean found = false;
         List<TaskStackView> stackViews = getTaskStackViews();
         int stackCount = stackViews.size();
@@ -202,7 +199,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 Task task = tv.getTask();
                 if (tv.isFocusedTask()) {
                     onTaskViewClicked(stackView, tv, stack, task, false);
-                    tv.unsetFocusedTask();
                     return true;
                 }
             }
@@ -372,7 +368,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                     searchBarSpaceBounds.right, searchBarSpaceBounds.bottom);
         }
 
-        // Layout each TaskStackView with the full width and height of the window since the
+        // Layout each TaskStackView with the full width and height of the window since the 
         // transition view is a child of that stack view
         List<TaskStackView> stackViews = getTaskStackViews();
         int stackCount = stackViews.size();
@@ -393,40 +389,33 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         return insets.consumeSystemWindowInsets();
     }
 
-    /** Focuses the next task in the first stack view */
-    public void focusNextTask(boolean forward) {
+    /** Notifies each task view of the user interaction. */
+    public void onUserInteraction() {
+        // Get the first stack view
         List<TaskStackView> stackViews = getTaskStackViews();
-        if (!stackViews.isEmpty()) {
-            stackViews.get(0).focusNextTask(forward);
+        int stackCount = stackViews.size();
+        for (int i = 0; i < stackCount; i++) {
+            TaskStackView stackView = stackViews.get(i);
+            stackView.onUserInteraction();
         }
     }
 
-    /** Focuses the current task in the first stack view */
-    public void refocusCurrentTask(boolean scrollToNewPosition) {
+    /** Focuses the next task in the first stack view */
+    public void focusNextTask(boolean forward) {
+        // Get the first stack view
         List<TaskStackView> stackViews = getTaskStackViews();
         if (!stackViews.isEmpty()) {
-            final TaskStackView stackView = stackViews.get(0);
-            stackView.focusTask(stackView.mFocusedTaskIndex, scrollToNewPosition);
+            stackViews.get(0).focusNextTask(forward, true);
         }
     }
 
     /** Dismisses the focused task. */
     public void dismissFocusedTask() {
+        // Get the first stack view
         List<TaskStackView> stackViews = getTaskStackViews();
         if (!stackViews.isEmpty()) {
             stackViews.get(0).dismissFocusedTask();
         }
-    }
-
-    /** Ensures that there is a task focused. */
-    public boolean ensureFocusedTask(boolean findClosestToCenter) {
-        List<TaskStackView> stackViews = getTaskStackViews();
-        if (!stackViews.isEmpty()) {
-            final TaskStackView stackView = stackViews.get(0);
-            return stackView.ensureFocusedTask(findClosestToCenter);
-        }
-
-        return false;
     }
 
     /** Unfilters any filtered stacks */
@@ -512,45 +501,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
     /**** TaskStackView.TaskStackCallbacks Implementation ****/
 
-    /**
-     * Cancels any running window transitions for the launched task (the task animating into
-     * Recents).
-     */
-    private void cancelLaunchedTaskWindowTransitionWithDelay(final Task task, long delay) {
-        final SystemServicesProxy ssp = RecentsTaskLoader.getInstance().getSystemServicesProxy();
-        if (mConfig.launchedToTaskId != -1 &&
-                mConfig.launchedToTaskId != task.key.id) {
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-              @Override
-              public void run() {
-                  ssp.cancelThumbnailTransition(((Activity) getContext()).getTaskId());
-                  ssp.cancelWindowTransition(mConfig.launchedToTaskId);
-              }
-            }, delay);
-        }
-    }
-
-    private void cancelLaunchedTaskWindowTransition(final Task task) {
-        cancelLaunchedTaskWindowTransitionWithDelay(task, 0);
-    }
-
-    public void resetHasBeenTouched() {
-        List<TaskStackView> stackViews = getTaskStackViews();
-        if (!stackViews.isEmpty()) {
-            stackViews.get(0).resetHasBeenTouched();
-        }
-    }
-
-    public boolean hasBeenTouched() {
-        List<TaskStackView> stackViews = getTaskStackViews();
-        if (!stackViews.isEmpty()) {
-            return stackViews.get(0).hasBeenTouched();
-        }
-
-        return false;
-    }
-
     @Override
     public void onTaskViewClicked(final TaskStackView stackView, final TaskView tv,
                                   final TaskStack stack, final Task task, final boolean lockToTask) {
@@ -582,9 +532,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         // Compute the thumbnail to scale up from
         final SystemServicesProxy ssp =
                 RecentsTaskLoader.getInstance().getSystemServicesProxy();
-               final long enterDuration =
-                       AnimationUtils.loadAnimation(getContext(), R.anim.recents_from_unknown_enter)
-                       .getDuration();
         ActivityOptions opts = null;
         if (task.thumbnail != null && task.thumbnail.getWidth() > 0 &&
                 task.thumbnail.getHeight() > 0) {
@@ -594,10 +541,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                     boolean mTriggered = false;
                     @Override
                     public void onAnimationStarted() {
-                        // If we are launching into another task, cancel the previous task's
-                        // window transition
-                        cancelLaunchedTaskWindowTransitionWithDelay(task, enterDuration / 2);
-
                         if (!mTriggered) {
                             postDelayed(new Runnable() {
                                 @Override
@@ -609,10 +552,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                         }
                     }
                 };
-            } else {
-                cancelLaunchedTaskWindowTransitionWithDelay(task, enterDuration / 2);
             }
-
             if (tv != null) {
                 postDrawHeaderThumbnailTransitionRunnable(tv, offsetX, offsetY, transform,
                         animStartedListener);

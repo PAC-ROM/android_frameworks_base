@@ -140,9 +140,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             if (action.equals(Recents.ACTION_HIDE_RECENTS_ACTIVITY)) {
                 if (intent.getBooleanExtra(Recents.EXTRA_TRIGGERED_FROM_ALT_TAB, false)) {
                     // If we are hiding from releasing Alt-Tab, dismiss Recents to the focused app
-                    if (!mRecentsView.hasBeenTouched()) {
-                        dismissRecentsToFocusedTaskOrHome(false);
-                    }
+                    dismissRecentsToFocusedTaskOrHome(false);
                 } else if (intent.getBooleanExtra(Recents.EXTRA_TRIGGERED_FROM_HOME_KEY, false)) {
                     // Otherwise, dismiss Recents to Home
                     dismissRecentsToHomeRaw(true);
@@ -158,12 +156,6 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 // Notify the fallback receiver that we have successfully got the broadcast
                 // See AlternateRecentsComponent.onAnimationStarted()
                 setResultCode(Activity.RESULT_OK);
-            } else if (action.equals(Recents.ACTION_ALT_TAB_TRAVERSAL)) {
-                // In the case of another ALT event, ignore the previous touches.
-                mRecentsView.resetHasBeenTouched();
-                if (mRecentsView.ensureFocusedTask(true)) {
-                    mRecentsView.refocusCurrentTask(true);
-                }
             }
         }
     };
@@ -269,9 +261,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                     dismissRecentsToHome(true);
                 }
             });
-            if (Constants.DebugFlags.App.EnableSearchBar) {
-                mRecentsView.setSearchBarVisibility(View.GONE);
-            }
+            mRecentsView.setSearchBarVisibility(View.GONE);
         } else {
             if (mEmptyView != null) {
                 mEmptyView.setVisibility(View.GONE);
@@ -280,12 +270,10 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             if (!mConfig.searchBarEnabled) {
                 mRecentsView.setSearchBarVisibility(View.GONE);
             } else {
-                if (Constants.DebugFlags.App.EnableSearchBar) {
-                    if (mRecentsView.hasValidSearchBar()) {
-                        mRecentsView.setSearchBarVisibility(View.VISIBLE);
-                    } else {
-                        refreshSearchWidgetView();
-                    }
+                if (mRecentsView.hasValidSearchBar()) {
+                    mRecentsView.setSearchBarVisibility(View.VISIBLE);
+                } else {
+                    refreshSearchWidgetView();
                 }
             }
         }
@@ -379,9 +367,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         mConfig = RecentsConfiguration.reinitialize(this, ssp);
 
         // Initialize the widget host (the host id is static and does not change)
-        if (Constants.DebugFlags.App.EnableSearchBar) {
-            mAppWidgetHost = new RecentsAppWidgetHost(this, Constants.Values.App.AppWidgetHostId);
-        }
+        mAppWidgetHost = new RecentsAppWidgetHost(this, Constants.Values.App.AppWidgetHostId);
 
         // Set the Recents layout
         setContentView(R.layout.recents);
@@ -396,16 +382,12 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         inflateDebugOverlay();
 
         // Bind the search app widget when we first start up
-        if (Constants.DebugFlags.App.EnableSearchBar) {
-            mSearchWidgetInfo = ssp.getOrBindSearchAppWidget(this, mAppWidgetHost);
-        }
+        mSearchWidgetInfo = ssp.getOrBindSearchAppWidget(this, mAppWidgetHost);
 
         // Register the broadcast receiver to handle messages when the screen is turned off
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        if (Constants.DebugFlags.App.EnableSearchBar) {
-            filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-        }
+        filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
         registerReceiver(mSystemBroadcastReceiver, filter);
     }
 
@@ -443,7 +425,6 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         // Register the broadcast receiver to handle messages from our service
         IntentFilter filter = new IntentFilter();
         filter.addAction(Recents.ACTION_HIDE_RECENTS_ACTIVITY);
-        filter.addAction(Recents.ACTION_ALT_TAB_TRAVERSAL);
         filter.addAction(Recents.ACTION_TOGGLE_RECENTS_ACTIVITY);
         filter.addAction(Recents.ACTION_START_ENTER_ANIMATION);
         registerReceiver(mServiceBroadcastReceiver, filter);
@@ -520,9 +501,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         unregisterReceiver(mSystemBroadcastReceiver);
 
         // Stop listening for widget package changes if there was one bound
-        if (Constants.DebugFlags.App.EnableSearchBar) {
-            mAppWidgetHost.stopListening();
-        }
+        mAppWidgetHost.stopListening();
     }
 
     public void onEnterAnimationTriggered() {
@@ -531,22 +510,20 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         ViewAnimation.TaskViewEnterContext ctx = new ViewAnimation.TaskViewEnterContext(t);
         mRecentsView.startEnterRecentsAnimation(ctx);
 
-        if (Constants.DebugFlags.App.EnableSearchBar) {
-            if (mSearchWidgetInfo != null) {
-                final WeakReference<RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks> cbRef =
-                        new WeakReference<RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks>(
-                                RecentsActivity.this);
-                ctx.postAnimationTrigger.addLastDecrementRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Start listening for widget package changes if there is one bound
-                        RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks cb = cbRef.get();
-                        if (cb != null) {
-                            mAppWidgetHost.startListening(cb);
-                        }
+        if (mSearchWidgetInfo != null) {
+            final WeakReference<RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks> cbRef =
+                    new WeakReference<RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks>(
+                            RecentsActivity.this);
+            ctx.postAnimationTrigger.addLastDecrementRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    // Start listening for widget package changes if there is one bound
+                    RecentsAppWidgetHost.RecentsAppWidgetHostCallbacks cb = cbRef.get();
+                    if (cb != null) {
+                        mAppWidgetHost.startListening(cb);
                     }
-                });
-            }
+                }
+            });
         }
 
         // Animate the SystemUI scrim views
@@ -568,27 +545,10 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 boolean hasRepKeyTimeElapsed = (SystemClock.elapsedRealtime() -
                         mLastTabKeyEventTime) > mConfig.altTabKeyDelay;
                 if (event.getRepeatCount() <= 0 || hasRepKeyTimeElapsed) {
-                    // As we iterate to the next/previous task, cancel any current/lagging window
-                    // transition animations
-                    if (mConfig.launchedToTaskId != -1) {
-                        SystemServicesProxy ssp =
-                                RecentsTaskLoader.getInstance().getSystemServicesProxy();
-                        ssp.cancelThumbnailTransition(getTaskId());
-                        ssp.cancelWindowTransition(mConfig.launchedToTaskId);
-                    }
-
                     // Focus the next task in the stack
                     final boolean backward = event.isShiftPressed();
-                    if (mRecentsView.ensureFocusedTask(true)) {
-                        mRecentsView.focusNextTask(!backward);
-                    }
+                    mRecentsView.focusNextTask(!backward);
                     mLastTabKeyEventTime = SystemClock.elapsedRealtime();
-                }
-
-                // In the case of another ALT event, ignore the previous touches.
-                final int shiftlessModifiers = event.getModifiers() & ~KeyEvent.META_SHIFT_MASK;
-                if (KeyEvent.metaStateHasModifiers(shiftlessModifiers, KeyEvent.META_ALT_ON)) {
-                    mRecentsView.resetHasBeenTouched();
                 }
                 return true;
             }
@@ -614,6 +574,11 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         // Pass through the debug trigger
         mDebugTrigger.onKeyEvent(keyCode);
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        mRecentsView.onUserInteraction();
     }
 
     @Override

@@ -59,7 +59,6 @@ import android.util.Pair;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.app.AssistUtils;
@@ -320,29 +319,6 @@ public class SystemServicesProxy {
         }
 
         return mAm.isInHomeStack(taskId);
-    }
-
-    /**
-     * Cancels the current window transtion to/from Recents for the given task id.
-     */
-    public void cancelWindowTransition(int taskId) {
-        if (mWm == null) return;
-
-        try {
-            WindowManagerGlobal.getWindowManagerService().cancelTaskWindowTransition(taskId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void cancelThumbnailTransition(int taskId) {
-        if (mWm == null) return;
-
-        try {
-            WindowManagerGlobal.getWindowManagerService().cancelTaskThumbnailTransition(taskId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     /** Returns the top task thumbnail for the given task id */

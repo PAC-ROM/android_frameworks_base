@@ -48,12 +48,11 @@ interface IInputManager {
 
     // Keyboard layouts configuration.
     KeyboardLayout[] getKeyboardLayouts();
-    KeyboardLayout[] getKeyboardLayoutsForInputDevice(in InputDeviceIdentifier identifier);
     KeyboardLayout getKeyboardLayout(String keyboardLayoutDescriptor);
     String getCurrentKeyboardLayoutForInputDevice(in InputDeviceIdentifier identifier);
     void setCurrentKeyboardLayoutForInputDevice(in InputDeviceIdentifier identifier,
             String keyboardLayoutDescriptor);
-    String[] getEnabledKeyboardLayoutsForInputDevice(in InputDeviceIdentifier identifier);
+    String[] getKeyboardLayoutsForInputDevice(in InputDeviceIdentifier identifier);
     void addKeyboardLayoutForInputDevice(in InputDeviceIdentifier identifier,
             String keyboardLayoutDescriptor);
     void removeKeyboardLayoutForInputDevice(in InputDeviceIdentifier identifier,

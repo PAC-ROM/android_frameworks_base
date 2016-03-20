@@ -511,12 +511,4 @@ public class IWindowManagerImpl implements IWindowManager {
         // TODO Auto-generated method stub
         return null;
     }
-
-    @Override
-    public void cancelTaskWindowTransition(int taskId) {
-    }
-
-    @Override
-    public void cancelTaskThumbnailTransition(int taskId) {
-    }
 }
