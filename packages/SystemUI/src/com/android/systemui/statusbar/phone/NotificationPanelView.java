@@ -1359,6 +1359,9 @@ public class NotificationPanelView extends PanelView implements
                 statusBarState == StatusBarState.SHADE_LOCKED) {
             updateDozingVisibilities(false /* animate */);
         }
+        if (statusBarState == StatusBarState.KEYGUARD) {
+            mShowingExternalKeyguard = false;
+        }
         resetVerticalPanelPosition();
         updateQsState();
     }
