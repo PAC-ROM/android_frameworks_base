@@ -33,6 +33,7 @@ import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.DockBatteryMeterView;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.policy.BatteryBarController;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.DockBatteryController;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
@@ -52,6 +53,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
     private ImageView mMultiUserAvatar;
     private BatteryLevelTextView mBatteryLevel;
     private BatteryLevelTextView mDockBatteryLevel;
+    private BatteryBarController mBatteryBarController;
 
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
 
@@ -73,6 +75,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
         mBatteryLevel = (BatteryLevelTextView) findViewById(R.id.battery_level_text);
         mDockBatteryLevel = (BatteryLevelTextView) findViewById(R.id.dock_battery_level_text);
         mCarrierLabel = (TextView) findViewById(R.id.keyguard_carrier_text);
+        mBatteryBarController = (BatteryBarController) findViewById(R.id.battery_bar);
         loadDimens();
         mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in);
@@ -116,6 +119,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
         if (mDockBatteryLevel != null) {
             mDockBatteryLevel.setVisibility(View.VISIBLE);
         }
+        mBatteryBarController.setVisibility(View.VISIBLE);
     }
 
     private void updateSystemIconsLayoutParams() {

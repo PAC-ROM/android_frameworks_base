@@ -44,6 +44,7 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
+import com.android.systemui.statusbar.policy.BatteryBarController;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
@@ -78,6 +79,7 @@ public class StatusBarIconController implements Tunable {
     private ImageView mMoreIcon;
     private BatteryLevelTextView mBatteryLevelTextView;
     private BatteryMeterView mBatteryMeterView;
+    private BatteryBarController mBatteryBarController;
     private ClockController mClockController;
     private View mCenterClockLayout;
 
@@ -125,6 +127,7 @@ public class StatusBarIconController implements Tunable {
         mBatteryLevelTextView =
                 (BatteryLevelTextView) statusBar.findViewById(R.id.battery_level_text);
         mBatteryMeterView = (BatteryMeterView) statusBar.findViewById(R.id.battery);
+        mBatteryBarController = (BatteryBarController) statusBar.findViewById(R.id.battery_bar);
         mLinearOutSlowIn = AnimationUtils.loadInterpolator(mContext,
                 android.R.interpolator.linear_out_slow_in);
         mFastOutSlowIn = AnimationUtils.loadInterpolator(mContext,
@@ -256,21 +259,25 @@ public class StatusBarIconController implements Tunable {
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate);
         animateHide(mCenterClockLayout, animate);
+        animateHide(mBatteryBarController, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
         animateShow(mSystemIconArea, animate);
         animateShow(mCenterClockLayout, animate);
+        animateShow(mBatteryBarController, animate);
     }
 
     public void hideNotificationIconArea(boolean animate) {
         animateHide(mNotificationIconArea, animate);
         animateHide(mCenterClockLayout, animate);
+        animateHide(mBatteryBarController, animate);
     }
 
     public void showNotificationIconArea(boolean animate) {
         animateShow(mNotificationIconArea, animate);
         animateShow(mCenterClockLayout, animate);
+        animateShow(mBatteryBarController, animate);
     }
 
     public void setClockVisibility(boolean visible) {

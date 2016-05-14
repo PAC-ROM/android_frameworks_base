@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.os.BatteryManager;
 import android.os.Handler;
@@ -36,6 +37,9 @@ import android.widget.LinearLayout;
 public class BatteryBarController extends LinearLayout {
 
     private static final String TAG = "BatteryBarController";
+
+    private static final String SHARED_PREFS_NAME = "status_bar_battery_bar";
+    private static final String LAST_BATTERY_LEVEL = "last_battery_level";
 
     BatteryBar mainBar;
     BatteryBar alternateStyleBar;
@@ -113,7 +117,7 @@ public class BatteryBarController extends LinearLayout {
             if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
                 mBatteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
                 mBatteryCharging = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0) == BatteryManager.BATTERY_STATUS_CHARGING;
-                Prefs.setLastBatteryLevel(context, mBatteryLevel);
+                setLastBatteryLevel(context, mBatteryLevel);
             }
         }
     };
@@ -161,7 +165,7 @@ public class BatteryBarController extends LinearLayout {
         else
             params.height = pixels;
         setLayoutParams(params);
-        mBatteryLevel = Prefs.getLastBatteryLevel(getContext());
+        mBatteryLevel = getLastBatteryLevel(getContext());
         if (mStyle == STYLE_REGULAR) {
             addView(new BatteryBar(mContext, mBatteryCharging, mBatteryLevel, isVertical),
                     new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -209,5 +213,21 @@ public class BatteryBarController extends LinearLayout {
 
     protected boolean isLocationValid(int location) {
         return mLocationToLookFor == location;
+    }
+
+    private static SharedPreferences read(Context context) {
+        return context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    private static SharedPreferences.Editor edit(Context context) {
+        return context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE).edit();
+    }
+
+    private static void setLastBatteryLevel(Context context, int level) {
+        edit(context).putInt(LAST_BATTERY_LEVEL, level).commit();
+    }
+
+    private static int getLastBatteryLevel(Context context) {
+        return read(context).getInt(LAST_BATTERY_LEVEL, 50);
     }
 }
