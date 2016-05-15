@@ -3540,37 +3540,62 @@ public final class Settings {
         * Whether to show the battery bar
         * @hide
         */
-        public static final String STATUSBAR_BATTERY_BAR = "statusbar_battery_bar";
+        public static final String STATUSBAR_BATTERY_BAR =
+                "statusbar_battery_bar";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_COLOR = "statusbar_battery_bar_color";
+        public static final String STATUSBAR_BATTERY_BAR_COLOR =
+                "statusbar_battery_bar_color";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_THICKNESS = "statusbar_battery_bar_thickness";
+        public static final String STATUSBAR_BATTERY_BAR_THICKNESS =
+                "statusbar_battery_bar_thickness";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_STYLE = "statusbar_battery_bar_style";
+        public static final String STATUSBAR_BATTERY_BAR_STYLE =
+                "statusbar_battery_bar_style";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_ANIMATE = "statusbar_battery_bar_animate";
+        public static final String STATUSBAR_BATTERY_BAR_ANIMATE =
+                "statusbar_battery_bar_animate";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_CHARGING_COLOR = "statusbar_battery_bar_charging_color";
+        public static final String STATUSBAR_BATTERY_BAR_CHARGING_COLOR =
+                "statusbar_battery_bar_charging_color";
 
         /**
          * @hide
          */
-        public static final String STATUSBAR_BATTERY_BAR_BATTERY_LOW_COLOR = "statusbar_battery_bar_battery_low_color";
+        public static final String STATUSBAR_BATTERY_BAR_BATTERY_LOW_COLOR_WARNING =
+                "statusbar_battery_bar_battery_low_color_warning";
+
+        /**
+         * @hide
+         */
+        public static final String STATUSBAR_BATTERY_BAR_HIGH_COLOR =
+                "statusbar_battery_bar_high_color";
+
+        /**
+         * @hide
+         */
+        public static final String STATUSBAR_BATTERY_BAR_LOW_COLOR =
+                "statusbar_battery_bar_low_color";
+
+        /**
+         * @hide
+         */
+        public static final String STATUSBAR_BATTERY_BAR_USE_GRADIENT_COLOR =
+                "statusbar_battery_bar_use_gradient_color";
 
         /**
          * Whether to use the custom status bar header or not
