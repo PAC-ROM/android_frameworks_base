@@ -16,9 +16,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Eating pac-app window -->
-    <java-symbol type="string" name="pac_upgrading_apk" />
-
     <!-- PAC Platlogo -->
     <java-symbol type="drawable" name="platlogo_pac" />
 

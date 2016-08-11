@@ -6494,7 +6494,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
         try {
             ActivityManagerNative.getDefault().showBootMessage(
-                    mContext.getResources().getString(R.string.pac_upgrading_apk,
+                    mContext.getResources().getString(R.string.android_upgrading_apk,
                             curr, total), true);
         } catch (RemoteException e) {
         }
