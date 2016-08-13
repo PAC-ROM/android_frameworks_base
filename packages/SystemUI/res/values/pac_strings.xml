@@ -22,17 +22,17 @@
 
     <!-- Navigation Bar -->
     <string name="accessibility_power">Power</string>
-    <string name="accessibility_notifications">Notifications</string>
+    <string name="accessibility_notifications">Notification panel</string>
     <string name="navbar_power_button">Power button</string>
-    <string name="navbar_notifications_button">Notifications button</string>
+    <string name="navbar_notifications_button">Notification panel</string>
     <string name="navbar_torch">Torch</string>
     <string name="accessibility_torch">Torch</string>
     <string name="navbar_camera">Camera</string>
     <string name="accessibility_camera">Camera</string>
-    <string name="navbar_screenshot">ScreenShot</string>
-    <string name="accessibility_screenshot">ScreenShot</string>
-    <string name="navbar_expand">Immersive Mode</string>
-    <string name="accessibility_expand">Immersive Mode</string>
+    <string name="navbar_screenshot">Screenshot</string>
+    <string name="accessibility_screenshot">Screenshot</string>
+    <string name="navbar_expand">Immersive mode</string>
+    <string name="accessibility_expand">Immersive mode</string>
 
     <!-- QuickSettings: KernelAdiutor -->
     <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
