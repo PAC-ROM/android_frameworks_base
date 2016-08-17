@@ -19,6 +19,23 @@
   <!-- Battery Saver Dimiss -->
   <string name="battery_saver_dismiss_title">Despedir</string>
   <string name="battery_saver_notification_action_text_short">Desactivar</string>
+  <!-- Navigation Bar -->
+  <string name="accessibility_power">Energia</string>
+  <string name="accessibility_notifications">Panel de notificaciones</string>
+  <string name="navbar_power_button">Botón de encendido</string>
+  <string name="navbar_notifications_button">Panel de notificaciones</string>
+  <string name="navbar_torch">Linterna</string>
+  <string name="accessibility_torch">Linterna</string>
+  <string name="navbar_camera">Camara</string>
+  <string name="accessibility_camera">Camara</string>
+  <string name="navbar_screenshot">Captura de pantalla</string>
+  <string name="accessibility_screenshot">Captura de pantalla</string>
+  <string name="navbar_expand">Modo inmersivo</string>
+  <string name="accessibility_expand">Modo inmersivo</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
+  <!-- Recents Panel -->
+  <!-- The text for the button in the notification window-shade that clears
+         all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">Cerrar todas las aplicaciones recientes</string>
 </resources>

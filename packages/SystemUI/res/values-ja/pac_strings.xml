@@ -19,6 +19,23 @@
   <!-- Battery Saver Dimiss -->
   <string name="battery_saver_dismiss_title">無視</string>
   <string name="battery_saver_notification_action_text_short">オフにする</string>
+  <!-- Navigation Bar -->
+  <string name="accessibility_power">電源</string>
+  <string name="accessibility_notifications">通知パネル</string>
+  <string name="navbar_power_button">電源ボタン</string>
+  <string name="navbar_notifications_button">通知パネル</string>
+  <string name="navbar_torch">ライト</string>
+  <string name="accessibility_torch">ライト</string>
+  <string name="navbar_camera">カメラ</string>
+  <string name="accessibility_camera">カメラ</string>
+  <string name="navbar_screenshot">スクリーンショット</string>
+  <string name="accessibility_screenshot">スクリーンショット</string>
+  <string name="navbar_expand">拡張デスクトップモード</string>
+  <string name="accessibility_expand">拡張デスクトップモード</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
+  <!-- Recents Panel -->
+  <!-- The text for the button in the notification window-shade that clears
+         all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">すべての最近使ったアプリを閉じる</string>
 </resources>

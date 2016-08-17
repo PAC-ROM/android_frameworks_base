@@ -19,6 +19,16 @@
   <!-- Battery Saver Dimiss -->
   <string name="battery_saver_dismiss_title">Ignora</string>
   <string name="battery_saver_notification_action_text_short">Spegni</string>
+  <!-- Navigation Bar -->
+  <string name="navbar_torch">Torcia</string>
+  <string name="accessibility_torch">Torcia</string>
+  <string name="navbar_camera">Fotocamera</string>
+  <string name="accessibility_camera">Fotocamera</string>
+  <string name="navbar_screenshot">Cattura Schermo</string>
+  <string name="accessibility_screenshot">Cattura Schermo</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
+  <!-- Recents Panel -->
+  <!-- The text for the button in the notification window-shade that clears
+         all of the currently visible notifications. [CHAR LIMIT=10]-->
 </resources>

@@ -17,17 +17,14 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Battery Saver Dimiss -->
-  <string name="battery_saver_dismiss_title">Odrzuć</string>
-  <string name="battery_saver_notification_action_text_short">Wyłącz</string>
   <!-- Navigation Bar -->
-  <string name="navbar_torch">Latarka</string>
-  <string name="accessibility_torch">Latarka</string>
-  <string name="navbar_camera">Aparat</string>
-  <string name="accessibility_camera">Aparat</string>
-  <string name="navbar_screenshot">Zrzut ekranu</string>
-  <string name="accessibility_screenshot">Zrzut ekranu</string>
+  <string name="navbar_torch">Фонарик</string>
+  <string name="accessibility_torch">Фонарик</string>
+  <string name="navbar_camera">Камера</string>
+  <string name="accessibility_camera">Камера</string>
+  <string name="navbar_screenshot">Снимок экрана</string>
+  <string name="accessibility_screenshot">Снимок экрана</string>
   <!-- QuickSettings: KernelAdiutor -->
-  <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
   <!-- Recents Panel -->
   <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->

@@ -19,6 +19,16 @@
   <!-- Battery Saver Dimiss -->
   <string name="battery_saver_dismiss_title">Elvetés</string>
   <string name="battery_saver_notification_action_text_short">Kikapcsolás</string>
+  <!-- Navigation Bar -->
+  <string name="navbar_torch">Zseblámpa</string>
+  <string name="accessibility_torch">Zseblámpa</string>
+  <string name="navbar_camera">Kamera</string>
+  <string name="accessibility_camera">Kamera</string>
+  <string name="navbar_screenshot">Képernyőmentés</string>
+  <string name="accessibility_screenshot">Képernyőmentés</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
+  <!-- Recents Panel -->
+  <!-- The text for the button in the notification window-shade that clears
+         all of the currently visible notifications. [CHAR LIMIT=10]-->
 </resources>
