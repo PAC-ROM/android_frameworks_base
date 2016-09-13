@@ -17,11 +17,25 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- Battery Saver Dimiss -->
+  <string name="battery_saver_dismiss_title">Congédier</string>
+  <string name="battery_saver_notification_action_text_short">Désactiver</string>
   <!-- Navigation Bar -->
+  <string name="accessibility_power">Alimentation</string>
+  <string name="accessibility_notifications">Panneau de notification</string>
+  <string name="navbar_power_button">Bouton marche/arrêt</string>
+  <string name="navbar_notifications_button">Panneau de notification</string>
+  <string name="navbar_torch">Lampe</string>
+  <string name="accessibility_torch">Lampe</string>
+  <string name="navbar_camera">Appareil-photo</string>
+  <string name="accessibility_camera">Appareil-photo</string>
   <string name="navbar_screenshot">Capture d\'écran</string>
   <string name="accessibility_screenshot">Capture d\'écran</string>
+  <string name="navbar_expand">Mode immersif</string>
+  <string name="accessibility_expand">Mode immersif</string>
   <!-- QuickSettings: KernelAdiutor -->
+  <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
   <!-- Recents Panel -->
   <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">Fermer toutes les applications récentes</string>
 </resources>

@@ -20,15 +20,21 @@
   <string name="battery_saver_dismiss_title">Ausblenden</string>
   <string name="battery_saver_notification_action_text_short">Ausschalten</string>
   <!-- Navigation Bar -->
+  <string name="accessibility_notifications">Benachrichtigungs-Leiste</string>
+  <string name="navbar_power_button">Ein-/Aus-Knopf</string>
+  <string name="navbar_notifications_button">Benachrichtigungs-Leiste</string>
   <string name="navbar_torch">Taschenlampe</string>
   <string name="accessibility_torch">Taschenlampe</string>
   <string name="navbar_camera">Kamera</string>
   <string name="accessibility_camera">Kamera</string>
   <string name="navbar_screenshot">Screenshot</string>
   <string name="accessibility_screenshot">Screenshot</string>
+  <string name="navbar_expand">Vollbildmodus</string>
+  <string name="accessibility_expand">Vollbildmodus</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Adiutor</string>
   <!-- Recents Panel -->
   <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">Alle Benachrichtigungen schließen</string>
 </resources>

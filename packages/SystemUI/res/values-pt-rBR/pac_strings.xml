@@ -20,15 +20,22 @@
   <string name="battery_saver_dismiss_title">Recusar</string>
   <string name="battery_saver_notification_action_text_short">Desligar</string>
   <!-- Navigation Bar -->
+  <string name="accessibility_power">Poder</string>
+  <string name="accessibility_notifications">Painel de notificação</string>
+  <string name="navbar_power_button">Botão liga/desliga</string>
+  <string name="navbar_notifications_button">Painel de notificação</string>
   <string name="navbar_torch">Lanterna</string>
   <string name="accessibility_torch">Lanterna</string>
   <string name="navbar_camera">Câmera</string>
   <string name="accessibility_camera">Câmera</string>
   <string name="navbar_screenshot">Capturas de tela</string>
   <string name="accessibility_screenshot">Capturas de tela</string>
+  <string name="navbar_expand">Modo imersivo</string>
+  <string name="accessibility_expand">Modo imersivo</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Auditor do kernel</string>
   <!-- Recents Panel -->
   <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">Fechar todos os recentes</string>
 </resources>

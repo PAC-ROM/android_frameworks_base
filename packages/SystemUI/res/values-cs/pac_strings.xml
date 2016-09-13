@@ -20,15 +20,22 @@
   <string name="battery_saver_dismiss_title">Zamítnout</string>
   <string name="battery_saver_notification_action_text_short">Vypnout</string>
   <!-- Navigation Bar -->
+  <string name="accessibility_power">Vypnout</string>
+  <string name="accessibility_notifications">Panel upozornění</string>
+  <string name="navbar_power_button">Tlačítko vypínání</string>
+  <string name="navbar_notifications_button">Panel upozornění</string>
   <string name="navbar_torch">Svítilna</string>
   <string name="accessibility_torch">Svítilna</string>
   <string name="navbar_camera">Fotoaparát</string>
   <string name="accessibility_camera">Fotoaparát</string>
   <string name="navbar_screenshot">Snímek displeje</string>
   <string name="accessibility_screenshot">Snímek displeje</string>
+  <string name="navbar_expand">Režim celé obrazovky</string>
+  <string name="accessibility_expand">Režim celé obrazovky</string>
   <!-- QuickSettings: KernelAdiutor -->
   <string name="quick_settings_kernel_adiutor_label">Kernel Auditor</string>
   <!-- Recents Panel -->
   <!-- The text for the button in the notification window-shade that clears
          all of the currently visible notifications. [CHAR LIMIT=10]-->
+  <string name="clear_recents">Zavřít všechny nedávné</string>
 </resources>
