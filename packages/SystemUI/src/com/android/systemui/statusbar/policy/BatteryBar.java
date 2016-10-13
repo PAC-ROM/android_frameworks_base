@@ -299,6 +299,7 @@ public class BatteryBar extends RelativeLayout implements Animatable {
 
         if (useGradientColor) {
             float size = n / 100f;
+            mGradientColors[0] = mixColors(mLowColor, mHighColor, size);
             mGradientColors[1] = mixColors(mHighColor, mLowColor, size);
             mBarGradient.setColors(mGradientColors);
             mBatteryBar.setBackgroundDrawable(mBarGradient);
